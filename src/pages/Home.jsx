@@ -1,4 +1,3 @@
-import {useState} from 'react'
 import Header from '../components/Header.jsx'
 import Baro from '../components/Baro.jsx'
 
