@@ -29,7 +29,7 @@ const navigationData = [
 
 const Header = () => {
   return (
-    <div className="navbar bg-base-100 shadow-bottom-sm px-4 py-2">
+    <div className="navbar bg-base-100 shadow-bottom-sm px-4 py-2 border-b border-gray-200"> 
       <div className="navbar-start">
         <div className="dropdown">
           <div tabIndex={0} role="button" className="btn btn-ghost lg:hidden">
