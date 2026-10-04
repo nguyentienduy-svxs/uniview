@@ -1,0 +1,870 @@
+[
+  {
+    "id": "7480103",
+    "name": "Kỹ thuật Phần mềm",
+    "code": "7480103",
+    "category": {
+      "id": "computer-it",
+      "name": "Máy tính & CNTT"
+    },
+    "icon": "terminal",
+    "description": "Tập trung phát triển, kiểm thử và vận hành các hệ thống phần mềm.",
+    "skills": ["Logic & Thuật toán", "Lập trình", "Giải quyết vấn đề", "Làm việc nhóm"],
+    "interests": ["Phân tích", "Code & Phần mềm", "Xử lý dữ liệu"],
+    "riasec": ["R", "I"],
+    "admissionCombinations": [
+      { "code": "A00", "subjects": ["Toán", "Lý", "Hóa"] },
+      { "code": "A01", "subjects": ["Toán", "Lý", "Anh"] },
+      { "code": "D01", "subjects": ["Toán", "Văn", "Anh"] }
+    ],
+    "universityCount": 36,
+    "careerPaths": ["Software Engineer", "Mobile Developer", "Cloud Architect"]
+  },
+  {
+    "id": "7480201",
+    "name": "Công nghệ Thông tin",
+    "code": "7480201",
+    "category": {
+      "id": "computer-it",
+      "name": "Máy tính & CNTT"
+    },
+    "icon": "computer",
+    "description": "Nghiên cứu và ứng dụng công nghệ máy tính để xây dựng các hệ thống thông tin và phần mềm.",
+    "skills": ["Logic & Thuật toán", "Lập trình", "Giải quyết vấn đề", "Làm việc nhóm"],
+    "interests": ["Phân tích", "Code & Phần mềm", "Xử lý dữ liệu"],
+    "riasec": ["R", "I"],
+    "admissionCombinations": [
+      { "code": "A00", "subjects": ["Toán", "Lý", "Hóa"] },
+      { "code": "A01", "subjects": ["Toán", "Lý", "Anh"] },
+      { "code": "D01", "subjects": ["Toán", "Văn", "Anh"] }
+    ],
+    "universityCount": 70,
+    "careerPaths": ["Software Developer", "System Administrator", "IT Specialist"]
+  },
+  {
+    "id": "7480109",
+    "name": "Khoa học Dữ liệu",
+    "code": "7480109",
+    "category": {
+      "id": "computer-it",
+      "name": "Máy tính & CNTT"
+    },
+    "icon": "hub",
+    "description": "Kết hợp toán học, thống kê và công nghệ để phân tích và khai thác dữ liệu.",
+    "skills": ["Toán & Thống kê", "Phân tích dữ liệu", "Machine Learning", "Nghiên cứu"],
+    "interests": ["Phân tích", "Xử lý dữ liệu", "Code & Phần mềm"],
+    "riasec": ["I", "C"],
+    "admissionCombinations": [
+      { "code": "A00", "subjects": ["Toán", "Lý", "Hóa"] },
+      { "code": "A01", "subjects": ["Toán", "Lý", "Anh"] },
+      { "code": "D07", "subjects": ["Toán", "Hóa", "Anh"] }
+    ],
+    "universityCount": 24,
+    "careerPaths": ["Data Scientist", "Data Analyst", "Machine Learning Engineer"]
+  },
+  {
+    "id": "7480101",
+    "name": "Khoa học Máy tính",
+    "code": "7480101",
+    "category": {
+      "id": "computer-it",
+      "name": "Máy tính & CNTT"
+    },
+    "icon": "memory",
+    "description": "Nghiên cứu nền tảng khoa học và thuật toán của máy tính và hệ thống tính toán.",
+    "skills": ["Logic & Thuật toán", "Lập trình", "Nghiên cứu", "Giải quyết vấn đề"],
+    "interests": ["Phân tích", "Code & Phần mềm", "Xử lý dữ liệu"],
+    "riasec": ["I", "R"],
+    "admissionCombinations": [
+      { "code": "A00", "subjects": ["Toán", "Lý", "Hóa"] },
+      { "code": "A01", "subjects": ["Toán", "Lý", "Anh"] },
+      { "code": "D01", "subjects": ["Toán", "Văn", "Anh"] }
+    ],
+    "universityCount": 35,
+    "careerPaths": ["Software Engineer", "AI Researcher", "Algorithm Engineer"]
+  },
+  {
+    "id": "7480202",
+    "name": "An toàn Thông tin",
+    "code": "7480202",
+    "category": {
+      "id": "computer-it",
+      "name": "Máy tính & CNTT"
+    },
+    "icon": "lock",
+    "description": "Bảo vệ hệ thống thông tin, mạng máy tính và dữ liệu trước các nguy cơ an ninh mạng.",
+    "skills": ["An ninh mạng", "Mạng máy tính", "Phân tích mã", "Giải quyết vấn đề"],
+    "interests": ["Phân tích", "Code & Phần mềm", "Thực hành chế tạo"],
+    "riasec": ["R", "I"],
+    "admissionCombinations": [
+      { "code": "A00", "subjects": ["Toán", "Lý", "Hóa"] },
+      { "code": "A01", "subjects": ["Toán", "Lý", "Anh"] }
+    ],
+    "universityCount": 19,
+    "careerPaths": ["Security Analyst", "Penetration Tester", "SOC Engineer"]
+  },
+  {
+    "id": "7480107",
+    "name": "Trí tuệ Nhân tạo",
+    "code": "7480107",
+    "category": {
+      "id": "computer-it",
+      "name": "Máy tính & CNTT"
+    },
+    "icon": "psychology",
+    "description": "Nghiên cứu các phương pháp xây dựng hệ thống có khả năng học tập và ra quyết định thông minh.",
+    "skills": ["Machine Learning", "Toán & Thống kê", "Lập trình", "Nghiên cứu"],
+    "interests": ["Phân tích", "Xử lý dữ liệu", "Code & Phần mềm"],
+    "riasec": ["I", "R"],
+    "admissionCombinations": [
+      { "code": "A00", "subjects": ["Toán", "Lý", "Hóa"] },
+      { "code": "A01", "subjects": ["Toán", "Lý", "Anh"] },
+      { "code": "D01", "subjects": ["Toán", "Văn", "Anh"] }
+    ],
+    "universityCount": 18,
+    "careerPaths": ["AI Engineer", "Machine Learning Engineer", "AI Researcher"]
+  },
+  {
+    "id": "7480203",
+    "name": "Kỹ thuật Máy tính",
+    "code": "7480203",
+    "category": {
+      "id": "computer-it",
+      "name": "Máy tính & CNTT"
+    },
+    "icon": "memory",
+    "description": "Kết hợp kỹ thuật điện tử và công nghệ máy tính để phát triển phần cứng và hệ thống nhúng.",
+    "skills": ["Lập trình", "Logic & Thuật toán", "Điện tử", "Giải quyết vấn đề"],
+    "interests": ["Code & Phần mềm", "Thực hành chế tạo", "Phân tích"],
+    "riasec": ["R", "I"],
+    "admissionCombinations": [
+      { "code": "A00", "subjects": ["Toán", "Lý", "Hóa"] },
+      { "code": "A01", "subjects": ["Toán", "Lý", "Anh"] }
+    ],
+    "universityCount": 15,
+    "careerPaths": ["Embedded Engineer", "Hardware Engineer", "IoT Engineer"]
+  },
+  {
+    "id": "7480102",
+    "name": "Mạng Máy tính và Truyền thông Dữ liệu",
+    "code": "7480102",
+    "category": {
+      "id": "computer-it",
+      "name": "Máy tính & CNTT"
+    },
+    "icon": "lan",
+    "description": "Thiết kế, triển khai và quản trị hạ tầng mạng và hệ thống truyền thông dữ liệu.",
+    "skills": ["Mạng máy tính", "Quản trị hệ thống", "Giải quyết vấn đề", "Làm việc nhóm"],
+    "interests": ["Phân tích", "Code & Phần mềm", "Thực hành chế tạo"],
+    "riasec": ["R", "I"],
+    "admissionCombinations": [
+      { "code": "A00", "subjects": ["Toán", "Lý", "Hóa"] },
+      { "code": "A01", "subjects": ["Toán", "Lý", "Anh"] }
+    ],
+    "universityCount": 17,
+    "careerPaths": ["Network Engineer", "System Administrator", "Network Security Engineer"]
+  },
+  {
+    "id": "7480104",
+    "name": "Hệ thống Thông tin",
+    "code": "7480104",
+    "category": {
+      "id": "computer-it",
+      "name": "Máy tính & CNTT"
+    },
+    "icon": "database",
+    "description": "Phân tích, thiết kế và quản lý các hệ thống thông tin phục vụ hoạt động tổ chức và doanh nghiệp.",
+    "skills": ["Phân tích hệ thống", "Cơ sở dữ liệu", "Lập trình", "Làm việc nhóm"],
+    "interests": ["Phân tích", "Xử lý dữ liệu", "Code & Phần mềm"],
+    "riasec": ["I", "C"],
+    "admissionCombinations": [
+      { "code": "A00", "subjects": ["Toán", "Lý", "Hóa"] },
+      { "code": "A01", "subjects": ["Toán", "Lý", "Anh"] },
+      { "code": "D01", "subjects": ["Toán", "Văn", "Anh"] }
+    ],
+    "universityCount": 28,
+    "careerPaths": ["Business Analyst", "System Analyst", "Database Administrator"]
+  },
+
+  {
+    "id": "7340101",
+    "name": "Quản trị Kinh doanh",
+    "code": "7340101",
+    "category": {
+      "id": "business",
+      "name": "Kinh doanh & Quản trị"
+    },
+    "icon": "business_center",
+    "description": "Trang bị kiến thức về quản trị, vận hành và phát triển doanh nghiệp.",
+    "skills": ["Quản lý", "Giao tiếp", "Phân tích", "Làm việc nhóm"],
+    "interests": ["Giao tiếp & Trình bày", "Làm việc với con người", "Phân tích"],
+    "riasec": ["E", "S"],
+    "admissionCombinations": [
+      { "code": "A01", "subjects": ["Toán", "Lý", "Anh"] },
+      { "code": "D01", "subjects": ["Toán", "Văn", "Anh"] },
+      { "code": "D07", "subjects": ["Toán", "Hóa", "Anh"] }
+    ],
+    "universityCount": 100,
+    "careerPaths": ["Business Manager", "Business Development", "Operations Manager"]
+  },
+  {
+    "id": "7340115",
+    "name": "Marketing",
+    "code": "7340115",
+    "category": {
+      "id": "business",
+      "name": "Kinh doanh & Quản trị"
+    },
+    "icon": "campaign",
+    "description": "Nghiên cứu thị trường và xây dựng chiến lược tiếp thị, thương hiệu và truyền thông.",
+    "skills": ["Sáng tạo", "Phân tích thị trường", "Giao tiếp", "Làm việc nhóm"],
+    "interests": ["Sáng tạo & Vẽ", "Giao tiếp & Trình bày", "Làm việc với con người"],
+    "riasec": ["E", "A", "S"],
+    "admissionCombinations": [
+      { "code": "A01", "subjects": ["Toán", "Lý", "Anh"] },
+      { "code": "D01", "subjects": ["Toán", "Văn", "Anh"] }
+    ],
+    "universityCount": 70,
+    "careerPaths": ["Marketing Executive", "Brand Manager", "Digital Marketing Specialist"]
+  },
+  {
+    "id": "7340120",
+    "name": "Kinh doanh Quốc tế",
+    "code": "7340120",
+    "category": {
+      "id": "business",
+      "name": "Kinh doanh & Quản trị"
+    },
+    "icon": "public",
+    "description": "Nghiên cứu hoạt động kinh doanh, thương mại và quản trị trong môi trường quốc tế.",
+    "skills": ["Phân tích", "Giao tiếp", "Ngoại ngữ", "Đàm phán"],
+    "interests": ["Giao tiếp & Trình bày", "Làm việc với con người", "Phân tích"],
+    "riasec": ["E", "S"],
+    "admissionCombinations": [
+      { "code": "A01", "subjects": ["Toán", "Lý", "Anh"] },
+      { "code": "D01", "subjects": ["Toán", "Văn", "Anh"] }
+    ],
+    "universityCount": 55,
+    "careerPaths": ["International Business Specialist", "Export Manager", "Business Development"]
+  },
+  {
+    "id": "7340121",
+    "name": "Kinh doanh Thương mại",
+    "code": "7340121",
+    "category": {
+      "id": "business",
+      "name": "Kinh doanh & Quản trị"
+    },
+    "icon": "storefront",
+    "description": "Đào tạo kiến thức về mua bán, phân phối và quản trị hoạt động thương mại.",
+    "skills": ["Kinh doanh", "Phân tích", "Giao tiếp", "Đàm phán"],
+    "interests": ["Giao tiếp & Trình bày", "Làm việc với con người", "Phân tích"],
+    "riasec": ["E", "S"],
+    "admissionCombinations": [
+      { "code": "A01", "subjects": ["Toán", "Lý", "Anh"] },
+      { "code": "D01", "subjects": ["Toán", "Văn", "Anh"] }
+    ],
+    "universityCount": 35,
+    "careerPaths": ["Sales Executive", "Commercial Specialist", "Business Development"]
+  },
+  {
+    "id": "7340201",
+    "name": "Tài chính - Ngân hàng",
+    "code": "7340201",
+    "category": {
+      "id": "business",
+      "name": "Kinh doanh & Quản trị"
+    },
+    "icon": "account_balance",
+    "description": "Nghiên cứu tài chính doanh nghiệp, ngân hàng, đầu tư và thị trường tài chính.",
+    "skills": ["Toán & Thống kê", "Phân tích", "Tài chính", "Giải quyết vấn đề"],
+    "interests": ["Phân tích", "Xử lý dữ liệu", "Làm việc với con người"],
+    "riasec": ["I", "C", "E"],
+    "admissionCombinations": [
+      { "code": "A00", "subjects": ["Toán", "Lý", "Hóa"] },
+      { "code": "A01", "subjects": ["Toán", "Lý", "Anh"] },
+      { "code": "D01", "subjects": ["Toán", "Văn", "Anh"] }
+    ],
+    "universityCount": 65,
+    "careerPaths": ["Financial Analyst", "Banking Specialist", "Investment Analyst"]
+  },
+  {
+    "id": "7340301",
+    "name": "Kế toán",
+    "code": "7340301",
+    "category": {
+      "id": "business",
+      "name": "Kinh doanh & Quản trị"
+    },
+    "icon": "calculate",
+    "description": "Đào tạo nghiệp vụ ghi nhận, phân tích và quản lý thông tin tài chính của tổ chức.",
+    "skills": ["Tính toán", "Phân tích", "Cẩn thận", "Quản lý dữ liệu"],
+    "interests": ["Phân tích", "Xử lý dữ liệu"],
+    "riasec": ["C", "I"],
+    "admissionCombinations": [
+      { "code": "A00", "subjects": ["Toán", "Lý", "Hóa"] },
+      { "code": "A01", "subjects": ["Toán", "Lý", "Anh"] },
+      { "code": "D01", "subjects": ["Toán", "Văn", "Anh"] }
+    ],
+    "universityCount": 70,
+    "careerPaths": ["Accountant", "Auditor", "Financial Accountant"]
+  },
+  {
+    "id": "7340302",
+    "name": "Kiểm toán",
+    "code": "7340302",
+    "category": {
+      "id": "business",
+      "name": "Kinh doanh & Quản trị"
+    },
+    "icon": "fact_check",
+    "description": "Đào tạo phương pháp kiểm tra, đánh giá và xác nhận thông tin tài chính.",
+    "skills": ["Phân tích", "Logic", "Tài chính", "Cẩn thận"],
+    "interests": ["Phân tích", "Xử lý dữ liệu"],
+    "riasec": ["C", "I"],
+    "admissionCombinations": [
+      { "code": "A00", "subjects": ["Toán", "Lý", "Hóa"] },
+      { "code": "A01", "subjects": ["Toán", "Lý", "Anh"] },
+      { "code": "D01", "subjects": ["Toán", "Văn", "Anh"] }
+    ],
+    "universityCount": 40,
+    "careerPaths": ["Auditor", "Internal Auditor", "Risk Consultant"]
+  },
+  {
+    "id": "7340122",
+    "name": "Thương mại Điện tử",
+    "code": "7340122",
+    "category": {
+      "id": "business",
+      "name": "Kinh doanh & Quản trị"
+    },
+    "icon": "shopping_cart",
+    "description": "Kết hợp kinh doanh và công nghệ để phát triển hoạt động thương mại trên nền tảng số.",
+    "skills": ["Marketing", "Phân tích dữ liệu", "Công nghệ", "Kinh doanh"],
+    "interests": ["Code & Phần mềm", "Xử lý dữ liệu", "Giao tiếp & Trình bày"],
+    "riasec": ["E", "I", "C"],
+    "admissionCombinations": [
+      { "code": "A01", "subjects": ["Toán", "Lý", "Anh"] },
+      { "code": "D01", "subjects": ["Toán", "Văn", "Anh"] }
+    ],
+    "universityCount": 45,
+    "careerPaths": ["E-commerce Specialist", "Digital Business Analyst", "E-commerce Manager"]
+  },
+  {
+    "id": "7340405",
+    "name": "Hệ thống Thông tin Quản lý",
+    "code": "7340405",
+    "category": {
+      "id": "business",
+      "name": "Kinh doanh & Quản trị"
+    },
+    "icon": "analytics",
+    "description": "Ứng dụng công nghệ thông tin và phân tích dữ liệu vào quản trị doanh nghiệp.",
+    "skills": ["Phân tích", "Công nghệ", "Quản trị dữ liệu", "Giải quyết vấn đề"],
+    "interests": ["Phân tích", "Xử lý dữ liệu", "Code & Phần mềm"],
+    "riasec": ["I", "C", "E"],
+    "admissionCombinations": [
+      { "code": "A00", "subjects": ["Toán", "Lý", "Hóa"] },
+      { "code": "A01", "subjects": ["Toán", "Lý", "Anh"] },
+      { "code": "D01", "subjects": ["Toán", "Văn", "Anh"] }
+    ],
+    "universityCount": 30,
+    "careerPaths": ["Business Analyst", "Data Analyst", "IT Business Consultant"]
+  },
+
+  {
+    "id": "7520201",
+    "name": "Kỹ thuật Điện",
+    "code": "7520201",
+    "category": {
+      "id": "engineering",
+      "name": "Kỹ thuật & Công nghệ"
+    },
+    "icon": "bolt",
+    "description": "Nghiên cứu và ứng dụng các hệ thống điện và thiết bị điện trong công nghiệp.",
+    "skills": ["Toán & Vật lý", "Kỹ thuật", "Phân tích", "Thực hành"],
+    "interests": ["Phân tích", "Thực hành chế tạo"],
+    "riasec": ["R", "I"],
+    "admissionCombinations": [
+      { "code": "A00", "subjects": ["Toán", "Lý", "Hóa"] },
+      { "code": "A01", "subjects": ["Toán", "Lý", "Anh"] }
+    ],
+    "universityCount": 45,
+    "careerPaths": ["Electrical Engineer", "Power Engineer", "Automation Engineer"]
+  },
+  {
+    "id": "7520207",
+    "name": "Kỹ thuật Điện tử - Viễn thông",
+    "code": "7520207",
+    "category": {
+      "id": "engineering",
+      "name": "Kỹ thuật & Công nghệ"
+    },
+    "icon": "cell_tower",
+    "description": "Thiết kế và phát triển các hệ thống điện tử, viễn thông và truyền thông.",
+    "skills": ["Điện tử", "Lập trình", "Phân tích", "Kỹ thuật"],
+    "interests": ["Code & Phần mềm", "Thực hành chế tạo", "Phân tích"],
+    "riasec": ["R", "I"],
+    "admissionCombinations": [
+      { "code": "A00", "subjects": ["Toán", "Lý", "Hóa"] },
+      { "code": "A01", "subjects": ["Toán", "Lý", "Anh"] }
+    ],
+    "universityCount": 40,
+    "careerPaths": ["Telecommunication Engineer", "Electronics Engineer", "Network Engineer"]
+  },
+  {
+    "id": "7520216",
+    "name": "Kỹ thuật Điều khiển và Tự động hóa",
+    "code": "7520216",
+    "category": {
+      "id": "engineering",
+      "name": "Kỹ thuật & Công nghệ"
+    },
+    "icon": "precision_manufacturing",
+    "description": "Thiết kế các hệ thống điều khiển tự động cho máy móc và dây chuyền sản xuất.",
+    "skills": ["Điều khiển", "Lập trình", "Điện tử", "Giải quyết vấn đề"],
+    "interests": ["Code & Phần mềm", "Thực hành chế tạo", "Phân tích"],
+    "riasec": ["R", "I"],
+    "admissionCombinations": [
+      { "code": "A00", "subjects": ["Toán", "Lý", "Hóa"] },
+      { "code": "A01", "subjects": ["Toán", "Lý", "Anh"] }
+    ],
+    "universityCount": 38,
+    "careerPaths": ["Automation Engineer", "Control Engineer", "Robotics Engineer"]
+  },
+  {
+    "id": "7520114",
+    "name": "Kỹ thuật Cơ - Điện tử",
+    "code": "7520114",
+    "category": {
+      "id": "engineering",
+      "name": "Kỹ thuật & Công nghệ"
+    },
+    "icon": "settings",
+    "description": "Kết hợp cơ khí, điện tử và điều khiển để phát triển các hệ thống máy móc thông minh.",
+    "skills": ["Cơ khí", "Điện tử", "Điều khiển", "Thiết kế"],
+    "interests": ["Thực hành chế tạo", "Phân tích", "Code & Phần mềm"],
+    "riasec": ["R", "I"],
+    "admissionCombinations": [
+      { "code": "A00", "subjects": ["Toán", "Lý", "Hóa"] },
+      { "code": "A01", "subjects": ["Toán", "Lý", "Anh"] }
+    ],
+    "universityCount": 30,
+    "careerPaths": ["Mechatronics Engineer", "Robotics Engineer", "Automation Engineer"]
+  },
+  {
+    "id": "7520103",
+    "name": "Kỹ thuật Cơ khí",
+    "code": "7520103",
+    "category": {
+      "id": "engineering",
+      "name": "Kỹ thuật & Công nghệ"
+    },
+    "icon": "build",
+    "description": "Thiết kế, chế tạo và vận hành máy móc và hệ thống cơ khí.",
+    "skills": ["Cơ khí", "Thiết kế", "Vật lý", "Thực hành"],
+    "interests": ["Thực hành chế tạo", "Phân tích"],
+    "riasec": ["R", "I"],
+    "admissionCombinations": [
+      { "code": "A00", "subjects": ["Toán", "Lý", "Hóa"] },
+      { "code": "A01", "subjects": ["Toán", "Lý", "Anh"] }
+    ],
+    "universityCount": 50,
+    "careerPaths": ["Mechanical Engineer", "Manufacturing Engineer", "Design Engineer"]
+  },
+  {
+    "id": "7580201",
+    "name": "Kỹ thuật Xây dựng",
+    "code": "7580201",
+    "category": {
+      "id": "engineering",
+      "name": "Kỹ thuật & Công nghệ"
+    },
+    "icon": "construction",
+    "description": "Đào tạo kiến thức về thiết kế, thi công và quản lý các công trình xây dựng.",
+    "skills": ["Toán & Vật lý", "Thiết kế", "Kỹ thuật", "Quản lý"],
+    "interests": ["Thực hành chế tạo", "Phân tích"],
+    "riasec": ["R", "I"],
+    "admissionCombinations": [
+      { "code": "A00", "subjects": ["Toán", "Lý", "Hóa"] },
+      { "code": "A01", "subjects": ["Toán", "Lý", "Anh"] }
+    ],
+    "universityCount": 55,
+    "careerPaths": ["Civil Engineer", "Construction Manager", "Site Engineer"]
+  },
+  {
+    "id": "7520320",
+    "name": "Kỹ thuật Môi trường",
+    "code": "7520320",
+    "category": {
+      "id": "engineering",
+      "name": "Kỹ thuật & Công nghệ"
+    },
+    "icon": "eco",
+    "description": "Ứng dụng khoa học và kỹ thuật để xử lý các vấn đề về môi trường.",
+    "skills": ["Phân tích", "Hóa học", "Kỹ thuật", "Nghiên cứu"],
+    "interests": ["Phân tích", "Thực hành chế tạo"],
+    "riasec": ["I", "R"],
+    "admissionCombinations": [
+      { "code": "A00", "subjects": ["Toán", "Lý", "Hóa"] },
+      { "code": "B00", "subjects": ["Toán", "Hóa", "Sinh"] }
+    ],
+    "universityCount": 30,
+    "careerPaths": ["Environmental Engineer", "Environmental Consultant", "Waste Management Specialist"]
+  },
+  {
+    "id": "7540101",
+    "name": "Công nghệ Thực phẩm",
+    "code": "7540101",
+    "category": {
+      "id": "engineering",
+      "name": "Kỹ thuật & Công nghệ"
+    },
+    "icon": "restaurant",
+    "description": "Nghiên cứu và phát triển quy trình sản xuất, bảo quản và kiểm soát chất lượng thực phẩm.",
+    "skills": ["Hóa học", "Sinh học", "Nghiên cứu", "Kiểm soát chất lượng"],
+    "interests": ["Phân tích", "Thực hành chế tạo"],
+    "riasec": ["I", "R"],
+    "admissionCombinations": [
+      { "code": "A00", "subjects": ["Toán", "Lý", "Hóa"] },
+      { "code": "B00", "subjects": ["Toán", "Hóa", "Sinh"] }
+    ],
+    "universityCount": 40,
+    "careerPaths": ["Food Technologist", "Quality Control Specialist", "R&D Specialist"]
+  },
+  {
+    "id": "7520503",
+    "name": "Kỹ thuật Hóa học",
+    "code": "7520503",
+    "category": {
+      "id": "engineering",
+      "name": "Kỹ thuật & Công nghệ"
+    },
+    "icon": "science",
+    "description": "Ứng dụng hóa học và kỹ thuật để thiết kế và vận hành các quy trình công nghiệp.",
+    "skills": ["Hóa học", "Toán", "Nghiên cứu", "Kỹ thuật"],
+    "interests": ["Phân tích", "Thực hành chế tạo"],
+    "riasec": ["I", "R"],
+    "admissionCombinations": [
+      { "code": "A00", "subjects": ["Toán", "Lý", "Hóa"] },
+      { "code": "B00", "subjects": ["Toán", "Hóa", "Sinh"] },
+      { "code": "D07", "subjects": ["Toán", "Hóa", "Anh"] }
+    ],
+    "universityCount": 25,
+    "careerPaths": ["Chemical Engineer", "Process Engineer", "R&D Engineer"]
+  },
+  {
+    "id": "7520301",
+    "name": "Kỹ thuật Hạt nhân",
+    "code": "7520301",
+    "category": {
+      "id": "engineering",
+      "name": "Kỹ thuật & Công nghệ"
+    },
+    "icon": "science",
+    "description": "Nghiên cứu và ứng dụng năng lượng hạt nhân và kỹ thuật bức xạ.",
+    "skills": ["Vật lý", "Toán", "Nghiên cứu", "Phân tích"],
+    "interests": ["Phân tích", "Thực hành chế tạo"],
+    "riasec": ["I", "R"],
+    "admissionCombinations": [
+      { "code": "A00", "subjects": ["Toán", "Lý", "Hóa"] },
+      { "code": "A01", "subjects": ["Toán", "Lý", "Anh"] }
+    ],
+    "universityCount": 8,
+    "careerPaths": ["Nuclear Engineer", "Radiation Specialist", "Research Engineer"]
+  },
+
+  {
+    "id": "7210403",
+    "name": "Thiết kế Đồ họa",
+    "code": "7210403",
+    "category": {
+      "id": "art-design",
+      "name": "Nghệ thuật & Thiết kế"
+    },
+    "icon": "design_services",
+    "description": "Phát triển năng lực sáng tạo thị giác và thiết kế các sản phẩm truyền thông.",
+    "skills": ["Sáng tạo thị giác", "Tư duy thẩm mỹ", "Thiết kế", "Giao tiếp"],
+    "interests": ["Sáng tạo & Vẽ", "Giao tiếp & Trình bày"],
+    "riasec": ["A", "E"],
+    "admissionCombinations": [
+      { "code": "V00", "subjects": ["Toán", "Lý", "Vẽ"] },
+      { "code": "H00", "subjects": ["Văn", "Vẽ", "Vẽ"] },
+      { "code": "D01", "subjects": ["Toán", "Văn", "Anh"] }
+    ],
+    "universityCount": 32,
+    "careerPaths": ["Graphic Designer", "Art Director", "Visual Designer"]
+  },
+  {
+    "id": "7210404",
+    "name": "Thiết kế Thời trang",
+    "code": "7210404",
+    "category": {
+      "id": "art-design",
+      "name": "Nghệ thuật & Thiết kế"
+    },
+    "icon": "checkroom",
+    "description": "Nghiên cứu và sáng tạo các sản phẩm thời trang dựa trên xu hướng và nhu cầu người dùng.",
+    "skills": ["Sáng tạo", "Mỹ thuật", "Thiết kế", "Thẩm mỹ"],
+    "interests": ["Sáng tạo & Vẽ", "Giao tiếp & Trình bày"],
+    "riasec": ["A", "E"],
+    "admissionCombinations": [
+      { "code": "H00", "subjects": ["Văn", "Vẽ", "Vẽ"] },
+      { "code": "V00", "subjects": ["Toán", "Lý", "Vẽ"] }
+    ],
+    "universityCount": 15,
+    "careerPaths": ["Fashion Designer", "Fashion Stylist", "Product Designer"]
+  },
+  {
+    "id": "7210405",
+    "name": "Thiết kế Nội thất",
+    "code": "7210405",
+    "category": {
+      "id": "art-design",
+      "name": "Nghệ thuật & Thiết kế"
+    },
+    "icon": "chair",
+    "description": "Thiết kế không gian nội thất đáp ứng công năng và yêu cầu thẩm mỹ.",
+    "skills": ["Thiết kế", "Vẽ", "Thẩm mỹ", "Không gian"],
+    "interests": ["Sáng tạo & Vẽ", "Thực hành chế tạo"],
+    "riasec": ["A", "R"],
+    "admissionCombinations": [
+      { "code": "H00", "subjects": ["Văn", "Vẽ", "Vẽ"] },
+      { "code": "V00", "subjects": ["Toán", "Lý", "Vẽ"] }
+    ],
+    "universityCount": 20,
+    "careerPaths": ["Interior Designer", "Space Designer", "Set Designer"]
+  },
+  {
+    "id": "7210402",
+    "name": "Thiết kế Công nghiệp",
+    "code": "7210402",
+    "category": {
+      "id": "art-design",
+      "name": "Nghệ thuật & Thiết kế"
+    },
+    "icon": "category",
+    "description": "Thiết kế sản phẩm kết hợp giữa công năng, công nghệ và thẩm mỹ.",
+    "skills": ["Thiết kế sản phẩm", "Vẽ", "Sáng tạo", "Kỹ thuật"],
+    "interests": ["Sáng tạo & Vẽ", "Thực hành chế tạo"],
+    "riasec": ["A", "R", "I"],
+    "admissionCombinations": [
+      { "code": "H00", "subjects": ["Văn", "Vẽ", "Vẽ"] },
+      { "code": "V00", "subjects": ["Toán", "Lý", "Vẽ"] }
+    ],
+    "universityCount": 15,
+    "careerPaths": ["Industrial Designer", "Product Designer", "Design Researcher"]
+  },
+  {
+    "id": "7210401",
+    "name": "Lý luận, Lịch sử và Phê bình Mỹ thuật",
+    "code": "7210401",
+    "category": {
+      "id": "art-design",
+      "name": "Nghệ thuật & Thiết kế"
+    },
+    "icon": "museum",
+    "description": "Nghiên cứu lịch sử, lý luận và các hoạt động phê bình trong lĩnh vực mỹ thuật.",
+    "skills": ["Nghiên cứu", "Phân tích", "Viết", "Thẩm mỹ"],
+    "interests": ["Phân tích", "Sáng tạo & Vẽ"],
+    "riasec": ["A", "I"],
+    "admissionCombinations": [
+      { "code": "H00", "subjects": ["Văn", "Vẽ", "Vẽ"] },
+      { "code": "D01", "subjects": ["Toán", "Văn", "Anh"] }
+    ],
+    "universityCount": 5,
+    "careerPaths": ["Art Critic", "Art Researcher", "Museum Specialist"]
+  },
+
+  {
+    "id": "7220201",
+    "name": "Ngôn ngữ Anh",
+    "code": "7220201",
+    "category": {
+      "id": "language-humanities",
+      "name": "Ngôn ngữ & Nhân văn"
+    },
+    "icon": "language",
+    "description": "Phát triển năng lực sử dụng tiếng Anh và kiến thức về ngôn ngữ, văn hóa Anh-Mỹ.",
+    "skills": ["Ngoại ngữ", "Giao tiếp", "Viết", "Thuyết trình"],
+    "interests": ["Giao tiếp & Trình bày", "Làm việc với con người"],
+    "riasec": ["S", "E", "A"],
+    "admissionCombinations": [
+      { "code": "D01", "subjects": ["Toán", "Văn", "Anh"] }
+    ],
+    "universityCount": 100,
+    "careerPaths": ["Translator", "English Teacher", "Content Specialist"]
+  },
+  {
+    "id": "7220204",
+    "name": "Ngôn ngữ Trung Quốc",
+    "code": "7220204",
+    "category": {
+      "id": "language-humanities",
+      "name": "Ngôn ngữ & Nhân văn"
+    },
+    "icon": "translate",
+    "description": "Đào tạo năng lực sử dụng tiếng Trung và hiểu biết về văn hóa Trung Quốc.",
+    "skills": ["Ngoại ngữ", "Giao tiếp", "Dịch thuật", "Văn hóa"],
+    "interests": ["Giao tiếp & Trình bày", "Làm việc với con người"],
+    "riasec": ["S", "E"],
+    "admissionCombinations": [
+      { "code": "D01", "subjects": ["Toán", "Văn", "Anh"] }
+    ],
+    "universityCount": 45,
+    "careerPaths": ["Translator", "Chinese Teacher", "International Business Specialist"]
+  },
+  {
+    "id": "7220209",
+    "name": "Ngôn ngữ Nhật",
+    "code": "7220209",
+    "category": {
+      "id": "language-humanities",
+      "name": "Ngôn ngữ & Nhân văn"
+    },
+    "icon": "translate",
+    "description": "Đào tạo năng lực tiếng Nhật và kiến thức về văn hóa, xã hội Nhật Bản.",
+    "skills": ["Ngoại ngữ", "Giao tiếp", "Dịch thuật", "Văn hóa"],
+    "interests": ["Giao tiếp & Trình bày", "Làm việc với con người"],
+    "riasec": ["S", "E"],
+    "admissionCombinations": [
+      { "code": "D01", "subjects": ["Toán", "Văn", "Anh"] }
+    ],
+    "universityCount": 35,
+    "careerPaths": ["Translator", "Japanese Teacher", "Interpreter"]
+  },
+  {
+    "id": "7220210",
+    "name": "Ngôn ngữ Hàn Quốc",
+    "code": "7220210",
+    "category": {
+      "id": "language-humanities",
+      "name": "Ngôn ngữ & Nhân văn"
+    },
+    "icon": "translate",
+    "description": "Đào tạo năng lực tiếng Hàn và kiến thức về văn hóa, xã hội Hàn Quốc.",
+    "skills": ["Ngoại ngữ", "Giao tiếp", "Dịch thuật", "Văn hóa"],
+    "interests": ["Giao tiếp & Trình bày", "Làm việc với con người"],
+    "riasec": ["S", "E"],
+    "admissionCombinations": [
+      { "code": "D01", "subjects": ["Toán", "Văn", "Anh"] }
+    ],
+    "universityCount": 30,
+    "careerPaths": ["Translator", "Korean Teacher", "Interpreter"]
+  },
+  {
+    "id": "7229030",
+    "name": "Văn học",
+    "code": "7229030",
+    "category": {
+      "id": "language-humanities",
+      "name": "Ngôn ngữ & Nhân văn"
+    },
+    "icon": "menu_book",
+    "description": "Nghiên cứu văn học, tác phẩm văn chương và các vấn đề lý luận văn học.",
+    "skills": ["Đọc hiểu", "Viết", "Phân tích", "Sáng tạo"],
+    "interests": ["Phân tích", "Sáng tạo & Vẽ", "Giao tiếp & Trình bày"],
+    "riasec": ["A", "I"],
+    "admissionCombinations": [
+      { "code": "D01", "subjects": ["Toán", "Văn", "Anh"] }
+    ],
+    "universityCount": 15,
+    "careerPaths": ["Writer", "Editor", "Content Specialist"]
+  },
+  {
+    "id": "7310206",
+    "name": "Quan hệ Quốc tế",
+    "code": "7310206",
+    "category": {
+      "id": "language-humanities",
+      "name": "Ngôn ngữ & Nhân văn"
+    },
+    "icon": "public",
+    "description": "Nghiên cứu quan hệ giữa các quốc gia, tổ chức quốc tế và các vấn đề toàn cầu.",
+    "skills": ["Giao tiếp", "Phân tích", "Ngoại ngữ", "Đàm phán"],
+    "interests": ["Giao tiếp & Trình bày", "Làm việc với con người", "Phân tích"],
+    "riasec": ["S", "E", "I"],
+    "admissionCombinations": [
+      { "code": "D01", "subjects": ["Toán", "Văn", "Anh"] }
+    ],
+    "universityCount": 20,
+    "careerPaths": ["Diplomatic Officer", "International Relations Specialist", "Policy Analyst"]
+  },
+  {
+    "id": "7320101",
+    "name": "Báo chí",
+    "code": "7320101",
+    "category": {
+      "id": "language-humanities",
+      "name": "Ngôn ngữ & Nhân văn"
+    },
+    "icon": "newspaper",
+    "description": "Đào tạo kỹ năng thu thập, xử lý và truyền tải thông tin đến công chúng.",
+    "skills": ["Viết", "Phỏng vấn", "Giao tiếp", "Phân tích"],
+    "interests": ["Giao tiếp & Trình bày", "Làm việc với con người", "Sáng tạo & Vẽ"],
+    "riasec": ["A", "S", "E"],
+    "admissionCombinations": [
+      { "code": "D01", "subjects": ["Toán", "Văn", "Anh"] }
+    ],
+    "universityCount": 25,
+    "careerPaths": ["Journalist", "Reporter", "Content Producer"]
+  },
+  {
+    "id": "7320104",
+    "name": "Truyền thông Đa phương tiện",
+    "code": "7320104",
+    "category": {
+      "id": "language-humanities",
+      "name": "Ngôn ngữ & Nhân văn"
+    },
+    "icon": "perm_media",
+    "description": "Kết hợp nội dung, hình ảnh, âm thanh và công nghệ để xây dựng sản phẩm truyền thông.",
+    "skills": ["Sáng tạo", "Truyền thông", "Thiết kế", "Công nghệ"],
+    "interests": ["Sáng tạo & Vẽ", "Giao tiếp & Trình bày", "Code & Phần mềm"],
+    "riasec": ["A", "E", "S"],
+    "admissionCombinations": [
+      { "code": "D01", "subjects": ["Toán", "Văn", "Anh"] },
+      { "code": "H00", "subjects": ["Văn", "Vẽ", "Vẽ"] }
+    ],
+    "universityCount": 35,
+    "careerPaths": ["Content Creator", "Multimedia Designer", "Digital Producer"]
+  },
+  {
+    "id": "7310608",
+    "name": "Đông phương học",
+    "code": "7310608",
+    "category": {
+      "id": "language-humanities",
+      "name": "Ngôn ngữ & Nhân văn"
+    },
+    "icon": "travel_explore",
+    "description": "Nghiên cứu lịch sử, văn hóa, xã hội và con người các quốc gia phương Đông.",
+    "skills": ["Nghiên cứu", "Ngoại ngữ", "Phân tích", "Giao tiếp"],
+    "interests": ["Phân tích", "Giao tiếp & Trình bày", "Làm việc với con người"],
+    "riasec": ["I", "S"],
+    "admissionCombinations": [
+      { "code": "D01", "subjects": ["Toán", "Văn", "Anh"] }
+    ],
+    "universityCount": 15,
+    "careerPaths": ["Researcher", "International Relations Specialist", "Cultural Specialist"]
+  },
+  {
+    "id": "7140201",
+    "name": "Giáo dục Mầm non",
+    "code": "7140201",
+    "category": {
+      "id": "language-humanities",
+      "name": "Ngôn ngữ & Nhân văn"
+    },
+    "icon": "child_care",
+    "description": "Đào tạo giáo viên và chuyên gia giáo dục trẻ em ở độ tuổi mầm non.",
+    "skills": ["Giao tiếp", "Sư phạm", "Sáng tạo", "Tâm lý trẻ em"],
+    "interests": ["Làm việc với con người", "Giao tiếp & Trình bày", "Sáng tạo & Vẽ"],
+    "riasec": ["S", "A"],
+    "admissionCombinations": [
+      { "code": "D01", "subjects": ["Toán", "Văn", "Anh"] }
+    ],
+    "universityCount": 40,
+    "careerPaths": ["Preschool Teacher", "Education Specialist", "Child Development Specialist"]
+  }
+]

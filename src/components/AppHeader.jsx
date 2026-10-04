@@ -2,11 +2,13 @@ import { useState } from 'react'
 import { Link, NavLink } from 'react-router-dom'
 
 const navigation = [
+ 
   { label: 'Khám phá ngành', to: '/majors' },
   { label: 'Khám phá trường', to: '/universities' },
   { label: 'Công cụ tuyển sinh', to: '/admission-roadmap' },
   { label: 'So sánh', to: '/compare' },
-  { label: 'Về UniView', to: '/#ve-uniview' },
+   { label: 'Về UniView', to: '/#ve-uniview' },
+  
 ]
 
 function AppHeader() {

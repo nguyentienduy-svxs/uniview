@@ -1,0 +1,154 @@
+{
+  "categories": [
+    {
+      "id": "computer-it",
+      "label": "Máy tính & CNTT"
+    },
+    {
+      "id": "business",
+      "label": "Kinh doanh & Quản trị"
+    },
+    {
+      "id": "engineering",
+      "label": "Kỹ thuật & Công nghệ"
+    },
+    {
+      "id": "art-design",
+      "label": "Nghệ thuật & Thiết kế"
+    },
+    {
+      "id": "language-humanities",
+      "label": "Ngôn ngữ & Nhân văn"
+    }
+  ],
+
+  "interests": [
+    {
+      "id": "analysis",
+      "label": "Phân tích"
+    },
+    {
+      "id": "creative",
+      "label": "Sáng tạo & Vẽ"
+    },
+    {
+      "id": "communication",
+      "label": "Giao tiếp & Trình bày"
+    },
+    {
+      "id": "coding",
+      "label": "Code & Phần mềm"
+    },
+    {
+      "id": "data",
+      "label": "Xử lý dữ liệu"
+    },
+    {
+      "id": "people",
+      "label": "Làm việc với con người"
+    },
+    {
+      "id": "hands-on",
+      "label": "Thực hành chế tạo"
+    }
+  ],
+
+  "riasec": [
+    {
+      "id": "R",
+      "label": "Realistic",
+      "description": "Thực tế"
+    },
+    {
+      "id": "I",
+      "label": "Investigative",
+      "description": "Nghiên cứu"
+    },
+    {
+      "id": "A",
+      "label": "Artistic",
+      "description": "Nghệ thuật"
+    },
+    {
+      "id": "S",
+      "label": "Social",
+      "description": "Xã hội"
+    },
+    {
+      "id": "E",
+      "label": "Enterprising",
+      "description": "Quản lí"
+    },
+    {
+      "id": "C",
+      "label": "Conventional",
+      "description": "Tổ chức"
+    }
+  ],
+
+  "admissionCombinations": [
+    {
+      "id": "A00",
+      "label": "A00",
+      "subjects": [
+        "Toán",
+        "Lý",
+        "Hóa"
+      ]
+    },
+    {
+      "id": "A01",
+      "label": "A01",
+      "subjects": [
+        "Toán",
+        "Lý",
+        "Anh"
+      ]
+    },
+    {
+      "id": "D01",
+      "label": "D01",
+      "subjects": [
+        "Toán",
+        "Văn",
+        "Anh"
+      ]
+    },
+    {
+      "id": "D07",
+      "label": "D07",
+      "subjects": [
+        "Toán",
+        "Hóa",
+        "Anh"
+      ]
+    },
+    {
+      "id": "B00",
+      "label": "B00",
+      "subjects": [
+        "Toán",
+        "Hóa",
+        "Sinh"
+      ]
+    },
+    {
+      "id": "V00",
+      "label": "V00",
+      "subjects": [
+        "Toán",
+        "Lý",
+        "Vẽ"
+      ]
+    },
+    {
+      "id": "H00",
+      "label": "H00",
+      "subjects": [
+        "Văn",
+        "Vẽ",
+        "Vẽ"
+      ]
+    }
+  ]
+}
