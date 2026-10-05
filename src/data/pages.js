@@ -128,6 +128,14 @@ export const pages = [
     group: 'Báo cáo',
   },
   {
+    id: 'premium-feature-preview',
+    component: 'PremiumFeaturePreviewPage',
+    path: '/feature-preview/:feature',
+    title: 'UniView — Mở khóa tính năng',
+    shortTitle: 'Mở khóa tính năng',
+    group: 'Tài khoản',
+  },
+  {
     id: '588620578a5e4d89965b61a778de61b6',
     component: 'ShortlistPage',
     path: '/shortlist',
@@ -149,6 +157,14 @@ export const pages = [
     path: '/admission-roadmap',
     title: 'UniView — Bản đồ con đường tuyển sinh',
     shortTitle: 'Bản đồ tuyển sinh',
+    group: 'Công cụ',
+  },
+  {
+    id: 'a1b2c3d4e5f6478a9b0c1d2e3f4a5b6c',
+    component: 'AdmissionRouteMappingPage',
+    path: '/admission-route-mapping',
+    title: 'UniView — Admission Route Mapping',
+    shortTitle: 'Route Mapping',
     group: 'Công cụ',
   },
   {
@@ -197,6 +213,14 @@ export const pages = [
     path: '/pricing',
     title: 'Uniview — Bảng giá và mức hỗ trợ',
     shortTitle: 'Bảng giá',
+    group: 'Tài khoản',
+  },
+  {
+    id: 'f9e8d7c6b5a4392817263544bb3ca1d2',
+    component: 'AdmissionPassPage',
+    path: '/admission-pass',
+    title: 'UniView — Personalized Admission Pass',
+    shortTitle: 'Admission Pass',
     group: 'Tài khoản',
   },
   {

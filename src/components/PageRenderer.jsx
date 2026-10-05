@@ -1,5 +1,7 @@
 import { lazy, Suspense, useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { Navigate, useNavigate } from 'react-router-dom'
+import { useAuth } from '../context/AuthContext'
+import { PREMIUM_FEATURE_PATHS } from '../data/premiumFeatures'
 
 const pageModules = import.meta.glob([
   '../pages/*Page.jsx',
@@ -56,6 +58,8 @@ const routeByDataPath = {
   'trang-chu': '/',
   've-uniview': '/#ve-uniview',
   'xac-suat-nguyen-vong': '/admission-checker',
+  'admission-route-mapping': '/admission-route-mapping',
+  'admission-pass': '/admission-pass',
 }
 
 const routeByLabel = [
@@ -106,6 +110,7 @@ function MissingPage({ title }) {
 
 function PageRenderer({ page }) {
   const navigate = useNavigate()
+  const { hasEntitlement } = useAuth()
   const PageComponent = pageComponents[page.component]
 
   useEffect(() => {
@@ -145,6 +150,21 @@ function PageRenderer({ page }) {
   }
 
   if (!PageComponent) return <MissingPage title={page.title} />
+
+  const isLockedPremiumPage =
+    PREMIUM_FEATURE_PATHS.includes(page.path) &&
+    !hasEntitlement('ADMISSION_PASS')
+
+  if (isLockedPremiumPage) {
+    const feature = page.path.slice(1)
+
+    return (
+      <Navigate
+        to={`/feature-preview/${feature}`}
+        replace
+      />
+    )
+  }
 
   return (
     <div className="stitch-page" onClick={handleClick} onSubmit={(event) => event.preventDefault()}>

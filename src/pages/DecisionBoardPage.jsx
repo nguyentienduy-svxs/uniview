@@ -1,5 +1,22 @@
+import { useAuth } from '../context/AuthContext'
+import { ENTITLEMENTS } from '../components/header/headerConfig'
+import DemoDataBadge from '../components/premium/DemoDataBadge'
+import PremiumLockCard from '../components/premium/PremiumLockCard'
+
 function DecisionBoardPage() {
+  const { hasEntitlement } = useAuth()
+  const hasAdmissionPass = hasEntitlement(ENTITLEMENTS.ADMISSION_PASS)
+
+  if (hasAdmissionPass) {
+    return <DecisionBoardUnlocked />
+  }
+
+  return <DecisionBoardPreview />
+}
+
+function DecisionBoardPreview({ unlocked = false }) {
   return (
+<>
 <main className="w-full pt-6 bg-[#f9f9ff] min-h-[calc(100vh-80px)] font-['Be_Vietnam_Pro'] text-[#172033]"><div className="max-w-[1400px] mx-auto px-4 md:px-6 lg:px-8 pb-28 space-y-6 font-['Be_Vietnam_Pro'] text-[#172033]">
 
 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-sm pb-4 border-b border-slate-200/80">
@@ -14,6 +31,7 @@ function DecisionBoardPage() {
 <svg className="w-3.5 h-3.5 text-[#1D4ED8] shrink-0" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2l2.4 7.4h7.6l-6.2 4.5 2.4 7.4-6.2-4.5-6.2 4.5 2.4-7.4-6.2-4.5h7.6z"></path></svg>
 <span>✨ BẢNG LỰA CHỌN CỦA BẠN</span>
 </div>
+{!unlocked && <DemoDataBadge />}
 </div>
 
 <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6 pt-1">
@@ -680,7 +698,14 @@ function DecisionBoardPage() {
 </div>
 </div>
 </div></main>
+    <PremiumLockCard className="mx-4 md:mx-6 lg:mx-8 mb-8" />
+  </>
   )
+}
+
+// Full unlocked board — identical layout but interactive
+function DecisionBoardUnlocked() {
+  return <DecisionBoardPreview unlocked />
 }
 
 export default DecisionBoardPage
