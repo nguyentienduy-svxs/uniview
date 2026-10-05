@@ -1,4 +1,10 @@
+import { Link } from 'react-router-dom'
+import { useAuth } from '../context/AuthContext'
+import { ENTITLEMENTS } from '../components/header/headerConfig'
+
 function AdmissionCheckerPage() {
+  const { hasEntitlement } = useAuth()
+  const hasAdmissionPass = hasEntitlement(ENTITLEMENTS.ADMISSION_PASS)
   return (
 <main className="w-full pt-6 bg-[#f9f9ff] min-h-[calc(100vh-80px)] font-['Be_Vietnam_Pro'] text-[#172033]">
 <div className="max-w-[1280px] mx-auto px-4 md:px-6 lg:px-8 pb-24 space-y-8">
@@ -612,6 +618,31 @@ function AdmissionCheckerPage() {
 </div>
 </div>
 </div>
+      {/* ====================================================
+          SOFT UPSELL — only for non-Admission Pass users
+          Does NOT interrupt the free Admission Checker flow.
+      ==================================================== */}
+      {!hasAdmissionPass && (
+        <div className="max-w-[1280px] mx-auto px-4 md:px-6 lg:px-8 pb-10">
+          <div className="rounded-2xl border border-blue-100 bg-gradient-to-r from-[#EFF6FF] to-white p-5 sm:p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-sm">
+            <div className="space-y-1">
+              <p className="text-sm font-bold text-[#172033]">Muốn xem nhiều con đường tuyển sinh hơn?</p>
+              <p className="text-sm text-[#667085] leading-relaxed">
+                Admission Pass mở khóa Route Mapping và Scenario Comparison dựa trên hồ sơ cá nhân.
+              </p>
+            </div>
+            <Link
+              to="/admission-pass"
+              className="shrink-0 inline-flex items-center gap-2 rounded-xl bg-[#1D4ED8] px-5 py-2.5 text-sm font-bold text-white shadow-sm transition-all hover:-translate-y-0.5 hover:bg-blue-700 hover:shadow-md"
+            >
+              Khám phá Admission Pass
+              <svg className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                <path d="M9 5l7 7-7 7" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+            </Link>
+          </div>
+        </div>
+      )}
 </main>
   )
 }

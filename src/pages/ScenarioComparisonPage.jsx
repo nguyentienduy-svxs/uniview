@@ -1,5 +1,18 @@
+import { useAuth } from '../context/AuthContext'
+import { ENTITLEMENTS } from '../components/header/headerConfig'
+import DemoDataBadge from '../components/premium/DemoDataBadge'
+import PremiumLockCard from '../components/premium/PremiumLockCard'
+
 function ScenarioComparisonPage() {
+  const { hasEntitlement } = useAuth()
+  const hasAdmissionPass = hasEntitlement(ENTITLEMENTS.ADMISSION_PASS)
+
+  return <ScenarioComparisonPreview locked={!hasAdmissionPass} />
+}
+
+function ScenarioComparisonPreview({ locked = true }) {
   return (
+<>
 <main className="w-full pt-6 bg-[#FFFDFB] min-h-[calc(100vh-80px)] pb-16"><div className="flex flex-col w-full font-['Be_Vietnam_Pro'] text-[#172033]">
 <div className="max-w-[1360px] mx-auto w-full px-4 sm:px-6 lg:px-8 space-y-12">
 
@@ -12,6 +25,7 @@ function ScenarioComparisonPage() {
 <span className="w-2 h-2 rounded-full bg-[#1D4ED8] animate-pulse"></span>
             ADMISSION PASS • SCENARIO PLANNING
           </div>
+{locked && <DemoDataBadge className="mt-1" />}
 <h1 className="text-3xl sm:text-4xl lg:text-[42px] font-extrabold text-[#172033] tracking-tight leading-tight">
             Nếu điều kiện thay đổi thì <br className="hidden sm:inline" />
 <span className="text-[#1D4ED8]">lựa chọn sẽ thay đổi ra sao?</span>
@@ -902,6 +916,12 @@ function ScenarioComparisonPage() {
 </section>
 </div>
 </div></main>
+      {locked && (
+        <div className="max-w-[1360px] mx-auto w-full px-4 sm:px-6 lg:px-8 pb-8">
+          <PremiumLockCard />
+        </div>
+      )}
+</>
   )
 }
 
