@@ -21,6 +21,14 @@ const normalizeText = (value) => String(value ?? '')
 const toggleItem = (items, item) =>
   items.includes(item) ? items.filter((value) => value !== item) : [...items, item]
 
+const TUITION_RANGE_VISUALS = {
+  'under-30': { start: 2, end: 20 },
+  'under-40': { start: 2, end: 32 },
+  '30-50': { start: 20, end: 42 },
+  '50-80': { start: 42, end: 67 },
+  'over-100': { start: 84, end: 98 },
+}
+
 function UniversitiesPage() {
   const [searchTerm, setSearchTerm] = useState('')
   const [selectedRegions, setSelectedRegions] = useState([])
@@ -132,7 +140,7 @@ function UniversitiesPage() {
   const visibleUniversities = filteredUniversities.slice(0, visibleCount)
   const hasMore = visibleCount < filteredUniversities.length
   const activeFilterCount = selectedRegions.length
-    + selectedOwnerships.length
+    + Number(selectedOwnerships.length > 0)
     + selectedTuitionBands.length
     + selectedAdmissionMethods.length
     + selectedScoreBands.length
@@ -142,6 +150,17 @@ function UniversitiesPage() {
   const progress = filteredUniversities.length === 0
     ? 0
     : Math.min(100, (visibleUniversities.length / filteredUniversities.length) * 100)
+  const activeTuitionFilterId = affordableOnly
+    ? 'under-40'
+    : selectedTuitionBands[0]
+  const tuitionRangeVisual = activeTuitionFilterId
+    ? TUITION_RANGE_VISUALS[activeTuitionFilterId]
+    : { start: 0, end: 100 }
+  const activeTuitionLabel = affordableOnly
+    ? '≤ 40 triệu/năm'
+    : universitiesData.filters.tuitionBands.find(
+      (band) => band.id === selectedTuitionBands[0],
+    )?.label ?? 'Tất cả mức phí'
 
   const resetVisibleCount = () => setVisibleCount(PAGE_SIZE)
 
@@ -165,12 +184,18 @@ function UniversitiesPage() {
   }
 
   const toggleOwnership = (ownershipId) => {
-    setSelectedOwnerships((current) => toggleItem(current, ownershipId))
+    setSelectedOwnerships((current) =>
+      current.includes(ownershipId) ? [] : [ownershipId],
+    )
+    setInternationalOnly(false)
     resetVisibleCount()
   }
 
   const toggleTuitionBand = (bandId) => {
-    setSelectedTuitionBands((current) => toggleItem(current, bandId))
+    setSelectedTuitionBands((current) =>
+      current.includes(bandId) ? [] : [bandId],
+    )
+    setAffordableOnly(false)
     resetVisibleCount()
   }
 
@@ -180,7 +205,9 @@ function UniversitiesPage() {
   }
 
   const toggleScoreBand = (bandId) => {
-    setSelectedScoreBands((current) => toggleItem(current, bandId))
+    setSelectedScoreBands((current) =>
+      current.includes(bandId) ? [] : [bandId],
+    )
     resetVisibleCount()
   }
 
@@ -275,14 +302,17 @@ function UniversitiesPage() {
                 <QuickFilter active={selectedOwnerships.includes('private') || selectedOwnerships.includes('international')} label="Tư thục & Quốc tế" onClick={() => {
                   setSelectedOwnerships((current) => {
                     const active = current.includes('private') || current.includes('international')
-                    return active
-                      ? current.filter((item) => !['private', 'international'].includes(item))
-                      : [...current.filter((item) => !['private', 'international'].includes(item)), 'private', 'international']
+                    return active ? [] : ['private', 'international']
                   })
+                  setInternationalOnly(false)
                   resetVisibleCount()
                 }} />
                 <QuickFilter active={affordableOnly} label="≤ 40 triệu/năm" onClick={() => {
-                  setAffordableOnly((current) => !current)
+                  setAffordableOnly((current) => {
+                    const nextValue = !current
+                    if (nextValue) setSelectedTuitionBands([])
+                    return nextValue
+                  })
                   resetVisibleCount()
                 }} />
                 <QuickFilter active={technologyOnly} label="CNTT & Phần mềm" onClick={() => {
@@ -334,7 +364,11 @@ function UniversitiesPage() {
                     </div>
                     <label className="flex cursor-pointer items-center gap-2.5 pt-1">
                       <input className="h-4 w-4 rounded accent-primary-container" type="checkbox" checked={internationalOnly} onChange={() => {
-                        setInternationalOnly((current) => !current)
+                        setInternationalOnly((current) => {
+                          const nextValue = !current
+                          if (nextValue) setSelectedOwnerships([])
+                          return nextValue
+                        })
                         resetVisibleCount()
                       }} />
                       <span className="font-body-sm text-body-sm text-on-surface-variant">Trường đại học quốc tế</span>
@@ -345,12 +379,24 @@ function UniversitiesPage() {
                     <div className="flex items-center justify-between gap-3">
                       <span className="font-label-lg text-label-lg font-bold text-on-surface">Học phí / năm</span>
                       <span className="text-right font-label-sm text-label-sm font-bold text-primary">
-                        {selectedTuitionBands.length > 0 ? `${selectedTuitionBands.length} khoảng đã chọn` : 'Tất cả mức phí'}
+                        {activeTuitionLabel}
                       </span>
                     </div>
                     <div className="flex flex-col gap-2">
-                      <div className="relative h-2 w-full overflow-hidden rounded-full bg-surface-container">
-                        <div className="absolute inset-y-0 left-0 w-2/3 rounded-full bg-primary" />
+                      <div className="relative h-2 w-full rounded-full bg-surface-container">
+                        <div
+                          className="absolute inset-y-0 rounded-full bg-primary transition-all duration-300"
+                          style={{
+                            left: `${tuitionRangeVisual.start}%`,
+                            width: `${tuitionRangeVisual.end - tuitionRangeVisual.start}%`,
+                          }}
+                        />
+                        {activeTuitionFilterId && (
+                          <>
+                            <span className="absolute top-1/2 h-3 w-3 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-primary bg-white shadow-sm transition-all duration-300" style={{ left: `${tuitionRangeVisual.start}%` }} />
+                            <span className="absolute top-1/2 h-3 w-3 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-primary bg-white shadow-sm transition-all duration-300" style={{ left: `${tuitionRangeVisual.end}%` }} />
+                          </>
+                        )}
                       </div>
                       <div className="flex items-center justify-between font-label-sm text-label-sm text-outline">
                         <span>15 triệu</span><span>50 triệu</span><span>&gt; 120 triệu</span>
@@ -425,10 +471,17 @@ function UniversitiesPage() {
                       const region = universitiesData.filters.regions.find((item) => item.id === regionId)
                       return <ActiveFilter key={regionId} label={`Khu vực: ${region?.label}`} onRemove={() => toggleRegion(regionId)} />
                     })}
-                    {selectedOwnerships.map((ownershipId) => {
-                      const ownership = universitiesData.filters.ownerships.find((item) => item.id === ownershipId)
-                      return <ActiveFilter key={ownershipId} label={`Hệ: ${ownership?.label}`} onRemove={() => toggleOwnership(ownershipId)} />
-                    })}
+                    {selectedOwnerships.length > 0 && (
+                      <ActiveFilter
+                        label={selectedOwnerships.includes('international')
+                          ? 'Hệ: Tư thục & Quốc tế'
+                          : `Hệ: ${universitiesData.filters.ownerships.find((item) => item.id === selectedOwnerships[0])?.label}`}
+                        onRemove={() => {
+                          setSelectedOwnerships([])
+                          resetVisibleCount()
+                        }}
+                      />
+                    )}
                     {technologyOnly && <ActiveFilter label="Chuyên ngành: Công nghệ thông tin" onRemove={() => { setTechnologyOnly(false); resetVisibleCount() }} />}
                     {internationalOnly && <ActiveFilter label="Mô hình: Quốc tế" onRemove={() => { setInternationalOnly(false); resetVisibleCount() }} />}
                     {affordableOnly && <ActiveFilter label="Học phí tối thiểu: ≤ 40M/năm" onRemove={() => { setAffordableOnly(false); resetVisibleCount() }} />}
@@ -556,10 +609,6 @@ function UniversityCard({
   onToggleSaved,
   onToggleComparison,
 }) {
-  const detailHref = university.id === 'uit-vnuhcm'
-    ? '/universities/uit'
-    : university.website
-
   return (
     <article className="group flex flex-col overflow-hidden rounded-2xl bg-surface-container-lowest shadow-[0_4px_20px_-2px_rgba(23,32,51,0.05)] transition-all duration-300 hover:shadow-[0_16px_36px_-4px_rgba(29,78,216,0.12)]">
       <div className="relative h-48 w-full overflow-hidden bg-surface-container-high">
@@ -623,19 +672,25 @@ function UniversityCard({
         </div>
 
         <div className="flex items-center justify-between gap-2 border-t border-surface-container pt-3">
-          <button className={`inline-flex items-center gap-1.5 rounded-xl px-3 py-1.5 font-label-sm text-label-sm font-bold transition-all ${isCompared ? 'bg-secondary-fixed text-on-secondary-fixed' : 'bg-surface-container text-on-surface hover:bg-secondary-fixed hover:text-on-secondary-fixed'}`} onClick={onToggleComparison} type="button">
-            <span className="material-symbols-outlined text-sm">compare_arrows</span>
-            <span>{isCompared ? 'Đã thêm so sánh' : 'Thêm vào so sánh'}</span>
+          <button
+            className={`inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-xl transition-all ${isCompared ? 'bg-secondary-fixed text-on-secondary-fixed' : 'bg-surface-container text-on-surface hover:bg-secondary-fixed hover:text-on-secondary-fixed'}`}
+            onClick={onToggleComparison}
+            title={isCompared ? 'Bỏ khỏi danh sách so sánh' : 'Thêm vào danh sách so sánh'}
+            aria-label={isCompared ? 'Bỏ khỏi danh sách so sánh' : 'Thêm vào danh sách so sánh'}
+            type="button"
+          >
+            <span className="material-symbols-outlined text-[18px]">compare_arrows</span>
           </button>
-          {detailHref.startsWith('/') ? (
-            <Link className="inline-flex items-center gap-1 rounded-xl bg-primary px-4 py-2 font-label-sm text-label-sm font-semibold text-on-primary transition-all hover:bg-primary-container" to={detailHref}>
-              <span>Xem chi tiết</span><span className="material-symbols-outlined text-sm">arrow_forward</span>
+          <div className="grid min-w-0 flex-1 grid-cols-2 gap-1.5">
+            <Link className="inline-flex min-w-0 items-center justify-center gap-1 whitespace-nowrap rounded-xl bg-primary px-2.5 py-2 font-label-sm text-label-sm font-semibold text-on-primary shadow-xs transition-all hover:bg-primary-container" to={`/universities/uit?universityId=${university.id}`}>
+              <span>Xem chi tiết</span>
+              <span className="material-symbols-outlined text-sm">arrow_forward</span>
             </Link>
-          ) : (
-            <a className="inline-flex items-center gap-1 rounded-xl bg-primary px-4 py-2 font-label-sm text-label-sm font-semibold text-on-primary transition-all hover:bg-primary-container" href={detailHref} target="_blank" rel="noreferrer">
-              <span>Website trường</span><span className="material-symbols-outlined text-sm">open_in_new</span>
+            <a className="inline-flex min-w-0 items-center justify-center gap-1 whitespace-nowrap rounded-xl bg-surface-container-low px-2.5 py-2 font-label-sm text-label-sm font-semibold text-primary transition-all hover:bg-primary-fixed hover:text-on-primary-fixed" href={university.website} target="_blank" rel="noreferrer">
+              <span>Website trường</span>
+              <span className="material-symbols-outlined text-sm">open_in_new</span>
             </a>
-          )}
+          </div>
         </div>
       </div>
     </article>
