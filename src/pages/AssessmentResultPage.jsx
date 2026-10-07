@@ -63,6 +63,10 @@ const majorSuggestions = [
     description:
       'Phân tích yêu cầu, thiết kế kiến trúc và xây dựng các hệ thống phần mềm phục vụ doanh nghiệp và cộng đồng.',
     match: 'Rất cao',
+    fit: 86,
+    confidence: 'Cao',
+    reason: 'Tư duy phân tích, hứng thú công nghệ và xu hướng làm việc theo quy trình cùng xuất hiện rõ.',
+    tradeoff: 'Cần kiên trì với debugging, đọc mã nguồn cũ và cập nhật công nghệ liên tục.',
     tags: ['Tư duy logic', 'Công nghệ', 'Giải quyết vấn đề'],
   },
   {
@@ -71,6 +75,10 @@ const majorSuggestions = [
     description:
       'Tìm quy luật từ dữ liệu, xây dựng mô hình dự báo và hỗ trợ ra quyết định bằng thuật toán.',
     match: 'Rất cao',
+    fit: 82,
+    confidence: 'Khá cao',
+    reason: 'Năng lực tìm quy luật và sự quan tâm đến dữ liệu tạo nền tảng khám phá tốt.',
+    tradeoff: 'Cần kiểm chứng thêm mức hứng thú với xác suất, thống kê và làm sạch dữ liệu.',
     tags: ['Phân tích', 'Dữ liệu', 'Nghiên cứu'],
   },
   {
@@ -79,6 +87,10 @@ const majorSuggestions = [
     description:
       'Kết nối hệ thống dữ liệu với quy trình vận hành và chiến lược của tổ chức.',
     match: 'Cao',
+    fit: 78,
+    confidence: 'Trung bình',
+    reason: 'Điểm giao giữa tư duy hệ thống, quy trình tổ chức và giải pháp phần mềm.',
+    tradeoff: 'Công việc yêu cầu giao tiếp liên phòng ban và phân tích nhu cầu con người.',
     tags: ['Quy trình', 'Kinh doanh', 'Hệ thống'],
   },
   {
@@ -87,6 +99,10 @@ const majorSuggestions = [
     description:
       'Nghiên cứu người dùng và thiết kế sản phẩm số trực quan, hữu ích và dễ tiếp cận.',
     match: 'Khá cao',
+    fit: 69,
+    confidence: 'Cần kiểm chứng',
+    reason: 'Xu hướng sáng tạo có thể phát huy trong một framework sản phẩm rõ ràng.',
+    tradeoff: 'Cần quan sát người dùng thường xuyên và bảo vệ quyết định thiết kế bằng dữ liệu.',
     tags: ['Sáng tạo', 'Người dùng', 'Thiết kế'],
   },
   {
@@ -95,6 +111,10 @@ const majorSuggestions = [
     description:
       'Bảo vệ hệ thống, kiểm thử bảo mật và xử lý rủi ro trong môi trường số.',
     match: 'Cao',
+    fit: 75,
+    confidence: 'Trung bình',
+    reason: 'Tư duy giải quyết vấn đề hệ thống phù hợp với môi trường có quy chuẩn chặt chẽ.',
+    tradeoff: 'Áp lực cập nhật lỗ hổng, xử lý sự cố và trách nhiệm bảo mật khá cao.',
     tags: ['Logic', 'Hệ thống', 'Bảo mật'],
   },
   {
@@ -103,6 +123,10 @@ const majorSuggestions = [
     description:
       'Ứng dụng dữ liệu và công nghệ vào thanh toán, quản trị rủi ro và dịch vụ tài chính.',
     match: 'Khá cao',
+    fit: 73,
+    confidence: 'Trung bình',
+    reason: 'Giao thoa giữa dữ liệu định lượng, bài toán kinh tế và sản phẩm số.',
+    tradeoff: 'Cần bổ sung kiến thức tài chính, pháp lý và khả năng đánh giá rủi ro.',
     tags: ['Dữ liệu', 'Tài chính', 'Sản phẩm'],
   },
 ]
@@ -112,16 +136,25 @@ const universities = [
     shortName: 'UIT',
     name: 'ĐH Công nghệ Thông tin – ĐHQG-HCM',
     note: 'Thế mạnh công nghệ, phần mềm, dữ liệu và an toàn thông tin.',
+    tuition: 'Khoảng 35–55 triệu/năm',
+    admission: 'THPT, ĐGNL ĐHQG-HCM và phương thức kết hợp',
+    fit: 'Rất phù hợp với nhóm ngành ưu tiên',
   },
   {
     shortName: 'HCMUS',
     name: 'ĐH Khoa học Tự nhiên – ĐHQG-HCM',
     note: 'Nền tảng khoa học, toán và nghiên cứu dữ liệu vững chắc.',
+    tuition: 'Khoảng 30–45 triệu/năm',
+    admission: 'THPT, ĐGNL và tuyển thẳng theo đề án',
+    fit: 'Phù hợp nếu ưu tiên nền tảng Toán – Dữ liệu',
   },
   {
     shortName: 'HCMUT',
     name: 'ĐH Bách khoa – ĐHQG-HCM',
     note: 'Môi trường kỹ thuật đa ngành và kết nối doanh nghiệp tốt.',
+    tuition: 'Khoảng 30–60 triệu/năm tùy chương trình',
+    admission: 'THPT, ĐGNL và phương thức tổng hợp',
+    fit: 'Đáng cân nhắc cho môi trường kỹ thuật rộng',
   },
 ]
 
@@ -198,11 +231,62 @@ function AssessmentResultPage() {
       : '—'
 
   const profile = activeAssessment.profile
+  const activeReport = archivedReport ?? assessment.report
+  const reportGeneratedDate = activeReport?.generatedAt
+    ? new Date(activeReport.generatedAt).toLocaleDateString('vi-VN')
+    : 'Chưa ghi nhận'
+  const reportCode = activeReport?.id
+    ? String(activeReport.id).toUpperCase().replace('UV-LOCAL-', 'UV-DS-')
+    : `UV-DS-${String(riasecAnswered * 103 + personalityAnswered * 17 + 2026).padStart(5, '0')}`
+
+  const axisPercent = (axis, code) =>
+    personalityResult.axes[axis]?.percentages?.[code] ?? 0
+
+  const workStyleMetrics = [
+    {
+      label: 'Phân tích',
+      value: Math.round((axisPercent('TF', 'T') + axisPercent('EI', 'I')) / 2),
+      note: 'Ưu tiên dữ liệu và suy luận trước khi hành động',
+    },
+    {
+      label: 'Có cấu trúc',
+      value: Math.round((axisPercent('JP', 'J') + (riasecResult.scores.C ?? 0)) / 2),
+      note: 'Phát huy tốt khi có lộ trình và đầu ra rõ ràng',
+    },
+    {
+      label: 'Làm việc độc lập',
+      value: Math.round(axisPercent('EI', 'I')),
+      note: 'Thoải mái với các khoảng tập trung sâu riêng',
+    },
+    {
+      label: 'Tư duy trừu tượng',
+      value: Math.round(axisPercent('SN', 'N')),
+      note: 'Quan tâm mô hình, ý tưởng và khả năng trong tương lai',
+    },
+  ]
+
+  const evidenceBreakdown = [
+    ['Sở thích', Math.round(riasecResult.ranking[0]?.score ?? 0)],
+    ['Học tập', profile.gpa ? Math.min(100, Math.round(Number(profile.gpa) * 10)) : 50],
+    ['Hoạt động', Math.min(100, 40 + activeAssessment.experience.selectedDomains.length * 12)],
+    ['Phong cách', Math.max(...workStyleMetrics.map(({ value }) => value), 0)],
+    ['Điều kiện', profile.regions.length && profile.tuition ? 80 : 55],
+  ]
 
   const selectedActivities =
     activeAssessment.experience.selectedDomains.map(
       (id) => activityLabels[id],
     )
+  const certificateEvidence = (profile.certificates ?? []).map(
+    ({ name, score, status }) =>
+      `${name} ${score} · ${status === 'OFFICIAL' ? 'Chính thức' : 'Dự kiến'}`,
+  )
+  const academicEvidence = [
+    ...profile.strengths,
+    profile.gpa && `GPA ${profile.gpa} · ${profile.gpaStatus === 'OFFICIAL' ? 'Chính thức' : 'Dự kiến'}`,
+    profile.thptScore && `THPT ${profile.thptScore}/30 · ${profile.thptScoreStatus === 'OFFICIAL' ? 'Chính thức' : 'Dự kiến'}`,
+    profile.dgnlScore && `ĐGNL ${profile.dgnlScore}/1200 · ${profile.dgnlScoreStatus === 'OFFICIAL' ? 'Chính thức' : 'Dự kiến'}`,
+  ].filter(Boolean)
 
   const selectedMajorData =
     majorSuggestions[selectedMajor]
@@ -237,50 +321,55 @@ function AssessmentResultPage() {
 
   return (
     <main className="min-h-screen bg-surface pb-space-2xl">
-      <section className="border-b border-surface-container-high bg-gradient-to-br from-surface-container-low via-surface to-primary-fixed/35">
-        <div className="mx-auto flex max-w-[1280px] flex-col justify-between gap-space-lg px-margin py-space-xl md:px-margin-md lg:flex-row lg:items-end lg:px-gutter-lg">
-          <div className="max-w-3xl">
-            <span className="inline-flex items-center gap-space-xs rounded-full border border-emerald-200 bg-emerald-50 px-space-md py-1 font-label-sm text-label-sm font-bold uppercase tracking-wider text-emerald-800">
-              <span className="material-symbols-outlined text-sm">
-                verified
-              </span>
-              Hoàn thành assessment 4 bước
+      <section className="border-b border-surface-container-high bg-gradient-to-br from-surface-container-low via-white to-primary-fixed/35">
+        <div className="mx-auto max-w-[1180px] space-y-space-md px-margin py-space-xl md:px-margin-md lg:px-gutter-lg">
+          <div className="flex flex-wrap items-center gap-space-sm">
+            <span className="inline-flex items-center gap-2 rounded-full bg-tile-rose px-space-md py-1 text-xs font-bold uppercase tracking-wider text-secondary">
+              <span className="h-1.5 w-1.5 rounded-full bg-secondary-container" />
+              Direction Snapshot · Gói 59K
             </span>
-
-            <h1 className="mt-space-md font-headline-lg text-headline-lg-mobile font-extrabold tracking-tight text-on-surface sm:text-headline-lg">
-              Bản đồ định hướng của{' '}
-              {user?.fullName ?? 'bạn'}
-            </h1>
-
-            <p className="mt-space-sm font-body-lg text-body-lg leading-relaxed text-on-surface-variant">
-              UniView đã đối chiếu sở thích RIASEC,
-              phong cách tư duy, trải nghiệm thực tế và
-              điều kiện học tập để tạo bản tổng hợp dưới
-              đây.
-            </p>
-
-            <div className="mt-space-md flex flex-wrap items-center gap-space-md text-xs font-medium text-on-surface-variant">
-              <span>
-                Mã báo cáo: UV-
-                {String(
-                  riasecAnswered * 103 +
-                    personalityAnswered * 17 +
-                    2026,
-                ).padStart(5, '0')}
-              </span>
-              <span>•</span>
-              <span className="font-semibold text-emerald-700">
-                Độ tin cậy: {confidence}%
-              </span>
-              <span>•</span>
-              <span>
-                Hồ sơ nhập học{' '}
-                {profile.admissionYear}
-              </span>
-            </div>
+            <span className="inline-flex items-center gap-1 rounded-md bg-surface-container px-space-sm py-1 text-xs font-semibold text-on-surface-variant">
+              <span className="material-symbols-outlined text-sm text-primary">verified</span>
+              Bản chính thức
+            </span>
           </div>
 
-          <div className="flex flex-wrap gap-space-sm">
+          <div className="max-w-4xl">
+            <h1 className="font-headline-lg text-headline-lg-mobile font-extrabold tracking-tight text-on-surface sm:text-headline-lg">
+              Báo cáo định hướng cá nhân của {user?.fullName ?? 'bạn'}
+            </h1>
+            <p className="mt-space-sm font-body-lg text-body-lg leading-relaxed text-on-surface-variant">
+              Báo cáo tổng hợp assessment, hồ sơ học tập, trải nghiệm và điều kiện thực tế để xây dựng danh sách ngành đáng khám phá — không đưa ra một kết luận nghề nghiệp duy nhất.
+            </p>
+          </div>
+
+          <div className="flex items-start gap-space-sm rounded-xl bg-surface-container-low p-space-md text-sm text-on-surface-variant">
+            <span className="material-symbols-outlined mt-0.5 text-xl text-primary">info</span>
+            <p>
+              <strong className="text-primary">Ảnh chụp hồ sơ tại một thời điểm:</strong>{' '}
+              báo cáo được tạo ngày {reportGeneratedDate}. Thay đổi hồ sơ sau ngày này không tự động sửa bản báo cáo đã lưu.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-2 gap-space-sm rounded-xl bg-white p-space-md shadow-sm sm:grid-cols-4">
+            {[
+              ['Học sinh', user?.fullName ?? 'Chí Duy'],
+              ['Mã báo cáo', reportCode],
+              ['Phiên bản', '1.0 · Tiêu chuẩn'],
+              ['Độ đầy đủ dữ liệu', `${confidence}%`],
+            ].map(([label, value]) => (
+              <div key={label}>
+                <span className="block text-[11px] font-bold uppercase tracking-wider text-on-surface-variant">{label}</span>
+                <span className="mt-1 block text-sm font-bold text-on-surface">{value}</span>
+              </div>
+            ))}
+          </div>
+
+          <div className="flex flex-wrap gap-space-sm pt-space-xs">
+            <a href="#danh-sach-nganh" className="inline-flex items-center gap-2 rounded-full bg-primary-container px-space-lg py-2.5 font-semibold text-on-primary shadow-sm hover:bg-primary">
+              Khám phá các ngành
+              <span className="material-symbols-outlined text-lg">arrow_downward</span>
+            </a>
             <button
               type="button"
               onClick={() => window.print()}
@@ -289,7 +378,7 @@ function AssessmentResultPage() {
               <span className="material-symbols-outlined text-lg">
                 print
               </span>
-              In báo cáo
+              Tải/In báo cáo PDF
             </button>
 
             <Link
@@ -311,9 +400,10 @@ function AssessmentResultPage() {
             ['tong-quan', '1. Tổng quan'],
             ['ho-so-mot-trang', '2. Hồ sơ'],
             ['doi-chieu-du-lieu', '3. Đối chiếu'],
-            ['danh-sach-nganh', '4. Ngành phù hợp'],
-            ['truong-tham-khao', '5. Trường'],
-            ['buoc-tiep-theo', '6. Bước tiếp theo'],
+            ['danh-sach-nganh', '4. 6 ngành khám phá'],
+            ['phan-tich-chuyen-sau', '5. Phân tích chi tiết'],
+            ['truong-tham-khao', '6. Trường tham khảo'],
+            ['buoc-tiep-theo', '7. Bước kế tiếp'],
           ].map(([id, label], index) => (
             <a
               key={id}
@@ -357,7 +447,7 @@ function AssessmentResultPage() {
           description="Những tín hiệu nổi bật nhất từ bài đánh giá."
         >
           <div className="grid grid-cols-1 gap-space-md lg:grid-cols-12">
-            <article className="rounded-2xl border border-surface-container-high bg-white p-space-lg shadow-sm lg:col-span-7">
+            <article className="rounded-3xl border border-surface-container-high bg-white p-space-lg shadow-sm lg:col-span-5">
               <div className="flex flex-wrap items-center justify-between gap-space-xs">
                 <h3 className="font-headline-sm text-headline-sm font-bold text-on-surface">
                   Xu hướng nghề nghiệp RIASEC
@@ -370,9 +460,7 @@ function AssessmentResultPage() {
               <div className="mt-space-md flex flex-col gap-space-sm">
                 {riasecResult.ranking.map(
                   ({ code, score }) => {
-                    const percent = Math.round(
-                      (score / 25) * 100,
-                    )
+                    const percent = Math.round(score)
                     const meta = riasecMeta[code]
 
                     return (
@@ -401,63 +489,42 @@ function AssessmentResultPage() {
               </div>
             </article>
 
-            <article className="rounded-2xl border border-surface-container-high bg-white p-space-lg shadow-sm lg:col-span-5">
+            <article className="rounded-3xl border border-surface-container-high bg-white p-space-lg shadow-sm lg:col-span-4">
               <span className="text-xs font-bold uppercase tracking-wider text-on-surface-variant">
                 Phong cách tư duy & làm việc
               </span>
-              <div className="mt-space-sm flex items-center gap-space-md">
-                <div className="flex h-20 w-20 shrink-0 items-center justify-center rounded-2xl bg-primary-container font-headline-md text-headline-md font-extrabold text-white shadow-md">
-                  {personalityType}
-                </div>
-                <div>
-                  <h3 className="font-headline-sm text-headline-sm font-bold text-on-surface">
-                    Hồ sơ phong cách tham khảo
-                  </h3>
-                  <p className="mt-1 text-sm leading-relaxed text-on-surface-variant">
-                    Kết quả mô tả xu hướng phản ứng,
-                    không phải nhãn tính cách cố định.
-                  </p>
-                </div>
-              </div>
-
-              <div className="mt-space-md grid grid-cols-2 gap-space-xs">
-                {Object.entries(
-                  personalityResult.scores,
-                ).map(([code, score]) => (
-                  <div
-                    key={code}
-                    className="flex items-center justify-between rounded-lg bg-surface-container-low px-space-sm py-space-xs text-xs"
-                  >
-                    <span className="font-bold text-primary">
-                      {code}
-                    </span>
-                    <span className="text-on-surface-variant">
-                      {score} tín hiệu
-                    </span>
+              <div className="mt-space-md space-y-space-sm">
+                {workStyleMetrics.map(({ label, value, note }) => (
+                  <div key={label}>
+                    <div className="flex items-center justify-between text-xs">
+                      <span className="font-semibold text-on-surface">{label}</span>
+                      <strong className="text-primary">{value}/100</strong>
+                    </div>
+                    <div className="mt-1 h-2 overflow-hidden rounded-full bg-surface-container-high">
+                      <div className="h-full rounded-full bg-primary-container" style={{ width: `${value}%` }} />
+                    </div>
+                    <p className="mt-1 text-[11px] text-on-surface-variant">{note}</p>
                   </div>
                 ))}
               </div>
+              <p className="mt-space-md rounded-xl bg-tile-amber p-space-sm text-xs italic text-on-tertiary-fixed-variant">
+                Các trục mô tả xu hướng hiện tại, không phải nhãn tính cách cố định. Mã tham khảo: {personalityType}.
+              </p>
+            </article>
+
+            <article className="flex flex-col rounded-3xl border border-surface-container-high bg-white p-space-lg shadow-sm lg:col-span-3">
+              <h3 className="font-headline-sm text-headline-sm font-bold text-on-surface">Độ tin cậy kết quả</h3>
+              <div className="mx-auto my-space-md flex h-28 w-28 items-center justify-center rounded-full border-[10px] border-primary-fixed bg-white shadow-inner">
+                <span className="text-2xl font-extrabold text-primary">{confidence}%</span>
+              </div>
+              <span className="text-center text-sm font-bold text-primary">{confidence >= 80 ? 'Tin cậy cao' : confidence >= 60 ? 'Khá tin cậy' : 'Cần bổ sung dữ liệu'}</span>
+              <div className="mt-space-md space-y-2 text-xs text-on-surface-variant">
+                <p>✓ Hoàn thành {completion}/{totalQuestions} câu hỏi cốt lõi.</p>
+                <p>✓ Có {selectedActivities.length} nhóm trải nghiệm đối chiếu.</p>
+                <p>○ Kết quả vẫn cần được kiểm chứng bằng trải nghiệm thật.</p>
+              </div>
             </article>
           </div>
-
-          <article className="rounded-2xl bg-primary-fixed/35 p-space-lg">
-            <div className="flex flex-col gap-space-md sm:flex-row sm:items-center">
-              <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-full bg-white font-headline-sm text-headline-sm font-bold text-primary shadow-sm">
-                {confidence}%
-              </div>
-              <div>
-                <h3 className="font-headline-sm text-headline-sm font-bold text-on-surface">
-                  Độ tin cậy kết quả
-                </h3>
-                <p className="mt-1 font-body-sm text-body-sm leading-relaxed text-on-surface-variant">
-                  Chỉ số này dựa trên mức độ hoàn thành
-                  câu hỏi và số bằng chứng trải nghiệm đã
-                  cung cấp. Đây là công cụ định hướng,
-                  không phải kết luận năng lực.
-                </p>
-              </div>
-            </div>
-          </article>
         </ReportSection>
 
         <ReportSection
@@ -466,7 +533,7 @@ function AssessmentResultPage() {
           title="Hồ sơ của bạn trong một trang"
           description="Tóm tắt các tín hiệu, bằng chứng và ràng buộc quan trọng."
         >
-          <div className="grid grid-cols-1 gap-space-md md:grid-cols-2 lg:grid-cols-4">
+          <div className="grid grid-cols-1 gap-space-md md:grid-cols-2">
             <SummaryCard
               icon="signal_cellular_alt"
               title="Tín hiệu mạnh nhất"
@@ -479,8 +546,8 @@ function AssessmentResultPage() {
               icon="workspace_premium"
               title="Bằng chứng đang có"
               items={
-                selectedActivities.length
-                  ? selectedActivities
+                selectedActivities.length || certificateEvidence.length
+                  ? [...selectedActivities, ...certificateEvidence]
                   : [
                       activeAssessment.experience
                         .noExperience
@@ -493,8 +560,8 @@ function AssessmentResultPage() {
               icon="school"
               title="Điểm mạnh học tập"
               items={
-                profile.strengths.length
-                  ? profile.strengths
+                academicEvidence.length
+                  ? academicEvidence
                   : ['Chưa cập nhật']
               }
             />
@@ -618,11 +685,22 @@ function AssessmentResultPage() {
                         {major.group}
                       </span>
                     </div>
+                    <div className="mt-space-sm flex items-center justify-between gap-2">
+                      <span className="text-xs font-semibold text-on-surface-variant">Điểm tương thích</span>
+                      <span className="rounded-full bg-blue-50 px-2.5 py-1 text-xs font-bold text-primary">{major.fit}/100 · {major.confidence}</span>
+                    </div>
                     <h3 className="mt-space-sm font-headline-sm text-headline-sm font-bold text-on-surface">
                       {major.title}
                     </h3>
                     <p className="mt-space-xs text-sm leading-relaxed text-on-surface-variant">
                       {major.description}
+                    </p>
+                    <p className="mt-space-sm text-xs leading-relaxed text-on-surface">
+                      <strong>Lý do xuất hiện:</strong> {major.reason}
+                    </p>
+                    <p className="mt-space-xs flex items-start gap-1.5 text-xs leading-relaxed text-secondary">
+                      <span className="material-symbols-outlined mt-0.5 text-sm">balance</span>
+                      <span><strong>Trade-off:</strong> {major.tradeoff}</span>
                     </p>
                   </div>
 
@@ -648,7 +726,7 @@ function AssessmentResultPage() {
             <div className="flex flex-col justify-between gap-space-md lg:flex-row lg:items-start">
               <div className="max-w-3xl">
                 <span className="text-xs font-bold uppercase tracking-wider text-primary">
-                  Phân tích ngành đang chọn
+                  Phân hệ 05 · Phân tích ngành đang chọn
                 </span>
                 <h3 className="mt-1 font-headline-lg text-headline-lg-mobile font-extrabold text-on-surface sm:text-headline-lg">
                   {selectedMajorData.title}
@@ -658,14 +736,14 @@ function AssessmentResultPage() {
                 </p>
               </div>
               <span className="self-start rounded-full bg-white px-space-md py-1.5 text-xs font-bold text-primary shadow-sm">
-                Độ phù hợp: {selectedMajorData.match}
+                {selectedMajorData.fit}/100 · {selectedMajorData.match}
               </span>
             </div>
 
             <div className="mt-space-lg grid grid-cols-1 gap-space-md md:grid-cols-3">
               <InsightBox
                 title="Vì sao xuất hiện?"
-                text="Các tín hiệu sở thích và phong cách tư duy có điểm giao với yêu cầu cốt lõi của ngành."
+                text={selectedMajorData.reason}
               />
               <InsightBox
                 title="Cần kiểm chứng gì?"
@@ -673,15 +751,66 @@ function AssessmentResultPage() {
               />
               <InsightBox
                 title="Trade-off cần biết"
-                text="Ngành phù hợp vẫn có thể đòi hỏi áp lực cập nhật kiến thức, deadline và làm việc nhóm."
+                text={selectedMajorData.tradeoff}
               />
+            </div>
+
+            <div className="mt-space-lg rounded-2xl bg-white/85 p-space-lg shadow-sm">
+              <div className="flex flex-wrap items-center justify-between gap-2">
+                <h4 className="font-headline-sm text-headline-sm font-bold text-on-surface">Bóc tách mức độ tương thích</h4>
+                <span className="text-xs font-semibold text-on-surface-variant">Evidence breakdown · thang 0–100</span>
+              </div>
+              <div className="mt-space-md grid gap-space-md sm:grid-cols-2 lg:grid-cols-5">
+                {evidenceBreakdown.map(([label, value]) => (
+                  <div key={label}>
+                    <div className="flex justify-between text-xs">
+                      <span className="text-on-surface-variant">{label}</span>
+                      <strong className="text-primary">{value}%</strong>
+                    </div>
+                    <div className="mt-1.5 h-2 overflow-hidden rounded-full bg-surface-container-high">
+                      <div className="h-full rounded-full bg-primary-container" style={{ width: `${value}%` }} />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="mt-space-md flex items-start gap-space-md rounded-2xl bg-tile-amber p-space-lg">
+              <span className="material-symbols-outlined text-2xl text-tertiary">lightbulb</span>
+              <div>
+                <h4 className="font-bold uppercase tracking-wider text-tertiary">Reality check trước khi chọn</h4>
+                <p className="mt-1 text-sm leading-relaxed text-on-tertiary-fixed-variant">
+                  Điểm phù hợp cao không có nghĩa công việc hàng ngày luôn thú vị. Với {selectedMajorData.title}, bạn cần thử một nhiệm vụ thật đủ lâu để quan sát khả năng duy trì tập trung, xử lý phần việc lặp lại và phản ứng khi kết quả chưa đến ngay.
+                </p>
+              </div>
+            </div>
+
+            <div className="mt-space-md grid gap-space-md md:grid-cols-2">
+              <div className="rounded-2xl bg-white/80 p-space-md">
+                <span className="text-xs font-bold uppercase tracking-wider text-on-surface-variant">Bằng chứng hiện còn thiếu</span>
+                <p className="mt-2 text-sm leading-relaxed text-on-surface-variant">
+                  Chưa có trải nghiệm dài hạn đủ để xác nhận bạn vẫn hứng thú khi phải xử lý một vấn đề khó trong nhiều ngày hoặc duy trì một sản phẩm qua nhiều vòng chỉnh sửa.
+                </p>
+              </div>
+              <div className="rounded-2xl bg-white/80 p-space-md">
+                <span className="text-xs font-bold uppercase tracking-wider text-on-surface-variant">Điều gì có thể làm thứ hạng thay đổi?</span>
+                <p className="mt-2 text-sm leading-relaxed text-on-surface-variant">
+                  Một dự án thực tế, kết quả môn nền tảng hoặc phản hồi từ người đang học/người đang làm nghề có thể làm ngành này tăng hoặc giảm thứ hạng so với các lựa chọn còn lại.
+                </p>
+              </div>
+            </div>
+
+            <div className="mt-space-md grid gap-space-sm md:grid-cols-3">
+              <ActionCard number="01" title="Xem khung đào tạo" text={`Đọc chương trình 4 năm của ${selectedMajorData.title} tại ít nhất 2 trường.`} />
+              <ActionCard number="02" title="Thử một nhiệm vụ thật" text="Làm một dự án nhỏ trong 3–7 ngày và ghi lại phần bạn thích, phần khiến bạn mất năng lượng." />
+              <ActionCard number="03" title="Trò chuyện thực tế" text="Hỏi một sinh viên năm 3 hoặc người đang làm nghề về công việc hàng ngày và áp lực thật." />
             </div>
           </article>
         </ReportSection>
 
         <ReportSection
           id="truong-tham-khao"
-          eyebrow="Phần 5"
+          eyebrow="Phần 6"
           title="Một số trường đáng để tìm hiểu"
           description="Shortlist sơ bộ theo nhóm ngành và khu vực trong hồ sơ."
         >
@@ -701,6 +830,20 @@ function AssessmentResultPage() {
                   <p className="mt-space-xs text-sm leading-relaxed text-on-surface-variant">
                     {university.note}
                   </p>
+                  <dl className="mt-space-md space-y-2 rounded-xl bg-surface-container-low p-space-sm text-xs">
+                    <div>
+                      <dt className="font-bold text-on-surface-variant">Học phí tham khảo</dt>
+                      <dd className="mt-0.5 font-semibold text-on-surface">{university.tuition}</dd>
+                    </div>
+                    <div>
+                      <dt className="font-bold text-on-surface-variant">Phương thức cần theo dõi</dt>
+                      <dd className="mt-0.5 text-on-surface">{university.admission}</dd>
+                    </div>
+                    <div>
+                      <dt className="font-bold text-on-surface-variant">Lý do vào shortlist</dt>
+                      <dd className="mt-0.5 font-semibold text-primary">{university.fit}</dd>
+                    </div>
+                  </dl>
                 </div>
                 <Link
                   to="/universities"
@@ -715,7 +858,7 @@ function AssessmentResultPage() {
 
         <ReportSection
           id="buoc-tiep-theo"
-          eyebrow="Phần 6"
+          eyebrow="Phần 7"
           title="Bước tiếp theo dành cho bạn"
           description="Biến báo cáo thành những hành động nhỏ có thể kiểm chứng."
         >
