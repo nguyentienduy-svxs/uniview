@@ -1,4 +1,9 @@
+import { Link } from 'react-router-dom';
+
+import { useAuth } from '../context/AuthContext';
+
 function ProfilePage() {
+  const { user, reportHistory, resetDemoAccount } = useAuth();
   return (
 <main className="w-full pt-6 bg-[#FFFDFB] min-h-[calc(100vh-80px)] pb-24"><div className="flex flex-col w-full">
 <div className="w-full max-w-[1260px] mx-auto px-4 md:px-6 lg:px-8 py-4 font-['Be_Vietnam_Pro'] antialiased">
@@ -67,11 +72,11 @@ function ProfilePage() {
 <div className="flex items-center justify-between pb-4 border-b border-slate-100">
 <div className="flex items-center gap-2">
 <span className="w-8 h-8 rounded-full bg-[#1D4ED8] text-white flex items-center justify-center text-xs font-bold">
-                  NA
+                  {user?.initials ?? 'CD'}
                 </span>
 <div>
-<h3 className="text-sm font-bold text-[#172033]">Nguyễn Minh Anh</h3>
-<p className="text-[11px] text-[#667085]">Lớp 12 · THPT Chuyên Lê Hồng Phong</p>
+<h3 className="text-sm font-bold text-[#172033]">{user?.fullName ?? 'Chí Duy'}</h3>
+<p className="text-[11px] text-[#667085]">{user?.grade ?? 'Lớp 12'} · {user?.school ?? 'Chưa cập nhật trường'}</p>
 </div>
 </div>
 <span className="text-[11px] font-semibold bg-[#FFF1F2] text-[#FB7185] px-2 py-0.5 rounded-full border border-rose-200">K2026</span>
@@ -111,6 +116,44 @@ function ProfilePage() {
 </div>
 </div>
 </div>
+</section>
+
+<section className="mb-8 rounded-[24px] border border-blue-200 bg-white p-5 shadow-sm sm:p-6">
+<div className="flex flex-col justify-between gap-3 sm:flex-row sm:items-center">
+<div>
+<span className="text-[11px] font-extrabold uppercase tracking-widest text-[#1D4ED8]">Lịch sử báo cáo</span>
+<h2 className="mt-1 text-xl font-extrabold text-[#172033]">Báo cáo định hướng đã mở khóa</h2>
+<p className="mt-1 text-sm text-[#667085]">Báo cáo đã mua được lưu trong tài khoản để Chí Duy và phụ huynh xem lại.</p>
+</div>
+<div className="flex flex-wrap items-center gap-2">
+<span className="w-fit rounded-full bg-slate-100 px-3 py-1 text-xs font-bold text-slate-600">{reportHistory.length} báo cáo</span>
+<button className="rounded-full border border-amber-300 bg-amber-50 px-4 py-2 text-xs font-bold text-amber-800 hover:bg-amber-100" onClick={resetDemoAccount} type="button">Reset demo về gói Free</button>
+</div>
+</div>
+
+{reportHistory.length ? (
+<div className="mt-5 space-y-3">
+{reportHistory.map((entry) => (
+<article className="flex flex-col justify-between gap-4 rounded-2xl border border-slate-200 bg-slate-50 p-4 sm:flex-row sm:items-center" key={entry.id}>
+<div className="flex items-start gap-3">
+<span className="material-symbols-outlined rounded-xl bg-blue-100 p-2 text-[#1D4ED8]">description</span>
+<div>
+<h3 className="font-bold text-[#172033]">{entry.title}</h3>
+<p className="mt-1 text-xs text-[#667085]">Mở khóa lúc {new Date(entry.unlockedAt).toLocaleString('vi-VN')} · Truy cập vĩnh viễn</p>
+</div>
+</div>
+<div className="flex flex-wrap gap-2">
+<Link className="rounded-full bg-[#1D4ED8] px-4 py-2 text-xs font-bold text-white hover:bg-blue-700" to={`/assessment/result?report=${entry.id}`}>Xem báo cáo</Link>
+<button className="cursor-not-allowed rounded-full border border-slate-300 bg-white px-4 py-2 text-xs font-bold text-slate-400" disabled title="Đang chờ sườn PDF từ đội sản phẩm" type="button">PDF cho phụ huynh · Chờ mẫu</button>
+</div>
+</article>
+))}
+</div>
+) : (
+<div className="mt-5 rounded-2xl border border-dashed border-slate-300 bg-slate-50 p-5 text-sm text-slate-600">
+Chưa có báo cáo đã mở khóa. Sau khi xác nhận thanh toán demo 59.000đ, báo cáo sẽ tự xuất hiện tại đây.
+</div>
+)}
 </section>
 
 <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
@@ -266,7 +309,7 @@ function ProfilePage() {
 
 <div>
 <span className="text-xs text-[#667085] font-medium block">Họ và tên</span>
-<span className="text-sm sm:text-base font-bold text-[#172033] mt-0.5 block">Nguyễn Minh Anh</span>
+<span className="text-sm sm:text-base font-bold text-[#172033] mt-0.5 block">{user?.fullName ?? 'Chí Duy'}</span>
 </div>
 
 <div>
@@ -281,7 +324,7 @@ function ProfilePage() {
 
 <div>
 <span className="text-xs text-[#667085] font-medium block">Trường THPT hiện tại</span>
-<span className="text-sm sm:text-base font-bold text-[#172033] mt-0.5 block">THPT Chuyên Lê Hồng Phong</span>
+<span className="text-sm sm:text-base font-bold text-[#172033] mt-0.5 block">{user?.school ?? 'Chưa cập nhật trường'}</span>
 </div>
 </div>
 
@@ -735,3 +778,4 @@ function ProfilePage() {
 }
 
 export default ProfilePage
+

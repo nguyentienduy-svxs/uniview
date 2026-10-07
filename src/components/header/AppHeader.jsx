@@ -96,6 +96,7 @@ export default function AppHeader() {
     isAuthenticated,
     hasEntitlement,
     logout,
+    resetDemoAccount,
   } = useAuth()
 
   const isLoggedIn =
@@ -329,7 +330,7 @@ export default function AppHeader() {
               </NavLink>
 
               <NavLink
-                to="/assessment-preview"
+                to="/assessment"
                 className="
                   group
 
@@ -467,6 +468,7 @@ export default function AppHeader() {
                   setUserOpen(false)
                 }
                 onLogout={logout}
+                onResetDemo={resetDemoAccount}
               />
             </>
           )}
@@ -712,7 +714,7 @@ function MobileNavigation({
             </NavLink>
 
             <NavLink
-              to="/assessment-preview"
+              to="/assessment"
               className="
                 rounded-xl
 

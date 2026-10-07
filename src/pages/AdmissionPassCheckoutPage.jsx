@@ -61,7 +61,7 @@ function AdmissionPassCheckoutPage() {
 <div className="p-3.5 rounded-xl bg-sage-subtle flex items-start gap-3 text-sage-text">
 <span className="material-symbols-outlined text-[20px] shrink-0 mt-0.5 text-sage-text">verified</span>
 <div className="flex flex-col font-body-sm text-body-sm">
-<span className="font-semibold text-sage-text">★ Đã bao gồm Personal Direction Report (Trị giá 39.000đ)</span>
+<span className="font-semibold text-sage-text">★ Đã bao gồm Personal Direction Report (Trị giá 59.000đ)</span>
 <span className="text-on-surface-variant text-[12px] leading-relaxed">
                   Bạn không cần mua lẻ báo cáo định hướng khi đã đăng ký Admission Pass trực tiếp. Toàn bộ đặc quyền được hợp nhất trong một giao dịch.
                 </span>
@@ -96,7 +96,7 @@ function AdmissionPassCheckoutPage() {
 <span className="material-symbols-outlined text-[18px]">psychology</span>
                     Nhóm 1: Báo cáo định hướng cá nhân (Đã bao gồm sẵn)
                   </span>
-<span className="text-[11px] font-semibold uppercase px-2 py-0.5 rounded-full bg-surface-container-lowest text-lavender-text shadow-sm">Trị giá 39K</span>
+<span className="text-[11px] font-semibold uppercase px-2 py-0.5 rounded-full bg-surface-container-lowest text-lavender-text shadow-sm">Trị giá 59K</span>
 </div>
 <ul className="flex flex-col gap-2 font-body-sm text-body-sm text-on-surface">
 <li className="flex items-start gap-2">
@@ -337,7 +337,7 @@ function AdmissionPassCheckoutPage() {
 </div>
 <div className="flex items-center justify-between text-sage-text font-body-sm text-body-sm">
 <span>Ưu đãi hợp nhất báo cáo định hướng</span>
-<span className="font-semibold">-39.000đ (Tặng kèm)</span>
+<span className="font-semibold">-59.000đ (Tặng kèm)</span>
 </div>
 <div className="h-px bg-surface-container-highest my-1"></div>
 <div className="flex items-center justify-between text-on-surface">

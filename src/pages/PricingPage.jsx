@@ -119,7 +119,7 @@ function PricingPage() {
 </div>
 <div className="pt-space-xs pb-space-sm">
 <div className="flex items-baseline gap-2">
-<span className="font-display-lg text-display-lg text-primary font-bold">39.000đ</span>
+<span className="font-display-lg text-display-lg text-primary font-bold">59.000đ</span>
 <span className="font-label-md text-label-md text-on-surface-variant">/ Một lần duy nhất</span>
 </div>
 <p className="font-label-sm text-label-sm text-tertiary font-medium mt-1 flex items-center gap-1">
@@ -170,7 +170,7 @@ function PricingPage() {
 </div>
 <div className="pt-space-lg space-y-2">
 <button className="w-full py-3.5 px-6 rounded-full bg-surface-container-lowest text-primary font-label-lg text-label-lg shadow-sm hover:shadow-md hover:bg-surface-container-high transition-all flex items-center justify-center gap-2" type="button">
-<span className="">Mở khóa báo cáo (39.000đ)</span>
+<span className="">Mở khóa báo cáo (59.000đ)</span>
 <span className="material-symbols-outlined text-[18px]">workspace_premium</span>
 </button>
 <p className="font-label-sm text-label-sm text-center text-on-surface-variant">Báo cáo lưu trữ trọn đời trong tài khoản</p>
@@ -221,7 +221,7 @@ function PricingPage() {
     <div className="p-space-sm rounded-xl bg-sky-subtle space-y-1">
       <span className="font-label-sm text-label-sm text-primary font-semibold flex items-center gap-1">
         <span className="material-symbols-outlined text-[14px]">done_all</span>
-        Mở khóa toàn bộ Personal Direction Report (39k)
+        Mở khóa toàn bộ Personal Direction Report (59k)
       </span>
       <p className="font-body-sm text-body-sm text-on-surface-variant">Kèm toàn quyền truy cập bộ công cụ định tuyến đa phương thức và thuật toán cập nhật 24/7.</p>
     </div>
@@ -357,7 +357,7 @@ function PricingPage() {
               Bạn đã có Personal Direction Report?
             </h3>
 <p className="font-body-md text-body-md text-on-surface-variant">
-              Số tiền <span className="font-semibold text-on-surface">39.000đ</span> bạn đã thanh toán cho Báo cáo định hướng được khấu trừ <strong>100%</strong> vào giá Admission Pass. Bạn chỉ trả phần chênh lệch còn lại.
+              Số tiền <span className="font-semibold text-on-surface">59.000đ</span> bạn đã thanh toán cho Báo cáo định hướng được khấu trừ <strong>100%</strong> vào giá Admission Pass. Bạn chỉ trả phần chênh lệch còn lại.
             </p>
 <div className="flex flex-wrap items-center gap-4 text-on-surface-variant font-label-sm text-label-sm pt-1">
 <span className="flex items-center gap-1 text-sage-text">
@@ -386,15 +386,15 @@ function PricingPage() {
 <span className="material-symbols-outlined text-[14px]">remove</span>
                   Đã thanh toán cho Báo cáo:
                 </span>
-<span className="font-semibold">-39.000đ</span>
+<span className="font-semibold">-59.000đ</span>
 </div>
 <div className="pt-2 flex items-center justify-between font-label-lg text-label-lg text-on-surface">
 <span className="font-bold">Nâng cấp chỉ cần thêm:</span>
-<span className="font-headline-sm text-headline-sm text-primary font-bold">50.000đ</span>
+<span className="font-headline-sm text-headline-sm text-primary font-bold">30.000đ</span>
 </div>
 </div>
 <button className="w-full py-3 px-6 rounded-full bg-primary-container text-on-primary font-label-lg text-label-lg shadow-sm hover:bg-primary transition-all flex items-center justify-center gap-2" type="button">
-<span className="">Nâng cấp Admission Pass — 50.000đ</span>
+<span className="">Nâng cấp Admission Pass — 30.000đ</span>
 <span className="material-symbols-outlined text-[18px]">north_east</span>
 </button>
 </div>
@@ -525,7 +525,7 @@ function PricingPage() {
 </th>
 <th className="py-4 px-4 font-label-lg text-label-lg text-center text-on-surface w-1/5 bg-lavender-subtle/50">
 <div className="text-lavender-text font-bold">Direction Report</div>
-<div className="font-normal text-secondary font-label-sm text-label-sm">39.000đ</div>
+<div className="font-normal text-secondary font-label-sm text-label-sm">59.000đ</div>
 </th>
 <th className="py-4 px-4 font-label-lg text-label-lg text-center text-on-surface w-1/5 bg-primary/5">
 <div className="text-primary font-bold">Admission Pass 2027</div>
@@ -691,7 +691,7 @@ function PricingPage() {
 <span className="material-symbols-outlined text-secondary transition-transform duration-200 group-open:rotate-180">expand_more</span>
 </summary>
 <p className="font-body-sm text-body-sm text-on-surface-variant mt-2.5 leading-relaxed">
-            Tuyệt đối không! Uniview áp dụng cơ chế khấu trừ 100% giá trị gói cũ. 39.000đ bạn đã trả cho Báo cáo định hướng sẽ được trừ thẳng vào Admission Pass. Khi bạn quyết định nâng cấp lên Admission Pass (89.000đ), bạn chỉ cần thanh toán phần chênh lệch là 50.000đ.
+            Tuyệt đối không! Uniview áp dụng cơ chế khấu trừ 100% giá trị gói cũ. 59.000đ bạn đã trả cho Báo cáo định hướng sẽ được trừ thẳng vào Admission Pass. Khi bạn quyết định nâng cấp lên Admission Pass (89.000đ), bạn chỉ cần thanh toán phần chênh lệch là 30.000đ.
           </p>
 </details>
 <details className="group bg-surface-container-lowest p-space-md rounded-xl shadow-xs [&amp;_summary::-webkit-details-marker]:hidden cursor-pointer">

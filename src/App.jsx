@@ -6,39 +6,44 @@ import { pages } from './data/pages'
 import AllPagesPage from './pages/AllPagesPage'
 import NotFoundPage from './pages/NotFoundPage'
 import AppHeader from './components/header/AppHeader'
+import DevToolbar from './components/DevToolbar'
 import { AuthProvider } from './context/AuthContext'
+import { AssessmentProvider } from './context/AssessmentContext'
 
 function App() {
   return (
     <BrowserRouter>
       <AuthProvider>
-        <ScrollToTop />
+        <AssessmentProvider>
+          <ScrollToTop />
 
-        <div className="min-h-screen bg-[#f9f9ff] text-[#121b2e]">
-          <AppHeader />
+          <div className="min-h-screen bg-[#f9f9ff] text-[#121b2e]">
+            <AppHeader />
 
-          <Routes>
-            {pages.map((page) => (
+            <Routes>
+              {pages.map((page) => (
+                <Route
+                  key={page.id}
+                  path={page.path}
+                  element={<PageRenderer page={page} />}
+                />
+              ))}
+
               <Route
-                key={page.id}
-                path={page.path}
-                element={<PageRenderer page={page} />}
+                path="/screens"
+                element={<AllPagesPage />}
               />
-            ))}
 
-            <Route
-              path="/screens"
-              element={<AllPagesPage />}
-            />
+              <Route
+                path="*"
+                element={<NotFoundPage />}
+              />
+            </Routes>
 
-            <Route
-              path="*"
-              element={<NotFoundPage />}
-            />
-          </Routes>
-
-          <AppFooter />
-        </div>
+            <AppFooter />
+            <DevToolbar />
+          </div>
+        </AssessmentProvider>
       </AuthProvider>
     </BrowserRouter>
   )

@@ -1,4 +1,34 @@
+import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
+
+import { useAssessment } from '../context/AssessmentContext'
+import { useAuth } from '../context/AuthContext'
+
 function PersonalDirectionCheckoutPage() {
+  const navigate = useNavigate()
+  const { assessment } = useAssessment()
+  const {
+    user,
+    purchaseDirectionSnapshot,
+    saveReportToHistory,
+  } = useAuth()
+  const [confirming, setConfirming] = useState(false)
+
+  const confirmDemoPayment = () => {
+    if (!user) {
+      navigate('/login?next=/checkout/personal-direction')
+      return
+    }
+    setConfirming(true)
+    purchaseDirectionSnapshot()
+    saveReportToHistory(assessment.report ?? {
+      id: `direction-${Date.now()}`,
+      generatedAt: new Date().toISOString(),
+      clientInputSnapshot: assessment,
+    })
+    navigate('/assessment/result?payment=success', { replace: true })
+  }
+
   return (
 <main className="w-full pt-20 bg-surface min-h-[calc(100vh-20rem)]"><div className="flex flex-col w-full">
 
@@ -68,7 +98,7 @@ function PersonalDirectionCheckoutPage() {
                 </span>
 </div>
 <div className="text-right">
-<div className="font-headline-lg text-headline-lg text-primary font-bold tracking-tight">39.000<span className="text-headline-sm">đ</span></div>
+<div className="font-headline-lg text-headline-lg text-primary font-bold tracking-tight">59.000<span className="text-headline-sm">đ</span></div>
 <span className="font-label-sm text-label-sm text-on-surface-variant">Thanh toán 1 lần duy nhất</span>
 </div>
 </div>
@@ -294,7 +324,7 @@ function PersonalDirectionCheckoutPage() {
 <div className="flex items-center justify-between p-2 rounded-lg bg-surface-container-low">
 <div className="flex flex-col">
 <span className="font-label-sm text-label-sm text-on-surface-variant">Số tiền chính xác</span>
-<span className="font-label-lg text-label-lg font-bold text-primary">39.000 VND</span>
+<span className="font-label-lg text-label-lg font-bold text-primary">59.000 VND</span>
 </div>
 <button className="px-2.5 py-1 rounded-full bg-surface-container-highest text-on-surface hover:bg-secondary-container font-label-sm text-label-sm transition-colors" type="button">
                         Sao chép
@@ -380,12 +410,12 @@ function PersonalDirectionCheckoutPage() {
 <div className="pt-space-xs flex flex-col gap-space-md">
 <div className="flex items-baseline justify-between py-space-sm bg-surface-container-low px-space-md rounded-xl">
 <span className="font-headline-sm text-headline-sm text-on-surface font-semibold">Tổng thanh toán:</span>
-<span className="font-headline-lg text-headline-lg text-primary font-bold">39.000đ</span>
+<span className="font-headline-lg text-headline-lg text-primary font-bold">59.000đ</span>
 </div>
 
-<button className="w-full py-4 px-8 rounded-full bg-primary-container hover:bg-primary text-on-primary font-label-lg text-label-lg flex items-center justify-center gap-2 shadow-md hover:shadow-lg transition-all group" type="button">
+<button className="w-full py-4 px-8 rounded-full bg-primary-container hover:bg-primary text-on-primary font-label-lg text-label-lg flex items-center justify-center gap-2 shadow-md hover:shadow-lg transition-all group disabled:cursor-wait disabled:opacity-70" disabled={confirming} onClick={confirmDemoPayment} type="button">
 <span className="material-symbols-outlined text-[20px]" style={{ "fontVariationSettings": "'FILL' 1" }}>check_circle</span>
-<span className="tracking-wide">Tôi đã chuyển khoản 39.000đ</span>
+<span className="tracking-wide">{confirming ? 'Đang mở khóa...' : 'Tôi đã thanh toán 59.000đ'}</span>
 <span className="material-symbols-outlined text-[18px] group-hover:translate-x-1.5 transition-transform">arrow_forward</span>
 </button>
 <div className="flex flex-col items-center gap-1.5 text-center">
@@ -394,6 +424,9 @@ function PersonalDirectionCheckoutPage() {
                 </a>
 <span className="font-label-sm text-label-sm text-on-surface-variant mt-1">
                   Thanh toán một lần · Không tự động gia hạn · Không thu phí định kỳ
+                </span>
+<span className="font-label-sm text-label-sm font-semibold text-amber-700">
+                  Bản demo MVP: nút xác nhận không thực hiện giao dịch thật.
                 </span>
 </div>
 

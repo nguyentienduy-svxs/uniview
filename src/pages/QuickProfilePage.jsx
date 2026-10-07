@@ -1,61 +1,731 @@
+import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
+
+import AssessmentStepShell from '../components/assessment/AssessmentStepShell'
+import { useAssessment } from '../context/AssessmentContext'
+import { useAuth } from '../context/AuthContext'
+import {
+  CERTIFICATE_OPTIONS,
+  CERTIFICATE_STATUS,
+  certificateLabel,
+  normalizeCertificates,
+} from '../utils/certificates'
+
+const tuitionOptions = [
+  ['under-25', 'Dưới 25 triệu / năm'],
+  ['25-45', '25 – 45 triệu / năm'],
+  ['45-70', '45 – 70 triệu / năm'],
+  ['over-70', 'Trên 70 triệu / năm'],
+  ['undecided', 'Chưa xác định'],
+]
+
+const priorityOptions = [
+  'Đội ngũ giảng viên chất lượng',
+  'Hoạt động ngoại khóa & CLB',
+  'Vị trí địa lý thuận tiện',
+  'Học bổng & hỗ trợ tài chính',
+  'Chương trình liên kết quốc tế',
+  'Uy tín đào tạo',
+]
+
 function QuickProfilePage() {
+  const navigate = useNavigate()
+  const {
+    assessment,
+    updateProfile,
+    submitAssessment,
+    submitState,
+  } = useAssessment()
+  const {
+    user,
+    hasEntitlement,
+    saveReportToHistory,
+  } = useAuth()
+  const [submitError, setSubmitError] = useState('')
+
+  const { profile } = assessment
+  const certificates = normalizeCertificates(profile.certificates, 'PROFILE')
+  const [certificateDraft, setCertificateDraft] = useState({
+    type: 'IELTS_ACADEMIC',
+    customName: '',
+    score: '',
+    status: CERTIFICATE_STATUS.EXPECTED,
+  })
+
+  const updateField = (field, value) => {
+    updateProfile({
+      [field]: value,
+    })
+  }
+
+  const removeTag = (field, value) => {
+    updateField(
+      field,
+      profile[field].filter(
+        (item) => item !== value,
+      ),
+    )
+  }
+
+  const addUnique = (field, value) => {
+    if (
+      !value ||
+      profile[field].includes(value)
+    ) {
+      return
+    }
+
+    updateField(field, [
+      ...profile[field],
+      value,
+    ])
+  }
+
+  const addCertificate = () => {
+    const option = CERTIFICATE_OPTIONS.find(({ id }) => id === certificateDraft.type)
+    const name = certificateDraft.type === 'OTHER'
+      ? certificateDraft.customName.trim()
+      : option?.label
+    const score = certificateDraft.score.trim()
+    if (!name || !score) return
+
+    updateField('certificates', [
+      ...certificates,
+      {
+        id: createCertificateId(certificateDraft.type, score, certificates),
+        type: certificateDraft.type,
+        name,
+        score,
+        status: certificateDraft.status,
+        source: 'ASSESSMENT',
+      },
+    ])
+    setCertificateDraft((current) => ({
+      ...current,
+      customName: '',
+      score: '',
+    }))
+  }
+
+  const updateCertificate = (certificateId, patch) => {
+    updateField(
+      'certificates',
+      certificates.map((certificate) =>
+        certificate.id === certificateId
+          ? { ...certificate, ...patch, source: 'ASSESSMENT' }
+          : certificate,
+      ),
+    )
+  }
+
+  const removeCertificate = (certificateId) => {
+    updateField(
+      'certificates',
+      certificates.filter(({ id }) => id !== certificateId),
+    )
+  }
+
   return (
-<main className="w-full pt-16 flex-1 bg-surface-container-lowest"><div className="flex flex-col w-full font-body-md text-on-surface antialiased bg-surface-container-lowest">
-
-<div className="w-full bg-surface-container-low/60 pb-space-lg pt-space-md shadow-[0_2px_12px_rgba(29,78,216,0.03)]">
-<div className="max-w-[840px] mx-auto px-margin sm:px-gutter">
-
-<div className="grid grid-cols-1 sm:grid-cols-3 gap-space-xs sm:gap-space-sm mb-space-md">
-
-<div className="flex items-center gap-space-xs bg-surface-container-lowest py-space-xs px-space-md rounded-full shadow-sm text-left">
-<div className="w-5 h-5 rounded-full bg-primary-fixed flex items-center justify-center shrink-0">
-<svg className="w-3.5 h-3.5 text-primary-container" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" viewBox="0 0 24 24">
-<path d="M20 6L9 17l-5-5"></path>
-</svg>
-</div>
-<div className="min-w-0">
-<p className="font-label-sm text-label-sm text-primary-container font-semibold truncate leading-tight">Bước 1: Sở thích</p>
-</div>
-</div>
-
-<div className="flex items-center gap-space-xs bg-surface-container-lowest py-space-xs px-space-md rounded-full shadow-sm text-left">
-<div className="w-5 h-5 rounded-full bg-primary-fixed flex items-center justify-center shrink-0">
-<svg className="w-3.5 h-3.5 text-primary-container" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" viewBox="0 0 24 24">
-<path d="M20 6L9 17l-5-5"></path>
-</svg>
-</div>
-<div className="min-w-0">
-<p className="font-label-sm text-label-sm text-primary-container font-semibold truncate leading-tight">Bước 2: Ưu tiên</p>
-</div>
-</div>
-
-<div className="flex items-center gap-space-xs bg-primary-container text-on-primary py-space-xs px-space-md rounded-full shadow-[0_4px_14px_rgba(29,78,216,0.25)] text-left">
-<div className="w-5 h-5 rounded-full bg-on-primary/20 flex items-center justify-center shrink-0 text-on-primary font-bold text-[11px]">
-            3
+    <AssessmentStepShell
+      step={4}
+      eyebrow="Hồ sơ & điều kiện thực tế"
+    >
+      <div className="mx-auto flex max-w-[980px] flex-col gap-space-md px-margin py-space-lg md:px-margin-md">
+        <section className="flex flex-col justify-between gap-space-md rounded-2xl border border-surface-container-high bg-surface-container-lowest p-space-md shadow-sm md:flex-row md:items-center">
+          <div>
+            <div className="flex flex-wrap items-center gap-space-xs">
+              <span className="rounded-full bg-surface-container-high px-space-sm py-0.5 font-label-sm text-[11px] font-bold uppercase tracking-wide text-primary-container">
+                Bước 4 · Rà soát hồ sơ thực tế
+              </span>
+              <span className="inline-flex items-center gap-1 rounded-full bg-primary-fixed/30 px-space-sm py-0.5 text-[11px] font-semibold text-primary-container">
+                <span className="material-symbols-outlined text-xs">
+                  check
+                </span>
+                Đã lấy dữ liệu từ hồ sơ
+              </span>
+            </div>
+            <h1 className="mt-1 font-headline-md text-headline-md font-extrabold tracking-tight text-on-surface">
+              Điều kiện & mục tiêu thực tế
+            </h1>
+            <p className="max-w-xl font-body-sm text-body-sm text-on-surface-variant">
+              Kiểm tra và chỉnh lại các thông tin sẽ
+              được dùng để đối chiếu ngành, trường và
+              phương thức tuyển sinh.
+            </p>
           </div>
-<div className="min-w-0">
-<p className="font-label-sm text-label-sm text-on-primary font-bold truncate leading-tight">Bước 3: Hoàn cảnh</p>
-</div>
-</div>
-</div>
 
-<div className="flex flex-col gap-space-xs">
-<div className="flex items-center justify-between text-on-surface-variant font-label-md text-label-md"><span className="font-semibold text-on-surface">Điều kiện &amp; mục tiêu thực tế · Rà soát nhanh hồ sơ</span><span className="text-primary-container font-semibold">Bước 3 / 3 · Ước tính 1 phút</span></div>
-<div className="w-full bg-surface-container rounded-full h-1.5 overflow-hidden">
-<div className="bg-primary-container h-full rounded-full transition-all duration-300" style={{ "width": "100%" }}></div>
-</div>
-</div>
-</div>
-</div>
+          <div className="flex shrink-0 items-center gap-space-sm rounded-xl border border-surface-container-high bg-surface-container-low/70 p-space-sm">
+            <div className="relative h-14 w-14 shrink-0 overflow-hidden rounded-xl bg-white">
+              <img
+                src="/stitch-assets/uniview-mascot-rating-guide.jpg"
+                alt="Linh vật UniView"
+                className="absolute left-0 top-0 w-[400%] max-w-none"
+              />
+            </div>
+            <div className="max-w-[210px] rounded-lg border border-surface-container-high bg-white px-space-sm py-space-xs text-xs font-medium leading-tight text-on-surface shadow-sm">
+              Kiểm tra nhanh rồi mình xem kết quả
+              nhé!
+            </div>
+          </div>
+        </section>
 
-<div className="w-full max-w-[920px] mx-auto px-margin sm:px-gutter py-space-lg flex flex-col gap-space-md"><div className="flex flex-col md:flex-row md:items-center justify-between gap-space-md bg-surface-container-lowest border border-surface-container-high rounded-xl p-space-md shadow-xs"><div className="flex flex-col gap-1"><div className="flex items-center gap-space-xs flex-wrap"><span className="inline-flex items-center px-space-sm py-0.5 rounded-full bg-surface-container-high text-primary-container font-label-sm text-[11px] font-bold tracking-wide uppercase">BƯỚC 3 • RÀ SOÁT HỒ SƠ THỰC TẾ</span><span className="inline-flex items-center gap-1 px-space-sm py-0.5 rounded-full bg-primary-fixed/30 text-primary-container font-label-sm text-[11px] font-semibold"><svg className="w-3 h-3" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"></path></svg> Đã lấy dữ liệu từ Hồ sơ cá nhân</span></div><h1 className="text-headline-sm font-bold text-on-surface tracking-tight mt-0.5">Điều kiện &amp; mục tiêu thực tế</h1><p className="text-body-sm text-on-surface-variant max-w-xl">UniView đã điền sẵn những thông tin có trong hồ sơ của bạn. Hãy kiểm tra và chỉnh lại nếu cần.</p></div><div className="flex items-center gap-space-sm bg-surface-container-low/70 rounded-xl p-space-sm shrink-0 border border-surface-container-high"><div className="relative w-12 h-12 rounded-full overflow-hidden bg-primary-container/10 shrink-0 border border-primary-container/20 shadow-xs"><img alt="UniView Cat Mascot" className="w-full h-full object-cover" src="/stitch-assets/uniview-logo.png" /></div><div className="relative bg-surface-container-lowest py-space-xs px-space-sm rounded-lg shadow-xs text-xs text-on-surface leading-tight max-w-[190px] border border-surface-container-high"><span className="font-medium">Kiểm tra nhanh rồi mình xem kết quả nhé!</span><div className="absolute -left-1.5 top-1/2 -translate-y-1/2 w-0 h-0 border-t-4 border-t-transparent border-b-4 border-b-transparent border-r-4 border-r-surface-container-lowest"></div></div></div></div><form className="flex flex-col gap-space-md"><div className="grid grid-cols-1 md:grid-cols-2 gap-space-md"><div className="bg-surface-container-lowest rounded-xl p-space-md border border-surface-container-high shadow-xs flex flex-col gap-space-sm"><div className="flex items-center justify-between"><label className="font-label-md font-bold text-on-surface flex items-center gap-1.5"><span>1. Năm dự kiến nhập học</span><span className="text-[11px] font-semibold text-primary-container bg-primary-fixed/30 px-space-xs py-0.2 rounded">Từ hồ sơ</span></label></div><div className="relative"><select className="w-full appearance-none bg-surface-container-low/50 hover:bg-surface-container-low border border-outline-variant/60 focus:border-primary-container rounded-lg px-space-md py-space-xs text-body-sm font-semibold text-on-surface cursor-pointer outline-none transition-colors" defaultValue="2027"><option value="2027">2027 (Học sinh lớp 11 hiện tại)</option><option value="2028">2028 (Lớp 10)</option><option value="other">Chưa xác định</option></select><div className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-on-surface-variant"><svg className="w-4 h-4" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"></path></svg></div></div></div><div className="bg-surface-container-lowest rounded-xl p-space-md border border-surface-container-high shadow-xs flex flex-col gap-space-sm"><div className="flex items-center justify-between"><label className="font-label-md font-bold text-on-surface flex items-center gap-1.5"><span>2. Khu vực bạn có thể học</span><span className="text-[11px] font-semibold text-primary-container bg-primary-fixed/30 px-space-xs py-0.2 rounded">Từ hồ sơ</span></label><button className="text-label-sm text-primary-container hover:underline font-semibold" type="button">+ Nhập khu vực khác</button></div><div className="flex items-center gap-space-xs flex-wrap"><span className="inline-flex items-center gap-1 px-space-sm py-1 rounded-full bg-primary-container/10 border border-primary-container/30 text-primary-container font-label-sm font-bold text-xs">TP.HCM &amp; lân cận <button className="hover:text-error transition-colors" title="Xóa" type="button"><svg className="w-3 h-3" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"></path></svg></button></span><div className="relative flex-1 min-w-[140px]"><select className="w-full appearance-none bg-surface-container-low/40 border border-outline-variant/60 rounded-lg px-space-sm py-1 text-xs font-medium text-on-surface-variant cursor-pointer outline-none"><option value="">+ Thêm khu vực...</option><option value="hn">Hà Nội &amp; miền Bắc</option><option value="dn">Đà Nẵng &amp; miền Trung</option><option value="all">Không giới hạn khu vực</option></select></div></div></div></div><div className="bg-surface-container-lowest rounded-xl p-space-md border border-surface-container-high shadow-xs flex flex-col gap-space-sm"><div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1"><label className="font-label-md font-bold text-on-surface flex items-center gap-1.5"><span>3. Học phí dự kiến tối đa mỗi năm</span><span className="text-[11px] font-semibold text-primary-container bg-primary-fixed/30 px-space-xs py-0.2 rounded">Từ hồ sơ</span></label><span className="text-xs text-on-surface-variant">Có thể linh hoạt theo chương trình</span></div><div className="grid grid-cols-1 sm:grid-cols-2 gap-space-md items-center"><div className="relative"><select className="w-full appearance-none bg-surface-container-low/50 hover:bg-surface-container-low border border-primary-container/50 focus:border-primary-container rounded-lg px-space-md py-space-xs text-body-sm font-bold text-primary-container cursor-pointer outline-none shadow-xs" defaultValue="25-45"><option value="under-25">Dưới 25 triệu / năm</option><option value="25-45">25 – 45 triệu / năm</option><option value="45-70">45 – 70 triệu / năm</option><option value="over-70">Trên 70 triệu / năm</option><option value="undecided">Chưa xác định</option></select><div className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-primary-container"><svg className="w-4 h-4" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"></path></svg></div></div><label className="flex items-center gap-space-xs cursor-pointer select-none text-body-sm text-on-surface font-medium"><input defaultChecked className="w-4 h-4 rounded text-primary-container border-outline focus:ring-primary-container" type="checkbox" /><span className="text-xs text-on-surface font-medium">Có thể cân nhắc học bổng / hỗ trợ tài chính</span></label></div></div><div className="bg-surface-container-lowest rounded-xl p-space-md border border-surface-container-high shadow-xs flex flex-col gap-space-sm"><div className="flex items-center justify-between border-b border-surface-container pb-space-xs"><h2 className="font-label-md font-bold text-on-surface flex items-center gap-1.5"><span>4. Học tập &amp; Điểm số</span><span className="text-[11px] font-semibold text-primary-container bg-primary-fixed/30 px-space-xs py-0.2 rounded">Từ hồ sơ</span></h2><span className="text-xs text-outline">Không bắt buộc có đủ</span></div><div className="flex flex-col gap-space-xs"><span className="text-xs font-semibold text-on-surface-variant">Môn bạn tự tin:</span><div className="flex items-center gap-space-xs flex-wrap"><span className="inline-flex items-center gap-1 px-space-sm py-0.5 rounded-md bg-surface-container-low text-on-surface font-label-sm text-xs font-semibold">Toán <button className="text-on-surface-variant hover:text-error" type="button"><svg className="w-3 h-3" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"></path></svg></button></span><span className="inline-flex items-center gap-1 px-space-sm py-0.5 rounded-md bg-surface-container-low text-on-surface font-label-sm text-xs font-semibold">Tiếng Anh <button className="text-on-surface-variant hover:text-error" type="button"><svg className="w-3 h-3" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"></path></svg></button></span><span className="inline-flex items-center gap-1 px-space-sm py-0.5 rounded-md bg-surface-container-low text-on-surface font-label-sm text-xs font-semibold">Tin học <button className="text-on-surface-variant hover:text-error" type="button"><svg className="w-3 h-3" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"></path></svg></button></span><button className="inline-flex items-center gap-1 px-space-sm py-0.5 rounded-md border border-dashed border-outline-variant hover:border-primary-container text-xs font-semibold text-primary-container" type="button"><svg className="w-3 h-3" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" viewBox="0 0 24 24"><path d="M12 5v14m-7-7h14"></path></svg> Thêm môn</button></div></div><div className="flex flex-col gap-space-xs mt-1"><span className="text-xs font-semibold text-on-surface-variant">Điểm hiện có hoặc dự kiến:</span><div className="grid grid-cols-1 sm:grid-cols-3 gap-space-sm"><div className="bg-surface-container-low/40 border border-surface-container-high rounded-lg p-space-xs flex flex-col gap-1"><div className="flex items-center justify-between"><span className="text-[11px] font-bold text-on-surface-variant">Tổ hợp THPT</span><span className="text-[10px] font-semibold text-primary-container bg-primary-fixed/40 px-1 py-0.2 rounded">Dự kiến</span></div><div className="flex items-center gap-1"><input className="w-full bg-surface-container-lowest font-headline-sm font-bold text-on-surface px-space-xs py-0.5 rounded border border-outline-variant/60 focus:border-primary-container outline-none text-base" type="text" defaultValue="25.50" /><span className="text-xs text-outline shrink-0">/30</span></div></div><div className="bg-surface-container-low/40 border border-surface-container-high rounded-lg p-space-xs flex flex-col gap-1"><div className="flex items-center justify-between"><span className="text-[11px] font-bold text-on-surface-variant">ĐGNL ĐHQG HCM</span><span className="text-[10px] font-semibold text-on-tertiary-fixed-variant bg-tertiary-fixed/60 px-1 py-0.2 rounded">Chính thức</span></div><div className="flex items-center gap-1"><input className="w-full bg-surface-container-lowest font-headline-sm font-bold text-on-surface px-space-xs py-0.5 rounded border border-outline-variant/60 focus:border-primary-container outline-none text-base" type="text" defaultValue="875" /><span className="text-xs text-outline shrink-0">/1200</span></div></div><div className="bg-surface-container-low/40 border border-surface-container-high rounded-lg p-space-xs flex flex-col gap-1"><div className="flex items-center justify-between"><span className="text-[11px] font-bold text-on-surface-variant">ĐGNL HN / V-SAT</span><span className="text-[10px] font-medium text-outline bg-surface-container-high px-1 py-0.2 rounded">Chưa thi</span></div><div className="flex items-center gap-1"><input className="w-full bg-surface-container-lowest text-on-surface-variant placeholder:text-outline px-space-xs py-0.5 rounded border border-outline-variant/60 focus:border-primary-container outline-none text-sm" placeholder="Chưa có điểm" type="text" /></div></div></div></div></div><div className="bg-surface-container-lowest rounded-xl p-space-md border border-surface-container-high shadow-xs flex flex-col gap-space-sm"><div className="flex items-center justify-between"><label className="font-label-md font-bold text-on-surface flex items-center gap-1.5"><span>5. 3 yếu tố bạn quan tâm nhất khi chọn trường</span><span className="text-[11px] font-semibold text-primary-container bg-primary-fixed/30 px-space-xs py-0.2 rounded">Từ hồ sơ</span></label><div className="flex items-center gap-2"><span className="text-xs font-bold text-primary-container bg-primary-container/10 px-space-xs py-0.2 rounded-full">Đã chọn 3/3</span><button className="text-xs font-semibold text-primary-container hover:underline" type="button">+ Đổi ưu tiên</button></div></div><div className="flex items-center gap-space-xs flex-wrap"><div className="inline-flex items-center gap-1 px-space-sm py-1 rounded-lg bg-primary-fixed/20 border border-primary-container/20 text-on-surface text-xs font-semibold"><svg className="w-3.5 h-3.5 text-primary-container" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"></path></svg> Học phí hợp lý</div><div className="inline-flex items-center gap-1 px-space-sm py-1 rounded-lg bg-primary-fixed/20 border border-primary-container/20 text-on-surface text-xs font-semibold"><svg className="w-3.5 h-3.5 text-primary-container" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"></path></svg> Cơ hội việc làm &amp; OJT</div><div className="inline-flex items-center gap-1 px-space-sm py-1 rounded-lg bg-primary-fixed/20 border border-primary-container/20 text-on-surface text-xs font-semibold"><svg className="w-3.5 h-3.5 text-primary-container" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"></path></svg> Cơ sở vật chất hiện đại</div></div></div><div className="flex items-center justify-between p-space-sm rounded-lg bg-surface-container-low/60 border border-surface-container-high"><label className="flex items-center gap-space-xs cursor-pointer select-none"><input defaultChecked className="w-4 h-4 rounded text-primary-container border-outline focus:ring-primary-container" type="checkbox" /><span className="text-xs text-on-surface font-semibold">Cập nhật các thay đổi vào Hồ sơ cá nhân của bạn</span></label><span className="text-[11px] text-on-surface-variant hidden sm:inline">Tự động ghi nhớ cho các lần gợi ý tiếp theo</span></div><div className="flex items-center gap-space-xs bg-surface-container-high/60 border border-primary-container/20 rounded-xl px-space-md py-space-xs text-xs text-on-surface"><svg className="w-4 h-4 text-primary-container shrink-0" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" viewBox="0 0 24 24"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path></svg><span className="font-medium"><strong className="font-bold text-primary-container">Tóm tắt:</strong> Năm 2027 · TP.HCM · Ngân sách 25–45 triệu · THPT 25.50 · ĐGNL 875 · 3 ưu tiên đã chọn</span></div></form></div>
+        <form
+          className="flex flex-col gap-space-md"
+          onSubmit={async (event) => {
+            event.preventDefault()
+            setSubmitError('')
+            try {
+              const report = await submitAssessment({ userId: user?.id })
+              if (
+                hasEntitlement('DIRECTION_SNAPSHOT') ||
+                hasEntitlement('ADMISSION_PASS')
+              ) {
+                saveReportToHistory(report)
+              }
+              navigate('/assessment/result')
+            } catch (error) {
+              setSubmitError(error.message)
+            }
+          }}
+        >
+          <div className="grid grid-cols-1 gap-space-md md:grid-cols-2">
+            <FormCard
+              title="1. Năm dự kiến nhập học"
+              fromProfile
+            >
+              <select
+                value={profile.admissionYear}
+                onChange={(event) =>
+                  updateField(
+                    'admissionYear',
+                    event.target.value,
+                  )
+                }
+                className="w-full appearance-none rounded-lg border border-outline-variant/60 bg-surface-container-low/50 px-space-md py-space-xs text-body-sm font-semibold text-on-surface outline-none transition-colors focus:border-primary-container"
+              >
+                <option value="2027">
+                  2027
+                </option>
+                <option value="2028">
+                  2028
+                </option>
+                <option value="other">
+                  Chưa xác định
+                </option>
+              </select>
+            </FormCard>
 
-<div className="sticky bottom-0 left-0 right-0 z-40 bg-surface-container-lowest/95 backdrop-blur-md shadow-[0_-4px_16px_rgba(0,0,0,0.06)] py-space-md">
-<div className="max-w-[920px] mx-auto px-margin sm:px-gutter flex items-center justify-between gap-space-md"><button className="inline-flex items-center gap-space-xs px-space-md py-space-sm rounded-full bg-surface-container-low text-on-surface hover:bg-surface-container font-label-lg text-label-lg font-semibold transition-all duration-200" type="button"><svg className="w-4 h-4 text-on-surface" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" viewBox="0 0 24 24"><path d="M19 12H5m7 7l-7-7 7-7"></path></svg><span>Quay lại Bước 2</span></button><div className="hidden md:flex items-center gap-space-xs font-label-md text-label-md text-on-surface-variant"><svg className="w-4 h-4 text-primary-container" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"></path></svg><span>Đã tự động lưu · Mọi thông tin đều có thể chỉnh sửa lại sau</span></div><div className="flex items-center gap-space-sm"><button className="inline-flex items-center gap-space-xs px-space-xl py-space-sm rounded-full bg-primary-container text-on-primary hover:bg-primary transition-all duration-200 font-label-lg text-label-lg font-semibold shadow-md hover:shadow-lg active:scale-95" type="button"><span>Hoàn thành &amp; Xem lại thông tin</span><svg className="w-4 h-4 text-on-primary" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" viewBox="0 0 24 24"><path d="M5 12h14m-7-7l7 7-7 7"></path></svg></button></div></div>
-</div>
-</div>
-</main>
+            <FormCard
+              title="2. Khu vực bạn có thể học"
+              fromProfile
+            >
+              <div className="flex flex-wrap items-center gap-space-xs">
+                {profile.regions.map((region) => (
+                  <Tag
+                    key={region}
+                    label={region}
+                    onRemove={() =>
+                      removeTag(
+                        'regions',
+                        region,
+                      )
+                    }
+                  />
+                ))}
+                <select
+                  value=""
+                  onChange={(event) => {
+                    addUnique(
+                      'regions',
+                      event.target.value,
+                    )
+                  }}
+                  className="min-w-[150px] flex-1 rounded-lg border border-dashed border-primary-container/50 bg-surface-container-low/40 px-space-sm py-1.5 text-xs font-semibold text-primary-container outline-none"
+                >
+                  <option value="">
+                    + Thêm khu vực...
+                  </option>
+                  <option value="Hà Nội & miền Bắc">
+                    Hà Nội & miền Bắc
+                  </option>
+                  <option value="Đà Nẵng & miền Trung">
+                    Đà Nẵng & miền Trung
+                  </option>
+                  <option value="Không giới hạn">
+                    Không giới hạn
+                  </option>
+                </select>
+              </div>
+            </FormCard>
+          </div>
+
+          <FormCard
+            title="3. Học phí dự kiến tối đa mỗi năm"
+            fromProfile
+          >
+            <div className="grid grid-cols-1 items-center gap-space-md sm:grid-cols-2">
+              <select
+                value={profile.tuition}
+                onChange={(event) =>
+                  updateField(
+                    'tuition',
+                    event.target.value,
+                  )
+                }
+                className="w-full appearance-none rounded-lg border border-primary-container/50 bg-surface-container-low/50 px-space-md py-space-xs text-body-sm font-bold text-primary-container outline-none transition-colors focus:border-primary-container"
+              >
+                {tuitionOptions.map(
+                  ([value, label]) => (
+                    <option
+                      key={value}
+                      value={value}
+                    >
+                      {label}
+                    </option>
+                  ),
+                )}
+              </select>
+
+              <label className="flex cursor-pointer items-center gap-space-xs text-xs font-medium text-on-surface">
+                <input
+                  type="checkbox"
+                  checked={profile.scholarship}
+                  onChange={(event) =>
+                    updateField(
+                      'scholarship',
+                      event.target.checked,
+                    )
+                  }
+                  className="h-4 w-4 accent-primary-container"
+                />
+                Có thể cân nhắc học bổng / hỗ trợ
+                tài chính
+              </label>
+            </div>
+          </FormCard>
+
+          <FormCard
+            title="4. Học tập & Điểm số"
+            fromProfile
+            helper="Không bắt buộc có đủ tất cả"
+          >
+            <div className="flex flex-col gap-space-xs">
+              <span className="text-xs font-semibold text-on-surface-variant">
+                Môn bạn tự tin / Điểm mạnh
+              </span>
+              <div className="flex flex-wrap items-center gap-space-xs">
+                {profile.strengths.map(
+                  (strength) => (
+                    <Tag
+                      key={strength}
+                      label={strength}
+                      onRemove={() =>
+                        removeTag(
+                          'strengths',
+                          strength,
+                        )
+                      }
+                    />
+                  ),
+                )}
+                <select
+                  value=""
+                  onChange={(event) =>
+                    addUnique(
+                      'strengths',
+                      event.target.value,
+                    )
+                  }
+                  className="rounded-md border border-dashed border-primary-container/50 bg-white px-space-sm py-1 text-xs font-semibold text-primary-container"
+                >
+                  <option value="">
+                    + Thêm môn
+                  </option>
+                  <option value="Ngữ văn">
+                    Ngữ văn
+                  </option>
+                  <option value="Vật lý">
+                    Vật lý
+                  </option>
+                  <option value="Hóa học">
+                    Hóa học
+                  </option>
+                  <option value="Sinh học">
+                    Sinh học
+                  </option>
+                </select>
+              </div>
+            </div>
+
+            <div className="mt-space-sm grid grid-cols-1 gap-space-sm sm:grid-cols-3">
+              <ScoreInput
+                label="Học bạ THPT (GPA)"
+                value={profile.gpa}
+                status={profile.gpaStatus}
+                suffix="/10"
+                onChange={(value) =>
+                  updateField('gpa', value)
+                }
+                onStatusChange={(value) => updateField('gpaStatus', value)}
+              />
+              <ScoreInput
+                label="Tổ hợp THPT"
+                value={profile.thptScore}
+                status={profile.thptScoreStatus}
+                suffix="/30"
+                onChange={(value) =>
+                  updateField(
+                    'thptScore',
+                    value,
+                  )
+                }
+                onStatusChange={(value) => updateField('thptScoreStatus', value)}
+              />
+              <ScoreInput
+                label="ĐGNL ĐHQG-HCM"
+                value={profile.dgnlScore}
+                status={profile.dgnlScoreStatus}
+                suffix="/1200"
+                onChange={(value) =>
+                  updateField(
+                    'dgnlScore',
+                    value,
+                  )
+                }
+                onStatusChange={(value) => updateField('dgnlScoreStatus', value)}
+              />
+            </div>
+
+            <div className="mt-space-xs flex items-start gap-1.5 rounded-lg bg-primary-fixed/25 px-space-xs py-1.5 text-[11px] leading-relaxed text-on-surface-variant">
+              <span className="material-symbols-outlined text-sm text-primary-container">info</span>
+              <span><strong className="text-on-surface">Điểm chính thức có độ tin cậy cao hơn</strong> trong đánh giá học tập. Điểm dự kiến vẫn giúp định hướng nhưng không được xem là kết quả đã xác nhận.</span>
+            </div>
+
+            <div className="mt-space-sm rounded-xl border border-surface-container-high bg-surface-container-low/40 p-space-sm">
+              <div className="flex flex-wrap items-center justify-between gap-space-xs">
+                <span className="text-xs font-bold text-on-surface-variant">
+                  Chứng chỉ quốc tế & ngoại ngữ
+                </span>
+                <span className="text-[11px] text-on-surface-variant">Có thể thêm điểm chưa cập nhật trong hồ sơ</span>
+              </div>
+
+              {certificates.length > 0 && (
+                <div className="mt-space-xs flex flex-col gap-space-xs">
+                  {certificates.map((certificate) => (
+                    <div key={certificate.id} className="flex flex-col gap-space-xs rounded-lg border border-primary-container/15 bg-white p-space-xs sm:flex-row sm:items-center">
+                      <div className="min-w-0 flex-1">
+                        <div className="flex flex-wrap items-center gap-1.5">
+                          <span className="text-xs font-bold text-on-surface">{certificateLabel(certificate)}</span>
+                          {certificate.source === 'PROFILE' && <span className="rounded bg-primary-fixed/30 px-1.5 py-0.5 text-[10px] font-semibold text-primary-container">Từ hồ sơ</span>}
+                        </div>
+                      </div>
+                      <select
+                        aria-label={`Trạng thái điểm ${certificateLabel(certificate)}`}
+                        value={certificate.status}
+                        onChange={(event) => updateCertificate(certificate.id, { status: event.target.value })}
+                        className={`rounded-md border px-space-xs py-1 text-[11px] font-bold outline-none ${certificate.status === CERTIFICATE_STATUS.OFFICIAL ? 'border-emerald-200 bg-emerald-50 text-emerald-800' : 'border-amber-200 bg-amber-50 text-amber-800'}`}
+                      >
+                        <option value={CERTIFICATE_STATUS.OFFICIAL}>Điểm chính thức</option>
+                        <option value={CERTIFICATE_STATUS.EXPECTED}>Điểm dự kiến</option>
+                      </select>
+                      <button type="button" onClick={() => removeCertificate(certificate.id)} aria-label={`Bỏ ${certificateLabel(certificate)}`} className="self-end text-outline hover:text-error sm:self-auto">
+                        <span className="material-symbols-outlined text-lg">close</span>
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              <div className="mt-space-sm grid grid-cols-1 gap-space-xs rounded-lg border border-dashed border-primary-container/40 bg-white p-space-xs sm:grid-cols-2">
+                <select
+                  value={certificateDraft.type}
+                  onChange={(event) => setCertificateDraft((current) => ({ ...current, type: event.target.value }))}
+                  className="rounded-md border border-outline-variant/60 bg-white px-space-xs py-1.5 text-xs font-semibold text-on-surface outline-none focus:border-primary-container"
+                >
+                  {CERTIFICATE_OPTIONS.map((option) => <option key={option.id} value={option.id}>{option.label}</option>)}
+                </select>
+                {certificateDraft.type === 'OTHER' && (
+                  <input
+                    type="text"
+                    value={certificateDraft.customName}
+                    onChange={(event) => setCertificateDraft((current) => ({ ...current, customName: event.target.value }))}
+                    placeholder="Tên chứng chỉ"
+                    className="rounded-md border border-outline-variant/60 px-space-xs py-1.5 text-xs outline-none focus:border-primary-container"
+                  />
+                )}
+                <input
+                  type="text"
+                  value={certificateDraft.score}
+                  onChange={(event) => setCertificateDraft((current) => ({ ...current, score: event.target.value }))}
+                  placeholder={CERTIFICATE_OPTIONS.find(({ id }) => id === certificateDraft.type)?.placeholder}
+                  className="rounded-md border border-outline-variant/60 px-space-xs py-1.5 text-xs outline-none focus:border-primary-container"
+                />
+                <select
+                  value={certificateDraft.status}
+                  onChange={(event) => setCertificateDraft((current) => ({ ...current, status: event.target.value }))}
+                  className="rounded-md border border-outline-variant/60 bg-white px-space-xs py-1.5 text-xs font-semibold text-on-surface outline-none focus:border-primary-container"
+                >
+                  <option value={CERTIFICATE_STATUS.EXPECTED}>Điểm dự kiến</option>
+                  <option value={CERTIFICATE_STATUS.OFFICIAL}>Điểm chính thức</option>
+                </select>
+                <button
+                  type="button"
+                  onClick={addCertificate}
+                  disabled={!certificateDraft.score.trim() || (certificateDraft.type === 'OTHER' && !certificateDraft.customName.trim())}
+                  className="rounded-md bg-primary-container px-space-sm py-1.5 text-xs font-bold text-on-primary disabled:cursor-not-allowed disabled:opacity-40"
+                >
+                  + Thêm chứng chỉ
+                </button>
+              </div>
+
+              <div className="mt-space-xs flex items-start gap-1.5 rounded-lg bg-primary-fixed/25 px-space-xs py-1.5 text-[11px] leading-relaxed text-on-surface-variant">
+                <span className="material-symbols-outlined text-sm text-primary-container">info</span>
+                <span><strong className="text-on-surface">Điểm chính thức có độ tin cậy cao hơn</strong> trong phần đánh giá học tập. Điểm dự kiến vẫn được dùng để định hướng nhưng không được xem là kết quả đã xác nhận.</span>
+              </div>
+            </div>
+          </FormCard>
+
+          <FormCard
+            title="5. Các yếu tố quan trọng nhất khi chọn trường"
+            fromProfile
+            helper={
+              'Đã chọn ' +
+              profile.priorities.length +
+              ' tiêu chí'
+            }
+          >
+            <p className="mb-space-xs text-xs text-on-surface-variant">
+              UniView kết hợp các tiêu chí này để xếp
+              hạng độ phù hợp của từng lựa chọn.
+            </p>
+
+            <div className="flex flex-wrap items-center gap-space-xs">
+              {profile.priorities.map(
+                (priority) => (
+                  <Tag
+                    key={priority}
+                    label={priority}
+                    onRemove={() =>
+                      removeTag(
+                        'priorities',
+                        priority,
+                      )
+                    }
+                  />
+                ),
+              )}
+
+              <select
+                value=""
+                onChange={(event) =>
+                  addUnique(
+                    'priorities',
+                    event.target.value,
+                  )
+                }
+                className="min-w-[210px] rounded-lg border border-dashed border-primary-container/50 bg-surface-container-low/40 px-space-sm py-1.5 text-xs font-semibold text-primary-container"
+              >
+                <option value="">
+                  + Thêm yếu tố quan tâm...
+                </option>
+                {priorityOptions.map(
+                  (option) => (
+                    <option
+                      key={option}
+                      value={option}
+                    >
+                      {option}
+                    </option>
+                  ),
+                )}
+              </select>
+            </div>
+          </FormCard>
+
+          <label className="flex cursor-pointer items-center justify-between gap-space-sm rounded-lg border border-surface-container-high bg-surface-container-low/60 p-space-sm">
+            <span className="flex items-center gap-space-xs">
+              <input
+                type="checkbox"
+                checked={profile.syncProfile}
+                onChange={(event) =>
+                  updateField(
+                    'syncProfile',
+                    event.target.checked,
+                  )
+                }
+                className="h-4 w-4 accent-primary-container"
+              />
+              <span className="text-xs font-semibold text-on-surface">
+                Cập nhật các thay đổi vào Hồ sơ cá
+                nhân
+              </span>
+            </span>
+            <span className="hidden text-[11px] text-on-surface-variant sm:inline">
+              Tự động ghi nhớ cho các lần gợi ý sau
+            </span>
+          </label>
+
+          <div className="flex items-center gap-space-xs rounded-xl border border-primary-container/20 bg-surface-container-high/60 px-space-md py-space-xs text-xs text-on-surface">
+            <span className="material-symbols-outlined shrink-0 text-base text-primary-container">
+              assignment
+            </span>
+            <span>
+              <strong className="text-primary-container">
+                Tóm tắt:
+              </strong>{' '}
+              Năm {profile.admissionYear} ·{' '}
+              {profile.regions.join(', ') ||
+                'Chưa chọn khu vực'}{' '}
+              · GPA {profile.gpa || '—'} · ĐGNL{' '}
+              {profile.dgnlScore || '—'} ·{' '}
+              {profile.priorities.length} tiêu chí
+              chọn trường
+            </span>
+          </div>
+
+          {submitError && (
+            <p className="rounded-xl border border-rose-200 bg-rose-50 p-space-sm text-sm font-semibold text-rose-700">
+              {submitError}
+            </p>
+          )}
+
+          <div className="sticky bottom-0 z-40 -mx-margin flex items-center justify-between gap-space-md border-t border-surface-container-high bg-surface-container-lowest/95 px-margin py-space-md shadow-[0_-4px_16px_rgba(0,0,0,0.06)] backdrop-blur-md md:-mx-margin-md md:px-margin-md">
+            <button
+              type="button"
+              onClick={() =>
+                navigate('/assessment/experience')
+              }
+              className="inline-flex items-center gap-space-xs rounded-full bg-surface-container-low px-space-md py-space-sm font-label-lg text-label-lg font-semibold text-on-surface hover:bg-surface-container"
+            >
+              <span className="material-symbols-outlined text-lg">
+                arrow_back
+              </span>
+              <span className="hidden sm:inline">
+                Quay lại Bước 3
+              </span>
+            </button>
+
+            <span className="hidden items-center gap-space-xs font-label-md text-label-md text-on-surface-variant md:flex">
+              <span className="material-symbols-outlined text-base text-primary-container">
+                check
+              </span>
+              Đã tự động lưu
+            </span>
+
+            <button
+              type="submit"
+              disabled={submitState.loading}
+              className="inline-flex items-center gap-space-xs rounded-full bg-primary-container px-space-xl py-space-sm font-label-lg text-label-lg font-semibold text-on-primary shadow-md transition-all hover:bg-primary hover:shadow-lg active:scale-95 disabled:cursor-wait disabled:opacity-70"
+            >
+              {submitState.loading ? 'Đang tạo báo cáo...' : 'Hoàn thành & Xem kết quả'}
+              <span className="material-symbols-outlined text-lg">
+                arrow_forward
+              </span>
+            </button>
+          </div>
+        </form>
+      </div>
+    </AssessmentStepShell>
   )
+}
+
+function FormCard({
+  title,
+  helper,
+  fromProfile,
+  children,
+}) {
+  return (
+    <section className="flex flex-col gap-space-sm rounded-xl border border-surface-container-high bg-surface-container-lowest p-space-md shadow-sm">
+      <div className="flex flex-wrap items-center justify-between gap-space-xs border-b border-surface-container pb-space-xs">
+        <h2 className="flex items-center gap-1.5 font-label-md text-label-md font-bold text-on-surface">
+          {title}
+          {fromProfile && (
+            <span className="rounded bg-primary-fixed/30 px-space-xs py-0.5 text-[11px] font-semibold text-primary-container">
+              Từ hồ sơ
+            </span>
+          )}
+        </h2>
+        {helper && (
+          <span className="text-xs text-outline">
+            {helper}
+          </span>
+        )}
+      </div>
+      {children}
+    </section>
+  )
+}
+
+function Tag({ label, onRemove }) {
+  return (
+    <span className="inline-flex items-center gap-1 rounded-lg border border-primary-container/20 bg-primary-fixed/20 px-space-sm py-1 text-xs font-semibold text-on-surface">
+      <span className="material-symbols-outlined text-sm text-primary-container">
+        check
+      </span>
+      {label}
+      <button
+        type="button"
+        onClick={onRemove}
+        aria-label={`Bỏ ${label}`}
+        className="ml-0.5 text-outline transition-colors hover:text-error"
+      >
+        <span className="material-symbols-outlined text-sm">
+          close
+        </span>
+      </button>
+    </span>
+  )
+}
+
+function ScoreInput({
+  label,
+  value,
+  status,
+  suffix,
+  onChange,
+  onStatusChange,
+}) {
+  return (
+    <label className="flex flex-col gap-1 rounded-lg border border-surface-container-high bg-surface-container-low/40 p-space-xs">
+      <span className="flex items-center justify-between gap-1">
+        <span className="text-[11px] font-bold text-on-surface-variant">{label}</span>
+        <select
+          aria-label={`Trạng thái ${label}`}
+          value={status ?? 'EXPECTED'}
+          onChange={(event) => onStatusChange(event.target.value)}
+          className={`max-w-[105px] rounded border px-1 py-0.5 text-[10px] font-bold outline-none ${status === 'OFFICIAL' ? 'border-emerald-200 bg-emerald-50 text-emerald-800' : 'border-amber-200 bg-amber-50 text-amber-800'}`}
+        >
+          <option value="OFFICIAL">Chính thức</option>
+          <option value="EXPECTED">Dự kiến</option>
+        </select>
+      </span>
+      <span className="flex items-center gap-1">
+        <input
+          type="text"
+          value={value}
+          onChange={(event) =>
+            onChange(event.target.value)
+          }
+          className="w-full rounded border border-outline-variant/60 bg-white px-space-xs py-0.5 text-base font-bold text-on-surface outline-none focus:border-primary-container"
+        />
+        <span className="shrink-0 text-xs font-medium text-outline">
+          {suffix}
+        </span>
+      </span>
+    </label>
+  )
+}
+
+function createCertificateId(type, score, certificates) {
+  const base = `assessment-${type.toLowerCase()}-${score.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`
+  let id = base
+  let suffix = 2
+  while (certificates.some((certificate) => certificate.id === id)) {
+    id = `${base}-${suffix}`
+    suffix += 1
+  }
+  return id
 }
 
 export default QuickProfilePage
