@@ -1,8 +1,146 @@
 import majors from "../data/majors.json";
 import majorsFilter from "../data/majorsfilter.json";
+import { useMemo, useRef, useState } from "react";
+import { Link } from "react-router-dom";
+
+const PAGE_SIZE = 6;
+const EXTRA_CATEGORY_IDS = ["health", "social-sciences"];
+
+const normalizeText = (value) =>
+  String(value ?? "")
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/đ/g, "d")
+    .replace(/Đ/g, "D")
+    .toLowerCase();
 
 function MajorsPage() {
+  const [filterSelected, setFilterSelected] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [sortBy, setSortBy] = useState("relevance");
+  const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
+  const [firstNewResultIndex, setFirstNewResultIndex] = useState(0);
+  const progressBarRef = useRef(null);
   const filterData = majorsFilter;
+
+  const categoryIds = useMemo(
+    () => new Set([
+      ...filterData.categories.map((category) => category.id),
+      ...EXTRA_CATEGORY_IDS,
+    ]),
+    [filterData.categories],
+  );
+
+  const interestLabelsById = useMemo(
+    () => new Map(
+      filterData.interests.map((interest) => [interest.id, interest.label]),
+    ),
+    [filterData.interests],
+  );
+
+  const filteredMajors = useMemo(() => {
+    const selectedCategories = filterSelected.filter((id) => categoryIds.has(id));
+    const selectedInterests = filterSelected
+      .filter((id) => interestLabelsById.has(id))
+      .map((id) => interestLabelsById.get(id));
+    const selectedRiasec = filterSelected.filter((id) =>
+      filterData.riasec.some((item) => item.id === id),
+    );
+    const selectedCombinations = filterSelected.filter((id) =>
+      filterData.admissionCombinations.some((item) => item.id === id),
+    );
+    const searchTokens = normalizeText(searchTerm).trim().split(/\s+/).filter(Boolean);
+
+    const results = majors.filter((major) => {
+      const matchesCategory =
+        selectedCategories.length === 0 || selectedCategories.includes(major.category.id);
+      const matchesInterest =
+        selectedInterests.length === 0 ||
+        selectedInterests.some((interest) => major.interests.includes(interest));
+      const matchesRiasec =
+        selectedRiasec.length === 0 ||
+        selectedRiasec.some((type) => major.riasec.includes(type));
+      const matchesCombination =
+        selectedCombinations.length === 0 ||
+        selectedCombinations.some((code) =>
+          major.admissionCombinations.some((combination) => combination.code === code),
+        );
+      const searchableText = normalizeText([
+        major.name,
+        major.code,
+        major.category.name,
+        major.description,
+        ...major.skills,
+        ...major.interests,
+        ...major.careerPaths,
+        ...major.admissionCombinations.flatMap((combination) => [
+          combination.code,
+          ...combination.subjects,
+        ]),
+      ].join(" "));
+      const matchesSearch = searchTokens.every((token) => searchableText.includes(token));
+
+      return matchesCategory && matchesInterest && matchesRiasec &&
+        matchesCombination && matchesSearch;
+    });
+
+    return [...results].sort((first, second) => {
+      if (sortBy === "university-count") {
+        return second.universityCount - first.universityCount;
+      }
+
+      if (sortBy === "name") {
+        return first.name.localeCompare(second.name, "vi");
+      }
+
+      return majors.indexOf(first) - majors.indexOf(second);
+    });
+  }, [categoryIds, filterData, filterSelected, interestLabelsById, searchTerm, sortBy]);
+
+  const visibleMajors = filteredMajors.slice(0, visibleCount);
+  const progress = filteredMajors.length === 0
+    ? 0
+    : Math.min(100, (visibleMajors.length / filteredMajors.length) * 100);
+  const hasMore = visibleMajors.length < filteredMajors.length;
+
+  const handleFilterClick = (filterId) => {
+    setFilterSelected((currentFilters) =>
+      currentFilters.includes(filterId)
+        ? currentFilters.filter((id) => id !== filterId)
+        : [...currentFilters, filterId],
+    );
+    setVisibleCount(PAGE_SIZE);
+  };
+
+  const handleCategoryShortcut = (categoryId) => {
+    setFilterSelected((currentFilters) => {
+      const filtersWithoutCategories = currentFilters.filter((id) => !categoryIds.has(id));
+      return categoryId ? [...filtersWithoutCategories, categoryId] : filtersWithoutCategories;
+    });
+    setVisibleCount(PAGE_SIZE);
+  };
+
+  const handleResetFilters = () => {
+    setFilterSelected([]);
+    setSearchTerm("");
+    setSortBy("relevance");
+    setVisibleCount(PAGE_SIZE);
+  };
+
+  const handleLoadMore = () => {
+    setFirstNewResultIndex(visibleCount);
+    setVisibleCount((currentCount) =>
+      Math.min(currentCount + PAGE_SIZE, filteredMajors.length),
+    );
+
+    setTimeout(() => {
+      progressBarRef.current?.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
+    }, 100);
+  };
+
   return (
     <main className="w-full pt-6 bg-surface min-h-[calc(100vh-80px)]">
       <div className="flex flex-col w-full">
@@ -59,7 +197,10 @@ function MajorsPage() {
           </div>
 
           <div className="mt-space-lg space-y-space-md">
-            <div className="relative w-full rounded-xl bg-surface-container-lowest p-space-xs shadow-sm flex items-center gap-space-sm">
+            <form
+              className="relative w-full rounded-xl bg-surface-container-lowest p-space-xs shadow-sm flex items-center gap-space-sm"
+              onSubmit={(event) => event.preventDefault()}
+            >
               <span className="material-symbols-outlined text-outline text-[24px] ml-space-sm">
                 search
               </span>
@@ -67,57 +208,89 @@ function MajorsPage() {
                 className="w-full bg-transparent text-on-surface font-body-md text-body-md outline-none placeholder:text-outline py-space-sm pr-space-md"
                 placeholder="Tìm tên ngành, mã ngành (7480...), nghề nghiệp hoặc từ khóa..."
                 type="text"
+                value={searchTerm}
+                onChange={(event) => {
+                  setSearchTerm(event.target.value);
+                  setVisibleCount(PAGE_SIZE);
+                }}
               />
               <div className="hidden md:flex items-center gap-1 px-space-sm py-1 rounded bg-surface-container text-outline font-label-sm text-label-sm shrink-0">
                 <span className="text-[12px]">⌘</span>
                 <span>K</span>
               </div>
-              <button className="bg-primary-container hover:bg-primary text-on-primary font-label-lg text-label-lg px-space-lg py-space-sm rounded-lg transition-colors shrink-0 shadow-sm">
+              <button
+                type="submit"
+                className="bg-primary-container hover:bg-primary text-on-primary font-label-lg text-label-lg px-space-lg py-space-sm rounded-lg transition-colors shrink-0 shadow-sm"
+              >
                 Tìm kiếm
               </button>
-            </div>
+            </form>
 
             <div className="flex items-center gap-space-xs overflow-x-auto pb-space-xs scrollbar-none">
-              <button className="px-space-md py-space-xs rounded-full bg-primary text-on-primary font-label-md text-label-md shrink-0 shadow-sm transition-transform active:scale-95">
+              <button
+                onClick={() => handleCategoryShortcut(null)}
+                className={`px-space-md py-space-xs rounded-full ${filterSelected.some((id) => categoryIds.has(id)) ? "bg-surface-container text-on-surface hover:bg-surface-container-high" : "bg-primary text-on-primary shadow-sm"} font-label-md text-label-md shrink-0 transition-transform active:scale-95`}
+              >
                 Tất cả ngành
               </button>
-              <button className="px-space-md py-space-xs rounded-full bg-surface-container text-on-surface font-label-md text-label-md hover:bg-surface-container-high shrink-0 transition-colors flex items-center gap-1">
+              <button
+                onClick={() => handleCategoryShortcut("computer-it")}
+                className={`px-space-md py-space-xs rounded-full ${filterSelected.includes("computer-it") ? "bg-primary text-on-primary" : "bg-surface-container text-on-surface hover:bg-surface-container-high"} font-label-md text-label-md shrink-0 transition-colors flex items-center gap-1`}
+              >
                 <span className="material-symbols-outlined text-[16px] text-primary">
                   memory
                 </span>
                 <span>Công nghệ &amp; AI</span>
               </button>
-              <button className="px-space-md py-space-xs rounded-full bg-surface-container text-on-surface font-label-md text-label-md hover:bg-surface-container-high shrink-0 transition-colors flex items-center gap-1">
+              <button
+                onClick={() => handleCategoryShortcut("business")}
+                className={`px-space-md py-space-xs rounded-full ${filterSelected.includes("business") ? "bg-primary text-on-primary" : "bg-surface-container text-on-surface hover:bg-surface-container-high"} font-label-md text-label-md shrink-0 transition-colors flex items-center gap-1`}
+              >
                 <span className="material-symbols-outlined text-[16px] text-tertiary">
                   query_stats
                 </span>
                 <span>Kinh doanh &amp; Quản lý</span>
               </button>
-              <button className="px-space-md py-space-xs rounded-full bg-surface-container text-on-surface font-label-md text-label-md hover:bg-surface-container-high shrink-0 transition-colors flex items-center gap-1">
+              <button
+                onClick={() => handleCategoryShortcut("art-design")}
+                className={`px-space-md py-space-xs rounded-full ${filterSelected.includes("art-design") ? "bg-primary text-on-primary" : "bg-surface-container text-on-surface hover:bg-surface-container-high"} font-label-md text-label-md shrink-0 transition-colors flex items-center gap-1`}
+              >
                 <span className="material-symbols-outlined text-[16px] text-secondary">
                   palette
                 </span>
                 <span>Nghệ thuật &amp; Sáng tạo</span>
               </button>
-              <button className="px-space-md py-space-xs rounded-full bg-surface-container text-on-surface font-label-md text-label-md hover:bg-surface-container-high shrink-0 transition-colors flex items-center gap-1">
+              <button
+                onClick={() => handleCategoryShortcut("language-humanities")}
+                className={`px-space-md py-space-xs rounded-full ${filterSelected.includes("language-humanities") ? "bg-primary text-on-primary" : "bg-surface-container text-on-surface hover:bg-surface-container-high"} font-label-md text-label-md shrink-0 transition-colors flex items-center gap-1`}
+              >
                 <span className="material-symbols-outlined text-[16px] text-outline">
                   translate
                 </span>
                 <span>Ngôn ngữ &amp; Văn hóa</span>
               </button>
-              <button className="px-space-md py-space-xs rounded-full bg-surface-container text-on-surface font-label-md text-label-md hover:bg-surface-container-high shrink-0 transition-colors flex items-center gap-1">
+              <button
+                onClick={() => handleCategoryShortcut("health")}
+                className={`px-space-md py-space-xs rounded-full ${filterSelected.includes("health") ? "bg-primary text-on-primary" : "bg-surface-container text-on-surface hover:bg-surface-container-high"} font-label-md text-label-md shrink-0 transition-colors flex items-center gap-1`}
+              >
                 <span className="material-symbols-outlined text-[16px] text-error">
                   ecg_heart
                 </span>
                 <span>Sức khỏe &amp; Y sinh</span>
               </button>
-              <button className="px-space-md py-space-xs rounded-full bg-surface-container text-on-surface font-label-md text-label-md hover:bg-surface-container-high shrink-0 transition-colors flex items-center gap-1">
+              <button
+                onClick={() => handleCategoryShortcut("engineering")}
+                className={`px-space-md py-space-xs rounded-full ${filterSelected.includes("engineering") ? "bg-primary text-on-primary" : "bg-surface-container text-on-surface hover:bg-surface-container-high"} font-label-md text-label-md shrink-0 transition-colors flex items-center gap-1`}
+              >
                 <span className="material-symbols-outlined text-[16px] text-primary">
                   precision_manufacturing
                 </span>
                 <span>Kỹ thuật &amp; Tự động hóa</span>
               </button>
-              <button className="px-space-md py-space-xs rounded-full bg-surface-container text-on-surface font-label-md text-label-md hover:bg-surface-container-high shrink-0 transition-colors flex items-center gap-1">
+              <button
+                onClick={() => handleCategoryShortcut("social-sciences")}
+                className={`px-space-md py-space-xs rounded-full ${filterSelected.includes("social-sciences") ? "bg-primary text-on-primary" : "bg-surface-container text-on-surface hover:bg-surface-container-high"} font-label-md text-label-md shrink-0 transition-colors flex items-center gap-1`}
+              >
                 <span className="material-symbols-outlined text-[16px] text-outline">
                   group
                 </span>
@@ -140,7 +313,7 @@ function MajorsPage() {
                       Bộ lọc khám phá
                     </h2>
                   </div>
-                  <button className="font-label-sm text-label-sm text-secondary hover:underline cursor-pointer">
+                  <button onClick={handleResetFilters} className="font-label-sm text-label-sm text-secondary hover:underline cursor-pointer">
                     Đặt lại
                   </button>
                 </div>
@@ -150,7 +323,7 @@ function MajorsPage() {
                     Nhóm ngành lớn
                   </label>
                   <div className="space-y-1">
-                    {filterData.categories.map((category, index) => {
+                    {filterData.categories.map((category) => {
                       return (
                         <label
                           key={category.id}
@@ -158,9 +331,10 @@ function MajorsPage() {
                         >
                           <span className="flex items-center gap-space-xs font-body-sm text-body-sm text-on-surface">
                             <input
-                              defaultChecked={index === 0}
                               className="w-4 h-4 rounded text-primary accent-primary"
                               type="checkbox"
+                              onChange={() => handleFilterClick(category.id)}
+                              checked={filterSelected.includes(category.id)}
                             />
                             <span>{category.label}</span>
                           </span>
@@ -171,20 +345,24 @@ function MajorsPage() {
                   </div>
                 </div>
 
-                <div className="space-y-space-xs pt-space-xs border-t border-surface-container">
+                <div className="space-y-space-xs pt-space-xs h-[210px] border-t border-surface-container">
                   <label className="font-label-lg text-label-lg text-on-surface block">
                     Bạn thích làm gì?
                   </label>
                   <p className="font-body-sm text-[12px] text-outline">
                     Chọn các hoạt động bạn cảm thấy hào hứng:
                   </p>
-                  <div className="flex flex-wrap gap-1.5 pt-1">
-                    {majorsFilter.interests.map((interest, index) => {
+                  <div className="flex flex-wrap gap-1.5 pt-1 ">
+                    {majorsFilter.interests.map((interest) => {
                       return (
-                        <button className="px-space-sm py-1 rounded-full cursor-pointer bg-primary-fixed text-primary font-label-sm text-label-sm flex items-center gap-1">
+                        <button
+                          key={interest.id}
+                          className="px-space-sm py-1 h-[24px] rounded-full cursor-pointer bg-primary-fixed text-primary font-label-sm text-label-sm flex items-center gap-1"
+                          onClick={() => handleFilterClick(interest.id)}
+                        >
                           <span>{interest.label}</span>
-                          {index === 0 && (
-                            <span className="material-symbols-outlined text-[13px]">
+                          {filterSelected.includes(interest.id) && (
+                            <span className="material-symbols-outlined text-[9px]">
                               check
                             </span>
                           )}
@@ -207,15 +385,19 @@ function MajorsPage() {
                     </span>
                   </div>
                   <div className="grid grid-cols-2 gap-1.5 pt-1">
-                    {majorsFilter.riasec.map((riasec, index) => {
+                    {majorsFilter.riasec.map((riasec) => {
                       return (
-                        <button className="p-2 rounded-lg bg-surface-container hover:bg-surface-container-high text-left transition-colors">
+                        <button
+                          key={riasec.id}
+                          className="p-2 rounded-lg bg-surface-container hover:bg-surface-container-high text-left transition-colors"
+                          onClick={() => handleFilterClick(riasec.id)}
+                        >
                           <span className="font-label-sm text-label-sm block text-outline">
                             {riasec.id} - {riasec.label}
                           </span>
                           <span className="font-body-sm text-[13px] text-on-surface font-medium flex items-center gap-1">
                             {riasec.description}
-                            {index === 0 && (
+                            {filterSelected.includes(riasec.id) && (
                               <span className="material-symbols-outlined text-[13px]">
                                 check
                               </span>
@@ -232,10 +414,12 @@ function MajorsPage() {
                     Tổ hợp môn thế mạnh
                   </label>
                   <div className="flex flex-wrap gap-1.5 pt-1">
-                    {majorsFilter.admissionCombinations.map((major, index) => {
+                    {majorsFilter.admissionCombinations.map((major) => {
                       return (
                         <span
-                          className={`px-space-sm py-1 rounded ${index === 0 ? "bg-primary text-on-primary" : "bg-amber-100 text-on-surface"} font-label-md text-label-md cursor-pointer hover:bg-primary hover:text-on-primary transition-colors`}
+                          onClick={() => handleFilterClick(major.id)}
+                          key={major.id}
+                          className={`px-space-sm py-1 rounded ${filterSelected.includes(major.id) ? "bg-primary text-on-primary" : "bg-amber-100 text-on-surface"} font-label-md text-label-md cursor-pointer hover:bg-primary hover:text-on-primary transition-colors`}
                         >
                           {major.label} {major.subjects.join(", ")}
                         </span>
@@ -270,33 +454,10 @@ function MajorsPage() {
             <section className="lg:col-span-8 xl:col-span-7 space-y-space-md">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-space-sm pb-space-sm">
                 <div className="space-y-1">
-                  <div className="flex flex-wrap items-center gap-1.5">
-                    <span className="inline-flex items-center gap-1 px-space-sm py-0.5 rounded-full bg-surface-container-high text-on-surface font-label-sm text-label-sm">
-                      Công nghệ &amp; AI
-                      <span className="material-symbols-outlined text-[14px] cursor-pointer hover:text-error">
-                        close
-                      </span>
-                    </span>
-                    <span className="inline-flex items-center gap-1 px-space-sm py-0.5 rounded-full bg-surface-container-high text-on-surface font-label-sm text-label-sm">
-                      Hoạt động: Phân tích &amp; Code
-                      <span className="material-symbols-outlined text-[14px] cursor-pointer hover:text-error">
-                        close
-                      </span>
-                    </span>
-                    <span className="inline-flex items-center gap-1 px-space-sm py-0.5 rounded-full bg-surface-container-high text-on-surface font-label-sm text-label-sm">
-                      Sở thích: I - Nghiên cứu
-                      <span className="material-symbols-outlined text-[14px] cursor-pointer hover:text-error">
-                        close
-                      </span>
-                    </span>
-                    <button className="font-label-sm text-label-sm text-outline hover:text-primary underline ml-1">
-                      Xóa tất cả bộ lọc
-                    </button>
-                  </div>
                   <div className="font-body-sm text-body-sm text-outline">
                     Tìm thấy{" "}
                     <strong className="text-on-surface font-semibold">
-                      28 ngành
+                      {filteredMajors.length} ngành
                     </strong>{" "}
                     phù hợp với tiêu chí lọc của bạn
                   </div>
@@ -306,19 +467,27 @@ function MajorsPage() {
                   <label className="font-body-sm text-body-sm text-outline">
                     Sắp xếp:
                   </label>
-                  <select className="bg-surface-container-lowest text-on-surface font-label-md text-label-md rounded-lg px-space-sm py-1.5 outline-none cursor-pointer shadow-sm">
-                    <option>Độ tương thích cao nhất</option>
-                    <option>Số trường đào tạo (Nhiều nhất)</option>
-                    <option>Tên ngành: A → Z</option>
+                  <select
+                    className="bg-surface-container-lowest text-on-surface font-label-md text-label-md rounded-lg px-space-sm py-1.5 outline-none cursor-pointer shadow-sm"
+                    value={sortBy}
+                    onChange={(event) => {
+                      setSortBy(event.target.value);
+                      setVisibleCount(PAGE_SIZE);
+                    }}
+                  >
+                    <option value="relevance">Độ tương thích cao nhất</option>
+                    <option value="university-count">Số trường đào tạo (Nhiều nhất)</option>
+                    <option value="name">Tên ngành: A → Z</option>
                   </select>
                 </div>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-space-md">
-                {majors.slice(0, 6).map((major) => (
+                {visibleMajors.map((major, index) => (
                   <div
+                    ref={index === firstNewResultIndex ? progressBarRef : null}
                     key={major.id}
-                    className="group relative rounded-xl bg-surface-container-lowest p-space-md flex flex-col justify-between shadow-sm hover:shadow-md hover:-translate-y-1 transition-all"
+                    className="scroll-mt-4 group relative rounded-xl bg-surface-container-lowest p-space-md flex flex-col justify-between shadow-sm hover:shadow-md hover:-translate-y-1 transition-all"
                   >
                     {/* Nội dung */}
                     <div className="space-y-space-sm">
@@ -439,33 +608,53 @@ function MajorsPage() {
                       </a>
 
                       {/* Explore */}
-                      <a
+                      <Link
                         className="inline-flex items-center gap-1 px-space-md py-space-xs rounded-full bg-primary-container hover:bg-primary text-on-primary font-label-md text-label-md shadow-sm transition-all group-hover:px-space-lg"
-                        href="#"
+                        to={`/majors/software-engineering?majorId=${major.id}`}
                       >
                         <span>Khám phá ngành</span>
 
                         <span className="material-symbols-outlined text-[16px]">
                           arrow_forward
                         </span>
-                      </a>
+                      </Link>
                     </div>
                   </div>
                 ))}
+                {filteredMajors.length === 0 && (
+                  <div className="md:col-span-2 rounded-xl bg-surface-container-lowest p-space-lg text-center shadow-sm">
+                    <span className="material-symbols-outlined text-[32px] text-outline">
+                      search_off
+                    </span>
+                    <p className="font-body-md text-body-md text-on-surface mt-space-xs">
+                      Không tìm thấy ngành phù hợp
+                    </p>
+                    <button
+                      onClick={handleResetFilters}
+                      className="font-label-md text-label-md text-primary hover:underline mt-space-xs"
+                    >
+                      Đặt lại tìm kiếm và bộ lọc
+                    </button>
+                  </div>
+                )}
               </div>
 
               <div className="flex flex-col items-center justify-center pt-space-lg pb-space-md space-y-space-sm">
                 <p className="font-body-sm text-body-sm text-outline">
                   Đang hiển thị{" "}
-                  <span className="font-semibold text-on-surface">6</span> trên
+                  <span className="font-semibold text-on-surface">{visibleMajors.length}</span> trên
                   tổng số{" "}
-                  <span className="font-semibold text-on-surface">28</span>{" "}
+                  <span className="font-semibold text-on-surface">{filteredMajors.length}</span>{" "}
                   ngành phù hợp
                 </p>
                 <div className="w-48 h-1.5 bg-surface-container rounded-full overflow-hidden">
-                  <div className="w-[21%] h-full bg-primary-container rounded-full"></div>
+                  <div className="h-full bg-primary-container rounded-full" style={{ width: `${progress}%` }}></div>
                 </div>
-                <button className="mt-2 px-space-xl py-space-sm rounded-full bg-surface-container-low hover:bg-surface-container text-on-surface font-label-lg text-label-lg transition-colors flex items-center gap-space-xs shadow-sm">
+                <button
+                  onClick={handleLoadMore}
+                  disabled={!hasMore}
+                  className="mt-2 px-space-xl py-space-sm rounded-full bg-surface-container-low cursor-pointer hover:bg-surface-container text-on-surface font-label-lg text-label-lg transition-colors flex items-center gap-space-xs shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
+                >
                   <span>Xem thêm 6 ngành kế tiếp</span>
                   <span className="material-symbols-outlined text-[18px]">
                     expand_more

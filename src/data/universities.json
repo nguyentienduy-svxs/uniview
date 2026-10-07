@@ -1,0 +1,3014 @@
+{
+  "metadata": {
+    "total": 42,
+    "verifiedAt": "2026-10-07",
+    "country": "Việt Nam",
+    "scope": "Danh sách dữ liệu nền cho trang khám phá trường đại học UniView.",
+    "annualDataPolicy": "Học phí và điểm chuẩn là khoảng tham chiếu theo ngành/chương trình; người dùng cần đối chiếu đề án chính thức của từng trường.",
+    "tuitionAcademicYear": "2025-2026",
+    "admissionReferenceYear": 2025
+  },
+  "filters": {
+    "regions": [
+      {
+        "id": "ho-chi-minh-city",
+        "label": "TP. Hồ Chí Minh",
+        "count": 19
+      },
+      {
+        "id": "ha-noi",
+        "label": "Hà Nội",
+        "count": 13
+      },
+      {
+        "id": "central",
+        "label": "Đà Nẵng & Miền Trung",
+        "count": 6
+      },
+      {
+        "id": "mekong-delta",
+        "label": "Cần Thơ & ĐBSCL",
+        "count": 4
+      }
+    ],
+    "ownerships": [
+      {
+        "id": "public",
+        "label": "Công lập",
+        "count": 38
+      },
+      {
+        "id": "private",
+        "label": "Tư thục",
+        "count": 3
+      },
+      {
+        "id": "international",
+        "label": "Quốc tế",
+        "count": 1
+      }
+    ],
+    "tuitionBands": [
+      {
+        "id": "under-30",
+        "label": "Dưới 30M",
+        "min": 0,
+        "max": 30
+      },
+      {
+        "id": "30-50",
+        "label": "30M - 50M",
+        "min": 30,
+        "max": 50
+      },
+      {
+        "id": "50-80",
+        "label": "50M - 80M",
+        "min": 50,
+        "max": 80
+      },
+      {
+        "id": "over-100",
+        "label": "> 100M",
+        "min": 100,
+        "max": null
+      }
+    ],
+    "admissionMethods": [
+      {
+        "id": "competency",
+        "label": "Đánh giá năng lực (ĐGNL HCM/HN)"
+      },
+      {
+        "id": "thpt",
+        "label": "Điểm thi tốt nghiệp THPT"
+      },
+      {
+        "id": "language",
+        "label": "Chứng chỉ ngoại ngữ kết hợp"
+      },
+      {
+        "id": "transcript-interview",
+        "label": "Xét học bạ kết hợp/phỏng vấn"
+      },
+      {
+        "id": "direct",
+        "label": "Tuyển thẳng/ưu tiên xét tuyển"
+      },
+      {
+        "id": "portfolio",
+        "label": "Xét hồ sơ và điều kiện riêng"
+      }
+    ],
+    "scoreBands": [
+      {
+        "id": "20-24",
+        "label": "20 - 24đ",
+        "min": 20,
+        "max": 24
+      },
+      {
+        "id": "24-27.5",
+        "label": "24 - 27.5đ",
+        "min": 24,
+        "max": 27.5
+      },
+      {
+        "id": "over-27.5",
+        "label": "> 27.5đ",
+        "min": 27.5,
+        "max": null
+      }
+    ]
+  },
+  "universities": [
+    {
+      "id": "uit-vnuhcm",
+      "code": "QSC",
+      "shortName": "UIT",
+      "name": "Trường Đại học Công nghệ Thông tin, Đại học Quốc gia Thành phố Hồ Chí Minh",
+      "ownership": "public",
+      "regionId": "ho-chi-minh-city",
+      "city": "Thành phố Hồ Chí Minh",
+      "parentSystem": "Đại học Quốc gia Thành phố Hồ Chí Minh",
+      "website": "https://www.uit.edu.vn",
+      "image": "/stitch-assets/uit-campus-card.jpg",
+      "icon": "terminal",
+      "featuredMajors": [
+        "Công nghệ Thông tin",
+        "Kỹ thuật Phần mềm",
+        "An toàn Thông tin"
+      ],
+      "ownershipLabel": "Công lập",
+      "location": {
+        "regionId": "ho-chi-minh-city",
+        "city": "Thành phố Hồ Chí Minh",
+        "campus": null,
+        "address": null
+      },
+      "tuition": {
+        "academicYear": "2025-2026",
+        "minMillionVnd": 32,
+        "maxMillionVnd": 48,
+        "unit": "triệu đồng/năm",
+        "isReference": true,
+        "note": "Khoảng tham chiếu tổng hợp; mức thực tế phụ thuộc ngành và chương trình đào tạo.",
+        "sourceUrl": "https://www.uit.edu.vn"
+      },
+      "admission": {
+        "academicYear": 2025,
+        "methods": [
+          {
+            "id": "competency",
+            "label": "Đánh giá năng lực (ĐGNL HCM/HN)"
+          },
+          {
+            "id": "thpt",
+            "label": "Điểm thi tốt nghiệp THPT"
+          },
+          {
+            "id": "direct",
+            "label": "Tuyển thẳng/ưu tiên xét tuyển"
+          }
+        ],
+        "scoreRange": {
+          "min": 22,
+          "max": 28.3,
+          "scale": 30,
+          "type": "thpt-reference",
+          "isReference": true,
+          "label": "22 - 28.3 điểm"
+        },
+        "note": "Khoảng tham chiếu giữa các ngành; không thay thế thông báo trúng tuyển chính thức.",
+        "sourceUrl": "https://www.uit.edu.vn"
+      },
+      "source": {
+        "officialWebsite": "https://www.uit.edu.vn",
+        "identityVerifiedAt": "2026-10-07"
+      }
+    },
+    {
+      "id": "hcmut-vnuhcm",
+      "code": "QSB",
+      "shortName": "HCMUT",
+      "name": "Trường Đại học Bách khoa, Đại học Quốc gia Thành phố Hồ Chí Minh",
+      "ownership": "public",
+      "regionId": "ho-chi-minh-city",
+      "city": "Thành phố Hồ Chí Minh",
+      "parentSystem": "Đại học Quốc gia Thành phố Hồ Chí Minh",
+      "website": "https://hcmut.edu.vn",
+      "image": "/stitch-assets/hcmut-student-campus.jpg",
+      "icon": "precision_manufacturing",
+      "featuredMajors": [
+        "Khoa học Máy tính",
+        "Kỹ thuật Cơ - Điện tử",
+        "Kỹ thuật Điện tử - Viễn thông"
+      ],
+      "ownershipLabel": "Công lập",
+      "location": {
+        "regionId": "ho-chi-minh-city",
+        "city": "Thành phố Hồ Chí Minh",
+        "campus": null,
+        "address": null
+      },
+      "tuition": {
+        "academicYear": "2025-2026",
+        "minMillionVnd": 30,
+        "maxMillionVnd": 80,
+        "unit": "triệu đồng/năm",
+        "isReference": true,
+        "note": "Khoảng tham chiếu tổng hợp; mức thực tế phụ thuộc ngành và chương trình đào tạo.",
+        "sourceUrl": "https://hcmut.edu.vn"
+      },
+      "admission": {
+        "academicYear": 2025,
+        "methods": [
+          {
+            "id": "competency",
+            "label": "Đánh giá năng lực (ĐGNL HCM/HN)"
+          },
+          {
+            "id": "thpt",
+            "label": "Điểm thi tốt nghiệp THPT"
+          },
+          {
+            "id": "language",
+            "label": "Chứng chỉ ngoại ngữ kết hợp"
+          },
+          {
+            "id": "direct",
+            "label": "Tuyển thẳng/ưu tiên xét tuyển"
+          }
+        ],
+        "scoreRange": {
+          "min": 23,
+          "max": 29,
+          "scale": 30,
+          "type": "thpt-reference",
+          "isReference": true,
+          "label": "23 - 29 điểm"
+        },
+        "note": "Khoảng tham chiếu giữa các ngành; không thay thế thông báo trúng tuyển chính thức.",
+        "sourceUrl": "https://hcmut.edu.vn"
+      },
+      "source": {
+        "officialWebsite": "https://hcmut.edu.vn",
+        "identityVerifiedAt": "2026-10-07"
+      }
+    },
+    {
+      "id": "hcmus-vnuhcm",
+      "code": "QST",
+      "shortName": "HCMUS",
+      "name": "Trường Đại học Khoa học Tự nhiên, Đại học Quốc gia Thành phố Hồ Chí Minh",
+      "ownership": "public",
+      "regionId": "ho-chi-minh-city",
+      "city": "Thành phố Hồ Chí Minh",
+      "parentSystem": "Đại học Quốc gia Thành phố Hồ Chí Minh",
+      "website": "https://hcmus.edu.vn",
+      "image": "/stitch-assets/hcmus-research-lab.jpg",
+      "icon": "biotech",
+      "featuredMajors": [
+        "Khoa học Dữ liệu",
+        "Trí tuệ Nhân tạo",
+        "Công nghệ Sinh học"
+      ],
+      "ownershipLabel": "Công lập",
+      "location": {
+        "regionId": "ho-chi-minh-city",
+        "city": "Thành phố Hồ Chí Minh",
+        "campus": null,
+        "address": null
+      },
+      "tuition": {
+        "academicYear": "2025-2026",
+        "minMillionVnd": 27,
+        "maxMillionVnd": 40,
+        "unit": "triệu đồng/năm",
+        "isReference": true,
+        "note": "Khoảng tham chiếu tổng hợp; mức thực tế phụ thuộc ngành và chương trình đào tạo.",
+        "sourceUrl": "https://hcmus.edu.vn"
+      },
+      "admission": {
+        "academicYear": 2025,
+        "methods": [
+          {
+            "id": "competency",
+            "label": "Đánh giá năng lực (ĐGNL HCM/HN)"
+          },
+          {
+            "id": "thpt",
+            "label": "Điểm thi tốt nghiệp THPT"
+          },
+          {
+            "id": "direct",
+            "label": "Tuyển thẳng/ưu tiên xét tuyển"
+          }
+        ],
+        "scoreRange": {
+          "min": 17,
+          "max": 28.5,
+          "scale": 30,
+          "type": "thpt-reference",
+          "isReference": true,
+          "label": "17 - 28.5 điểm"
+        },
+        "note": "Khoảng tham chiếu giữa các ngành; không thay thế thông báo trúng tuyển chính thức.",
+        "sourceUrl": "https://hcmus.edu.vn"
+      },
+      "source": {
+        "officialWebsite": "https://hcmus.edu.vn",
+        "identityVerifiedAt": "2026-10-07"
+      }
+    },
+    {
+      "id": "iu-vnuhcm",
+      "code": "QSQ",
+      "shortName": "IU",
+      "name": "Trường Đại học Quốc tế, Đại học Quốc gia Thành phố Hồ Chí Minh",
+      "ownership": "public",
+      "regionId": "ho-chi-minh-city",
+      "city": "Thành phố Hồ Chí Minh",
+      "parentSystem": "Đại học Quốc gia Thành phố Hồ Chí Minh",
+      "website": "https://hcmiu.edu.vn",
+      "image": null,
+      "icon": "language",
+      "featuredMajors": [
+        "Khoa học Máy tính",
+        "Logistics và Quản lý chuỗi cung ứng",
+        "Kỹ thuật Y sinh"
+      ],
+      "ownershipLabel": "Công lập",
+      "location": {
+        "regionId": "ho-chi-minh-city",
+        "city": "Thành phố Hồ Chí Minh",
+        "campus": null,
+        "address": null
+      },
+      "tuition": {
+        "academicYear": "2025-2026",
+        "minMillionVnd": 50,
+        "maxMillionVnd": 60,
+        "unit": "triệu đồng/năm",
+        "isReference": true,
+        "note": "Khoảng tham chiếu tổng hợp; mức thực tế phụ thuộc ngành và chương trình đào tạo.",
+        "sourceUrl": "https://hcmiu.edu.vn"
+      },
+      "admission": {
+        "academicYear": 2025,
+        "methods": [
+          {
+            "id": "competency",
+            "label": "Đánh giá năng lực (ĐGNL HCM/HN)"
+          },
+          {
+            "id": "thpt",
+            "label": "Điểm thi tốt nghiệp THPT"
+          },
+          {
+            "id": "language",
+            "label": "Chứng chỉ ngoại ngữ kết hợp"
+          },
+          {
+            "id": "direct",
+            "label": "Tuyển thẳng/ưu tiên xét tuyển"
+          }
+        ],
+        "scoreRange": {
+          "min": 18,
+          "max": 26,
+          "scale": 30,
+          "type": "thpt-reference",
+          "isReference": true,
+          "label": "18 - 26 điểm"
+        },
+        "note": "Khoảng tham chiếu giữa các ngành; không thay thế thông báo trúng tuyển chính thức.",
+        "sourceUrl": "https://hcmiu.edu.vn"
+      },
+      "source": {
+        "officialWebsite": "https://hcmiu.edu.vn",
+        "identityVerifiedAt": "2026-10-07"
+      }
+    },
+    {
+      "id": "ussh-vnuhcm",
+      "code": "QSX",
+      "shortName": "USSH",
+      "name": "Trường Đại học Khoa học Xã hội và Nhân văn, Đại học Quốc gia Thành phố Hồ Chí Minh",
+      "ownership": "public",
+      "regionId": "ho-chi-minh-city",
+      "city": "Thành phố Hồ Chí Minh",
+      "parentSystem": "Đại học Quốc gia Thành phố Hồ Chí Minh",
+      "website": "https://hcmussh.edu.vn",
+      "image": null,
+      "icon": "history_edu",
+      "featuredMajors": [
+        "Báo chí",
+        "Quan hệ Quốc tế",
+        "Ngôn ngữ Anh"
+      ],
+      "ownershipLabel": "Công lập",
+      "location": {
+        "regionId": "ho-chi-minh-city",
+        "city": "Thành phố Hồ Chí Minh",
+        "campus": null,
+        "address": null
+      },
+      "tuition": {
+        "academicYear": "2025-2026",
+        "minMillionVnd": 30,
+        "maxMillionVnd": 60,
+        "unit": "triệu đồng/năm",
+        "isReference": true,
+        "note": "Khoảng tham chiếu tổng hợp; mức thực tế phụ thuộc ngành và chương trình đào tạo.",
+        "sourceUrl": "https://hcmussh.edu.vn"
+      },
+      "admission": {
+        "academicYear": 2025,
+        "methods": [
+          {
+            "id": "competency",
+            "label": "Đánh giá năng lực (ĐGNL HCM/HN)"
+          },
+          {
+            "id": "thpt",
+            "label": "Điểm thi tốt nghiệp THPT"
+          },
+          {
+            "id": "language",
+            "label": "Chứng chỉ ngoại ngữ kết hợp"
+          },
+          {
+            "id": "direct",
+            "label": "Tuyển thẳng/ưu tiên xét tuyển"
+          }
+        ],
+        "scoreRange": {
+          "min": 20,
+          "max": 29,
+          "scale": 30,
+          "type": "thpt-reference",
+          "isReference": true,
+          "label": "20 - 29 điểm"
+        },
+        "note": "Khoảng tham chiếu giữa các ngành; không thay thế thông báo trúng tuyển chính thức.",
+        "sourceUrl": "https://hcmussh.edu.vn"
+      },
+      "source": {
+        "officialWebsite": "https://hcmussh.edu.vn",
+        "identityVerifiedAt": "2026-10-07"
+      }
+    },
+    {
+      "id": "uel-vnuhcm",
+      "code": "QSK",
+      "shortName": "UEL",
+      "name": "Trường Đại học Kinh tế - Luật, Đại học Quốc gia Thành phố Hồ Chí Minh",
+      "ownership": "public",
+      "regionId": "ho-chi-minh-city",
+      "city": "Thành phố Hồ Chí Minh",
+      "parentSystem": "Đại học Quốc gia Thành phố Hồ Chí Minh",
+      "website": "https://uel.edu.vn",
+      "image": null,
+      "icon": "account_balance",
+      "featuredMajors": [
+        "Kinh doanh Quốc tế",
+        "Tài chính - Ngân hàng",
+        "Luật Kinh tế"
+      ],
+      "ownershipLabel": "Công lập",
+      "location": {
+        "regionId": "ho-chi-minh-city",
+        "city": "Thành phố Hồ Chí Minh",
+        "campus": null,
+        "address": null
+      },
+      "tuition": {
+        "academicYear": "2025-2026",
+        "minMillionVnd": 28,
+        "maxMillionVnd": 60,
+        "unit": "triệu đồng/năm",
+        "isReference": true,
+        "note": "Khoảng tham chiếu tổng hợp; mức thực tế phụ thuộc ngành và chương trình đào tạo.",
+        "sourceUrl": "https://uel.edu.vn"
+      },
+      "admission": {
+        "academicYear": 2025,
+        "methods": [
+          {
+            "id": "competency",
+            "label": "Đánh giá năng lực (ĐGNL HCM/HN)"
+          },
+          {
+            "id": "thpt",
+            "label": "Điểm thi tốt nghiệp THPT"
+          },
+          {
+            "id": "language",
+            "label": "Chứng chỉ ngoại ngữ kết hợp"
+          },
+          {
+            "id": "direct",
+            "label": "Tuyển thẳng/ưu tiên xét tuyển"
+          }
+        ],
+        "scoreRange": {
+          "min": 23,
+          "max": 28,
+          "scale": 30,
+          "type": "thpt-reference",
+          "isReference": true,
+          "label": "23 - 28 điểm"
+        },
+        "note": "Khoảng tham chiếu giữa các ngành; không thay thế thông báo trúng tuyển chính thức.",
+        "sourceUrl": "https://uel.edu.vn"
+      },
+      "source": {
+        "officialWebsite": "https://uel.edu.vn",
+        "identityVerifiedAt": "2026-10-07"
+      }
+    },
+    {
+      "id": "ueh",
+      "code": "KSA",
+      "shortName": "UEH",
+      "name": "Đại học Kinh tế Thành phố Hồ Chí Minh",
+      "ownership": "public",
+      "regionId": "ho-chi-minh-city",
+      "city": "Thành phố Hồ Chí Minh",
+      "parentSystem": null,
+      "website": "https://ueh.edu.vn",
+      "image": "/stitch-assets/modern-university-campus.jpg",
+      "icon": "query_stats",
+      "featuredMajors": [
+        "Kinh doanh Quốc tế",
+        "Tài chính - Ngân hàng",
+        "Thương mại Điện tử"
+      ],
+      "ownershipLabel": "Công lập",
+      "location": {
+        "regionId": "ho-chi-minh-city",
+        "city": "Thành phố Hồ Chí Minh",
+        "campus": null,
+        "address": null
+      },
+      "tuition": {
+        "academicYear": "2025-2026",
+        "minMillionVnd": 30,
+        "maxMillionVnd": 65,
+        "unit": "triệu đồng/năm",
+        "isReference": true,
+        "note": "Khoảng tham chiếu tổng hợp; mức thực tế phụ thuộc ngành và chương trình đào tạo.",
+        "sourceUrl": "https://ueh.edu.vn"
+      },
+      "admission": {
+        "academicYear": 2025,
+        "methods": [
+          {
+            "id": "competency",
+            "label": "Đánh giá năng lực (ĐGNL HCM/HN)"
+          },
+          {
+            "id": "thpt",
+            "label": "Điểm thi tốt nghiệp THPT"
+          },
+          {
+            "id": "language",
+            "label": "Chứng chỉ ngoại ngữ kết hợp"
+          },
+          {
+            "id": "transcript-interview",
+            "label": "Xét học bạ kết hợp/phỏng vấn"
+          },
+          {
+            "id": "direct",
+            "label": "Tuyển thẳng/ưu tiên xét tuyển"
+          }
+        ],
+        "scoreRange": {
+          "min": 22,
+          "max": 28,
+          "scale": 30,
+          "type": "thpt-reference",
+          "isReference": true,
+          "label": "22 - 28 điểm"
+        },
+        "note": "Khoảng tham chiếu giữa các ngành; không thay thế thông báo trúng tuyển chính thức.",
+        "sourceUrl": "https://ueh.edu.vn"
+      },
+      "source": {
+        "officialWebsite": "https://ueh.edu.vn",
+        "identityVerifiedAt": "2026-10-07"
+      }
+    },
+    {
+      "id": "hcmute",
+      "code": "SPK",
+      "shortName": "HCMUTE",
+      "name": "Trường Đại học Sư phạm Kỹ thuật Thành phố Hồ Chí Minh",
+      "ownership": "public",
+      "regionId": "ho-chi-minh-city",
+      "city": "Thành phố Hồ Chí Minh",
+      "parentSystem": null,
+      "website": "https://hcmute.edu.vn",
+      "image": null,
+      "icon": "engineering",
+      "featuredMajors": [
+        "Kỹ thuật Cơ - Điện tử",
+        "Kỹ thuật Điều khiển và Tự động hóa",
+        "Công nghệ Thông tin"
+      ],
+      "ownershipLabel": "Công lập",
+      "location": {
+        "regionId": "ho-chi-minh-city",
+        "city": "Thành phố Hồ Chí Minh",
+        "campus": null,
+        "address": null
+      },
+      "tuition": {
+        "academicYear": "2025-2026",
+        "minMillionVnd": 28,
+        "maxMillionVnd": 50,
+        "unit": "triệu đồng/năm",
+        "isReference": true,
+        "note": "Khoảng tham chiếu tổng hợp; mức thực tế phụ thuộc ngành và chương trình đào tạo.",
+        "sourceUrl": "https://hcmute.edu.vn"
+      },
+      "admission": {
+        "academicYear": 2025,
+        "methods": [
+          {
+            "id": "competency",
+            "label": "Đánh giá năng lực (ĐGNL HCM/HN)"
+          },
+          {
+            "id": "thpt",
+            "label": "Điểm thi tốt nghiệp THPT"
+          },
+          {
+            "id": "language",
+            "label": "Chứng chỉ ngoại ngữ kết hợp"
+          },
+          {
+            "id": "transcript-interview",
+            "label": "Xét học bạ kết hợp/phỏng vấn"
+          },
+          {
+            "id": "direct",
+            "label": "Tuyển thẳng/ưu tiên xét tuyển"
+          }
+        ],
+        "scoreRange": {
+          "min": 19,
+          "max": 28,
+          "scale": 30,
+          "type": "thpt-reference",
+          "isReference": true,
+          "label": "19 - 28 điểm"
+        },
+        "note": "Khoảng tham chiếu giữa các ngành; không thay thế thông báo trúng tuyển chính thức.",
+        "sourceUrl": "https://hcmute.edu.vn"
+      },
+      "source": {
+        "officialWebsite": "https://hcmute.edu.vn",
+        "identityVerifiedAt": "2026-10-07"
+      }
+    },
+    {
+      "id": "tdtu",
+      "code": "DTT",
+      "shortName": "TDTU",
+      "name": "Trường Đại học Tôn Đức Thắng",
+      "ownership": "public",
+      "regionId": "ho-chi-minh-city",
+      "city": "Thành phố Hồ Chí Minh",
+      "parentSystem": null,
+      "website": "https://tdtu.edu.vn",
+      "image": null,
+      "icon": "school",
+      "featuredMajors": [
+        "Khoa học Máy tính",
+        "Quản trị Kinh doanh",
+        "Thiết kế Đồ họa"
+      ],
+      "ownershipLabel": "Công lập",
+      "location": {
+        "regionId": "ho-chi-minh-city",
+        "city": "Thành phố Hồ Chí Minh",
+        "campus": null,
+        "address": null
+      },
+      "tuition": {
+        "academicYear": "2025-2026",
+        "minMillionVnd": 28,
+        "maxMillionVnd": 60,
+        "unit": "triệu đồng/năm",
+        "isReference": true,
+        "note": "Khoảng tham chiếu tổng hợp; mức thực tế phụ thuộc ngành và chương trình đào tạo.",
+        "sourceUrl": "https://tdtu.edu.vn"
+      },
+      "admission": {
+        "academicYear": 2025,
+        "methods": [
+          {
+            "id": "competency",
+            "label": "Đánh giá năng lực (ĐGNL HCM/HN)"
+          },
+          {
+            "id": "thpt",
+            "label": "Điểm thi tốt nghiệp THPT"
+          },
+          {
+            "id": "language",
+            "label": "Chứng chỉ ngoại ngữ kết hợp"
+          },
+          {
+            "id": "transcript-interview",
+            "label": "Xét học bạ kết hợp/phỏng vấn"
+          },
+          {
+            "id": "direct",
+            "label": "Tuyển thẳng/ưu tiên xét tuyển"
+          }
+        ],
+        "scoreRange": {
+          "min": 20,
+          "max": 28,
+          "scale": 30,
+          "type": "thpt-reference",
+          "isReference": true,
+          "label": "20 - 28 điểm"
+        },
+        "note": "Khoảng tham chiếu giữa các ngành; không thay thế thông báo trúng tuyển chính thức.",
+        "sourceUrl": "https://tdtu.edu.vn"
+      },
+      "source": {
+        "officialWebsite": "https://tdtu.edu.vn",
+        "identityVerifiedAt": "2026-10-07"
+      }
+    },
+    {
+      "id": "hcmcou",
+      "code": "MBS",
+      "shortName": "HCMCOU",
+      "name": "Trường Đại học Mở Thành phố Hồ Chí Minh",
+      "ownership": "public",
+      "regionId": "ho-chi-minh-city",
+      "city": "Thành phố Hồ Chí Minh",
+      "parentSystem": null,
+      "website": "https://ou.edu.vn",
+      "image": null,
+      "icon": "menu_book",
+      "featuredMajors": [
+        "Quản trị Kinh doanh",
+        "Ngôn ngữ Anh",
+        "Công nghệ Thông tin"
+      ],
+      "ownershipLabel": "Công lập",
+      "location": {
+        "regionId": "ho-chi-minh-city",
+        "city": "Thành phố Hồ Chí Minh",
+        "campus": null,
+        "address": null
+      },
+      "tuition": {
+        "academicYear": "2025-2026",
+        "minMillionVnd": 24,
+        "maxMillionVnd": 48,
+        "unit": "triệu đồng/năm",
+        "isReference": true,
+        "note": "Khoảng tham chiếu tổng hợp; mức thực tế phụ thuộc ngành và chương trình đào tạo.",
+        "sourceUrl": "https://ou.edu.vn"
+      },
+      "admission": {
+        "academicYear": 2025,
+        "methods": [
+          {
+            "id": "competency",
+            "label": "Đánh giá năng lực (ĐGNL HCM/HN)"
+          },
+          {
+            "id": "thpt",
+            "label": "Điểm thi tốt nghiệp THPT"
+          },
+          {
+            "id": "language",
+            "label": "Chứng chỉ ngoại ngữ kết hợp"
+          },
+          {
+            "id": "transcript-interview",
+            "label": "Xét học bạ kết hợp/phỏng vấn"
+          },
+          {
+            "id": "direct",
+            "label": "Tuyển thẳng/ưu tiên xét tuyển"
+          }
+        ],
+        "scoreRange": {
+          "min": 16,
+          "max": 25.5,
+          "scale": 30,
+          "type": "thpt-reference",
+          "isReference": true,
+          "label": "16 - 25.5 điểm"
+        },
+        "note": "Khoảng tham chiếu giữa các ngành; không thay thế thông báo trúng tuyển chính thức.",
+        "sourceUrl": "https://ou.edu.vn"
+      },
+      "source": {
+        "officialWebsite": "https://ou.edu.vn",
+        "identityVerifiedAt": "2026-10-07"
+      }
+    },
+    {
+      "id": "ufm",
+      "code": "DMS",
+      "shortName": "UFM",
+      "name": "Trường Đại học Tài chính - Marketing",
+      "ownership": "public",
+      "regionId": "ho-chi-minh-city",
+      "city": "Thành phố Hồ Chí Minh",
+      "parentSystem": null,
+      "website": "https://ufm.edu.vn",
+      "image": null,
+      "icon": "campaign",
+      "featuredMajors": [
+        "Marketing",
+        "Tài chính - Ngân hàng",
+        "Kinh doanh Quốc tế"
+      ],
+      "ownershipLabel": "Công lập",
+      "location": {
+        "regionId": "ho-chi-minh-city",
+        "city": "Thành phố Hồ Chí Minh",
+        "campus": null,
+        "address": null
+      },
+      "tuition": {
+        "academicYear": "2025-2026",
+        "minMillionVnd": 28,
+        "maxMillionVnd": 55,
+        "unit": "triệu đồng/năm",
+        "isReference": true,
+        "note": "Khoảng tham chiếu tổng hợp; mức thực tế phụ thuộc ngành và chương trình đào tạo.",
+        "sourceUrl": "https://ufm.edu.vn"
+      },
+      "admission": {
+        "academicYear": 2025,
+        "methods": [
+          {
+            "id": "competency",
+            "label": "Đánh giá năng lực (ĐGNL HCM/HN)"
+          },
+          {
+            "id": "thpt",
+            "label": "Điểm thi tốt nghiệp THPT"
+          },
+          {
+            "id": "language",
+            "label": "Chứng chỉ ngoại ngữ kết hợp"
+          },
+          {
+            "id": "transcript-interview",
+            "label": "Xét học bạ kết hợp/phỏng vấn"
+          },
+          {
+            "id": "direct",
+            "label": "Tuyển thẳng/ưu tiên xét tuyển"
+          }
+        ],
+        "scoreRange": {
+          "min": 22,
+          "max": 27,
+          "scale": 30,
+          "type": "thpt-reference",
+          "isReference": true,
+          "label": "22 - 27 điểm"
+        },
+        "note": "Khoảng tham chiếu giữa các ngành; không thay thế thông báo trúng tuyển chính thức.",
+        "sourceUrl": "https://ufm.edu.vn"
+      },
+      "source": {
+        "officialWebsite": "https://ufm.edu.vn",
+        "identityVerifiedAt": "2026-10-07"
+      }
+    },
+    {
+      "id": "hub",
+      "code": "NHS",
+      "shortName": "HUB",
+      "name": "Trường Đại học Ngân hàng Thành phố Hồ Chí Minh",
+      "ownership": "public",
+      "regionId": "ho-chi-minh-city",
+      "city": "Thành phố Hồ Chí Minh",
+      "parentSystem": null,
+      "website": "https://hub.edu.vn",
+      "image": null,
+      "icon": "payments",
+      "featuredMajors": [
+        "Tài chính - Ngân hàng",
+        "Kế toán",
+        "Hệ thống Thông tin Quản lý"
+      ],
+      "ownershipLabel": "Công lập",
+      "location": {
+        "regionId": "ho-chi-minh-city",
+        "city": "Thành phố Hồ Chí Minh",
+        "campus": null,
+        "address": null
+      },
+      "tuition": {
+        "academicYear": "2025-2026",
+        "minMillionVnd": 27,
+        "maxMillionVnd": 55,
+        "unit": "triệu đồng/năm",
+        "isReference": true,
+        "note": "Khoảng tham chiếu tổng hợp; mức thực tế phụ thuộc ngành và chương trình đào tạo.",
+        "sourceUrl": "https://hub.edu.vn"
+      },
+      "admission": {
+        "academicYear": 2025,
+        "methods": [
+          {
+            "id": "competency",
+            "label": "Đánh giá năng lực (ĐGNL HCM/HN)"
+          },
+          {
+            "id": "thpt",
+            "label": "Điểm thi tốt nghiệp THPT"
+          },
+          {
+            "id": "language",
+            "label": "Chứng chỉ ngoại ngữ kết hợp"
+          },
+          {
+            "id": "transcript-interview",
+            "label": "Xét học bạ kết hợp/phỏng vấn"
+          },
+          {
+            "id": "direct",
+            "label": "Tuyển thẳng/ưu tiên xét tuyển"
+          }
+        ],
+        "scoreRange": {
+          "min": 22,
+          "max": 26,
+          "scale": 30,
+          "type": "thpt-reference",
+          "isReference": true,
+          "label": "22 - 26 điểm"
+        },
+        "note": "Khoảng tham chiếu giữa các ngành; không thay thế thông báo trúng tuyển chính thức.",
+        "sourceUrl": "https://hub.edu.vn"
+      },
+      "source": {
+        "officialWebsite": "https://hub.edu.vn",
+        "identityVerifiedAt": "2026-10-07"
+      }
+    },
+    {
+      "id": "hcmuaf",
+      "code": "NLS",
+      "shortName": "HCMUAF",
+      "name": "Trường Đại học Nông Lâm Thành phố Hồ Chí Minh",
+      "ownership": "public",
+      "regionId": "ho-chi-minh-city",
+      "city": "Thành phố Hồ Chí Minh",
+      "parentSystem": null,
+      "website": "https://hcmuaf.edu.vn",
+      "image": null,
+      "icon": "agriculture",
+      "featuredMajors": [
+        "Công nghệ Thực phẩm",
+        "Kỹ thuật Môi trường",
+        "Công nghệ Sinh học"
+      ],
+      "ownershipLabel": "Công lập",
+      "location": {
+        "regionId": "ho-chi-minh-city",
+        "city": "Thành phố Hồ Chí Minh",
+        "campus": null,
+        "address": null
+      },
+      "tuition": {
+        "academicYear": "2025-2026",
+        "minMillionVnd": 15,
+        "maxMillionVnd": 40,
+        "unit": "triệu đồng/năm",
+        "isReference": true,
+        "note": "Khoảng tham chiếu tổng hợp; mức thực tế phụ thuộc ngành và chương trình đào tạo.",
+        "sourceUrl": "https://hcmuaf.edu.vn"
+      },
+      "admission": {
+        "academicYear": 2025,
+        "methods": [
+          {
+            "id": "competency",
+            "label": "Đánh giá năng lực (ĐGNL HCM/HN)"
+          },
+          {
+            "id": "thpt",
+            "label": "Điểm thi tốt nghiệp THPT"
+          },
+          {
+            "id": "transcript-interview",
+            "label": "Xét học bạ kết hợp/phỏng vấn"
+          },
+          {
+            "id": "direct",
+            "label": "Tuyển thẳng/ưu tiên xét tuyển"
+          }
+        ],
+        "scoreRange": {
+          "min": 15,
+          "max": 25,
+          "scale": 30,
+          "type": "thpt-reference",
+          "isReference": true,
+          "label": "15 - 25 điểm"
+        },
+        "note": "Khoảng tham chiếu giữa các ngành; không thay thế thông báo trúng tuyển chính thức.",
+        "sourceUrl": "https://hcmuaf.edu.vn"
+      },
+      "source": {
+        "officialWebsite": "https://hcmuaf.edu.vn",
+        "identityVerifiedAt": "2026-10-07"
+      }
+    },
+    {
+      "id": "ulaw-hcm",
+      "code": "LPS",
+      "shortName": "ULAW",
+      "name": "Trường Đại học Luật Thành phố Hồ Chí Minh",
+      "ownership": "public",
+      "regionId": "ho-chi-minh-city",
+      "city": "Thành phố Hồ Chí Minh",
+      "parentSystem": null,
+      "website": "https://hcmulaw.edu.vn",
+      "image": null,
+      "icon": "gavel",
+      "featuredMajors": [
+        "Luật",
+        "Luật Kinh tế",
+        "Quản trị - Luật"
+      ],
+      "ownershipLabel": "Công lập",
+      "location": {
+        "regionId": "ho-chi-minh-city",
+        "city": "Thành phố Hồ Chí Minh",
+        "campus": null,
+        "address": null
+      },
+      "tuition": {
+        "academicYear": "2025-2026",
+        "minMillionVnd": 35,
+        "maxMillionVnd": 60,
+        "unit": "triệu đồng/năm",
+        "isReference": true,
+        "note": "Khoảng tham chiếu tổng hợp; mức thực tế phụ thuộc ngành và chương trình đào tạo.",
+        "sourceUrl": "https://hcmulaw.edu.vn"
+      },
+      "admission": {
+        "academicYear": 2025,
+        "methods": [
+          {
+            "id": "competency",
+            "label": "Đánh giá năng lực (ĐGNL HCM/HN)"
+          },
+          {
+            "id": "thpt",
+            "label": "Điểm thi tốt nghiệp THPT"
+          },
+          {
+            "id": "language",
+            "label": "Chứng chỉ ngoại ngữ kết hợp"
+          },
+          {
+            "id": "direct",
+            "label": "Tuyển thẳng/ưu tiên xét tuyển"
+          }
+        ],
+        "scoreRange": {
+          "min": 20,
+          "max": 27,
+          "scale": 30,
+          "type": "thpt-reference",
+          "isReference": true,
+          "label": "20 - 27 điểm"
+        },
+        "note": "Khoảng tham chiếu giữa các ngành; không thay thế thông báo trúng tuyển chính thức.",
+        "sourceUrl": "https://hcmulaw.edu.vn"
+      },
+      "source": {
+        "officialWebsite": "https://hcmulaw.edu.vn",
+        "identityVerifiedAt": "2026-10-07"
+      }
+    },
+    {
+      "id": "uah",
+      "code": "KTS",
+      "shortName": "UAH",
+      "name": "Trường Đại học Kiến trúc Thành phố Hồ Chí Minh",
+      "ownership": "public",
+      "regionId": "ho-chi-minh-city",
+      "city": "Thành phố Hồ Chí Minh",
+      "parentSystem": null,
+      "website": "https://www.uah.edu.vn",
+      "image": null,
+      "icon": "architecture",
+      "featuredMajors": [
+        "Kiến trúc",
+        "Thiết kế Nội thất",
+        "Thiết kế Công nghiệp"
+      ],
+      "ownershipLabel": "Công lập",
+      "location": {
+        "regionId": "ho-chi-minh-city",
+        "city": "Thành phố Hồ Chí Minh",
+        "campus": null,
+        "address": null
+      },
+      "tuition": {
+        "academicYear": "2025-2026",
+        "minMillionVnd": 16,
+        "maxMillionVnd": 30,
+        "unit": "triệu đồng/năm",
+        "isReference": true,
+        "note": "Khoảng tham chiếu tổng hợp; mức thực tế phụ thuộc ngành và chương trình đào tạo.",
+        "sourceUrl": "https://www.uah.edu.vn"
+      },
+      "admission": {
+        "academicYear": 2025,
+        "methods": [
+          {
+            "id": "competency",
+            "label": "Đánh giá năng lực (ĐGNL HCM/HN)"
+          },
+          {
+            "id": "thpt",
+            "label": "Điểm thi tốt nghiệp THPT"
+          },
+          {
+            "id": "direct",
+            "label": "Tuyển thẳng/ưu tiên xét tuyển"
+          }
+        ],
+        "scoreRange": {
+          "min": 15,
+          "max": 25,
+          "scale": 30,
+          "type": "thpt-reference",
+          "isReference": true,
+          "label": "15 - 25 điểm"
+        },
+        "note": "Khoảng tham chiếu giữa các ngành; không thay thế thông báo trúng tuyển chính thức.",
+        "sourceUrl": "https://www.uah.edu.vn"
+      },
+      "source": {
+        "officialWebsite": "https://www.uah.edu.vn",
+        "identityVerifiedAt": "2026-10-07"
+      }
+    },
+    {
+      "id": "hoa-sen-university",
+      "code": "HSU",
+      "shortName": "HSU",
+      "name": "Trường Đại học Hoa Sen",
+      "ownership": "private",
+      "regionId": "ho-chi-minh-city",
+      "city": "Thành phố Hồ Chí Minh",
+      "parentSystem": null,
+      "website": "https://www.hoasen.edu.vn",
+      "image": null,
+      "icon": "local_florist",
+      "featuredMajors": [
+        "Marketing",
+        "Quản trị Kinh doanh",
+        "Thiết kế Đồ họa"
+      ],
+      "ownershipLabel": "Tư thục",
+      "location": {
+        "regionId": "ho-chi-minh-city",
+        "city": "Thành phố Hồ Chí Minh",
+        "campus": null,
+        "address": null
+      },
+      "tuition": {
+        "academicYear": "2025-2026",
+        "minMillionVnd": 80,
+        "maxMillionVnd": 100,
+        "unit": "triệu đồng/năm",
+        "isReference": true,
+        "note": "Khoảng tham chiếu tổng hợp; mức thực tế phụ thuộc ngành và chương trình đào tạo.",
+        "sourceUrl": "https://www.hoasen.edu.vn"
+      },
+      "admission": {
+        "academicYear": 2025,
+        "methods": [
+          {
+            "id": "competency",
+            "label": "Đánh giá năng lực (ĐGNL HCM/HN)"
+          },
+          {
+            "id": "thpt",
+            "label": "Điểm thi tốt nghiệp THPT"
+          },
+          {
+            "id": "language",
+            "label": "Chứng chỉ ngoại ngữ kết hợp"
+          },
+          {
+            "id": "transcript-interview",
+            "label": "Xét học bạ kết hợp/phỏng vấn"
+          }
+        ],
+        "scoreRange": {
+          "min": 15,
+          "max": 24,
+          "scale": 30,
+          "type": "thpt-reference",
+          "isReference": true,
+          "label": "15 - 24 điểm"
+        },
+        "note": "Khoảng tham chiếu giữa các ngành; không thay thế thông báo trúng tuyển chính thức.",
+        "sourceUrl": "https://www.hoasen.edu.vn"
+      },
+      "source": {
+        "officialWebsite": "https://www.hoasen.edu.vn",
+        "identityVerifiedAt": "2026-10-07"
+      }
+    },
+    {
+      "id": "van-lang-university",
+      "code": "DVL",
+      "shortName": "VLU",
+      "name": "Trường Đại học Văn Lang",
+      "ownership": "private",
+      "regionId": "ho-chi-minh-city",
+      "city": "Thành phố Hồ Chí Minh",
+      "parentSystem": null,
+      "website": "https://www.vlu.edu.vn",
+      "image": null,
+      "icon": "domain",
+      "featuredMajors": [
+        "Thiết kế Đồ họa",
+        "Truyền thông Đa phương tiện",
+        "Quản trị Kinh doanh"
+      ],
+      "ownershipLabel": "Tư thục",
+      "location": {
+        "regionId": "ho-chi-minh-city",
+        "city": "Thành phố Hồ Chí Minh",
+        "campus": null,
+        "address": null
+      },
+      "tuition": {
+        "academicYear": "2025-2026",
+        "minMillionVnd": 50,
+        "maxMillionVnd": 80,
+        "unit": "triệu đồng/năm",
+        "isReference": true,
+        "note": "Khoảng tham chiếu tổng hợp; mức thực tế phụ thuộc ngành và chương trình đào tạo.",
+        "sourceUrl": "https://www.vlu.edu.vn"
+      },
+      "admission": {
+        "academicYear": 2025,
+        "methods": [
+          {
+            "id": "competency",
+            "label": "Đánh giá năng lực (ĐGNL HCM/HN)"
+          },
+          {
+            "id": "thpt",
+            "label": "Điểm thi tốt nghiệp THPT"
+          },
+          {
+            "id": "language",
+            "label": "Chứng chỉ ngoại ngữ kết hợp"
+          },
+          {
+            "id": "transcript-interview",
+            "label": "Xét học bạ kết hợp/phỏng vấn"
+          }
+        ],
+        "scoreRange": {
+          "min": 16,
+          "max": 24,
+          "scale": 30,
+          "type": "thpt-reference",
+          "isReference": true,
+          "label": "16 - 24 điểm"
+        },
+        "note": "Khoảng tham chiếu giữa các ngành; không thay thế thông báo trúng tuyển chính thức.",
+        "sourceUrl": "https://www.vlu.edu.vn"
+      },
+      "source": {
+        "officialWebsite": "https://www.vlu.edu.vn",
+        "identityVerifiedAt": "2026-10-07"
+      }
+    },
+    {
+      "id": "fpt-university-hcm",
+      "code": "FPT",
+      "shortName": "FPTU",
+      "name": "Trường Đại học FPT",
+      "campus": "Cơ sở Thành phố Hồ Chí Minh",
+      "ownership": "private",
+      "regionId": "ho-chi-minh-city",
+      "city": "Thành phố Hồ Chí Minh",
+      "parentSystem": "Tổ chức Giáo dục FPT",
+      "website": "https://daihoc.fpt.edu.vn",
+      "image": "/stitch-assets/fpt-university-campus.jpg",
+      "icon": "code",
+      "featuredMajors": [
+        "Kỹ thuật Phần mềm",
+        "Trí tuệ Nhân tạo",
+        "Thiết kế Mỹ thuật số"
+      ],
+      "ownershipLabel": "Tư thục",
+      "location": {
+        "regionId": "ho-chi-minh-city",
+        "city": "Thành phố Hồ Chí Minh",
+        "campus": "Cơ sở Thành phố Hồ Chí Minh",
+        "address": null
+      },
+      "tuition": {
+        "academicYear": "2025-2026",
+        "minMillionVnd": 85,
+        "maxMillionVnd": 95,
+        "unit": "triệu đồng/năm",
+        "isReference": true,
+        "note": "Khoảng tham chiếu tổng hợp; mức thực tế phụ thuộc ngành và chương trình đào tạo.",
+        "sourceUrl": "https://daihoc.fpt.edu.vn"
+      },
+      "admission": {
+        "academicYear": 2025,
+        "methods": [
+          {
+            "id": "competency",
+            "label": "Đánh giá năng lực (ĐGNL HCM/HN)"
+          },
+          {
+            "id": "thpt",
+            "label": "Điểm thi tốt nghiệp THPT"
+          },
+          {
+            "id": "language",
+            "label": "Chứng chỉ ngoại ngữ kết hợp"
+          },
+          {
+            "id": "transcript-interview",
+            "label": "Xét học bạ kết hợp/phỏng vấn"
+          }
+        ],
+        "scoreRange": {
+          "min": 21,
+          "max": 24,
+          "scale": 30,
+          "type": "thpt-reference",
+          "isReference": true,
+          "label": "21 - 24 điểm"
+        },
+        "note": "Khoảng tham chiếu giữa các ngành; không thay thế thông báo trúng tuyển chính thức.",
+        "sourceUrl": "https://daihoc.fpt.edu.vn"
+      },
+      "source": {
+        "officialWebsite": "https://daihoc.fpt.edu.vn",
+        "identityVerifiedAt": "2026-10-07"
+      }
+    },
+    {
+      "id": "rmit-vietnam-hcm",
+      "code": null,
+      "shortName": "RMIT Vietnam",
+      "name": "Đại học RMIT Việt Nam",
+      "campus": "Cơ sở Nam Sài Gòn",
+      "ownership": "international",
+      "regionId": "ho-chi-minh-city",
+      "city": "Thành phố Hồ Chí Minh",
+      "parentSystem": "RMIT University",
+      "website": "https://www.rmit.edu.vn",
+      "image": null,
+      "icon": "public",
+      "featuredMajors": [
+        "Kinh doanh",
+        "Công nghệ Thông tin",
+        "Truyền thông"
+      ],
+      "ownershipLabel": "Quốc tế",
+      "location": {
+        "regionId": "ho-chi-minh-city",
+        "city": "Thành phố Hồ Chí Minh",
+        "campus": "Cơ sở Nam Sài Gòn",
+        "address": null
+      },
+      "tuition": {
+        "academicYear": "2025-2026",
+        "minMillionVnd": 330,
+        "maxMillionVnd": 380,
+        "unit": "triệu đồng/năm",
+        "isReference": true,
+        "note": "Khoảng tham chiếu phụ thuộc số môn và chương trình đăng ký.",
+        "sourceUrl": "https://www.rmit.edu.vn"
+      },
+      "admission": {
+        "academicYear": 2025,
+        "methods": [
+          {
+            "id": "portfolio",
+            "label": "Xét hồ sơ và điều kiện riêng"
+          }
+        ],
+        "scoreRange": {
+          "min": null,
+          "max": null,
+          "scale": null,
+          "type": "institution-specific",
+          "isReference": true,
+          "label": "Xét điều kiện đầu vào riêng"
+        },
+        "note": "Không sử dụng một ngưỡng điểm THPT chung cho mọi chương trình.",
+        "sourceUrl": "https://www.rmit.edu.vn"
+      },
+      "source": {
+        "officialWebsite": "https://www.rmit.edu.vn",
+        "identityVerifiedAt": "2026-10-07"
+      }
+    },
+    {
+      "id": "hust",
+      "code": "BKA",
+      "shortName": "HUST",
+      "name": "Đại học Bách khoa Hà Nội",
+      "ownership": "public",
+      "regionId": "ha-noi",
+      "city": "Hà Nội",
+      "parentSystem": null,
+      "website": "https://hust.edu.vn",
+      "image": null,
+      "icon": "engineering",
+      "featuredMajors": [
+        "Khoa học Máy tính",
+        "Kỹ thuật Điều khiển và Tự động hóa",
+        "Kỹ thuật Cơ - Điện tử"
+      ],
+      "ownershipLabel": "Công lập",
+      "location": {
+        "regionId": "ha-noi",
+        "city": "Hà Nội",
+        "campus": null,
+        "address": null
+      },
+      "tuition": {
+        "academicYear": "2025-2026",
+        "minMillionVnd": 28,
+        "maxMillionVnd": 90,
+        "unit": "triệu đồng/năm",
+        "isReference": true,
+        "note": "Khoảng tham chiếu tổng hợp; mức thực tế phụ thuộc ngành và chương trình đào tạo.",
+        "sourceUrl": "https://hust.edu.vn"
+      },
+      "admission": {
+        "academicYear": 2025,
+        "methods": [
+          {
+            "id": "competency",
+            "label": "Đánh giá năng lực (ĐGNL HCM/HN)"
+          },
+          {
+            "id": "thpt",
+            "label": "Điểm thi tốt nghiệp THPT"
+          },
+          {
+            "id": "language",
+            "label": "Chứng chỉ ngoại ngữ kết hợp"
+          },
+          {
+            "id": "direct",
+            "label": "Tuyển thẳng/ưu tiên xét tuyển"
+          }
+        ],
+        "scoreRange": {
+          "min": 20,
+          "max": 29.5,
+          "scale": 30,
+          "type": "thpt-reference",
+          "isReference": true,
+          "label": "20 - 29.5 điểm"
+        },
+        "note": "Khoảng tham chiếu giữa các ngành; không thay thế thông báo trúng tuyển chính thức.",
+        "sourceUrl": "https://hust.edu.vn"
+      },
+      "source": {
+        "officialWebsite": "https://hust.edu.vn",
+        "identityVerifiedAt": "2026-10-07"
+      }
+    },
+    {
+      "id": "neu",
+      "code": "KHA",
+      "shortName": "NEU",
+      "name": "Đại học Kinh tế Quốc dân",
+      "ownership": "public",
+      "regionId": "ha-noi",
+      "city": "Hà Nội",
+      "parentSystem": null,
+      "website": "https://neu.edu.vn",
+      "image": null,
+      "icon": "monitoring",
+      "featuredMajors": [
+        "Quản trị Kinh doanh",
+        "Kinh doanh Quốc tế",
+        "Tài chính - Ngân hàng"
+      ],
+      "ownershipLabel": "Công lập",
+      "location": {
+        "regionId": "ha-noi",
+        "city": "Hà Nội",
+        "campus": null,
+        "address": null
+      },
+      "tuition": {
+        "academicYear": "2025-2026",
+        "minMillionVnd": 18,
+        "maxMillionVnd": 65,
+        "unit": "triệu đồng/năm",
+        "isReference": true,
+        "note": "Khoảng tham chiếu tổng hợp; mức thực tế phụ thuộc ngành và chương trình đào tạo.",
+        "sourceUrl": "https://neu.edu.vn"
+      },
+      "admission": {
+        "academicYear": 2025,
+        "methods": [
+          {
+            "id": "competency",
+            "label": "Đánh giá năng lực (ĐGNL HCM/HN)"
+          },
+          {
+            "id": "thpt",
+            "label": "Điểm thi tốt nghiệp THPT"
+          },
+          {
+            "id": "language",
+            "label": "Chứng chỉ ngoại ngữ kết hợp"
+          },
+          {
+            "id": "direct",
+            "label": "Tuyển thẳng/ưu tiên xét tuyển"
+          }
+        ],
+        "scoreRange": {
+          "min": 24,
+          "max": 28,
+          "scale": 30,
+          "type": "thpt-reference",
+          "isReference": true,
+          "label": "24 - 28 điểm"
+        },
+        "note": "Khoảng tham chiếu giữa các ngành; không thay thế thông báo trúng tuyển chính thức.",
+        "sourceUrl": "https://neu.edu.vn"
+      },
+      "source": {
+        "officialWebsite": "https://neu.edu.vn",
+        "identityVerifiedAt": "2026-10-07"
+      }
+    },
+    {
+      "id": "ftu",
+      "code": "NTH",
+      "shortName": "FTU",
+      "name": "Trường Đại học Ngoại thương",
+      "ownership": "public",
+      "regionId": "ha-noi",
+      "city": "Hà Nội",
+      "parentSystem": null,
+      "website": "https://ftu.edu.vn",
+      "image": null,
+      "icon": "language",
+      "featuredMajors": [
+        "Kinh doanh Quốc tế",
+        "Kinh tế Đối ngoại",
+        "Tài chính - Ngân hàng"
+      ],
+      "ownershipLabel": "Công lập",
+      "location": {
+        "regionId": "ha-noi",
+        "city": "Hà Nội",
+        "campus": null,
+        "address": null
+      },
+      "tuition": {
+        "academicYear": "2025-2026",
+        "minMillionVnd": 25,
+        "maxMillionVnd": 70,
+        "unit": "triệu đồng/năm",
+        "isReference": true,
+        "note": "Khoảng tham chiếu tổng hợp; mức thực tế phụ thuộc ngành và chương trình đào tạo.",
+        "sourceUrl": "https://ftu.edu.vn"
+      },
+      "admission": {
+        "academicYear": 2025,
+        "methods": [
+          {
+            "id": "competency",
+            "label": "Đánh giá năng lực (ĐGNL HCM/HN)"
+          },
+          {
+            "id": "thpt",
+            "label": "Điểm thi tốt nghiệp THPT"
+          },
+          {
+            "id": "language",
+            "label": "Chứng chỉ ngoại ngữ kết hợp"
+          },
+          {
+            "id": "direct",
+            "label": "Tuyển thẳng/ưu tiên xét tuyển"
+          }
+        ],
+        "scoreRange": {
+          "min": 25,
+          "max": 29,
+          "scale": 30,
+          "type": "thpt-reference",
+          "isReference": true,
+          "label": "25 - 29 điểm"
+        },
+        "note": "Khoảng tham chiếu giữa các ngành; không thay thế thông báo trúng tuyển chính thức.",
+        "sourceUrl": "https://ftu.edu.vn"
+      },
+      "source": {
+        "officialWebsite": "https://ftu.edu.vn",
+        "identityVerifiedAt": "2026-10-07"
+      }
+    },
+    {
+      "id": "uet-vnu",
+      "code": "QHI",
+      "shortName": "UET",
+      "name": "Trường Đại học Công nghệ, Đại học Quốc gia Hà Nội",
+      "ownership": "public",
+      "regionId": "ha-noi",
+      "city": "Hà Nội",
+      "parentSystem": "Đại học Quốc gia Hà Nội",
+      "website": "https://uet.vnu.edu.vn",
+      "image": null,
+      "icon": "memory",
+      "featuredMajors": [
+        "Công nghệ Thông tin",
+        "Kỹ thuật Máy tính",
+        "Trí tuệ Nhân tạo"
+      ],
+      "ownershipLabel": "Công lập",
+      "location": {
+        "regionId": "ha-noi",
+        "city": "Hà Nội",
+        "campus": null,
+        "address": null
+      },
+      "tuition": {
+        "academicYear": "2025-2026",
+        "minMillionVnd": 28,
+        "maxMillionVnd": 40,
+        "unit": "triệu đồng/năm",
+        "isReference": true,
+        "note": "Khoảng tham chiếu tổng hợp; mức thực tế phụ thuộc ngành và chương trình đào tạo.",
+        "sourceUrl": "https://uet.vnu.edu.vn"
+      },
+      "admission": {
+        "academicYear": 2025,
+        "methods": [
+          {
+            "id": "competency",
+            "label": "Đánh giá năng lực (ĐGNL HCM/HN)"
+          },
+          {
+            "id": "thpt",
+            "label": "Điểm thi tốt nghiệp THPT"
+          },
+          {
+            "id": "language",
+            "label": "Chứng chỉ ngoại ngữ kết hợp"
+          },
+          {
+            "id": "direct",
+            "label": "Tuyển thẳng/ưu tiên xét tuyển"
+          }
+        ],
+        "scoreRange": {
+          "min": 22,
+          "max": 28,
+          "scale": 30,
+          "type": "thpt-reference",
+          "isReference": true,
+          "label": "22 - 28 điểm"
+        },
+        "note": "Khoảng tham chiếu giữa các ngành; không thay thế thông báo trúng tuyển chính thức.",
+        "sourceUrl": "https://uet.vnu.edu.vn"
+      },
+      "source": {
+        "officialWebsite": "https://uet.vnu.edu.vn",
+        "identityVerifiedAt": "2026-10-07"
+      }
+    },
+    {
+      "id": "hus-vnu",
+      "code": "QHT",
+      "shortName": "HUS",
+      "name": "Trường Đại học Khoa học Tự nhiên, Đại học Quốc gia Hà Nội",
+      "ownership": "public",
+      "regionId": "ha-noi",
+      "city": "Hà Nội",
+      "parentSystem": "Đại học Quốc gia Hà Nội",
+      "website": "https://hus.vnu.edu.vn",
+      "image": null,
+      "icon": "science",
+      "featuredMajors": [
+        "Khoa học Dữ liệu",
+        "Toán học",
+        "Công nghệ Sinh học"
+      ],
+      "ownershipLabel": "Công lập",
+      "location": {
+        "regionId": "ha-noi",
+        "city": "Hà Nội",
+        "campus": null,
+        "address": null
+      },
+      "tuition": {
+        "academicYear": "2025-2026",
+        "minMillionVnd": 17,
+        "maxMillionVnd": 35,
+        "unit": "triệu đồng/năm",
+        "isReference": true,
+        "note": "Khoảng tham chiếu tổng hợp; mức thực tế phụ thuộc ngành và chương trình đào tạo.",
+        "sourceUrl": "https://hus.vnu.edu.vn"
+      },
+      "admission": {
+        "academicYear": 2025,
+        "methods": [
+          {
+            "id": "competency",
+            "label": "Đánh giá năng lực (ĐGNL HCM/HN)"
+          },
+          {
+            "id": "thpt",
+            "label": "Điểm thi tốt nghiệp THPT"
+          },
+          {
+            "id": "direct",
+            "label": "Tuyển thẳng/ưu tiên xét tuyển"
+          }
+        ],
+        "scoreRange": {
+          "min": 18,
+          "max": 27,
+          "scale": 30,
+          "type": "thpt-reference",
+          "isReference": true,
+          "label": "18 - 27 điểm"
+        },
+        "note": "Khoảng tham chiếu giữa các ngành; không thay thế thông báo trúng tuyển chính thức.",
+        "sourceUrl": "https://hus.vnu.edu.vn"
+      },
+      "source": {
+        "officialWebsite": "https://hus.vnu.edu.vn",
+        "identityVerifiedAt": "2026-10-07"
+      }
+    },
+    {
+      "id": "ussh-vnu",
+      "code": "QHX",
+      "shortName": "USSH-VNU",
+      "name": "Trường Đại học Khoa học Xã hội và Nhân văn, Đại học Quốc gia Hà Nội",
+      "ownership": "public",
+      "regionId": "ha-noi",
+      "city": "Hà Nội",
+      "parentSystem": "Đại học Quốc gia Hà Nội",
+      "website": "https://ussh.vnu.edu.vn",
+      "image": null,
+      "icon": "history_edu",
+      "featuredMajors": [
+        "Báo chí",
+        "Quan hệ Quốc tế",
+        "Văn học"
+      ],
+      "ownershipLabel": "Công lập",
+      "location": {
+        "regionId": "ha-noi",
+        "city": "Hà Nội",
+        "campus": null,
+        "address": null
+      },
+      "tuition": {
+        "academicYear": "2025-2026",
+        "minMillionVnd": 24,
+        "maxMillionVnd": 60,
+        "unit": "triệu đồng/năm",
+        "isReference": true,
+        "note": "Khoảng tham chiếu tổng hợp; mức thực tế phụ thuộc ngành và chương trình đào tạo.",
+        "sourceUrl": "https://ussh.vnu.edu.vn"
+      },
+      "admission": {
+        "academicYear": 2025,
+        "methods": [
+          {
+            "id": "competency",
+            "label": "Đánh giá năng lực (ĐGNL HCM/HN)"
+          },
+          {
+            "id": "thpt",
+            "label": "Điểm thi tốt nghiệp THPT"
+          },
+          {
+            "id": "language",
+            "label": "Chứng chỉ ngoại ngữ kết hợp"
+          },
+          {
+            "id": "direct",
+            "label": "Tuyển thẳng/ưu tiên xét tuyển"
+          }
+        ],
+        "scoreRange": {
+          "min": 20,
+          "max": 29,
+          "scale": 30,
+          "type": "thpt-reference",
+          "isReference": true,
+          "label": "20 - 29 điểm"
+        },
+        "note": "Khoảng tham chiếu giữa các ngành; không thay thế thông báo trúng tuyển chính thức.",
+        "sourceUrl": "https://ussh.vnu.edu.vn"
+      },
+      "source": {
+        "officialWebsite": "https://ussh.vnu.edu.vn",
+        "identityVerifiedAt": "2026-10-07"
+      }
+    },
+    {
+      "id": "ueb-vnu",
+      "code": "QHE",
+      "shortName": "UEB",
+      "name": "Trường Đại học Kinh tế, Đại học Quốc gia Hà Nội",
+      "ownership": "public",
+      "regionId": "ha-noi",
+      "city": "Hà Nội",
+      "parentSystem": "Đại học Quốc gia Hà Nội",
+      "website": "https://ueb.edu.vn",
+      "image": null,
+      "icon": "account_balance",
+      "featuredMajors": [
+        "Quản trị Kinh doanh",
+        "Kinh doanh Quốc tế",
+        "Tài chính - Ngân hàng"
+      ],
+      "ownershipLabel": "Công lập",
+      "location": {
+        "regionId": "ha-noi",
+        "city": "Hà Nội",
+        "campus": null,
+        "address": null
+      },
+      "tuition": {
+        "academicYear": "2025-2026",
+        "minMillionVnd": 35,
+        "maxMillionVnd": 70,
+        "unit": "triệu đồng/năm",
+        "isReference": true,
+        "note": "Khoảng tham chiếu tổng hợp; mức thực tế phụ thuộc ngành và chương trình đào tạo.",
+        "sourceUrl": "https://ueb.edu.vn"
+      },
+      "admission": {
+        "academicYear": 2025,
+        "methods": [
+          {
+            "id": "competency",
+            "label": "Đánh giá năng lực (ĐGNL HCM/HN)"
+          },
+          {
+            "id": "thpt",
+            "label": "Điểm thi tốt nghiệp THPT"
+          },
+          {
+            "id": "language",
+            "label": "Chứng chỉ ngoại ngữ kết hợp"
+          },
+          {
+            "id": "direct",
+            "label": "Tuyển thẳng/ưu tiên xét tuyển"
+          }
+        ],
+        "scoreRange": {
+          "min": 22,
+          "max": 28,
+          "scale": 30,
+          "type": "thpt-reference",
+          "isReference": true,
+          "label": "22 - 28 điểm"
+        },
+        "note": "Khoảng tham chiếu giữa các ngành; không thay thế thông báo trúng tuyển chính thức.",
+        "sourceUrl": "https://ueb.edu.vn"
+      },
+      "source": {
+        "officialWebsite": "https://ueb.edu.vn",
+        "identityVerifiedAt": "2026-10-07"
+      }
+    },
+    {
+      "id": "ulis-vnu",
+      "code": "QHF",
+      "shortName": "ULIS",
+      "name": "Trường Đại học Ngoại ngữ, Đại học Quốc gia Hà Nội",
+      "ownership": "public",
+      "regionId": "ha-noi",
+      "city": "Hà Nội",
+      "parentSystem": "Đại học Quốc gia Hà Nội",
+      "website": "https://ulis.vnu.edu.vn",
+      "image": null,
+      "icon": "translate",
+      "featuredMajors": [
+        "Ngôn ngữ Anh",
+        "Ngôn ngữ Trung Quốc",
+        "Ngôn ngữ Nhật"
+      ],
+      "ownershipLabel": "Công lập",
+      "location": {
+        "regionId": "ha-noi",
+        "city": "Hà Nội",
+        "campus": null,
+        "address": null
+      },
+      "tuition": {
+        "academicYear": "2025-2026",
+        "minMillionVnd": 38,
+        "maxMillionVnd": 62,
+        "unit": "triệu đồng/năm",
+        "isReference": true,
+        "note": "Khoảng tham chiếu tổng hợp; mức thực tế phụ thuộc ngành và chương trình đào tạo.",
+        "sourceUrl": "https://ulis.vnu.edu.vn"
+      },
+      "admission": {
+        "academicYear": 2025,
+        "methods": [
+          {
+            "id": "competency",
+            "label": "Đánh giá năng lực (ĐGNL HCM/HN)"
+          },
+          {
+            "id": "thpt",
+            "label": "Điểm thi tốt nghiệp THPT"
+          },
+          {
+            "id": "language",
+            "label": "Chứng chỉ ngoại ngữ kết hợp"
+          },
+          {
+            "id": "direct",
+            "label": "Tuyển thẳng/ưu tiên xét tuyển"
+          }
+        ],
+        "scoreRange": {
+          "min": 20,
+          "max": 29,
+          "scale": 30,
+          "type": "thpt-reference",
+          "isReference": true,
+          "label": "20 - 29 điểm"
+        },
+        "note": "Khoảng tham chiếu giữa các ngành; không thay thế thông báo trúng tuyển chính thức.",
+        "sourceUrl": "https://ulis.vnu.edu.vn"
+      },
+      "source": {
+        "officialWebsite": "https://ulis.vnu.edu.vn",
+        "identityVerifiedAt": "2026-10-07"
+      }
+    },
+    {
+      "id": "hnue",
+      "code": "SPH",
+      "shortName": "HNUE",
+      "name": "Trường Đại học Sư phạm Hà Nội",
+      "ownership": "public",
+      "regionId": "ha-noi",
+      "city": "Hà Nội",
+      "parentSystem": null,
+      "website": "https://hnue.edu.vn",
+      "image": null,
+      "icon": "school",
+      "featuredMajors": [
+        "Sư phạm Toán học",
+        "Sư phạm Ngữ văn",
+        "Giáo dục Mầm non"
+      ],
+      "ownershipLabel": "Công lập",
+      "location": {
+        "regionId": "ha-noi",
+        "city": "Hà Nội",
+        "campus": null,
+        "address": null
+      },
+      "tuition": {
+        "academicYear": "2025-2026",
+        "minMillionVnd": 14,
+        "maxMillionVnd": 40,
+        "unit": "triệu đồng/năm",
+        "isReference": true,
+        "note": "Khoảng tham chiếu tổng hợp; mức thực tế phụ thuộc ngành và chương trình đào tạo.",
+        "sourceUrl": "https://hnue.edu.vn"
+      },
+      "admission": {
+        "academicYear": 2025,
+        "methods": [
+          {
+            "id": "competency",
+            "label": "Đánh giá năng lực (ĐGNL HCM/HN)"
+          },
+          {
+            "id": "thpt",
+            "label": "Điểm thi tốt nghiệp THPT"
+          },
+          {
+            "id": "direct",
+            "label": "Tuyển thẳng/ưu tiên xét tuyển"
+          }
+        ],
+        "scoreRange": {
+          "min": 18,
+          "max": 29,
+          "scale": 30,
+          "type": "thpt-reference",
+          "isReference": true,
+          "label": "18 - 29 điểm"
+        },
+        "note": "Khoảng tham chiếu giữa các ngành; không thay thế thông báo trúng tuyển chính thức.",
+        "sourceUrl": "https://hnue.edu.vn"
+      },
+      "source": {
+        "officialWebsite": "https://hnue.edu.vn",
+        "identityVerifiedAt": "2026-10-07"
+      }
+    },
+    {
+      "id": "thuyloi-university",
+      "code": "DTL",
+      "shortName": "TLU",
+      "name": "Trường Đại học Thủy lợi",
+      "ownership": "public",
+      "regionId": "ha-noi",
+      "city": "Hà Nội",
+      "parentSystem": null,
+      "website": "https://tlu.edu.vn",
+      "image": null,
+      "icon": "water",
+      "featuredMajors": [
+        "Kỹ thuật Xây dựng",
+        "Kỹ thuật Môi trường",
+        "Công nghệ Thông tin"
+      ],
+      "ownershipLabel": "Công lập",
+      "location": {
+        "regionId": "ha-noi",
+        "city": "Hà Nội",
+        "campus": null,
+        "address": null
+      },
+      "tuition": {
+        "academicYear": "2025-2026",
+        "minMillionVnd": 15,
+        "maxMillionVnd": 35,
+        "unit": "triệu đồng/năm",
+        "isReference": true,
+        "note": "Khoảng tham chiếu tổng hợp; mức thực tế phụ thuộc ngành và chương trình đào tạo.",
+        "sourceUrl": "https://tlu.edu.vn"
+      },
+      "admission": {
+        "academicYear": 2025,
+        "methods": [
+          {
+            "id": "competency",
+            "label": "Đánh giá năng lực (ĐGNL HCM/HN)"
+          },
+          {
+            "id": "thpt",
+            "label": "Điểm thi tốt nghiệp THPT"
+          },
+          {
+            "id": "transcript-interview",
+            "label": "Xét học bạ kết hợp/phỏng vấn"
+          },
+          {
+            "id": "direct",
+            "label": "Tuyển thẳng/ưu tiên xét tuyển"
+          }
+        ],
+        "scoreRange": {
+          "min": 18,
+          "max": 26,
+          "scale": 30,
+          "type": "thpt-reference",
+          "isReference": true,
+          "label": "18 - 26 điểm"
+        },
+        "note": "Khoảng tham chiếu giữa các ngành; không thay thế thông báo trúng tuyển chính thức.",
+        "sourceUrl": "https://tlu.edu.vn"
+      },
+      "source": {
+        "officialWebsite": "https://tlu.edu.vn",
+        "identityVerifiedAt": "2026-10-07"
+      }
+    },
+    {
+      "id": "utc",
+      "code": "GHA",
+      "shortName": "UTC",
+      "name": "Trường Đại học Giao thông Vận tải",
+      "ownership": "public",
+      "regionId": "ha-noi",
+      "city": "Hà Nội",
+      "parentSystem": null,
+      "website": "https://utc.edu.vn",
+      "image": null,
+      "icon": "train",
+      "featuredMajors": [
+        "Kỹ thuật Xây dựng",
+        "Logistics và Quản lý chuỗi cung ứng",
+        "Kỹ thuật Cơ khí"
+      ],
+      "ownershipLabel": "Công lập",
+      "location": {
+        "regionId": "ha-noi",
+        "city": "Hà Nội",
+        "campus": null,
+        "address": null
+      },
+      "tuition": {
+        "academicYear": "2025-2026",
+        "minMillionVnd": 15,
+        "maxMillionVnd": 35,
+        "unit": "triệu đồng/năm",
+        "isReference": true,
+        "note": "Khoảng tham chiếu tổng hợp; mức thực tế phụ thuộc ngành và chương trình đào tạo.",
+        "sourceUrl": "https://utc.edu.vn"
+      },
+      "admission": {
+        "academicYear": 2025,
+        "methods": [
+          {
+            "id": "competency",
+            "label": "Đánh giá năng lực (ĐGNL HCM/HN)"
+          },
+          {
+            "id": "thpt",
+            "label": "Điểm thi tốt nghiệp THPT"
+          },
+          {
+            "id": "transcript-interview",
+            "label": "Xét học bạ kết hợp/phỏng vấn"
+          },
+          {
+            "id": "direct",
+            "label": "Tuyển thẳng/ưu tiên xét tuyển"
+          }
+        ],
+        "scoreRange": {
+          "min": 16,
+          "max": 27,
+          "scale": 30,
+          "type": "thpt-reference",
+          "isReference": true,
+          "label": "16 - 27 điểm"
+        },
+        "note": "Khoảng tham chiếu giữa các ngành; không thay thế thông báo trúng tuyển chính thức.",
+        "sourceUrl": "https://utc.edu.vn"
+      },
+      "source": {
+        "officialWebsite": "https://utc.edu.vn",
+        "identityVerifiedAt": "2026-10-07"
+      }
+    },
+    {
+      "id": "haui",
+      "code": "DCN",
+      "shortName": "HaUI",
+      "name": "Trường Đại học Công nghiệp Hà Nội",
+      "ownership": "public",
+      "regionId": "ha-noi",
+      "city": "Hà Nội",
+      "parentSystem": null,
+      "website": "https://haui.edu.vn",
+      "image": null,
+      "icon": "precision_manufacturing",
+      "featuredMajors": [
+        "Kỹ thuật Cơ - Điện tử",
+        "Kỹ thuật Điều khiển và Tự động hóa",
+        "Công nghệ Thông tin"
+      ],
+      "ownershipLabel": "Công lập",
+      "location": {
+        "regionId": "ha-noi",
+        "city": "Hà Nội",
+        "campus": null,
+        "address": null
+      },
+      "tuition": {
+        "academicYear": "2025-2026",
+        "minMillionVnd": 25,
+        "maxMillionVnd": 45,
+        "unit": "triệu đồng/năm",
+        "isReference": true,
+        "note": "Khoảng tham chiếu tổng hợp; mức thực tế phụ thuộc ngành và chương trình đào tạo.",
+        "sourceUrl": "https://haui.edu.vn"
+      },
+      "admission": {
+        "academicYear": 2025,
+        "methods": [
+          {
+            "id": "competency",
+            "label": "Đánh giá năng lực (ĐGNL HCM/HN)"
+          },
+          {
+            "id": "thpt",
+            "label": "Điểm thi tốt nghiệp THPT"
+          },
+          {
+            "id": "language",
+            "label": "Chứng chỉ ngoại ngữ kết hợp"
+          },
+          {
+            "id": "direct",
+            "label": "Tuyển thẳng/ưu tiên xét tuyển"
+          }
+        ],
+        "scoreRange": {
+          "min": 19,
+          "max": 27,
+          "scale": 30,
+          "type": "thpt-reference",
+          "isReference": true,
+          "label": "19 - 27 điểm"
+        },
+        "note": "Khoảng tham chiếu giữa các ngành; không thay thế thông báo trúng tuyển chính thức.",
+        "sourceUrl": "https://haui.edu.vn"
+      },
+      "source": {
+        "officialWebsite": "https://haui.edu.vn",
+        "identityVerifiedAt": "2026-10-07"
+      }
+    },
+    {
+      "id": "hau-architecture",
+      "code": "KTA",
+      "shortName": "HAU",
+      "name": "Trường Đại học Kiến trúc Hà Nội",
+      "ownership": "public",
+      "regionId": "ha-noi",
+      "city": "Hà Nội",
+      "parentSystem": null,
+      "website": "https://hau.edu.vn",
+      "image": null,
+      "icon": "architecture",
+      "featuredMajors": [
+        "Kiến trúc",
+        "Thiết kế Nội thất",
+        "Thiết kế Đồ họa"
+      ],
+      "ownershipLabel": "Công lập",
+      "location": {
+        "regionId": "ha-noi",
+        "city": "Hà Nội",
+        "campus": null,
+        "address": null
+      },
+      "tuition": {
+        "academicYear": "2025-2026",
+        "minMillionVnd": 15,
+        "maxMillionVnd": 35,
+        "unit": "triệu đồng/năm",
+        "isReference": true,
+        "note": "Khoảng tham chiếu tổng hợp; mức thực tế phụ thuộc ngành và chương trình đào tạo.",
+        "sourceUrl": "https://hau.edu.vn"
+      },
+      "admission": {
+        "academicYear": 2025,
+        "methods": [
+          {
+            "id": "competency",
+            "label": "Đánh giá năng lực (ĐGNL HCM/HN)"
+          },
+          {
+            "id": "thpt",
+            "label": "Điểm thi tốt nghiệp THPT"
+          },
+          {
+            "id": "direct",
+            "label": "Tuyển thẳng/ưu tiên xét tuyển"
+          }
+        ],
+        "scoreRange": {
+          "min": 18,
+          "max": 28,
+          "scale": 30,
+          "type": "thpt-reference",
+          "isReference": true,
+          "label": "18 - 28 điểm"
+        },
+        "note": "Khoảng tham chiếu giữa các ngành; không thay thế thông báo trúng tuyển chính thức.",
+        "sourceUrl": "https://hau.edu.vn"
+      },
+      "source": {
+        "officialWebsite": "https://hau.edu.vn",
+        "identityVerifiedAt": "2026-10-07"
+      }
+    },
+    {
+      "id": "dut-udn",
+      "code": "DDK",
+      "shortName": "DUT",
+      "name": "Trường Đại học Bách khoa, Đại học Đà Nẵng",
+      "ownership": "public",
+      "regionId": "central",
+      "city": "Đà Nẵng",
+      "parentSystem": "Đại học Đà Nẵng",
+      "website": "https://dut.udn.vn",
+      "image": null,
+      "icon": "engineering",
+      "featuredMajors": [
+        "Công nghệ Thông tin",
+        "Kỹ thuật Cơ - Điện tử",
+        "Kỹ thuật Xây dựng"
+      ],
+      "ownershipLabel": "Công lập",
+      "location": {
+        "regionId": "central",
+        "city": "Đà Nẵng",
+        "campus": null,
+        "address": null
+      },
+      "tuition": {
+        "academicYear": "2025-2026",
+        "minMillionVnd": 25,
+        "maxMillionVnd": 45,
+        "unit": "triệu đồng/năm",
+        "isReference": true,
+        "note": "Khoảng tham chiếu tổng hợp; mức thực tế phụ thuộc ngành và chương trình đào tạo.",
+        "sourceUrl": "https://dut.udn.vn"
+      },
+      "admission": {
+        "academicYear": 2025,
+        "methods": [
+          {
+            "id": "competency",
+            "label": "Đánh giá năng lực (ĐGNL HCM/HN)"
+          },
+          {
+            "id": "thpt",
+            "label": "Điểm thi tốt nghiệp THPT"
+          },
+          {
+            "id": "language",
+            "label": "Chứng chỉ ngoại ngữ kết hợp"
+          },
+          {
+            "id": "direct",
+            "label": "Tuyển thẳng/ưu tiên xét tuyển"
+          }
+        ],
+        "scoreRange": {
+          "min": 15,
+          "max": 28,
+          "scale": 30,
+          "type": "thpt-reference",
+          "isReference": true,
+          "label": "15 - 28 điểm"
+        },
+        "note": "Khoảng tham chiếu giữa các ngành; không thay thế thông báo trúng tuyển chính thức.",
+        "sourceUrl": "https://dut.udn.vn"
+      },
+      "source": {
+        "officialWebsite": "https://dut.udn.vn",
+        "identityVerifiedAt": "2026-10-07"
+      }
+    },
+    {
+      "id": "due-udn",
+      "code": "DDQ",
+      "shortName": "DUE",
+      "name": "Trường Đại học Kinh tế, Đại học Đà Nẵng",
+      "ownership": "public",
+      "regionId": "central",
+      "city": "Đà Nẵng",
+      "parentSystem": "Đại học Đà Nẵng",
+      "website": "https://due.udn.vn",
+      "image": null,
+      "icon": "query_stats",
+      "featuredMajors": [
+        "Quản trị Kinh doanh",
+        "Kinh doanh Quốc tế",
+        "Marketing"
+      ],
+      "ownershipLabel": "Công lập",
+      "location": {
+        "regionId": "central",
+        "city": "Đà Nẵng",
+        "campus": null,
+        "address": null
+      },
+      "tuition": {
+        "academicYear": "2025-2026",
+        "minMillionVnd": 23,
+        "maxMillionVnd": 40,
+        "unit": "triệu đồng/năm",
+        "isReference": true,
+        "note": "Khoảng tham chiếu tổng hợp; mức thực tế phụ thuộc ngành và chương trình đào tạo.",
+        "sourceUrl": "https://due.udn.vn"
+      },
+      "admission": {
+        "academicYear": 2025,
+        "methods": [
+          {
+            "id": "competency",
+            "label": "Đánh giá năng lực (ĐGNL HCM/HN)"
+          },
+          {
+            "id": "thpt",
+            "label": "Điểm thi tốt nghiệp THPT"
+          },
+          {
+            "id": "language",
+            "label": "Chứng chỉ ngoại ngữ kết hợp"
+          },
+          {
+            "id": "transcript-interview",
+            "label": "Xét học bạ kết hợp/phỏng vấn"
+          },
+          {
+            "id": "direct",
+            "label": "Tuyển thẳng/ưu tiên xét tuyển"
+          }
+        ],
+        "scoreRange": {
+          "min": 21,
+          "max": 28,
+          "scale": 30,
+          "type": "thpt-reference",
+          "isReference": true,
+          "label": "21 - 28 điểm"
+        },
+        "note": "Khoảng tham chiếu giữa các ngành; không thay thế thông báo trúng tuyển chính thức.",
+        "sourceUrl": "https://due.udn.vn"
+      },
+      "source": {
+        "officialWebsite": "https://due.udn.vn",
+        "identityVerifiedAt": "2026-10-07"
+      }
+    },
+    {
+      "id": "ued-udn",
+      "code": "DDS",
+      "shortName": "UED",
+      "name": "Trường Đại học Sư phạm, Đại học Đà Nẵng",
+      "ownership": "public",
+      "regionId": "central",
+      "city": "Đà Nẵng",
+      "parentSystem": "Đại học Đà Nẵng",
+      "website": "https://ued.udn.vn",
+      "image": null,
+      "icon": "school",
+      "featuredMajors": [
+        "Sư phạm Toán học",
+        "Sư phạm Ngữ văn",
+        "Giáo dục Mầm non"
+      ],
+      "ownershipLabel": "Công lập",
+      "location": {
+        "regionId": "central",
+        "city": "Đà Nẵng",
+        "campus": null,
+        "address": null
+      },
+      "tuition": {
+        "academicYear": "2025-2026",
+        "minMillionVnd": 15,
+        "maxMillionVnd": 35,
+        "unit": "triệu đồng/năm",
+        "isReference": true,
+        "note": "Khoảng tham chiếu tổng hợp; mức thực tế phụ thuộc ngành và chương trình đào tạo.",
+        "sourceUrl": "https://ued.udn.vn"
+      },
+      "admission": {
+        "academicYear": 2025,
+        "methods": [
+          {
+            "id": "competency",
+            "label": "Đánh giá năng lực (ĐGNL HCM/HN)"
+          },
+          {
+            "id": "thpt",
+            "label": "Điểm thi tốt nghiệp THPT"
+          },
+          {
+            "id": "direct",
+            "label": "Tuyển thẳng/ưu tiên xét tuyển"
+          }
+        ],
+        "scoreRange": {
+          "min": 18,
+          "max": 28,
+          "scale": 30,
+          "type": "thpt-reference",
+          "isReference": true,
+          "label": "18 - 28 điểm"
+        },
+        "note": "Khoảng tham chiếu giữa các ngành; không thay thế thông báo trúng tuyển chính thức.",
+        "sourceUrl": "https://ued.udn.vn"
+      },
+      "source": {
+        "officialWebsite": "https://ued.udn.vn",
+        "identityVerifiedAt": "2026-10-07"
+      }
+    },
+    {
+      "id": "husc-hue",
+      "code": "DHT",
+      "shortName": "HUSC",
+      "name": "Trường Đại học Khoa học, Đại học Huế",
+      "ownership": "public",
+      "regionId": "central",
+      "city": "Huế",
+      "parentSystem": "Đại học Huế",
+      "website": "https://husc.hueuni.edu.vn",
+      "image": null,
+      "icon": "science",
+      "featuredMajors": [
+        "Công nghệ Thông tin",
+        "Kiến trúc",
+        "Công nghệ Sinh học"
+      ],
+      "ownershipLabel": "Công lập",
+      "location": {
+        "regionId": "central",
+        "city": "Huế",
+        "campus": null,
+        "address": null
+      },
+      "tuition": {
+        "academicYear": "2025-2026",
+        "minMillionVnd": 15,
+        "maxMillionVnd": 30,
+        "unit": "triệu đồng/năm",
+        "isReference": true,
+        "note": "Khoảng tham chiếu tổng hợp; mức thực tế phụ thuộc ngành và chương trình đào tạo.",
+        "sourceUrl": "https://husc.hueuni.edu.vn"
+      },
+      "admission": {
+        "academicYear": 2025,
+        "methods": [
+          {
+            "id": "competency",
+            "label": "Đánh giá năng lực (ĐGNL HCM/HN)"
+          },
+          {
+            "id": "thpt",
+            "label": "Điểm thi tốt nghiệp THPT"
+          },
+          {
+            "id": "transcript-interview",
+            "label": "Xét học bạ kết hợp/phỏng vấn"
+          },
+          {
+            "id": "direct",
+            "label": "Tuyển thẳng/ưu tiên xét tuyển"
+          }
+        ],
+        "scoreRange": {
+          "min": 15,
+          "max": 24,
+          "scale": 30,
+          "type": "thpt-reference",
+          "isReference": true,
+          "label": "15 - 24 điểm"
+        },
+        "note": "Khoảng tham chiếu giữa các ngành; không thay thế thông báo trúng tuyển chính thức.",
+        "sourceUrl": "https://husc.hueuni.edu.vn"
+      },
+      "source": {
+        "officialWebsite": "https://husc.hueuni.edu.vn",
+        "identityVerifiedAt": "2026-10-07"
+      }
+    },
+    {
+      "id": "nha-trang-university",
+      "code": "TSN",
+      "shortName": "NTU",
+      "name": "Trường Đại học Nha Trang",
+      "ownership": "public",
+      "regionId": "central",
+      "city": "Khánh Hòa",
+      "parentSystem": null,
+      "website": "https://ntu.edu.vn",
+      "image": null,
+      "icon": "waves",
+      "featuredMajors": [
+        "Công nghệ Thực phẩm",
+        "Kinh doanh Thương mại",
+        "Kỹ thuật Cơ khí"
+      ],
+      "ownershipLabel": "Công lập",
+      "location": {
+        "regionId": "central",
+        "city": "Khánh Hòa",
+        "campus": null,
+        "address": null
+      },
+      "tuition": {
+        "academicYear": "2025-2026",
+        "minMillionVnd": 14,
+        "maxMillionVnd": 30,
+        "unit": "triệu đồng/năm",
+        "isReference": true,
+        "note": "Khoảng tham chiếu tổng hợp; mức thực tế phụ thuộc ngành và chương trình đào tạo.",
+        "sourceUrl": "https://ntu.edu.vn"
+      },
+      "admission": {
+        "academicYear": 2025,
+        "methods": [
+          {
+            "id": "competency",
+            "label": "Đánh giá năng lực (ĐGNL HCM/HN)"
+          },
+          {
+            "id": "thpt",
+            "label": "Điểm thi tốt nghiệp THPT"
+          },
+          {
+            "id": "transcript-interview",
+            "label": "Xét học bạ kết hợp/phỏng vấn"
+          },
+          {
+            "id": "direct",
+            "label": "Tuyển thẳng/ưu tiên xét tuyển"
+          }
+        ],
+        "scoreRange": {
+          "min": 16,
+          "max": 25,
+          "scale": 30,
+          "type": "thpt-reference",
+          "isReference": true,
+          "label": "16 - 25 điểm"
+        },
+        "note": "Khoảng tham chiếu giữa các ngành; không thay thế thông báo trúng tuyển chính thức.",
+        "sourceUrl": "https://ntu.edu.vn"
+      },
+      "source": {
+        "officialWebsite": "https://ntu.edu.vn",
+        "identityVerifiedAt": "2026-10-07"
+      }
+    },
+    {
+      "id": "quy-nhon-university",
+      "code": "DQN",
+      "shortName": "QNU",
+      "name": "Trường Đại học Quy Nhơn",
+      "ownership": "public",
+      "regionId": "central",
+      "city": "Quy Nhơn, Gia Lai",
+      "parentSystem": null,
+      "website": "https://qnu.edu.vn",
+      "image": null,
+      "icon": "school",
+      "featuredMajors": [
+        "Sư phạm",
+        "Công nghệ Thông tin",
+        "Quản trị Kinh doanh"
+      ],
+      "ownershipLabel": "Công lập",
+      "location": {
+        "regionId": "central",
+        "city": "Quy Nhơn, Gia Lai",
+        "campus": null,
+        "address": null
+      },
+      "tuition": {
+        "academicYear": "2025-2026",
+        "minMillionVnd": 15,
+        "maxMillionVnd": 30,
+        "unit": "triệu đồng/năm",
+        "isReference": true,
+        "note": "Khoảng tham chiếu tổng hợp; mức thực tế phụ thuộc ngành và chương trình đào tạo.",
+        "sourceUrl": "https://qnu.edu.vn"
+      },
+      "admission": {
+        "academicYear": 2025,
+        "methods": [
+          {
+            "id": "competency",
+            "label": "Đánh giá năng lực (ĐGNL HCM/HN)"
+          },
+          {
+            "id": "thpt",
+            "label": "Điểm thi tốt nghiệp THPT"
+          },
+          {
+            "id": "transcript-interview",
+            "label": "Xét học bạ kết hợp/phỏng vấn"
+          },
+          {
+            "id": "direct",
+            "label": "Tuyển thẳng/ưu tiên xét tuyển"
+          }
+        ],
+        "scoreRange": {
+          "min": 15,
+          "max": 25,
+          "scale": 30,
+          "type": "thpt-reference",
+          "isReference": true,
+          "label": "15 - 25 điểm"
+        },
+        "note": "Khoảng tham chiếu giữa các ngành; không thay thế thông báo trúng tuyển chính thức.",
+        "sourceUrl": "https://qnu.edu.vn"
+      },
+      "source": {
+        "officialWebsite": "https://qnu.edu.vn",
+        "identityVerifiedAt": "2026-10-07"
+      }
+    },
+    {
+      "id": "can-tho-university",
+      "code": "TCT",
+      "shortName": "CTU",
+      "name": "Trường Đại học Cần Thơ",
+      "ownership": "public",
+      "regionId": "mekong-delta",
+      "city": "Ninh Kiều, Cần Thơ",
+      "parentSystem": null,
+      "website": "https://ctu.edu.vn",
+      "image": null,
+      "icon": "school",
+      "featuredMajors": [
+        "Công nghệ Thông tin",
+        "Công nghệ Thực phẩm",
+        "Quản trị Kinh doanh"
+      ],
+      "ownershipLabel": "Công lập",
+      "location": {
+        "regionId": "mekong-delta",
+        "city": "Ninh Kiều, Cần Thơ",
+        "campus": null,
+        "address": null
+      },
+      "tuition": {
+        "academicYear": "2025-2026",
+        "minMillionVnd": 19,
+        "maxMillionVnd": 45,
+        "unit": "triệu đồng/năm",
+        "isReference": true,
+        "note": "Khoảng tham chiếu tổng hợp; mức thực tế phụ thuộc ngành và chương trình đào tạo.",
+        "sourceUrl": "https://ctu.edu.vn"
+      },
+      "admission": {
+        "academicYear": 2025,
+        "methods": [
+          {
+            "id": "competency",
+            "label": "Đánh giá năng lực (ĐGNL HCM/HN)"
+          },
+          {
+            "id": "thpt",
+            "label": "Điểm thi tốt nghiệp THPT"
+          },
+          {
+            "id": "transcript-interview",
+            "label": "Xét học bạ kết hợp/phỏng vấn"
+          },
+          {
+            "id": "direct",
+            "label": "Tuyển thẳng/ưu tiên xét tuyển"
+          }
+        ],
+        "scoreRange": {
+          "min": 15,
+          "max": 28,
+          "scale": 30,
+          "type": "thpt-reference",
+          "isReference": true,
+          "label": "15 - 28 điểm"
+        },
+        "note": "Khoảng tham chiếu giữa các ngành; không thay thế thông báo trúng tuyển chính thức.",
+        "sourceUrl": "https://ctu.edu.vn"
+      },
+      "source": {
+        "officialWebsite": "https://ctu.edu.vn",
+        "identityVerifiedAt": "2026-10-07"
+      }
+    },
+    {
+      "id": "dong-thap-university",
+      "code": "SPD",
+      "shortName": "DThU",
+      "name": "Trường Đại học Đồng Tháp",
+      "ownership": "public",
+      "regionId": "mekong-delta",
+      "city": "Cao Lãnh, Đồng Tháp",
+      "parentSystem": null,
+      "website": "https://www.dthu.edu.vn",
+      "image": null,
+      "icon": "school",
+      "featuredMajors": [
+        "Sư phạm",
+        "Ngôn ngữ Anh",
+        "Quản trị Kinh doanh"
+      ],
+      "ownershipLabel": "Công lập",
+      "location": {
+        "regionId": "mekong-delta",
+        "city": "Cao Lãnh, Đồng Tháp",
+        "campus": null,
+        "address": null
+      },
+      "tuition": {
+        "academicYear": "2025-2026",
+        "minMillionVnd": 15,
+        "maxMillionVnd": 28,
+        "unit": "triệu đồng/năm",
+        "isReference": true,
+        "note": "Khoảng tham chiếu tổng hợp; mức thực tế phụ thuộc ngành và chương trình đào tạo.",
+        "sourceUrl": "https://www.dthu.edu.vn"
+      },
+      "admission": {
+        "academicYear": 2025,
+        "methods": [
+          {
+            "id": "competency",
+            "label": "Đánh giá năng lực (ĐGNL HCM/HN)"
+          },
+          {
+            "id": "thpt",
+            "label": "Điểm thi tốt nghiệp THPT"
+          },
+          {
+            "id": "transcript-interview",
+            "label": "Xét học bạ kết hợp/phỏng vấn"
+          },
+          {
+            "id": "direct",
+            "label": "Tuyển thẳng/ưu tiên xét tuyển"
+          }
+        ],
+        "scoreRange": {
+          "min": 15,
+          "max": 27,
+          "scale": 30,
+          "type": "thpt-reference",
+          "isReference": true,
+          "label": "15 - 27 điểm"
+        },
+        "note": "Khoảng tham chiếu giữa các ngành; không thay thế thông báo trúng tuyển chính thức.",
+        "sourceUrl": "https://www.dthu.edu.vn"
+      },
+      "source": {
+        "officialWebsite": "https://www.dthu.edu.vn",
+        "identityVerifiedAt": "2026-10-07"
+      }
+    },
+    {
+      "id": "an-giang-university",
+      "code": "QSA",
+      "shortName": "AGU",
+      "name": "Trường Đại học An Giang, Đại học Quốc gia Thành phố Hồ Chí Minh",
+      "ownership": "public",
+      "regionId": "mekong-delta",
+      "city": "Long Xuyên, An Giang",
+      "parentSystem": "Đại học Quốc gia Thành phố Hồ Chí Minh",
+      "website": "https://www.agu.edu.vn",
+      "image": null,
+      "icon": "school",
+      "featuredMajors": [
+        "Công nghệ Thông tin",
+        "Công nghệ Thực phẩm",
+        "Ngôn ngữ Anh"
+      ],
+      "ownershipLabel": "Công lập",
+      "location": {
+        "regionId": "mekong-delta",
+        "city": "Long Xuyên, An Giang",
+        "campus": null,
+        "address": null
+      },
+      "tuition": {
+        "academicYear": "2025-2026",
+        "minMillionVnd": 15,
+        "maxMillionVnd": 30,
+        "unit": "triệu đồng/năm",
+        "isReference": true,
+        "note": "Khoảng tham chiếu tổng hợp; mức thực tế phụ thuộc ngành và chương trình đào tạo.",
+        "sourceUrl": "https://www.agu.edu.vn"
+      },
+      "admission": {
+        "academicYear": 2025,
+        "methods": [
+          {
+            "id": "competency",
+            "label": "Đánh giá năng lực (ĐGNL HCM/HN)"
+          },
+          {
+            "id": "thpt",
+            "label": "Điểm thi tốt nghiệp THPT"
+          },
+          {
+            "id": "transcript-interview",
+            "label": "Xét học bạ kết hợp/phỏng vấn"
+          },
+          {
+            "id": "direct",
+            "label": "Tuyển thẳng/ưu tiên xét tuyển"
+          }
+        ],
+        "scoreRange": {
+          "min": 16,
+          "max": 26,
+          "scale": 30,
+          "type": "thpt-reference",
+          "isReference": true,
+          "label": "16 - 26 điểm"
+        },
+        "note": "Khoảng tham chiếu giữa các ngành; không thay thế thông báo trúng tuyển chính thức.",
+        "sourceUrl": "https://www.agu.edu.vn"
+      },
+      "source": {
+        "officialWebsite": "https://www.agu.edu.vn",
+        "identityVerifiedAt": "2026-10-07"
+      }
+    },
+    {
+      "id": "tra-vinh-university",
+      "code": "DVT",
+      "shortName": "TVU",
+      "name": "Trường Đại học Trà Vinh",
+      "ownership": "public",
+      "regionId": "mekong-delta",
+      "city": "Trà Vinh, Vĩnh Long",
+      "parentSystem": null,
+      "website": "https://www.tvu.edu.vn",
+      "image": null,
+      "icon": "school",
+      "featuredMajors": [
+        "Công nghệ Thông tin",
+        "Ngôn ngữ Anh",
+        "Quản trị Kinh doanh"
+      ],
+      "ownershipLabel": "Công lập",
+      "location": {
+        "regionId": "mekong-delta",
+        "city": "Trà Vinh, Vĩnh Long",
+        "campus": null,
+        "address": null
+      },
+      "tuition": {
+        "academicYear": "2025-2026",
+        "minMillionVnd": 15,
+        "maxMillionVnd": 35,
+        "unit": "triệu đồng/năm",
+        "isReference": true,
+        "note": "Khoảng tham chiếu tổng hợp; mức thực tế phụ thuộc ngành và chương trình đào tạo.",
+        "sourceUrl": "https://www.tvu.edu.vn"
+      },
+      "admission": {
+        "academicYear": 2025,
+        "methods": [
+          {
+            "id": "competency",
+            "label": "Đánh giá năng lực (ĐGNL HCM/HN)"
+          },
+          {
+            "id": "thpt",
+            "label": "Điểm thi tốt nghiệp THPT"
+          },
+          {
+            "id": "transcript-interview",
+            "label": "Xét học bạ kết hợp/phỏng vấn"
+          },
+          {
+            "id": "direct",
+            "label": "Tuyển thẳng/ưu tiên xét tuyển"
+          }
+        ],
+        "scoreRange": {
+          "min": 15,
+          "max": 25,
+          "scale": 30,
+          "type": "thpt-reference",
+          "isReference": true,
+          "label": "15 - 25 điểm"
+        },
+        "note": "Khoảng tham chiếu giữa các ngành; không thay thế thông báo trúng tuyển chính thức.",
+        "sourceUrl": "https://www.tvu.edu.vn"
+      },
+      "source": {
+        "officialWebsite": "https://www.tvu.edu.vn",
+        "identityVerifiedAt": "2026-10-07"
+      }
+    }
+  ]
+}

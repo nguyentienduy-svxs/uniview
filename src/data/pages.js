@@ -17,7 +17,7 @@ export const pages = [
   },
   {
     id: 'fd5dca1aab894bb7a6cd31e76da75916',
-    component: 'SoftwareEngineeringMajorPage',
+    component: 'MajorDetailPage',
     path: '/majors/software-engineering',
     title: 'UniView — Chi tiết ngành Kỹ thuật Phần mềm',
     shortTitle: 'Chi tiết ngành',
