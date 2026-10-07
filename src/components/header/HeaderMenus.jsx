@@ -115,6 +115,7 @@ export function UserDropdown({
   onToggle,
   onClose,
   onLogout,
+  onResetDemo,
 }) {
   let planLabel = 'Free'
 
@@ -209,7 +210,7 @@ export function UserDropdown({
 
           {hasDirectionSnapshot && (
             <UserMenuLink
-              to="/direction-snapshot"
+              to="/assessment/result"
               onClick={onClose}
             >
               Direction Snapshot
@@ -254,7 +255,7 @@ export function UserDropdown({
                 </p>
 
                 <p className="mt-1 text-[11px] text-slate-500">
-                  Direction Snapshot 39k hoặc Admission Pass 89k
+                  Direction Snapshot 59k hoặc Admission Pass 89k
                 </p>
               </NavLink>
             )}
@@ -278,7 +279,7 @@ export function UserDropdown({
 
           {hasAdmissionPass && (
             <UserMenuLink
-              to="/my-plan"
+              to="/account/plan"
               onClick={onClose}
             >
               Quản lý gói
@@ -291,6 +292,17 @@ export function UserDropdown({
           >
             Cài đặt
           </UserMenuLink>
+
+          <button
+            type="button"
+            onClick={() => {
+              onResetDemo()
+              onClose()
+            }}
+            className="mt-1 w-full rounded-xl bg-amber-50 px-3 py-2.5 text-left text-sm font-semibold text-amber-800 hover:bg-amber-100"
+          >
+            Demo: reset Chí Duy về gói Free
+          </button>
 
           <button
             type="button"

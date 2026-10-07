@@ -59,7 +59,7 @@ function AccountPlanPage() {
 <div className="space-y-1">
 <span className="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider block">Tổng chi phí</span>
 <span className="font-headline-sm text-headline-sm text-on-surface font-bold">89.000đ</span>
-<span className="font-label-sm text-label-sm text-tertiary block">Đã trừ 39k từ Báo cáo cũ</span>
+<span className="font-label-sm text-label-sm text-tertiary block">Đã trừ 59k từ Báo cáo cũ</span>
 </div>
 </div>
 
@@ -332,7 +332,7 @@ function AccountPlanPage() {
 <td className="py-4 px-4 font-mono font-semibold text-on-surface">#UV-88294-PASS</td>
 <td className="py-4 px-4">
 <div className="font-medium text-on-surface">Nâng cấp Admission Pass 2027</div>
-<div className="text-label-sm text-on-surface-variant font-label-sm">Được cấn trừ 39k từ giao dịch trước</div>
+<div className="text-label-sm text-on-surface-variant font-label-sm">Được cấn trừ 59k từ giao dịch trước</div>
 </td>
 <td className="py-4 px-4 text-on-surface-variant">30/09/2026 14:28</td>
 <td className="py-4 px-4">
@@ -341,7 +341,7 @@ function AccountPlanPage() {
                     VietQR Chuyển khoản
                   </span>
 </td>
-<td className="py-4 px-4 font-semibold text-on-surface text-right">50.000đ</td>
+<td className="py-4 px-4 font-semibold text-on-surface text-right">30.000đ</td>
 <td className="py-4 px-4 text-center">
 <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-sage-subtle text-sage-text font-label-sm text-label-sm font-semibold">
 <span className="w-1.5 h-1.5 rounded-full bg-tertiary"></span>
@@ -368,7 +368,7 @@ function AccountPlanPage() {
                     Ví MoMo
                   </span>
 </td>
-<td className="py-4 px-4 font-semibold text-on-surface text-right">39.000đ</td>
+<td className="py-4 px-4 font-semibold text-on-surface text-right">59.000đ</td>
 <td className="py-4 px-4 text-center">
 <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-sage-subtle text-sage-text font-label-sm text-label-sm font-semibold">
 <span className="w-1.5 h-1.5 rounded-full bg-tertiary"></span>

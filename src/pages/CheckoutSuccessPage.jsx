@@ -33,7 +33,7 @@ function CheckoutSuccessPage() {
 <div className="grid grid-cols-1 md:grid-cols-2 gap-space-sm pt-space-md">
 <div className="flex items-start gap-2.5">
 <span className="material-symbols-outlined text-tertiary text-[20px] mt-0.5">verified</span>
-<span className="font-body-sm text-body-sm text-on-surface">Thanh toán thành công: <strong className="text-primary">50.000đ</strong> <span className="text-on-surface-variant">(Nâng cấp từ Personal Direction Report)</span></span>
+<span className="font-body-sm text-body-sm text-on-surface">Thanh toán thành công: <strong className="text-primary">30.000đ</strong> <span className="text-on-surface-variant">(Nâng cấp từ Personal Direction Report)</span></span>
 </div>
 <div className="flex items-start gap-2.5">
 <span className="material-symbols-outlined text-tertiary text-[20px] mt-0.5">bolt</span>

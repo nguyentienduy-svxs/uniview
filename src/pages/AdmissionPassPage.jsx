@@ -1,4 +1,4 @@
-﻿// src/pages/AdmissionPassPage.jsx
+// src/pages/AdmissionPassPage.jsx
 // Route: /admission-pass
 // Landing/purchase page for Personalized Admission Pass
 import { Link } from 'react-router-dom'
@@ -137,8 +137,8 @@ export default function AdmissionPassPage() {
               a: 'Decision Board đầy đủ, Admission Route Mapping cá nhân hóa, và Scenario Comparison — tất cả trong một mùa tuyển sinh.',
             },
             {
-              q: 'Gói này có khác với Direction Snapshot 39k không?',
-              a: 'Có. Direction Snapshot (39k) cung cấp Báo cáo định hướng cá nhân. Admission Pass (89k) mở khóa các công cụ hỗ trợ quyết định tuyển sinh thực tế.',
+              q: 'Gói này có khác với Direction Snapshot 59k không?',
+              a: 'Có. Direction Snapshot (59k) cung cấp Báo cáo định hướng cá nhân. Admission Pass (89k) mở khóa các công cụ hỗ trợ quyết định tuyển sinh thực tế.',
             },
             {
               q: 'Dữ liệu của tôi có được bảo mật không?',

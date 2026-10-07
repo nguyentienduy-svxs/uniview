@@ -59,7 +59,7 @@ function SecureCheckoutPage() {
 <span className="material-symbols-outlined text-[18px]">check_circle</span>
                 Đã thanh toán (Personal Direction Report)
               </span>
-<span className="font-semibold">-39.000đ</span>
+<span className="font-semibold">-59.000đ</span>
 </div>
 <div className="h-[1px] bg-outline-variant/30 my-space-xs"></div>
 <div className="flex justify-between items-baseline pt-space-xs">
@@ -67,7 +67,7 @@ function SecureCheckoutPage() {
 <span className="font-label-lg text-label-lg text-on-surface">Số tiền cần thanh toán thêm</span>
 <span className="font-label-sm text-secondary">Quyền lợi nâng cấp bù trừ trực tiếp</span>
 </div>
-<span className="font-display-lg text-headline-lg text-primary font-bold tracking-tight">50.000đ</span>
+<span className="font-display-lg text-headline-lg text-primary font-bold tracking-tight">30.000đ</span>
 </div>
 </div>
 
@@ -247,7 +247,7 @@ function SecureCheckoutPage() {
 <div className="flex justify-between items-center py-1 bg-surface-container-low px-3 rounded-lg">
 <div className="flex flex-col">
 <span className="font-label-sm text-secondary">Số tiền chính xác</span>
-<span className="font-label-lg text-primary font-bold">50.000 VND</span>
+<span className="font-label-lg text-primary font-bold">30.000 VND</span>
 </div>
 <button className="p-1.5 rounded hover:bg-surface-container text-primary transition-colors flex items-center gap-1 font-label-sm" type="button">
 <span className="material-symbols-outlined text-[16px]">content_copy</span>

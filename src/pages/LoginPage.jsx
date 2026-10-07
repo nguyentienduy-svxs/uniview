@@ -1,4 +1,38 @@
+import { useState } from 'react'
+import { useLocation, useNavigate } from 'react-router-dom'
+
+import { useAuth } from '../context/AuthContext'
+
 function LoginPage() {
+  const navigate = useNavigate()
+  const location = useLocation()
+  const { login, demoCredentials } = useAuth()
+  const [identifier, setIdentifier] = useState(demoCredentials.username)
+  const [password, setPassword] = useState(demoCredentials.password)
+  const [showPassword, setShowPassword] = useState(false)
+  const [error, setError] = useState('')
+  const [submitting, setSubmitting] = useState(false)
+
+  const performLogin = async () => {
+    if (submitting) return
+    setSubmitting(true)
+    setError('')
+    try {
+      await login(identifier, password)
+      const params = new URLSearchParams(location.search)
+      navigate(params.get('next') || '/assessment', { replace: true })
+    } catch (loginError) {
+      setError(loginError.message)
+    } finally {
+      setSubmitting(false)
+    }
+  }
+
+  const handleSubmit = (event) => {
+    event.preventDefault()
+    void performLogin()
+  }
+
   return (
     <main className="w-full pt-6 bg-[#FFFDFB] min-h-[calc(100vh-80px)] pb-24"><div className="flex flex-col w-full">
 
@@ -87,36 +121,11 @@ function LoginPage() {
                   </div>
 
                   <div className="w-32 h-32 my-3 relative flex items-center justify-center">
-                    <svg className="w-28 h-28 drop-shadow-md" fill="none" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
-
-                      <polygon fill="#172033" points="58,95 44,52 82,72"></polygon>
-                      <polygon fill="#FFDAD6" points="56,88 50,60 74,74"></polygon>
-                      <polygon fill="#172033" points="142,95 156,52 118,72"></polygon>
-                      <polygon fill="#FFDAD6" points="144,88 150,60 126,74"></polygon>
-
-                      <polygon fill="#172033" points="100,28 152,48 100,68 48,48"></polygon>
-                      <polygon fill="#1D4ED8" points="100,64 135,52 135,62 100,74 65,62 65,52"></polygon>
-
-                      <path d="M135,52 Q150,62 152,78" fill="none" stroke="#FBBF24" strokeLinecap="round" strokeWidth="2.5"></path>
-                      <circle cx="152" cy="80" fill="#FBBF24" r="4"></circle>
-
-                      <ellipse cx="100" cy="98" fill="#FFFFFF" rx="44" ry="36" stroke="#172033" strokeWidth="4"></ellipse>
-
-                      <ellipse cx="85" cy="98" fill="#172033" rx="5.5" ry="7"></ellipse>
-                      <ellipse cx="115" cy="98" fill="#172033" rx="5.5" ry="7"></ellipse>
-                      <circle cx="83.5" cy="95.5" fill="#FFFFFF" r="2"></circle>
-                      <circle cx="113.5" cy="95.5" fill="#FFFFFF" r="2"></circle>
-                      <ellipse cx="100" cy="106" fill="#FB7185" rx="3.5" ry="2.5"></ellipse>
-
-                      <path d="M68,102 L52,100 M68,106 L50,108 M132,102 L148,100 M132,106 L150,108" stroke="#CBD5E1" strokeLinecap="round" strokeWidth="2"></path>
-
-                      <path d="M50,115 C50,172 150,172 150,115 L150,126 C150,185 50,185 50,126 Z" fill="#1D4ED8"></path>
-                      <path d="M54,118 Q100,106 100,165 Q100,106 146,118 L146,160 Q100,148 100,175 Q100,148 54,160 Z" fill="#EFF6FF" stroke="#172033" strokeWidth="3"></path>
-                      <line stroke="#CBD5E1" strokeWidth="2" x1="100" x2="100" y1="120" y2="175"></line>
-
-                      <ellipse cx="82" cy="122" fill="#FFFFFF" rx="9" ry="7" stroke="#172033" strokeWidth="3"></ellipse>
-                      <ellipse cx="118" cy="122" fill="#FFFFFF" rx="9" ry="7" stroke="#172033" strokeWidth="3"></ellipse>
-                    </svg>
+                    <img
+                      alt="UniView"
+                      className="h-28 w-28 object-contain drop-shadow-md"
+                      src="/stitch-assets/uniview-logo.png"
+                    />
                   </div>
 
                   <div className="bg-emerald-50 text-emerald-800 font-label-sm text-label-sm px-3 py-1 rounded-full flex items-center gap-1.5 shadow-xs">
@@ -146,7 +155,7 @@ function LoginPage() {
                 </p>
               </div>
 
-              <button className="w-full py-3 px-4 rounded-xl bg-surface-container-lowest hover:bg-surface-container transition-all font-label-lg text-label-lg text-on-surface flex items-center justify-center gap-3 shadow-sm hover:shadow-md group mb-6 cursor-pointer" type="button">
+              <button className="w-full py-3 px-4 rounded-xl bg-surface-container-lowest font-label-lg text-label-lg text-on-surface-variant flex items-center justify-center gap-3 shadow-sm mb-6 cursor-not-allowed opacity-60" disabled type="button">
 
                 <svg className="w-5 h-5 shrink-0" viewBox="0 0 24 24">
                   <path d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.8-2.4 3.65v3.03h3.88c2.27-2.09 3.665-5.17 3.665-9.12z" fill="#4285F4"></path>
@@ -163,11 +172,16 @@ function LoginPage() {
                 <div className="flex-1 h-[1px] bg-slate-200"></div>
               </div>
 
-              <form className="space-y-4" id="loginForm">
+              <form className="space-y-4" id="loginForm" onSubmit={handleSubmit}>
+
+                <div className="rounded-xl border border-blue-200 bg-blue-50 p-3 text-sm text-blue-900">
+                  <p className="font-bold">Tài khoản demo gói Free — Chí Duy</p>
+                  <p className="mt-1">Username: <strong>{demoCredentials.username}</strong> · Mật khẩu: <strong>{demoCredentials.password}</strong></p>
+                </div>
 
                 <div>
                   <label className="block font-label-lg text-label-lg text-on-surface mb-1.5" htmlFor="emailInput">
-                    Email học sinh hoặc phụ huynh
+                    Username hoặc email
                   </label>
                   <div className="relative">
                     <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
@@ -176,7 +190,7 @@ function LoginPage() {
                         <path d="M22 7L13.03 12.7a2 2 0 0 1-2.06 0L2 7"></path>
                       </svg>
                     </div>
-                    <input className="w-full pl-11 pr-4 py-3 rounded-xl bg-surface-container-lowest text-on-surface placeholder:text-slate-400 font-body-sm text-body-sm focus:outline-none focus:ring-2 focus:ring-primary-container shadow-sm transition-all" id="emailInput" placeholder="name@example.com" required type="email" defaultValue="minhanh.nguyen@gmail.com" />
+                    <input className="w-full pl-11 pr-4 py-3 rounded-xl bg-surface-container-lowest text-on-surface placeholder:text-slate-400 font-body-sm text-body-sm focus:outline-none focus:ring-2 focus:ring-primary-container shadow-sm transition-all" id="emailInput" placeholder="chiduy" required type="text" value={identifier} onChange={(event) => setIdentifier(event.target.value)} />
                   </div>
                 </div>
 
@@ -196,14 +210,14 @@ function LoginPage() {
                         <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
                       </svg>
                     </div>
-                    <input className="w-full pl-11 pr-11 py-3 rounded-xl bg-surface-container-lowest text-on-surface placeholder:text-slate-400 font-body-sm text-body-sm focus:outline-none focus:ring-2 focus:ring-primary-container shadow-sm transition-all" id="passwordInput" placeholder="Nhập mật khẩu của bạn" required type="password" defaultValue="DemoSecurePass2025!" />
+                    <input className="w-full pl-11 pr-11 py-3 rounded-xl bg-surface-container-lowest text-on-surface placeholder:text-slate-400 font-body-sm text-body-sm focus:outline-none focus:ring-2 focus:ring-primary-container shadow-sm transition-all" id="passwordInput" placeholder="Nhập mật khẩu của bạn" required type={showPassword ? 'text' : 'password'} value={password} onChange={(event) => setPassword(event.target.value)} />
 
-                    <button aria-label="Ẩn hiện mật khẩu" className="absolute inset-y-0 right-0 pr-3.5 flex items-center text-slate-400 hover:text-on-surface transition-colors cursor-pointer" id="togglePasswordBtn" type="button">
-                      <svg className="w-5 h-5" fill="none" id="eyeIcon" stroke="currentColor" strokeWidth="1.8" viewBox="0 0 24 24">
+                    <button aria-label="Ẩn hiện mật khẩu" className="absolute inset-y-0 right-0 pr-3.5 flex items-center text-slate-400 hover:text-on-surface transition-colors cursor-pointer" id="togglePasswordBtn" type="button" onClick={() => setShowPassword((current) => !current)}>
+                      <svg className={`w-5 h-5 ${showPassword ? 'hidden' : ''}`} fill="none" id="eyeIcon" stroke="currentColor" strokeWidth="1.8" viewBox="0 0 24 24">
                         <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
                         <circle cx="12" cy="12" r="3"></circle>
                       </svg>
-                      <svg className="w-5 h-5 hidden" fill="none" id="eyeOffIcon" stroke="currentColor" strokeWidth="1.8" viewBox="0 0 24 24">
+                      <svg className={`w-5 h-5 ${showPassword ? '' : 'hidden'}`} fill="none" id="eyeOffIcon" stroke="currentColor" strokeWidth="1.8" viewBox="0 0 24 24">
                         <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
                         <line x1="1" x2="23" y1="1" y2="23"></line>
                       </svg>
@@ -224,8 +238,10 @@ function LoginPage() {
                   </div>
                 </div>
 
-                <button className="w-full py-3.5 px-6 rounded-full bg-primary-container hover:bg-primary text-on-primary font-label-lg text-label-lg transition-all shadow-md hover:shadow-xl active:scale-[0.99] flex items-center justify-center gap-2 group cursor-pointer" id="submitBtn" type="submit">
-                  <span id="btnText">Đăng nhập</span>
+                {error && <p className="rounded-xl bg-rose-50 p-3 text-sm font-semibold text-rose-700">{error}</p>}
+
+                <button className="w-full py-3.5 px-6 rounded-full bg-primary-container hover:bg-primary text-on-primary font-label-lg text-label-lg transition-all shadow-md hover:shadow-xl active:scale-[0.99] flex items-center justify-center gap-2 group cursor-pointer disabled:cursor-wait disabled:opacity-70" disabled={submitting} id="submitBtn" onClick={() => void performLogin()} type="button">
+                  <span id="btnText">{submitting ? 'Đang đăng nhập...' : 'Đăng nhập'}</span>
                   <svg className="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" id="btnArrow" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                     <path d="M14 5l7 7m0 0l-7 7m7-7H3" strokeLinecap="round" strokeLinejoin="round"></path>
                   </svg>
