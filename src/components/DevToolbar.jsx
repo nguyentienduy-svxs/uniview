@@ -3,11 +3,12 @@ import { useAuth } from '../context/AuthContext'
 import { MOCK_SESSIONS } from '../data/user'
 
 const SESSION_META = {
-  guest:     { label: 'Guest',      icon: 'person_off',       color: '#6b7280' },
-  free:      { label: 'Free',       icon: 'person',           color: '#1d4ed8' },
-  direction: { label: 'Direction',  icon: 'explore',          color: '#7c3aed' },
-  admission: { label: 'Admission',  icon: 'school',           color: '#059669' },
-  both:      { label: 'Both',       icon: 'workspace_premium',color: '#fb7185' },
+  guest:           { label: 'Guest',             icon: 'person_off',        color: '#6b7280' },
+  preview:         { label: 'Preview',           icon: 'visibility',        color: '#1d4ed8' },
+  monthly:         { label: 'Gói Tháng',         icon: 'calendar_month',    color: '#7c3aed' },
+  annual:          { label: 'Gói Năm',           icon: 'date_range',        color: '#fb7185' },
+  admission:       { label: 'Admission Pass',    icon: 'school',            color: '#059669' },
+  annual_admission:{ label: 'Năm + Admission',   icon: 'workspace_premium', color: '#d97706' },
 }
 
 const SESSION_KEYS = Object.keys(MOCK_SESSIONS)
@@ -23,7 +24,8 @@ function DevToolbar() {
     const s = MOCK_SESSIONS[k]
     return s.user?.id === session?.user?.id
       && JSON.stringify(s.entitlements) === JSON.stringify(session?.entitlements ?? [])
-  }) ?? 'free'
+      && JSON.stringify(s.activePlans ?? []) === JSON.stringify(session?.activePlans ?? [])
+  }) ?? 'preview'
 
   const current = SESSION_META[currentKey]
 

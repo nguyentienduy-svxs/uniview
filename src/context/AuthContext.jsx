@@ -127,12 +127,26 @@ export function AuthProvider({
   const admissionSeason =
     session?.admissionSeason ?? null
 
+  const activePlans =
+    session?.activePlans ?? []
+
   const isAuthenticated =
     Boolean(user)
 
   const hasEntitlement = (
     entitlement,
   ) => {
+    if (
+      entitlement === ENTITLEMENTS.PERSONAL_WORKSPACE ||
+      entitlement === ENTITLEMENTS.DIRECTION_SNAPSHOT
+    ) {
+      return [
+        ENTITLEMENTS.PERSONAL_WORKSPACE,
+        ENTITLEMENTS.DIRECTION_SNAPSHOT,
+        ENTITLEMENTS.ADMISSION_PASS,
+      ].some((candidate) => entitlements.includes(candidate))
+    }
+
     return entitlements.includes(
       entitlement,
     )
@@ -163,23 +177,55 @@ export function AuthProvider({
     const nextSession = {
       user: DEMO_USER,
       entitlements: previous?.user?.id === DEMO_USER.id
-        ? previous.entitlements ?? []
-        : [],
-      admissionSeason: null,
+        ? [...new Set([
+          ...(previous.entitlements ?? []),
+          ENTITLEMENTS.PERSONAL_WORKSPACE,
+          ENTITLEMENTS.ADMISSION_PASS,
+        ])]
+        : [ENTITLEMENTS.PERSONAL_WORKSPACE, ENTITLEMENTS.ADMISSION_PASS],
+      activePlans: previous?.user?.id === DEMO_USER.id
+        ? [...new Set([...(previous.activePlans ?? []), 'ADMISSION_PASS'])]
+        : ['ADMISSION_PASS'],
+      admissionSeason: '2027',
     }
     persistLocalSession(nextSession)
     setError(null)
     return nextSession
   }
 
-  const purchaseDirectionSnapshot = () => {
-    if (!user) throw new Error('Bạn cần đăng nhập trước khi mở khóa báo cáo.')
+  const purchaseCorePlan = (planId = 'MONTHLY') => {
+    if (!user) throw new Error('Bạn cần đăng nhập trước khi chọn gói.')
+    if (!['MONTHLY', 'ANNUAL'].includes(planId)) {
+      throw new Error('Gói thuê bao không hợp lệ.')
+    }
     const nextSession = {
       ...session,
       entitlements: [...new Set([
         ...entitlements,
-        ENTITLEMENTS.DIRECTION_SNAPSHOT,
+        ENTITLEMENTS.PERSONAL_WORKSPACE,
       ])],
+      activePlans: [
+        ...activePlans.filter((activePlan) => !['MONTHLY', 'ANNUAL'].includes(activePlan)),
+        planId,
+      ],
+    }
+    persistLocalSession(nextSession)
+    return nextSession
+  }
+
+  const purchaseDirectionSnapshot = () => purchaseCorePlan('MONTHLY')
+
+  const purchaseAdmissionPass = (season = '2027') => {
+    if (!user) throw new Error('Bạn cần đăng nhập trước khi mua Admission Pass.')
+    const nextSession = {
+      ...session,
+      entitlements: [...new Set([
+        ...entitlements,
+        ENTITLEMENTS.PERSONAL_WORKSPACE,
+        ENTITLEMENTS.ADMISSION_PASS,
+      ])],
+      activePlans: [...new Set([...activePlans, 'ADMISSION_PASS'])],
+      admissionSeason: String(season),
     }
     persistLocalSession(nextSession)
     return nextSession
@@ -208,8 +254,9 @@ export function AuthProvider({
   const resetDemoAccount = () => {
     const nextSession = {
       user: DEMO_USER,
-      entitlements: [],
-      admissionSeason: null,
+      entitlements: [ENTITLEMENTS.PERSONAL_WORKSPACE, ENTITLEMENTS.ADMISSION_PASS],
+      admissionSeason: '2027',
+      activePlans: ['ADMISSION_PASS'],
     }
     persistLocalSession(nextSession)
     setReportHistory([])
@@ -246,6 +293,7 @@ export function AuthProvider({
         user,
         entitlements,
         admissionSeason,
+        activePlans,
 
         isAuthenticated,
         loading,
@@ -256,6 +304,8 @@ export function AuthProvider({
         login,
         logout,
         purchaseDirectionSnapshot,
+        purchaseCorePlan,
+        purchaseAdmissionPass,
         reportHistory,
         saveReportToHistory,
         resetDemoAccount,

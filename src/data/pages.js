@@ -259,8 +259,8 @@ export const pages = [
     id: '1656321741670937514',
     component: 'PersonalDirectionCheckoutPage',
     path: '/checkout/personal-direction',
-    title: 'Uniview — Thanh toán Personal Direction Report',
-    shortTitle: 'Thanh toán báo cáo',
+    title: 'Uniview — Thanh toán Gói Tháng hoặc Gói Năm',
+    shortTitle: 'Thanh toán gói khám phá',
     group: 'Thanh toán',
   },
   {

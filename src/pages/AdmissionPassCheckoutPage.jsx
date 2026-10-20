@@ -1,4 +1,25 @@
+import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
+
+import { useAuth } from '../context/AuthContext'
+import { formatPrice, PLAN_CATALOG, PLAN_IDS } from '../data/plans'
+
 function AdmissionPassCheckoutPage() {
+  const navigate = useNavigate()
+  const { isAuthenticated, purchaseAdmissionPass } = useAuth()
+  const [confirming, setConfirming] = useState(false)
+  const price = formatPrice(PLAN_CATALOG[PLAN_IDS.ADMISSION_PASS].price)
+
+  const confirmDemoPayment = () => {
+    if (!isAuthenticated) {
+      navigate('/login?next=/checkout/admission-pass')
+      return
+    }
+    setConfirming(true)
+    purchaseAdmissionPass('2027')
+    navigate('/checkout/success', { replace: true })
+  }
+
   return (
 <main className="w-full pt-20 bg-surface min-h-[calc(100vh-20rem)]"><div className="flex flex-col w-full">
 
@@ -54,16 +75,16 @@ function AdmissionPassCheckoutPage() {
 </div>
 <div className="flex flex-col sm:text-right shrink-0">
 <span className="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Thanh toán 1 lần</span>
-<span className="font-headline-lg text-headline-lg text-primary font-bold">89.000đ</span>
+<span className="font-headline-lg text-headline-lg text-primary font-bold">{price}</span>
 </div>
 </div>
 
 <div className="p-3.5 rounded-xl bg-sage-subtle flex items-start gap-3 text-sage-text">
 <span className="material-symbols-outlined text-[20px] shrink-0 mt-0.5 text-sage-text">verified</span>
 <div className="flex flex-col font-body-sm text-body-sm">
-<span className="font-semibold text-sage-text">★ Đã bao gồm Personal Direction Report (Trị giá 59.000đ)</span>
+<span className="font-semibold text-sage-text">★ Đã bao gồm Personal Workspace cho mùa tuyển sinh</span>
 <span className="text-on-surface-variant text-[12px] leading-relaxed">
-                  Bạn không cần mua lẻ báo cáo định hướng khi đã đăng ký Admission Pass trực tiếp. Toàn bộ đặc quyền được hợp nhất trong một giao dịch.
+                  Admission Pass mở Personal Workspace trong đúng mùa tuyển sinh đã chọn và dùng lại toàn bộ hồ sơ, bằng chứng hiện có.
                 </span>
 </div>
 </div>
@@ -96,7 +117,7 @@ function AdmissionPassCheckoutPage() {
 <span className="material-symbols-outlined text-[18px]">psychology</span>
                     Nhóm 1: Báo cáo định hướng cá nhân (Đã bao gồm sẵn)
                   </span>
-<span className="text-[11px] font-semibold uppercase px-2 py-0.5 rounded-full bg-surface-container-lowest text-lavender-text shadow-sm">Trị giá 59K</span>
+<span className="text-[11px] font-semibold uppercase px-2 py-0.5 rounded-full bg-surface-container-lowest text-lavender-text shadow-sm">Đã bao gồm</span>
 </div>
 <ul className="flex flex-col gap-2 font-body-sm text-body-sm text-on-surface">
 <li className="flex items-start gap-2">
@@ -249,7 +270,7 @@ function AdmissionPassCheckoutPage() {
 <div className="flex items-center justify-between bg-surface-container-low px-2 py-1 rounded-md">
 <span className="text-on-surface-variant">Số tiền:</span>
 <div className="flex items-center gap-1.5">
-<span className="font-bold text-primary" id="bank-amount">89.000 VND</span>
+<span className="font-bold text-primary" id="bank-amount">{price}</span>
 <button className="text-primary hover:text-primary-container p-0.5" title="Sao chép" type="button">
 <span className="material-symbols-outlined text-[15px]">content_copy</span>
 </button>
@@ -333,11 +354,11 @@ function AdmissionPassCheckoutPage() {
 <div className="flex flex-col gap-2 pt-2">
 <div className="flex items-center justify-between text-on-surface">
 <span className="font-body-md text-body-md text-on-surface-variant">Admission Pass 2027 (Trọn gói)</span>
-<span className="font-label-lg text-label-lg font-semibold">89.000đ</span>
+<span className="font-label-lg text-label-lg font-semibold">{price}</span>
 </div>
 <div className="flex items-center justify-between text-sage-text font-body-sm text-body-sm">
-<span>Ưu đãi hợp nhất báo cáo định hướng</span>
-<span className="font-semibold">-59.000đ (Tặng kèm)</span>
+<span>Personal Workspace trong mùa tuyển sinh</span>
+<span className="font-semibold">Đã bao gồm</span>
 </div>
 <div className="h-px bg-surface-container-highest my-1"></div>
 <div className="flex items-center justify-between text-on-surface">
@@ -345,13 +366,13 @@ function AdmissionPassCheckoutPage() {
 <span className="font-headline-sm text-headline-sm font-bold">Tổng thanh toán</span>
 <span className="font-label-sm text-label-sm text-on-surface-variant">Đã gồm VAT &amp; toàn bộ tính năng 2027</span>
 </div>
-<span className="font-headline-lg text-headline-lg font-bold text-primary">89.000đ</span>
+<span className="font-headline-lg text-headline-lg font-bold text-primary">{price}</span>
 </div>
 </div>
 
 <div className="flex flex-col gap-2.5 pt-1">
-<button className="w-full py-4 px-6 rounded-full bg-primary-container text-on-primary font-label-lg text-label-lg hover:bg-primary transition-all shadow-md flex items-center justify-center gap-2 group" type="button">
-<span>Thanh toán 89.000đ</span>
+<button className="w-full py-4 px-6 rounded-full bg-primary-container text-on-primary font-label-lg text-label-lg hover:bg-primary transition-all shadow-md flex items-center justify-center gap-2 group disabled:cursor-wait disabled:opacity-70" disabled={confirming} onClick={confirmDemoPayment} type="button">
+<span>{confirming ? 'Đang kích hoạt...' : `Xác nhận demo · ${price}`}</span>
 <span className="material-symbols-outlined text-[18px] group-hover:translate-x-1 transition-transform">arrow_forward</span>
 </button>
 <a className="w-full py-2.5 text-center font-label-md text-label-md text-on-surface-variant hover:text-on-surface transition-colors" data-path="bang-gia-va-goi-dich-vu" href="#">

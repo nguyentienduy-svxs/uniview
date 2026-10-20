@@ -1,6 +1,5 @@
 ﻿// src/components/premium/PremiumFeatureGate.jsx
 import { useAuth } from '../../context/AuthContext'
-import { ENTITLEMENTS } from '../header/headerConfig'
 
 /**
  * PremiumFeatureGate

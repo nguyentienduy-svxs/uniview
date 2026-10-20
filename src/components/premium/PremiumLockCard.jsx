@@ -1,5 +1,5 @@
 ﻿// src/components/premium/PremiumLockCard.jsx
-import { Link, useNavigate } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import { useAuth } from '../../context/AuthContext'
 import { ENTITLEMENTS } from '../header/headerConfig'
 
@@ -9,20 +9,18 @@ import { ENTITLEMENTS } from '../header/headerConfig'
  * Shown inside premium feature pages when the user does NOT have ADMISSION_PASS.
  * Handles three user states:
  *   - Guest (not logged in)
- *   - Free (logged in, no entitlements)
- *   - Direction Snapshot only (has DIRECTION_SNAPSHOT but NOT ADMISSION_PASS)
+ *   - Preview (logged in, no entitlements)
+ *   - Gói Tháng / Gói Năm (workspace only, without ADMISSION_PASS)
  */
 export default function PremiumLockCard({ className = '' }) {
   const { isAuthenticated, hasEntitlement } = useAuth()
   const hasAdmissionPass = hasEntitlement(ENTITLEMENTS.ADMISSION_PASS)
-  const hasDirectionSnapshot = hasEntitlement(ENTITLEMENTS.DIRECTION_SNAPSHOT)
+  const hasDirectionSnapshot = hasEntitlement(ENTITLEMENTS.PERSONAL_WORKSPACE)
 
   // If user already has the pass, render nothing
   if (hasAdmissionPass) return null
 
   const isDirectionSnapshotOnly = isAuthenticated && hasDirectionSnapshot && !hasAdmissionPass
-  const isFreeLoggedIn = isAuthenticated && !hasAdmissionPass
-
   return (
     <div
       className={`relative overflow-hidden rounded-2xl border border-blue-200 bg-gradient-to-br from-[#EFF6FF] via-white to-[#FFF1F2] shadow-lg ${className}`}
@@ -49,10 +47,10 @@ export default function PremiumLockCard({ className = '' }) {
           Mở khóa tính năng này với Admission Pass
         </h2>
 
-        {/* Direction Snapshot note */}
+        {/* Existing exploration subscription note */}
         {isDirectionSnapshotOnly && (
           <div className="mb-4 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900">
-            <span className="font-semibold">Direction Snapshot của bạn không bao gồm tính năng này.</span>
+            <span className="font-semibold">Gói khám phá của bạn chưa bao gồm công cụ tuyển sinh này.</span>
             <span className="ml-1 text-amber-700">Mở thêm Personalized Admission Pass để truy cập.</span>
           </div>
         )}

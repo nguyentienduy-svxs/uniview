@@ -109,7 +109,7 @@ export default function AppHeader() {
 
   const hasDirectionSnapshot =
     hasEntitlement(
-      ENTITLEMENTS.DIRECTION_SNAPSHOT,
+      ENTITLEMENTS.PERSONAL_WORKSPACE,
     ) || hasAdmissionPass
 
   // ====================================================

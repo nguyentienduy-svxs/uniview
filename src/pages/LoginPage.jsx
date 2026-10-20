@@ -175,7 +175,7 @@ function LoginPage() {
               <form className="space-y-4" id="loginForm" onSubmit={handleSubmit}>
 
                 <div className="rounded-xl border border-blue-200 bg-blue-50 p-3 text-sm text-blue-900">
-                  <p className="font-bold">Tài khoản demo gói Free — Chí Duy</p>
+                  <p className="font-bold">Tài khoản demo — Chí Duy</p>
                   <p className="mt-1">Username: <strong>{demoCredentials.username}</strong> · Mật khẩu: <strong>{demoCredentials.password}</strong></p>
                 </div>
 

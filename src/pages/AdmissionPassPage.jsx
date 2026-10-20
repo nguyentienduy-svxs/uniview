@@ -4,10 +4,13 @@
 import { Link } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { ENTITLEMENTS } from '../components/header/headerConfig'
+import { formatPrice, PLAN_CATALOG, PLAN_IDS } from '../data/plans'
 
 export default function AdmissionPassPage() {
   const { isAuthenticated, hasEntitlement } = useAuth()
   const hasAdmissionPass = hasEntitlement(ENTITLEMENTS.ADMISSION_PASS)
+  const admissionPlan = PLAN_CATALOG[PLAN_IDS.ADMISSION_PASS]
+  const admissionPrice = formatPrice(admissionPlan.price)
 
   if (hasAdmissionPass) {
     return (
@@ -59,7 +62,7 @@ export default function AdmissionPassPage() {
               Một gói duy nhất mở khóa Decision Board, Admission Route Mapping và Scenario Comparison — tất cả đều dựa trên hồ sơ học tập thực tế của bạn.
             </p>
             <div className="flex flex-wrap items-baseline justify-center gap-2">
-              <span className="text-4xl font-extrabold text-[#172033]">89.000đ</span>
+              <span className="text-4xl font-extrabold text-[#172033]">{admissionPrice}</span>
               <span className="text-[#667085] text-base">/ mùa tuyển sinh</span>
             </div>
             <div className="flex flex-wrap gap-3 justify-center pt-2">
@@ -67,7 +70,7 @@ export default function AdmissionPassPage() {
                 to="/checkout/admission-pass"
                 className="inline-flex items-center gap-2 rounded-xl bg-[#1D4ED8] px-8 py-3.5 text-sm font-bold text-white shadow-lg transition-all hover:-translate-y-0.5 hover:bg-blue-700 hover:shadow-xl"
               >
-                Mua Admission Pass — 89.000đ
+                Mua Admission Pass — {admissionPrice}
                 <svg className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                   <path d="M9 5l7 7-7 7" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
@@ -137,8 +140,12 @@ export default function AdmissionPassPage() {
               a: 'Decision Board đầy đủ, Admission Route Mapping cá nhân hóa, và Scenario Comparison — tất cả trong một mùa tuyển sinh.',
             },
             {
-              q: 'Gói này có khác với Direction Snapshot 59k không?',
-              a: 'Có. Direction Snapshot (59k) cung cấp Báo cáo định hướng cá nhân. Admission Pass (89k) mở khóa các công cụ hỗ trợ quyết định tuyển sinh thực tế.',
+              q: 'Admission Pass có thay thế Gói Tháng hoặc Gói Năm không?',
+              a: 'Không. Admission Pass là gói riêng cho một mùa tuyển sinh và có thể mua cùng thuê bao đang hoạt động. Pass dùng lại toàn bộ hồ sơ, bằng chứng đã có và không tự hủy thuê bao.',
+            },
+            {
+              q: 'Admission Pass có tự động gia hạn sang mùa sau không?',
+              a: 'Không. Pass gắn đúng một năm tuyển sinh, không tự động gia hạn, không chuyển nhượng và không đổi sang năm khác.',
             },
             {
               q: 'Dữ liệu của tôi có được bảo mật không?',
@@ -158,7 +165,7 @@ export default function AdmissionPassPage() {
             to="/checkout/admission-pass"
             className="inline-flex items-center gap-2 rounded-xl bg-[#1D4ED8] px-8 py-4 text-base font-bold text-white shadow-lg transition-all hover:-translate-y-0.5 hover:bg-blue-700 hover:shadow-xl"
           >
-            Mua Admission Pass — 89.000đ
+            Mua Admission Pass — {admissionPrice}
           </Link>
           <p className="text-xs text-[#667085]">Thanh toán an toàn • Không tự động gia hạn</p>
         </div>

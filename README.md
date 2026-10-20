@@ -22,15 +22,16 @@ Auth chạy ở chế độ mock theo mặc định. Thêm các biến sau vào 
 
 ```env
 VITE_AUTH_MODE=mock
-VITE_MOCK_SESSION=free
+VITE_MOCK_SESSION=guest
 ```
 
 `VITE_MOCK_SESSION` nhận một trong các giá trị:
 
 - `guest`: chưa đăng nhập
-- `free`: tài khoản Free
-- `direction`: có gói Direction Snapshot
+- `preview`: đã đăng nhập nhưng chưa mua gói
+- `monthly`: có Gói Tháng
+- `annual`: có Gói Năm
 - `admission`: có gói Admission Pass
-- `both`: có cả hai entitlement
+- `annual_admission`: có Gói Năm và Admission Pass
 
-Khởi động lại Vite sau khi đổi giá trị. Khi nối backend thật, đổi thành `VITE_AUTH_MODE=api`; `AuthContext` sẽ gọi `/auth/me` qua `authApi`.
+Khởi động lại Vite sau khi đổi giá trị. Khi `VITE_AUTH_MODE=mock`, nút `Dev — Mock Session` xuất hiện ở góc phải phía dưới để đổi trạng thái trực tiếp mà không cần sửa `.env` mỗi lần. Khi nối backend thật, đổi thành `VITE_AUTH_MODE=api`; `AuthContext` sẽ gọi `/auth/me` qua `authApi`.

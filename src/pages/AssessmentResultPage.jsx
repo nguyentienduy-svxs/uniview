@@ -265,9 +265,18 @@ function AssessmentResultPage() {
     },
   ]
 
+  const academicScores = [
+    profile.gpa && (Number(profile.gpa) / 10) * 100,
+    profile.thptScore && (Number(profile.thptScore) / 30) * 100,
+    profile.dgnlScore && (Number(profile.dgnlScore) / 1200) * 100,
+  ].filter((value) => Number.isFinite(value))
+  const academicEvidenceScore = academicScores.length
+    ? Math.round(academicScores.reduce((sum, value) => sum + value, 0) / academicScores.length)
+    : null
+
   const evidenceBreakdown = [
     ['Sở thích', Math.round(riasecResult.ranking[0]?.score ?? 0)],
-    ['Học tập', profile.gpa ? Math.min(100, Math.round(Number(profile.gpa) * 10)) : 50],
+    ['Học tập', academicEvidenceScore],
     ['Hoạt động', Math.min(100, 40 + activeAssessment.experience.selectedDomains.length * 12)],
     ['Phong cách', Math.max(...workStyleMetrics.map(({ value }) => value), 0)],
     ['Điều kiện', profile.regions.length && profile.tuition ? 80 : 55],
@@ -302,7 +311,7 @@ function AssessmentResultPage() {
   }
 
   const hasFullReport =
-    hasEntitlement('DIRECTION_SNAPSHOT') ||
+    hasEntitlement('PERSONAL_WORKSPACE') ||
     hasEntitlement('ADMISSION_PASS')
 
   if (!hasFullReport) {
@@ -326,7 +335,7 @@ function AssessmentResultPage() {
           <div className="flex flex-wrap items-center gap-space-sm">
             <span className="inline-flex items-center gap-2 rounded-full bg-tile-rose px-space-md py-1 text-xs font-bold uppercase tracking-wider text-secondary">
               <span className="h-1.5 w-1.5 rounded-full bg-secondary-container" />
-              Direction Snapshot · Gói 59K
+              Personal Workspace · Báo cáo định hướng
             </span>
             <span className="inline-flex items-center gap-1 rounded-md bg-surface-container px-space-sm py-1 text-xs font-semibold text-on-surface-variant">
               <span className="material-symbols-outlined text-sm text-primary">verified</span>
@@ -765,10 +774,10 @@ function AssessmentResultPage() {
                   <div key={label}>
                     <div className="flex justify-between text-xs">
                       <span className="text-on-surface-variant">{label}</span>
-                      <strong className="text-primary">{value}%</strong>
+                      <strong className="text-primary">{value === null ? 'Chưa có' : `${value}%`}</strong>
                     </div>
                     <div className="mt-1.5 h-2 overflow-hidden rounded-full bg-surface-container-high">
-                      <div className="h-full rounded-full bg-primary-container" style={{ width: `${value}%` }} />
+                      <div className="h-full rounded-full bg-primary-container" style={{ width: `${value ?? 0}%` }} />
                     </div>
                   </div>
                 ))}
@@ -963,22 +972,22 @@ function FreeAssessmentPreview({
       <section className="border-b border-surface-container-high bg-gradient-to-br from-blue-50 via-white to-rose-50">
         <div className="mx-auto max-w-[1120px] px-margin py-space-xl md:px-margin-md">
           <span className="inline-flex rounded-full bg-emerald-50 px-3 py-1 text-xs font-bold uppercase tracking-wider text-emerald-700">
-            Đã hoàn thành · Gói Free
+            Đã hoàn thành · Kết quả tổng quan
           </span>
           <h1 className="mt-space-sm font-headline-lg text-headline-lg-mobile font-extrabold text-on-surface sm:text-headline-lg">
             Kết quả tổng quan của {user?.fullName ?? 'bạn'}
           </h1>
           <p className="mt-space-xs max-w-3xl text-on-surface-variant">
-            Đây là phần thông tin cơ bản miễn phí. Phân tích ngành, trường, điểm cần cân nhắc và kế hoạch hành động được giữ trong báo cáo chi tiết.
+            Guest được xem kết quả tổng quan sau khi hoàn thành assessment. Phân tích ngành, trường, điểm cần cân nhắc và kế hoạch hành động nằm trong Personal Workspace.
           </p>
         </div>
       </section>
 
       <div className="mx-auto max-w-[1120px] space-y-space-lg px-margin py-space-xl md:px-margin-md">
         <section>
-          <span className="text-xs font-bold uppercase tracking-widest text-primary">Phần miễn phí</span>
+          <span className="text-xs font-bold uppercase tracking-widest text-primary">Phần xem trước</span>
           <h2 className="mt-1 text-2xl font-extrabold text-on-surface">Tổng quan định hướng của bạn</h2>
-          <p className="mt-1 text-sm text-on-surface-variant">Biểu đồ kết quả và các tín hiệu nổi bật luôn được xem miễn phí.</p>
+          <p className="mt-1 text-sm text-on-surface-variant">Biểu đồ kết quả và các tín hiệu nổi bật được hiển thị để bạn hiểu cách UniView hoạt động.</p>
 
           <div className="mt-space-md grid gap-space-md lg:grid-cols-2">
             <article className="rounded-3xl border border-surface-container-high bg-white p-space-lg shadow-sm">
@@ -1076,13 +1085,13 @@ function FreeAssessmentPreview({
               <span className="material-symbols-outlined text-4xl text-primary">lock</span>
               <h2 className="mt-space-xs text-2xl font-extrabold text-on-surface">Mở khóa báo cáo chi tiết</h2>
               <p className="mt-space-xs text-sm leading-relaxed text-on-surface-variant">
-                Thanh toán một lần 59.000đ để xem toàn bộ phân tích và lưu báo cáo vĩnh viễn trong hồ sơ Chí Duy.
+                Chọn Gói Tháng hoặc Gói Năm để mở Personal Workspace, xem toàn bộ phân tích và tiếp tục làm task kiểm chứng ngành.
               </p>
               <Link
-                to={user ? '/checkout/personal-direction' : '/login?next=/checkout/personal-direction'}
+                to="/pricing"
                 className="mt-space-md inline-flex items-center gap-2 rounded-full bg-primary-container px-space-xl py-3 font-bold text-on-primary shadow-md hover:bg-primary"
               >
-                Mở khóa với 59.000đ
+                Xem Gói Tháng và Gói Năm
                 <span className="material-symbols-outlined text-lg">arrow_forward</span>
               </Link>
               <p className="mt-2 text-xs text-slate-500">Demo MVP · xác nhận thanh toán thủ công · không trừ tiền thật</p>

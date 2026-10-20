@@ -117,10 +117,10 @@ export function UserDropdown({
   onLogout,
   onResetDemo,
 }) {
-  let planLabel = 'Free'
+  let planLabel = 'Preview'
 
   if (hasDirectionSnapshot) {
-    planLabel = 'Direction Snapshot'
+    planLabel = 'Gói Tháng / Gói Năm'
   }
 
   if (hasAdmissionPass) {
@@ -213,7 +213,7 @@ export function UserDropdown({
               to="/assessment/result"
               onClick={onClose}
             >
-              Direction Snapshot
+              Báo cáo định hướng
             </UserMenuLink>
           )}
 
@@ -255,7 +255,7 @@ export function UserDropdown({
                 </p>
 
                 <p className="mt-1 text-[11px] text-slate-500">
-                  Direction Snapshot 59k hoặc Admission Pass 89k
+                  Gói Tháng, Gói Năm hoặc Admission Pass
                 </p>
               </NavLink>
             )}
@@ -268,11 +268,11 @@ export function UserDropdown({
                 className="block rounded-2xl bg-[#EFF6FF] px-3 py-3"
               >
                 <p className="text-sm font-semibold text-[#1D4ED8]">
-                  Personalized Admission Pass
+                  Mua thêm Admission Pass
                 </p>
 
                 <p className="mt-1 text-[11px] text-slate-500">
-                  Mở cá nhân hóa nâng cao · 89.000đ
+                  Công cụ cho một mùa tuyển sinh · 89.000đ
                 </p>
               </NavLink>
             )}
@@ -301,7 +301,7 @@ export function UserDropdown({
             }}
             className="mt-1 w-full rounded-xl bg-amber-50 px-3 py-2.5 text-left text-sm font-semibold text-amber-800 hover:bg-amber-100"
           >
-            Demo: reset Chí Duy về gói Free
+            Demo: đặt Chí Duy về gói Admission Pass 89k
           </button>
 
           <button

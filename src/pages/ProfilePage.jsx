@@ -127,7 +127,7 @@ function ProfilePage() {
 </div>
 <div className="flex flex-wrap items-center gap-2">
 <span className="w-fit rounded-full bg-slate-100 px-3 py-1 text-xs font-bold text-slate-600">{reportHistory.length} báo cáo</span>
-<button className="rounded-full border border-amber-300 bg-amber-50 px-4 py-2 text-xs font-bold text-amber-800 hover:bg-amber-100" onClick={resetDemoAccount} type="button">Reset demo về gói Free</button>
+<button className="rounded-full border border-amber-300 bg-amber-50 px-4 py-2 text-xs font-bold text-amber-800 hover:bg-amber-100" onClick={resetDemoAccount} type="button">Đặt demo về gói Admission Pass 89k</button>
 </div>
 </div>
 
@@ -151,7 +151,7 @@ function ProfilePage() {
 </div>
 ) : (
 <div className="mt-5 rounded-2xl border border-dashed border-slate-300 bg-slate-50 p-5 text-sm text-slate-600">
-Chưa có báo cáo đã mở khóa. Sau khi xác nhận thanh toán demo 59.000đ, báo cáo sẽ tự xuất hiện tại đây.
+Chưa có báo cáo đã lưu. Báo cáo sẽ xuất hiện tại đây sau khi bạn kích hoạt Gói Tháng hoặc Gói Năm và hoàn thành assessment.
 </div>
 )}
 </section>
@@ -778,4 +778,3 @@ Chưa có báo cáo đã mở khóa. Sau khi xác nhận thanh toán demo 59.000
 }
 
 export default ProfilePage
-

@@ -96,7 +96,7 @@ function academicProfileDefaults(academicProfile = {}) {
   }
 }
 
-function readStoredAssessment(academicProfile = {}) {
+function readStoredAssessment(academicProfile = {}, keepStoredReport = false) {
   const defaults = {
     ...initialAssessment,
     profile: {
@@ -121,6 +121,7 @@ function readStoredAssessment(academicProfile = {}) {
     return {
       ...defaults,
       ...parsed,
+      report: keepStoredReport ? parsed.report ?? null : null,
       experience: {
         ...normalizeExperience(parsed.experience),
       },
@@ -141,7 +142,7 @@ function readStoredAssessment(academicProfile = {}) {
 export function AssessmentProvider({ children }) {
   const { user } = useAuth()
   const [assessment, setAssessment] =
-    useState(() => readStoredAssessment(user?.academicProfile))
+    useState(() => readStoredAssessment(user?.academicProfile, Boolean(user)))
   const [submitState, setSubmitState] = useState({
     loading: false,
     error: null,
@@ -169,14 +170,17 @@ export function AssessmentProvider({ children }) {
 
   useEffect(() => {
     try {
+      const assessmentToStore = user
+        ? assessment
+        : { ...assessment, report: null }
       window.localStorage.setItem(
         STORAGE_KEY,
-        JSON.stringify(assessment),
+        JSON.stringify(assessmentToStore),
       )
     } catch {
       // Assessment vẫn hoạt động trong memory nếu storage bị chặn.
     }
-  }, [assessment])
+  }, [assessment, user])
 
   const setRiasecAnswer = (
     questionId,

@@ -1,4 +1,6 @@
 export const ENTITLEMENTS = {
+  PERSONAL_WORKSPACE: 'PERSONAL_WORKSPACE',
+  // Kept as a compatibility key for locally persisted demo sessions.
   DIRECTION_SNAPSHOT: 'DIRECTION_SNAPSHOT',
   ADMISSION_PASS: 'ADMISSION_PASS',
 }
@@ -15,7 +17,7 @@ export const DEMO_USER = {
   email: 'chiduy@uniview.vn',
   initials: 'CD',
   avatarUrl: null,
-  plan: 'FREE',
+  plan: 'ADMISSION_PASS',
   grade: 'Lớp 12',
   school: 'THPT Nguyễn Thị Minh Khai',
   targetAdmissionYear: '2027',
@@ -47,39 +49,50 @@ export const MOCK_SESSIONS = {
     admissionSeason: null,
   },
 
-  free: {
+  preview: {
     user: MOCK_USER,
     entitlements: [],
     admissionSeason: null,
   },
 
-  direction: {
+  monthly: {
     user: MOCK_USER,
     entitlements: [
-      ENTITLEMENTS.DIRECTION_SNAPSHOT,
+      ENTITLEMENTS.PERSONAL_WORKSPACE,
     ],
     admissionSeason: null,
+    activePlans: ['MONTHLY'],
+  },
+
+  annual: {
+    user: MOCK_USER,
+    entitlements: [ENTITLEMENTS.PERSONAL_WORKSPACE],
+    admissionSeason: null,
+    activePlans: ['ANNUAL'],
   },
 
   admission: {
     user: MOCK_USER,
     entitlements: [
+      ENTITLEMENTS.PERSONAL_WORKSPACE,
       ENTITLEMENTS.ADMISSION_PASS,
     ],
     admissionSeason: '2027',
+    activePlans: ['ADMISSION_PASS'],
   },
 
-  both: {
+  annual_admission: {
     user: MOCK_USER,
     entitlements: [
-      ENTITLEMENTS.DIRECTION_SNAPSHOT,
+      ENTITLEMENTS.PERSONAL_WORKSPACE,
       ENTITLEMENTS.ADMISSION_PASS,
     ],
     admissionSeason: '2027',
+    activePlans: ['ANNUAL', 'ADMISSION_PASS'],
   },
 }
 
-export const DEFAULT_MOCK_SESSION = 'free'
+export const DEFAULT_MOCK_SESSION = 'admission'
 
 export function getMockSession(sessionName) {
   const normalizedName = String(
@@ -94,7 +107,8 @@ export function getMockSession(sessionName) {
   )
 }
 
-// Set VITE_MOCK_SESSION to guest, free, direction, admission, or both.
+// Set VITE_MOCK_SESSION to guest, preview, monthly, annual, admission,
+// or annual_admission.
 export const mockSession = getMockSession(
   import.meta.env.VITE_MOCK_SESSION,
 )
