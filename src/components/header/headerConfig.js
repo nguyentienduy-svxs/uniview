@@ -21,6 +21,14 @@ export const mainNavigation = [
 
 export const admissionTools = [
   {
+    label: 'Personalized University Comparison',
+    description:
+      'So sánh trường trong hoàn cảnh và ưu tiên của bạn',
+    to: '/compare',
+    requiredEntitlement: null,
+  },
+
+  {
     label: 'Admission Checker',
     description:
       'Đối chiếu điểm với dữ liệu tuyển sinh',

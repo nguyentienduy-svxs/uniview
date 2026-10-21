@@ -105,23 +105,33 @@
     },
     "heroPreview": {
       "fileName": "software_lifecycle.ts",
-      "interfaceName": "DigitalProduct",
+      "interfaceName": "SDLC_Pipeline",
+      "syntax": "pipeline",
       "properties": [
         {
-          "name": "scale",
-          "value": "HighConcurrency"
+          "name": "'01_Idea'",
+          "value": "Phân tích nghiệp vụ & PRD"
         },
         {
-          "name": "architecture",
-          "value": "Microservices"
+          "name": "'02_Architecture'",
+          "value": "Microservices & DB schema"
         },
         {
-          "name": "qualityAssurance",
-          "value": true
+          "name": "'03_Dev'",
+          "value": "Clean Code (React / Node / Go)"
+        },
+        {
+          "name": "'04_QA'",
+          "value": "Automated CI/CD & Unit Tests"
+        },
+        {
+          "name": "'05_Cloud'",
+          "value": "Kubernetes / AWS 99.99% SLA"
         }
       ],
       "command": "git push -u origin main",
-      "status": "Build passed · 100% Tests OK"
+      "status": "Auto Deploy · Cloud Build Passed (100%)",
+      "badgeLabel": "Chu trình SDLC Hoàn chỉnh"
     },
     "personalization": {
       "eyebrow": "Gợi ý tham khảo dựa trên hồ sơ của bạn",
@@ -327,6 +337,31 @@
           "badge": "Đỉnh cao chuyên môn",
           "title": "Software Architect",
           "description": "Kiến trúc sư trưởng định hình giải pháp công nghệ tổng thể, lựa chọn ngăn xếp kỹ thuật cho các dự án hàng đầu."
+        }
+      ]
+    },
+    "challenges": {
+      "eyebrow": "Góc nhìn thực tế",
+      "title": "Thách thức thực tế cần chuẩn bị trước",
+      "description": "Hiểu trước những áp lực thường gặp sẽ giúp bạn chuẩn bị cách học và nhịp làm việc phù hợp hơn.",
+      "items": [
+        {
+          "id": "technology-churn",
+          "icon": "autorenew",
+          "title": "Tốc độ lỗi thời công nghệ nhanh",
+          "description": "Framework, công cụ và chuẩn triển khai thay đổi liên tục; bạn cần duy trì thói quen học hỏi suốt đời."
+        },
+        {
+          "id": "incidents-deadlines",
+          "icon": "schedule",
+          "title": "Áp lực xử lý sự cố & Deadline",
+          "description": "Một lỗi production hoặc mốc bàn giao gấp đòi hỏi khả năng bình tĩnh, ưu tiên và phối hợp nhanh."
+        },
+        {
+          "id": "communication-teamwork",
+          "icon": "groups",
+          "title": "Kỹ năng giao tiếp và làm việc nhóm",
+          "description": "Viết code tốt chưa đủ; bạn còn phải giải thích quyết định kỹ thuật và cộng tác hiệu quả với nhiều vai trò."
         }
       ]
     },
@@ -595,6 +630,34 @@
             {
               "label": "Doanh nghiệp",
               "value": "Thực tập kỳ chuyên môn"
+            }
+          ]
+        },
+        {
+          "id": "hust",
+          "name": "ĐH Bách Khoa Hà Nội (HUST)",
+          "fullName": "Đại học Bách Khoa Hà Nội",
+          "location": "Số 1 Đại Cồ Việt, Hai Bà Trưng, Hà Nội",
+          "regionId": "ha-noi",
+          "ownershipId": "public",
+          "badge": "Công lập · Trọng điểm",
+          "image": "/stitch-assets/modern-university-campus.jpg",
+          "details": [
+            {
+              "label": "Học phí",
+              "value": "28.000.000 – 42.000.000 đ/năm"
+            },
+            {
+              "label": "Điểm THPT (2025)",
+              "value": "28.29 điểm (IT1)"
+            },
+            {
+              "label": "Điểm ĐGTD (Bách Khoa)",
+              "value": "78.50 / 100 điểm"
+            },
+            {
+              "label": "Phương thức",
+              "value": "ĐGTD, THPT, Tài năng"
             }
           ]
         }
