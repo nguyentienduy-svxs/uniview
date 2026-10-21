@@ -79,9 +79,10 @@ export function AuthProvider({ children }) {
   const activePlans = subscriptions.length
     ? getActivePlanIds(subscriptions)
     : session?.activePlans ?? []
-  const entitlements = subscriptions.length
+  const hasPlanSnapshot = subscriptions.length > 0 || activePlans.length > 0
+  const entitlements = hasPlanSnapshot
     ? [...new Set(activePlans.flatMap((planId) => (
-      [PLAN_IDS.ANNUAL, PLAN_IDS.ADMISSION_PASS].includes(planId)
+      planId === PLAN_IDS.ADMISSION_PASS || planId === PLAN_IDS.ANNUAL
         ? [ENTITLEMENTS.PERSONAL_WORKSPACE, ENTITLEMENTS.ADMISSION_PASS]
         : [ENTITLEMENTS.PERSONAL_WORKSPACE]
     )))]
@@ -149,10 +150,7 @@ export function AuthProvider({ children }) {
     if (!subscriptions.length) return hasEntitlement(entitlement)
 
     if (entitlement === ENTITLEMENTS.ADMISSION_PASS) {
-      return subscriptions.some(({ planId }) => [
-        PLAN_IDS.ANNUAL,
-        PLAN_IDS.ADMISSION_PASS,
-      ].includes(planId))
+      return subscriptions.some(({ planId }) => [PLAN_IDS.ADMISSION_PASS, PLAN_IDS.ANNUAL].includes(planId))
     }
 
     if (entitlement === ENTITLEMENTS.PERSONAL_WORKSPACE) {
@@ -217,7 +215,6 @@ export function AuthProvider({ children }) {
       entitlements: [...new Set([
         ...entitlements,
         ENTITLEMENTS.PERSONAL_WORKSPACE,
-        ...(planId === PLAN_IDS.ANNUAL ? [ENTITLEMENTS.ADMISSION_PASS] : []),
       ])],
       activePlans: [
         ...activePlans.filter((activePlan) => ![PLAN_IDS.MONTHLY, PLAN_IDS.ANNUAL].includes(activePlan)),
@@ -227,9 +224,7 @@ export function AuthProvider({ children }) {
         ...subscriptions.filter(({ planId: activePlanId }) => ![PLAN_IDS.MONTHLY, PLAN_IDS.ANNUAL].includes(activePlanId)),
         createSubscription(planId, admissionSeason),
       ],
-      admissionSeason: planId === PLAN_IDS.ANNUAL
-        ? admissionSeason ?? user.targetAdmissionYear
-        : admissionSeason,
+      admissionSeason,
     }
     persistLocalSession(nextSession)
     return nextSession

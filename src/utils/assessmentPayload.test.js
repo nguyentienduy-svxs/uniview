@@ -6,7 +6,6 @@ import { buildAssessmentPayload } from './assessmentPayload.js'
 test('payload giữ trạng thái chính thức hoặc dự kiến của ba loại điểm', () => {
   const assessment = {
     riasecAnswers: {},
-    personalityAnswers: {},
     experience: { selectedDomains: [], domainStates: {}, noExperience: true },
     profile: {
       admissionYear: '2027', regions: [], tuition: '25-45', scholarship: false, strengths: [], priorities: [], certificates: [],
@@ -24,7 +23,6 @@ test('payload giữ trạng thái chính thức hoặc dự kiến của ba lo�
 test('payload không quy điểm bỏ trống thành 0', () => {
   const assessment = {
     riasecAnswers: {},
-    personalityAnswers: {},
     experience: { selectedDomains: [], domainStates: {}, noExperience: true },
     profile: {
       admissionYear: '2027', regions: [], tuition: 'undecided', scholarship: false, strengths: [], priorities: [], certificates: [],

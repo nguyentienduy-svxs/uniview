@@ -1,11 +1,14 @@
 import { lazy, Suspense, useEffect } from 'react'
 import { Navigate, useLocation, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
+import { allowsLabelRouteInference } from '../utils/clickNavigation'
 
 const pageModules = import.meta.glob([
   '../pages/*Page.jsx',
   '!../pages/AllPagesPage.jsx',
   '!../pages/NotFoundPage.jsx',
+  '!../pages/AssessmentPreferencesPage.jsx',
+  '!../pages/AssessmentResultPage.jsx',
 ])
 const pageComponents = Object.fromEntries(
   Object.entries(pageModules).map(([path, loader]) => [path.match(/([^/]+)\.jsx$/)?.[1], lazy(loader)]),
@@ -14,11 +17,11 @@ const pageComponents = Object.fromEntries(
 const routeByDataPath = {
   'academic-benchmark': '/admission-checker',
   'admission-checker': '/admission-checker',
-  'assessment-dashboard': '/assessment/result',
+  'assessment-dashboard': '/report',
   'assessment-exit': '/',
   'assessment-intro': '/assessment',
   'assessment-introduction': '/assessment',
-  'assessment-result': '/assessment/result',
+  'assessment-result': '/report',
   'assessment-so-thich': '/assessment',
   'assessment-step-1': '/assessment/riasec',
   'assessment-step3': '/assessment/experience',
@@ -39,7 +42,7 @@ const routeByDataPath = {
   'du-toan-hoc-phi': '/scenario-comparison',
   'exit-confirmation': '/',
   'hoc-bong-tai-nang': '/universities',
-  'interests-evaluation': '/assessment/interest-result',
+  'interests-evaluation': '/report',
   'kham-pha-nganh': '/majors',
   'kham-pha-truong': '/universities',
   'landing-page': '/',
@@ -52,10 +55,10 @@ const routeByDataPath = {
   'so-sanh': '/compare',
   'so-sanh-hoc-phi': '/scenario-comparison',
   'step-1-interests': '/assessment/riasec',
-  'step-2-question-4': '/assessment/preferences',
-  'step-3-experience': '/assessment/experience',
+  'step-2-question-4': '/assessment/context',
+  'step-3-experience': '/assessment/context',
   'step-4-profile': '/assessment/quick-profile',
-  'strengths-evaluation': '/assessment/preferences',
+  'strengths-evaluation': '/assessment/context',
   'trac-nghiem': '/assessment/riasec',
   'trang-chu': '/',
   've-uniview': '/#ve-uniview',
@@ -137,7 +140,7 @@ function PageRenderer({ page }) {
       return
     }
 
-    const inferredRoute = inferRouteFromLabel(target)
+    const inferredRoute = allowsLabelRouteInference(target) ? inferRouteFromLabel(target) : null
     if (inferredRoute && (target.tagName !== 'A' || target.getAttribute('href') === '#')) {
       event.preventDefault()
       navigate(inferredRoute)

@@ -19,8 +19,6 @@ const STORAGE_KEY = 'uniview-assessment-v3'
 
 const initialAssessment = {
   riasecAnswers: {},
-  personalityAnswers: {},
-  personalityScaleAnswers: {},
   experience: normalizeExperience(),
   profile: {
     admissionYear: '2027',
@@ -52,9 +50,6 @@ function validateBeforeSubmit(assessment) {
 
   if (Object.keys(assessment.riasecAnswers).length !== 30) {
     missing.push('30 câu RIASEC')
-  }
-  if (Object.keys(assessment.personalityAnswers).length !== 60) {
-    missing.push('60 câu phong cách')
   }
   if (
     !assessment.experience.noExperience &&
@@ -195,24 +190,6 @@ export function AssessmentProvider({ children }) {
     }))
   }
 
-  const setPersonalityAnswer = (
-    questionId,
-    value,
-    scale,
-  ) => {
-    setAssessment((current) => ({
-      ...current,
-      personalityAnswers: {
-        ...current.personalityAnswers,
-        [questionId]: value,
-      },
-      personalityScaleAnswers: {
-        ...current.personalityScaleAnswers,
-        [questionId]: scale,
-      },
-    }))
-  }
-
   const updateExperience = (nextValue) => {
     setAssessment((current) => ({
       ...current,
@@ -292,7 +269,6 @@ export function AssessmentProvider({ children }) {
         assessment,
         submitState,
         setRiasecAnswer,
-        setPersonalityAnswer,
         updateExperience,
         updateProfile,
         submitAssessment,

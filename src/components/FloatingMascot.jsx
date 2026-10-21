@@ -50,9 +50,9 @@ function FloatingMascot({ discoveryLabel = 'ngành học' }) {
   }, [])
 
   return (
-    <aside aria-label="Linh vật UniView bay theo thanh cuộn" className="pointer-events-none fixed right-3 top-1/2 z-40 hidden sm:block md:right-5">
+    <aside aria-label="Linh vật UniView bay theo thanh cuộn" className="pointer-events-none fixed right-1 top-1/2 z-40 sm:right-3 md:right-5">
       <div
-        className="group pointer-events-auto relative w-[86px] drop-shadow-[0_18px_18px_rgba(29,78,216,0.22)] transition-transform duration-100 ease-out md:w-[104px]"
+        className="group pointer-events-auto relative w-[48px] drop-shadow-[0_18px_18px_rgba(29,78,216,0.22)] transition-transform duration-100 ease-out sm:w-[72px] md:w-[88px]"
         style={{ transform: `translate3d(0, ${motion.y}px, 0) rotate(${motion.tilt}deg) scale(${motion.scale})` }}
       >
         <img className="mascot-float w-full select-none" src={mascotImage} alt="Linh vật mèo UniView" draggable="false" />

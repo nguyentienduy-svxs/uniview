@@ -1,4 +1,133 @@
+import { Children, useRef } from 'react'
+import { Link } from 'react-router-dom'
+
+import { useJourney } from '../context/JourneyContext'
+import { DEMO_SCHOOLS } from '../data/annualDemo'
+
+const ROADMAP_SCHOOL_GROUPS = [
+  { id: 'fit', title: 'NHÓM 1: Đáp ứng nhiều tiêu chí hiện tại', badge: 'Phù hợp', description: 'Trường có dữ liệu đủ rõ để đối chiếu ngành, khu vực và ngân sách hiện tại.' },
+  { id: 'explore', title: 'NHÓM 2: Đáng để khám phá', badge: 'Cần xác minh', description: 'Có ngành liên quan nhưng cần kiểm tra thêm học phí, chương trình hoặc thông tin tuyển sinh.' },
+  { id: 'tradeoff', title: 'NHÓM 3: Có trade-off quan trọng', badge: 'Cân nhắc', description: 'Có điểm phù hợp nhưng đi kèm đánh đổi đáng lưu ý.' },
+  { id: 'outside', title: 'NHÓM 4: Ngoài điều kiện hiện tại', badge: 'Ngoài tiêu chí', description: 'Dữ liệu hiện có cho thấy trường có thể vượt một tiêu chí ưu tiên.' },
+]
+
+function getRoadmapSchoolGroup(school) {
+  const details = `${school.tuition ?? ''} ${school.environment ?? ''}`.toLocaleLowerCase('vi')
+  if (/vượt|cao hơn ngân sách|ngoài ngân sách/.test(details)) return 'outside'
+  if (/đổi lại|đánh đổi|trade-off/.test(details)) return 'tradeoff'
+  if (/chưa|cần xác nhận|cần kiểm tra|cần đối chiếu|đang cập nhật/.test(details)) return 'explore'
+  return 'fit'
+}
+
+function ScrollableSchoolCards({ children, label }) {
+  const railRef = useRef(null)
+  const cards = Children.toArray(children)
+  const hasMoreThanThree = cards.length > 3
+
+  const moveRail = (direction) => {
+    const rail = railRef.current
+    if (!rail) return
+    rail.scrollBy({ left: direction * Math.max(rail.clientWidth * 0.88, 320), behavior: 'smooth' })
+  }
+
+  return (
+    <div className="relative">
+      {hasMoreThanThree && (
+        <div className="mb-3 flex justify-end gap-2">
+          <button type="button" onClick={() => moveRail(-1)} className="inline-flex items-center gap-1 rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-xs font-semibold text-slate-700 transition hover:border-blue-200 hover:text-[#1D4ED8]" aria-label={`Xem các trường trước trong ${label}`}>
+            <span className="material-symbols-outlined text-base">arrow_back</span> Trước
+          </button>
+          <button type="button" onClick={() => moveRail(1)} className="inline-flex items-center gap-1 rounded-lg border border-blue-200 bg-blue-50 px-3 py-1.5 text-xs font-semibold text-[#1D4ED8] transition hover:bg-blue-100" aria-label={`Xem thêm trường trong ${label}`}>
+            Xem thêm <span className="material-symbols-outlined text-base">arrow_forward</span>
+          </button>
+        </div>
+      )}
+      <div ref={railRef} className="flex snap-x snap-mandatory gap-6 overflow-x-auto scroll-smooth pb-3 pr-1 [scrollbar-width:thin] [&>*]:w-[280px] [&>*]:shrink-0 [&>*]:snap-start sm:[&>*]:w-[calc((100%-1.5rem)/2)] lg:[&>*]:w-[calc((100%-3rem)/3)]">
+        {cards}
+      </div>
+    </div>
+  )
+}
+
+function RoadmapShortlistCard({ school, group, state, toggleShortlist }) {
+  const details = state.shortlistDetails?.[school.id] ?? {}
+  const selectedMajorId = details.majorId ?? state.selectedMajorIds.find((majorId) => school.majors.includes(majorId))
+  const selectedProgramIndex = school.majors.indexOf(selectedMajorId)
+  const program = details.program ?? school.programs[selectedProgramIndex] ?? school.programs[0]
+  const criteria = details.criteria ?? {}
+  const cardTone = group.id === 'fit'
+    ? 'border-2 border-blue-200 shadow-md'
+    : group.id === 'tradeoff'
+      ? 'border border-amber-200 shadow-sm'
+      : group.id === 'outside'
+        ? 'border border-rose-200 shadow-sm'
+        : 'border border-slate-200 shadow-sm'
+  const infoTone = group.id === 'fit' ? 'bg-blue-50/50 border-blue-100' : group.id === 'tradeoff' ? 'bg-amber-50/50 border-amber-100' : group.id === 'outside' ? 'bg-rose-50/40 border-rose-100' : 'bg-slate-50 border-slate-200/70'
+  const concern = group.id === 'outside'
+    ? criteria.finance ?? school.tuition
+    : group.id === 'tradeoff'
+      ? school.environment
+      : group.id === 'explore'
+        ? `${criteria.admission ?? 'Thông tin tuyển sinh'} ${school.environment}`
+        : 'Cần kiểm tra đề án tuyển sinh và điểm chuẩn chính thức của năm bạn dự tuyển.'
+  const reasons = [
+    criteria.major ?? `Có chương trình ${program} liên quan đến ngành đang khám phá.`,
+    criteria.location ?? `Trường thuộc khu vực ${school.region}.`,
+    criteria.finance ?? `Học phí cần được đối chiếu với ngân sách của gia đình.`,
+  ]
+
+  return (
+    <article className={`relative flex h-full flex-col justify-between space-y-5 rounded-3xl bg-white p-6 transition hover:-translate-y-0.5 hover:shadow-lg ${cardTone}`}>
+      <div className="space-y-4">
+        <div className="space-y-2">
+          <div className="flex flex-wrap items-center gap-1.5 text-[11px] font-semibold text-slate-500">
+            <span className="rounded border border-blue-100 bg-blue-50 px-2 py-0.5 font-bold text-blue-700">{details.source === 'report' ? (details.sourceLabel ?? 'Đã lưu từ báo cáo') : 'Đã lưu'}</span><span>•</span><span>{school.region}</span><span>•</span><span className={`font-bold ${group.id === 'fit' ? 'text-blue-700' : group.id === 'explore' ? 'text-slate-600' : group.id === 'tradeoff' ? 'text-amber-800' : 'text-rose-700'}`}>{group.badge}</span>
+          </div>
+          <h3 className="text-base font-extrabold leading-snug text-slate-900">{school.name}</h3>
+          <p className="text-xs font-semibold text-[#1D4ED8]">{program}</p>
+        </div>
+
+        <div className={`rounded-2xl border p-3.5 text-xs ${infoTone}`}>
+          <div className="flex items-start justify-between gap-3"><span className="shrink-0 text-slate-500">Học phí tham chiếu:</span><span className="text-right font-bold text-[#1D4ED8]">{criteria.finance ?? school.tuition}</span></div>
+          <div className="mt-2 flex items-start justify-between gap-3"><span className="shrink-0 text-slate-500">Khu vực:</span><span className="text-right font-bold text-slate-800">{criteria.location ?? school.region}</span></div>
+          <div className="mt-2 flex items-start justify-between gap-3"><span className="shrink-0 text-slate-500">Tuyển sinh:</span><span className="text-right font-bold text-slate-800">{criteria.admission ?? 'Chưa có dữ liệu điểm; cần đối chiếu đề án chính thức.'}</span></div>
+        </div>
+
+        <div className="space-y-1.5 text-xs text-slate-700">
+          <p className="flex items-center gap-1.5 font-bold text-slate-900"><span className="h-1.5 w-1.5 rounded-full bg-blue-600" />Vì sao xuất hiện:</p>
+          <ul className="space-y-1 pl-2 text-[12px] text-slate-600">{reasons.map((reason) => <li key={reason} className="flex items-start gap-1.5"><span className="font-bold text-emerald-600">✓</span><span>{reason}</span></li>)}</ul>
+        </div>
+
+        <div className="rounded-xl border border-amber-200/80 bg-amber-50/70 p-3 text-xs leading-relaxed text-amber-900">
+          <p className="font-bold text-amber-800">⚠️ Điều đáng cân nhắc:</p>
+          <p className="mt-0.5 text-[11.5px]">{concern} Dữ liệu trường là tham khảo, cần xác minh với thông tin tuyển sinh chính thức.</p>
+        </div>
+      </div>
+
+      <div className="flex flex-wrap items-center justify-between gap-2 border-t border-slate-100 pt-3 text-xs">
+        <Link to="/compare" className="inline-flex items-center gap-1 rounded-lg border border-blue-200 bg-blue-50 px-2.5 py-1.5 font-semibold text-blue-700 transition hover:bg-blue-100"><span className="material-symbols-outlined text-sm">compare_arrows</span>So sánh</Link>
+        <div className="flex items-center gap-2">
+          <button type="button" onClick={() => toggleShortlist(school.id)} className="inline-flex items-center gap-1 rounded-lg px-2 py-1.5 font-semibold text-rose-600 transition hover:bg-rose-50" aria-label={`Xóa ${school.name} khỏi Shortlist`}><span className="material-symbols-outlined text-sm">favorite</span>Đã lưu</button>
+          <Link to={school.path} className="inline-flex items-center gap-1 rounded-lg bg-[#1D4ED8] px-3 py-1.5 font-semibold text-white transition hover:bg-blue-700">Xem trường →</Link>
+        </div>
+      </div>
+    </article>
+  )
+}
+
 function ShortlistPage() {
+  const { state, toggleShortlist } = useJourney()
+  const savedSchools = DEMO_SCHOOLS.filter(({ id }) => state.shortlist.includes(id))
+  const groupedSavedSchools = ROADMAP_SCHOOL_GROUPS.map((group) => ({
+    ...group,
+    schools: savedSchools.filter((school) => getRoadmapSchoolGroup(school) === group.id),
+  })).filter(({ schools }) => schools.length)
+  const roadmapSchoolGroupsById = Object.fromEntries(groupedSavedSchools.map((group) => [group.id, group]))
+  const roadmapSchoolCards = (groupId) => {
+    const group = roadmapSchoolGroupsById[groupId]
+    return group?.schools.map((school) => <RoadmapShortlistCard key={school.id} school={school} group={group} state={state} toggleShortlist={toggleShortlist} />)
+  }
+  const roadmapGroupCount = (groupId) => roadmapSchoolGroupsById[groupId]?.schools.length ?? 0
   return (
 <main className="w-full pt-6 bg-[#f9f9ff] min-h-[calc(100vh-80px)] font-['Be_Vietnam_Pro'] text-[#172033]">
 <div className="max-w-[1280px] mx-auto px-4 md:px-6 lg:px-8 pb-16 space-y-8">
@@ -85,11 +214,11 @@ function ShortlistPage() {
 
 <div className="overflow-x-auto pb-1">
 <div className="flex items-center gap-2 md:gap-3 min-w-max text-xs md:text-sm font-semibold">
-<button className="px-4 py-2.5 rounded-xl bg-[#1D4ED8] text-white shadow-sm transition-all">Tất cả nhóm (12)</button>
-<button className="px-4 py-2.5 rounded-xl bg-white border border-slate-200 text-slate-700 hover:border-blue-300 hover:text-[#1D4ED8] transition-all">Đáp ứng nhiều tiêu chí (3)</button>
-<button className="px-4 py-2.5 rounded-xl bg-white border border-slate-200 text-slate-700 hover:border-blue-300 hover:text-[#1D4ED8] transition-all">Đáng khám phá (2)</button>
-<button className="px-4 py-2.5 rounded-xl bg-white border border-slate-200 text-slate-700 hover:border-blue-300 hover:text-[#1D4ED8] transition-all">Có trade-off (2)</button>
-<button className="px-4 py-2.5 rounded-xl bg-white border border-slate-200 text-slate-700 hover:border-blue-300 hover:text-[#1D4ED8] transition-all">Ngoài điều kiện (2)</button>
+<button className="px-4 py-2.5 rounded-xl bg-[#1D4ED8] text-white shadow-sm transition-all">Tất cả nhóm ({12 + savedSchools.length})</button>
+<button className="px-4 py-2.5 rounded-xl bg-white border border-slate-200 text-slate-700 hover:border-blue-300 hover:text-[#1D4ED8] transition-all">Đáp ứng nhiều tiêu chí ({3 + roadmapGroupCount('fit')})</button>
+<button className="px-4 py-2.5 rounded-xl bg-white border border-slate-200 text-slate-700 hover:border-blue-300 hover:text-[#1D4ED8] transition-all">Đáng khám phá ({2 + roadmapGroupCount('explore')})</button>
+<button className="px-4 py-2.5 rounded-xl bg-white border border-slate-200 text-slate-700 hover:border-blue-300 hover:text-[#1D4ED8] transition-all">Có trade-off ({2 + roadmapGroupCount('tradeoff')})</button>
+<button className="px-4 py-2.5 rounded-xl bg-white border border-slate-200 text-slate-700 hover:border-blue-300 hover:text-[#1D4ED8] transition-all">Ngoài điều kiện ({2 + roadmapGroupCount('outside')})</button>
 </div>
 </div>
 
@@ -98,12 +227,13 @@ function ShortlistPage() {
 <div>
 <div className="flex items-center gap-2">
 <h2 className="text-lg sm:text-xl font-extrabold text-slate-900">NHÓM 1: Đáp ứng nhiều tiêu chí hiện tại</h2>
-<span className="px-2.5 py-0.5 rounded-full bg-blue-100 text-[#1D4ED8] text-xs font-bold">3 trường tối ưu</span>
+<span className="px-2.5 py-0.5 rounded-full bg-blue-100 text-[#1D4ED8] text-xs font-bold">{3 + roadmapGroupCount('fit')} trường tối ưu</span>
 </div>
 <p className="text-xs sm:text-sm text-slate-600 mt-0.5">Các trường trong nhóm này hiện đáp ứng nhiều điều kiện bạn đã cung cấp về ngành, khu vực và ngân sách học phí.</p>
 </div>
 </div>
-<div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+<ScrollableSchoolCards label="Nhóm 1">
+{roadmapSchoolCards('fit')}
 
 <div className="bg-white rounded-3xl border-2 border-blue-200 shadow-md p-6 flex flex-col justify-between space-y-5 hover:shadow-lg transition-all relative">
 <div className="absolute top-4 right-4 flex items-center gap-2">
@@ -318,18 +448,19 @@ function ShortlistPage() {
 </div>
 </div>
 </div>
-</div>
+</ScrollableSchoolCards>
 </section>
 
 <section className="space-y-4 pt-4">
 <div className="border-l-4 border-slate-400 pl-3 py-0.5">
 <div className="flex items-center gap-2">
 <h2 className="text-lg sm:text-xl font-extrabold text-slate-900">NHÓM 2: Đáng để khám phá</h2>
-<span className="px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-700 text-xs font-bold">2 trường tiềm năng</span>
+<span className="px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-700 text-xs font-bold">{2 + roadmapGroupCount('explore')} trường tiềm năng</span>
 </div>
 <p className="text-xs sm:text-sm text-slate-600 mt-0.5">Những lựa chọn có uy tín đào tạo công nghệ cao, nhiều điểm tương đồng với hồ sơ và mở rộng thêm cơ hội dự phòng an toàn.</p>
 </div>
-<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+<ScrollableSchoolCards label="Nhóm 2">
+{roadmapSchoolCards('explore')}
 
 <div className="bg-white rounded-3xl border border-slate-200/90 shadow-sm p-6 flex flex-col justify-between space-y-5 hover:shadow-md transition-all">
 <div className="space-y-4">
@@ -430,18 +561,19 @@ function ShortlistPage() {
 </div>
 </div>
 </div>
-</div>
+</ScrollableSchoolCards>
 </section>
 
 <section className="space-y-4 pt-4">
 <div className="border-l-4 border-amber-500 pl-3 py-0.5">
 <div className="flex items-center gap-2">
 <h2 className="text-lg sm:text-xl font-extrabold text-slate-900">NHÓM 3: Có trade-off quan trọng</h2>
-<span className="px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-900 text-xs font-bold">2 trường cần cân nhắc</span>
+<span className="px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-900 text-xs font-bold">{2 + roadmapGroupCount('tradeoff')} trường cần cân nhắc</span>
 </div>
 <p className="text-xs sm:text-sm text-slate-600 mt-0.5">Những trường này đào tạo rất tốt ngành Kỹ thuật Phần mềm nhưng có một số yếu tố bạn cần cân nhắc kỹ (học phí cao hơn hoặc loại hình tư thục).</p>
 </div>
-<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+<ScrollableSchoolCards label="Nhóm 3">
+{roadmapSchoolCards('tradeoff')}
 
 <div className="bg-white rounded-3xl border border-amber-200/90 shadow-sm p-6 flex flex-col justify-between space-y-5 hover:shadow-md transition-all">
 <div className="space-y-4">
@@ -534,7 +666,7 @@ function ShortlistPage() {
 </div>
 </div>
 </div>
-</div>
+</ScrollableSchoolCards>
 </section>
 
 <details className="group bg-white rounded-3xl border border-slate-200/90 shadow-sm overflow-hidden transition-all">
@@ -542,7 +674,7 @@ function ShortlistPage() {
 <div className="space-y-1">
 <div className="flex items-center gap-2">
 <span className="text-xs font-bold uppercase tracking-wider text-slate-500">NHÓM 4</span>
-<h2 className="text-base sm:text-lg font-bold text-slate-900">Ngoài một số điều kiện hiện tại (2 trường tham chiếu)</h2>
+<h2 className="text-base sm:text-lg font-bold text-slate-900">Ngoài một số điều kiện hiện tại ({2 + roadmapGroupCount('outside')} trường tham chiếu)</h2>
 </div>
 <p className="text-xs text-slate-500">Các trường ngoài khu vực TP.HCM hoặc chênh lệch lớn về ngân sách nhưng có chất lượng đào tạo hàng đầu để bạn đối chiếu.</p>
 </div>
@@ -550,7 +682,9 @@ function ShortlistPage() {
 <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" strokeLinecap="round" strokeLinejoin="round"></path></svg>
 </div>
 </summary>
-<div className="p-6 pt-0 border-t border-slate-100 grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+<div className="p-6 pt-0 border-t border-slate-100 mt-4">
+<ScrollableSchoolCards label="Nhóm 4">
+{roadmapSchoolCards('outside')}
 <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200/70 space-y-2">
 <div className="flex items-center justify-between">
 <h3 className="font-bold text-sm text-slate-900">Trường ĐH Bách Khoa Hà Nội (HUST)</h3>
@@ -565,6 +699,7 @@ function ShortlistPage() {
 </div>
 <p className="text-xs text-slate-600 leading-relaxed">Cơ sở hiện đại tại Quận 7, môi trường quốc tế chuẩn Úc. Học phí khoảng 300 triệu/năm, vượt mức trần 35 triệu/năm bạn đã thiết lập.</p>
 </div>
+</ScrollableSchoolCards>
 </div>
 </details>
 

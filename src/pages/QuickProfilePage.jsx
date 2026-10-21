@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router-dom'
 
 import AssessmentStepShell from '../components/assessment/AssessmentStepShell'
 import { useAssessment } from '../context/AssessmentContext'
-import { useAuth } from '../context/AuthContext'
 import {
   CERTIFICATE_OPTIONS,
   CERTIFICATE_STATUS,
@@ -33,15 +32,7 @@ function QuickProfilePage() {
   const {
     assessment,
     updateProfile,
-    submitAssessment,
-    submitState,
   } = useAssessment()
-  const {
-    user,
-    hasEntitlement,
-    saveReportToHistory,
-  } = useAuth()
-  const [submitError, setSubmitError] = useState('')
 
   const { profile } = assessment
   const certificates = normalizeCertificates(profile.certificates, 'PROFILE')
@@ -141,7 +132,7 @@ function QuickProfilePage() {
 
   return (
     <AssessmentStepShell
-      step={4}
+      step={3}
       eyebrow="Hồ sơ & điều kiện thực tế"
     >
       <div className="mx-auto flex max-w-[980px] flex-col gap-space-md px-margin py-space-lg md:px-margin-md">
@@ -149,7 +140,7 @@ function QuickProfilePage() {
           <div>
             <div className="flex flex-wrap items-center gap-space-xs">
               <span className="rounded-full bg-surface-container-high px-space-sm py-0.5 font-label-sm text-[11px] font-bold uppercase tracking-wide text-primary-container">
-                Bước 4 · Rà soát hồ sơ thực tế
+                Bước 3 · Rà soát hồ sơ thực tế
               </span>
               <span className="inline-flex items-center gap-1 rounded-full bg-primary-fixed/30 px-space-sm py-0.5 text-[11px] font-semibold text-primary-container">
                 <span className="material-symbols-outlined text-xs">
@@ -185,21 +176,9 @@ function QuickProfilePage() {
 
         <form
           className="flex flex-col gap-space-md"
-          onSubmit={async (event) => {
+          onSubmit={(event) => {
             event.preventDefault()
-            setSubmitError('')
-            try {
-              const report = await submitAssessment({ userId: user?.id })
-              if (
-                hasEntitlement('PERSONAL_WORKSPACE') ||
-                hasEntitlement('ADMISSION_PASS')
-              ) {
-                saveReportToHistory(report)
-              }
-              navigate('/assessment/result')
-            } catch (error) {
-              setSubmitError(error.message)
-            }
+            navigate('/assessment/review')
           }}
         >
           <div className="grid grid-cols-1 gap-space-md md:grid-cols-2">
@@ -610,12 +589,6 @@ function QuickProfilePage() {
             </span>
           </div>
 
-          {submitError && (
-            <p className="rounded-xl border border-rose-200 bg-rose-50 p-space-sm text-sm font-semibold text-rose-700">
-              {submitError}
-            </p>
-          )}
-
           <div className="sticky bottom-0 z-40 -mx-margin flex items-center justify-between gap-space-md border-t border-surface-container-high bg-surface-container-lowest/95 px-margin py-space-md shadow-[0_-4px_16px_rgba(0,0,0,0.06)] backdrop-blur-md md:-mx-margin-md md:px-margin-md">
             <button
               type="button"
@@ -628,7 +601,7 @@ function QuickProfilePage() {
                 arrow_back
               </span>
               <span className="hidden sm:inline">
-                Quay lại Bước 3
+                Quay lại trải nghiệm
               </span>
             </button>
 
@@ -641,10 +614,9 @@ function QuickProfilePage() {
 
             <button
               type="submit"
-              disabled={submitState.loading}
               className="inline-flex items-center gap-space-xs rounded-full bg-primary-container px-space-xl py-space-sm font-label-lg text-label-lg font-semibold text-on-primary shadow-md transition-all hover:bg-primary hover:shadow-lg active:scale-95 disabled:cursor-wait disabled:opacity-70"
             >
-              {submitState.loading ? 'Đang tạo báo cáo...' : 'Hoàn thành & Xem kết quả'}
+              Rà soát trước khi hoàn thành
               <span className="material-symbols-outlined text-lg">
                 arrow_forward
               </span>

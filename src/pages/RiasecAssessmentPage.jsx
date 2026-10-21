@@ -112,7 +112,7 @@ function RiasecAssessmentPage() {
       currentQuestionIndex ===
       questions.length - 1
     ) {
-      navigate('/assessment/preferences')
+      navigate('/assessment/context')
       return
     }
 
@@ -124,7 +124,7 @@ function RiasecAssessmentPage() {
 
   const goPrevious = () => {
     if (currentQuestionIndex === 0) {
-      navigate('/assessment')
+      navigate('/assessment/intro')
       return
     }
 

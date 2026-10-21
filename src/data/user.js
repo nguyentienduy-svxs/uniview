@@ -47,6 +47,41 @@ function createStudent(overrides) {
 
 export const DEMO_ACCOUNTS = [
   {
+    id: 'nguyen-minh-anh',
+    username: 'minhanh',
+    password: 'MinhAnh@2026',
+    planDescription: 'Gói Năm · Demo Roadmap',
+    session: {
+      user: createStudent({
+        id: 'demo-nguyen-minh-anh',
+        username: 'minhanh',
+        fullName: 'Nguyễn Minh Anh',
+        email: 'minhanh@uniview.vn',
+        initials: 'MA',
+        grade: 'Lớp 11',
+        school: 'THPT Nguyễn Thị Minh Khai',
+        preferredRegion: 'TP. Hồ Chí Minh',
+        targetMajors: ['Thiết kế mỹ thuật số', 'Marketing', 'Công nghệ thông tin'],
+        academicProfile: {
+          ...baseAcademicProfile,
+          gpa: { value: '8.6', status: 'OFFICIAL' },
+        },
+      }),
+      entitlements: [ENTITLEMENTS.PERSONAL_WORKSPACE],
+      activePlans: [PLAN_IDS.ANNUAL],
+      subscriptions: [
+        {
+          planId: PLAN_IDS.ANNUAL,
+          status: 'ACTIVE',
+          startedAt: '2026-10-01',
+          endsAt: '2027-09-30',
+          autoRenew: false,
+        },
+      ],
+      admissionSeason: null,
+    },
+  },
+  {
     id: 'chi-duy',
     username: 'chiduy',
     password: 'ChiDuy@2026',
@@ -77,7 +112,7 @@ export const DEMO_ACCOUNTS = [
     id: 'chi-man',
     username: 'chiman',
     password: 'ChiMan@2026',
-    planDescription: 'Gói Năm · Đã bao gồm Admission Pass',
+    planDescription: 'Gói Năm',
     session: {
       user: createStudent({
         id: 'demo-chi-man',
@@ -86,7 +121,7 @@ export const DEMO_ACCOUNTS = [
         email: 'chiman@uniview.vn',
         initials: 'CM',
       }),
-      entitlements: [ENTITLEMENTS.PERSONAL_WORKSPACE, ENTITLEMENTS.ADMISSION_PASS],
+      entitlements: [ENTITLEMENTS.PERSONAL_WORKSPACE],
       activePlans: [PLAN_IDS.ANNUAL],
       subscriptions: [
         {
@@ -97,7 +132,7 @@ export const DEMO_ACCOUNTS = [
           autoRenew: true,
         },
       ],
-      admissionSeason: '2027',
+      admissionSeason: null,
     },
   },
   {

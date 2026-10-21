@@ -143,7 +143,7 @@ function ProfilePage() {
 <div>
 <span className="text-[11px] font-extrabold uppercase tracking-widest text-[#1D4ED8]">Subscription &amp; quyền truy cập</span>
 <h2 className="mt-1 text-xl font-extrabold text-[#172033]">Gói đang hoạt động</h2>
-<p className="mt-1 text-sm text-[#667085]">Gói Tháng phục vụ nhu cầu ngắn hạn; Gói Năm đã gồm Admission Pass; Pass cũng được bán riêng theo mùa tuyển sinh.</p>
+<p className="mt-1 text-sm text-[#667085]">Gói Tháng phục vụ nhu cầu ngắn hạn; Gói Năm mở Roadmap dài hạn và bao gồm Admission Pass cho một mùa tuyển sinh.</p>
 </div>
 <Link className="inline-flex shrink-0 items-center justify-center rounded-full border border-blue-200 bg-blue-50 px-4 py-2 text-xs font-bold text-[#1D4ED8] hover:bg-blue-100" to="/account/plan">Quản lý gói</Link>
 </div>

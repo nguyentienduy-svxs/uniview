@@ -1,6 +1,19 @@
 @import "tailwindcss";
 
 @theme {
+  --color-brand-blue: #1d4ed8;
+  --color-brand-blue-hover: #1e40af;
+  --color-brand-blue-subtle: #eaf1ff;
+  --color-brand-coral: #fb7185;
+  --color-brand-coral-subtle: #fff0f2;
+  --color-brand-yellow: #fbbf24;
+  --color-brand-yellow-subtle: #fff5db;
+  --color-brand-ink: #172033;
+  --color-brand-text: #56657a;
+  --color-brand-muted: #75839a;
+  --color-brand-border: #e3eaf4;
+  --color-brand-surface: #fffdfb;
+  --color-brand-neutral: #f7f9fc;
   --color-surface-tint: #2151da;
   --color-tertiary: #594100;
   --color-primary-fixed: #dce1ff;
@@ -16,11 +29,11 @@
   --color-on-tertiary: #ffffff;
   --color-secondary-container: #fe7488;
   --color-primary-fixed-dim: #b7c4ff;
-  --color-primary: #0037b0;
+  --color-primary: #1d4ed8;
   --color-on-surface-variant: #434655;
   --color-error: #ba1a1a;
   --color-surface-bright: #f9f9ff;
-  --color-background: #f9f9ff;
+  --color-background: #fffdfb;
   --color-surface-container-low: #f1f3ff;
   --color-on-secondary-fixed: #400010;
   --color-outline: #747686;
@@ -28,7 +41,7 @@
   --color-on-surface: #121b2e;
   --color-tertiary-fixed-dim: #f9bd22;
   --color-on-tertiary-fixed: #261a00;
-  --color-surface: #f9f9ff;
+  --color-surface: #fffdfb;
   --color-secondary: #a93349;
   --color-error-container: #ffdad6;
   --color-outline-variant: #c4c5d7;
@@ -49,18 +62,18 @@
   --color-on-primary-fixed: #001551;
   --color-surface-variant: #d9e2fc;
 
-  --font-display: "Epilogue", sans-serif;
-  --font-display-mobile: "Epilogue", sans-serif;
-  --font-headline-lg: "Epilogue", sans-serif;
-  --font-headline-lg-mobile: "Epilogue", sans-serif;
-  --font-headline-md: "Epilogue", sans-serif;
-  --font-headline-sm: "Epilogue", sans-serif;
-  --font-body-lg: "Plus Jakarta Sans", sans-serif;
-  --font-body-md: "Plus Jakarta Sans", sans-serif;
-  --font-body-sm: "Plus Jakarta Sans", sans-serif;
-  --font-label-lg: "Plus Jakarta Sans", sans-serif;
-  --font-label-md: "Plus Jakarta Sans", sans-serif;
-  --font-label-sm: "Plus Jakarta Sans", sans-serif;
+  --font-display: "Be Vietnam Pro", sans-serif;
+  --font-display-mobile: "Be Vietnam Pro", sans-serif;
+  --font-headline-lg: "Be Vietnam Pro", sans-serif;
+  --font-headline-lg-mobile: "Be Vietnam Pro", sans-serif;
+  --font-headline-md: "Be Vietnam Pro", sans-serif;
+  --font-headline-sm: "Be Vietnam Pro", sans-serif;
+  --font-body-lg: "Be Vietnam Pro", sans-serif;
+  --font-body-md: "Be Vietnam Pro", sans-serif;
+  --font-body-sm: "Be Vietnam Pro", sans-serif;
+  --font-label-lg: "Be Vietnam Pro", sans-serif;
+  --font-label-md: "Be Vietnam Pro", sans-serif;
+  --font-label-sm: "Be Vietnam Pro", sans-serif;
 
   --text-display: 56px;
   --text-display--line-height: 64px;
@@ -117,9 +130,9 @@
     margin: 0;
     min-width: 320px;
     overflow-x: hidden;
-    background: #f9f9ff;
-    color: #121b2e;
-    font-family: "Plus Jakarta Sans", "Be Vietnam Pro", sans-serif;
+    background: #fffdfb;
+    color: #172033;
+    font-family: "Be Vietnam Pro", sans-serif;
     text-rendering: optimizeLegibility;
   }
 
@@ -139,6 +152,140 @@
   img,
   svg {
     max-width: 100%;
+  }
+}
+
+@layer components {
+  .uv-report-page {
+    --report-blue: #1d4ed8;
+    --report-blue-hover: #1e40af;
+    --report-blue-subtle: #eaf1ff;
+    --report-coral: #fb7185;
+    --report-coral-subtle: #fff0f2;
+    --report-yellow: #fbbf24;
+    --report-yellow-subtle: #fff5db;
+    --report-ink: #172033;
+    --report-text: #56657a;
+    --report-muted: #75839a;
+    --report-border: #e3eaf4;
+    --report-neutral: #f7f9fc;
+    min-height: 100vh;
+    background: #fffdfb;
+    color: var(--report-ink);
+  }
+
+  .uv-report-surface {
+    border: 1px solid var(--report-border);
+    border-radius: 16px;
+    background: #fff;
+    box-shadow: 0 8px 24px rgba(23, 32, 51, 0.045);
+  }
+
+  .uv-report-section {
+    scroll-margin-top: 96px;
+    padding: 28px;
+  }
+
+  .uv-report-eyebrow {
+    color: var(--report-blue);
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+  }
+
+  .uv-report-title {
+    color: var(--report-ink);
+    font-size: clamp(30px, 3vw, 36px);
+    font-weight: 800;
+    line-height: 1.25;
+    letter-spacing: -0.025em;
+  }
+
+  .uv-report-section-title {
+    color: var(--report-ink);
+    font-size: clamp(23px, 2.3vw, 27px);
+    font-weight: 700;
+    line-height: 1.35;
+    letter-spacing: -0.018em;
+  }
+
+  .uv-report-body {
+    color: var(--report-text);
+    font-size: 15px;
+    font-weight: 400;
+    line-height: 1.72;
+  }
+
+  .uv-report-button-primary,
+  .uv-report-button-secondary {
+    display: inline-flex;
+    min-height: 44px;
+    align-items: center;
+    justify-content: center;
+    border-radius: 11px;
+    padding: 10px 17px;
+    font-size: 14px;
+    font-weight: 700;
+    transition: 160ms ease;
+  }
+
+  .uv-report-button-primary {
+    background: var(--report-blue);
+    color: #fff;
+  }
+
+  .uv-report-button-primary:hover {
+    background: var(--report-blue-hover);
+  }
+
+  .uv-report-button-secondary {
+    border: 1px solid var(--report-border);
+    background: #fff;
+    color: var(--report-ink);
+  }
+
+  .uv-report-button-secondary:hover {
+    border-color: #b9c9e7;
+    background: var(--report-blue-subtle);
+    color: var(--report-blue-hover);
+  }
+
+  .uv-report-button-primary:focus-visible,
+  .uv-report-button-secondary:focus-visible,
+  .uv-report-link:focus-visible {
+    outline: 3px solid rgba(29, 78, 216, 0.22);
+    outline-offset: 2px;
+  }
+
+  .uv-report-note {
+    border-left: 3px solid var(--report-blue);
+    border-radius: 0 12px 12px 0;
+    background: var(--report-neutral);
+    padding: 15px 17px;
+  }
+
+  .uv-report-note-warning {
+    border-left-color: var(--report-yellow);
+    background: var(--report-yellow-subtle);
+    color: #7a5200;
+  }
+
+  .uv-report-note-coral {
+    border-left-color: var(--report-coral);
+    background: var(--report-coral-subtle);
+    color: #8f3347;
+  }
+
+  @media (max-width: 767px) {
+    .uv-report-section {
+      padding: 22px 18px;
+    }
+
+    .uv-report-body {
+      font-size: 14px;
+      line-height: 1.7;
+    }
   }
 }
 

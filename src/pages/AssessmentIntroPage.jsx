@@ -14,17 +14,6 @@ const assessmentSteps = [
   },
   {
     number: '02',
-    duration: '~8 phút',
-    title: 'Cách học & điều bạn ưu tiên',
-    description:
-      'Nhận diện phong cách học tập, môi trường làm việc và những tiêu chí bạn coi trọng mà không gán nhãn cứng nhắc.',
-    meta: 'Ưu tiên cá nhân',
-    model: 'Phong cách học tập',
-    dotClass: 'bg-rose-500',
-    modelClass: 'text-secondary',
-  },
-  {
-    number: '03',
     duration: '~3 phút',
     title: 'Hoạt động & trải nghiệm',
     description:
@@ -35,7 +24,7 @@ const assessmentSteps = [
     modelClass: 'text-tertiary-container',
   },
   {
-    number: '04',
+    number: '03',
     duration: '~3 phút',
     title: 'Hồ sơ & điều kiện thực tế',
     description:
@@ -103,7 +92,7 @@ function AssessmentIntroPage() {
                 />
                 <AssessmentFact
                   icon="psychology"
-                  label="4 phần phân tích"
+                  label="3 phần dữ liệu"
                 />
               </div>
             </div>
@@ -152,7 +141,7 @@ function AssessmentIntroPage() {
                 id="assessment-roadmap-title"
                 className="font-headline-md text-headline-md text-on-surface"
               >
-                Bản đồ 4 bước đánh giá đa chiều
+                Bản đồ 3 bước đánh giá đa chiều
               </h2>
             </div>
 
@@ -162,7 +151,7 @@ function AssessmentIntroPage() {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 gap-space-md md:grid-cols-2 lg:grid-cols-4">
+          <div className="grid grid-cols-1 gap-space-md md:grid-cols-3">
             {assessmentSteps.map((step, index) => (
               <article
                 key={step.number}

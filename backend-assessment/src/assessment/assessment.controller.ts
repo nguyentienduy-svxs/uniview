@@ -8,7 +8,6 @@ export class AssessmentController {
 
   @Get('definition')          definition()                                                { return this.service.definition() }
   @Get('riasec')              riasec()                                                    { return this.service.riasec() }
-  @Get('mbti')                mbti()                                                      { return this.service.mbti() }
   @Get('experience-domains')  experienceDomains()                                         { return this.service.experienceDomains() }
   @Get('experience-domains/:domain') experienceDomain(@Param('domain') domain: string)   { return this.service.experienceDomain(domain) }
   @Post('experience-domains/:domain/evaluate-base') evaluateExperienceBase(@Param('domain') domain: string, @Body() body: { baseAnswers?: Record<string, string> }) { return this.service.evaluateExperienceBase(domain, body) }

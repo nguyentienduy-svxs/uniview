@@ -8,16 +8,11 @@ const steps = [
   },
   {
     number: 2,
-    label: 'Phong cách tư duy',
-    to: '/assessment/preferences',
+    label: 'Hoạt động thực tế',
+    to: '/assessment/context',
   },
   {
     number: 3,
-    label: 'Hoạt động thực tế',
-    to: '/assessment/experience',
-  },
-  {
-    number: 4,
     label: 'Hồ sơ & điều kiện',
     to: '/assessment/quick-profile',
   },
@@ -35,7 +30,7 @@ export default function AssessmentStepShell({
           <div className="flex flex-col justify-between gap-space-sm md:flex-row md:items-center">
             <div className="flex flex-wrap items-center gap-space-xs">
               <span className="rounded-full bg-primary px-3.5 py-1.5 font-label-sm text-label-sm font-semibold uppercase tracking-wide text-on-primary">
-                Bước {step} / 4
+                Bước {step} / 3
               </span>
               <span className="font-label-md text-label-md text-on-surface-variant">
                 {eyebrow}
@@ -53,7 +48,7 @@ export default function AssessmentStepShell({
             </Link>
           </div>
 
-          <div className="grid grid-cols-2 gap-space-xs lg:grid-cols-4">
+          <div className="grid grid-cols-3 gap-space-xs">
             {steps.map((item) => {
               const completed = item.number < step
               const active = item.number === step

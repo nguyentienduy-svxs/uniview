@@ -2,13 +2,18 @@ import { useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 
 import { useAuth } from '../context/AuthContext'
+import { PLAN_IDS } from '../data/plans'
 
 function LoginPage() {
   const navigate = useNavigate()
   const location = useLocation()
   const { login, demoAccounts } = useAuth()
-  const [identifier, setIdentifier] = useState(demoAccounts[0]?.username ?? '')
-  const [password, setPassword] = useState(demoAccounts[0]?.password ?? '')
+  const configuredDemo = import.meta.env.VITE_DEMO_SCENARIO
+  const defaultDemoAccount = configuredDemo === 'ANNUAL_DEMO'
+    ? demoAccounts.find(({ username }) => username === 'minhanh') ?? demoAccounts[0]
+    : demoAccounts[0]
+  const [identifier, setIdentifier] = useState(defaultDemoAccount?.username ?? '')
+  const [password, setPassword] = useState(defaultDemoAccount?.password ?? '')
   const [showPassword, setShowPassword] = useState(false)
   const [error, setError] = useState('')
   const [submitting, setSubmitting] = useState(false)
@@ -18,9 +23,14 @@ function LoginPage() {
     setSubmitting(true)
     setError('')
     try {
-      await login(identifier, password)
+      const loggedInSession = await login(identifier, password)
       const params = new URLSearchParams(location.search)
-      navigate(params.get('next') || '/assessment', { replace: true })
+      const defaultPath = loggedInSession.activePlans?.includes(PLAN_IDS.ANNUAL)
+        ? '/report'
+        : loggedInSession.activePlans?.includes(PLAN_IDS.ADMISSION_PASS)
+          ? '/admission/overview'
+          : '/assessment'
+      navigate(params.get('next') || defaultPath, { replace: true })
     } catch (loginError) {
       setError(loginError.message)
     } finally {

@@ -1,9 +1,9 @@
 import { BadRequestException } from '@nestjs/common'
 import { AssessmentService } from './assessment.service'
 import { DEMO_PERSONAS } from './demo-personas'
-import { EXPERIENCE_DOMAINS, MAJOR_PROFILES, MBTI_QUESTIONS, RIASEC_QUESTIONS } from './assessment.data'
-import { calculateBaseEvidence, evaluateAssessment, needsRealityCheck, scoreExperience, scoreMbti, scoreRiasec, selectAdaptiveBranch } from './scoring'
-import { AssessmentInput, MbtiPole } from './assessment.types'
+import { EXPERIENCE_DOMAINS, MAJOR_PROFILES, RIASEC_QUESTIONS } from './assessment.data'
+import { calculateBaseEvidence, evaluateAssessment, needsRealityCheck, scoreExperience, scoreRiasec, selectAdaptiveBranch } from './scoring'
+import { AssessmentInput } from './assessment.types'
 import { ADAPTIVE_QUESTION_BANKS } from './adaptive-domain-questions'
 
 const clone = <T>(value: T): T => structuredClone(value)
@@ -12,7 +12,6 @@ function validInput(): AssessmentInput {
   return {
     userId: 'test-user',
     riasecAnswers: Object.fromEntries(RIASEC_QUESTIONS.map(({ id }) => [id, 3])),
-    mbtiAnswers: Object.fromEntries(MBTI_QUESTIONS.map(({ id, options }) => [id, options[0].value])) as Record<string, MbtiPole>,
     experience: { noExperience: true, domains: [] },
     profile: { admissionYear: '2027', regions: ['TP.HCM & lân cận'], tuitionRange: '25-45', strengths: ['Toán'], gpa: 8, priorities: ['logic'] },
   }
@@ -24,11 +23,6 @@ describe('Personal direction assessment model', () => {
     for (const code of ['R', 'I', 'A', 'S', 'E', 'C']) expect(RIASEC_QUESTIONS.filter(({ domain }) => domain === code)).toHaveLength(5)
   })
   it('03 exposes an example for every RIASEC question', () => expect(RIASEC_QUESTIONS.every(({ example }) => example.length > 10)).toBe(true))
-  it('04 has exactly 60 MBTI-style questions', () => expect(MBTI_QUESTIONS).toHaveLength(60))
-  it('05 has exactly 15 questions per MBTI axis', () => {
-    for (const axis of ['EI', 'SN', 'TF', 'JP']) expect(MBTI_QUESTIONS.filter(({ dimension }) => dimension === axis)).toHaveLength(15)
-  })
-  it('06 gives every MBTI-style question two alternatives', () => expect(MBTI_QUESTIONS.every(({ options }) => options.length === 2)).toBe(true))
   it('07 has eight experience domains', () => expect(EXPERIENCE_DOMAINS).toHaveLength(8))
   it('08 has a distinct 1 + 3 + 1 adaptive bank per domain', () => expect(EXPERIENCE_DOMAINS.every(({ adaptiveQuestionBank }) => adaptiveQuestionBank.lowExposureQuestions.length === 1 && adaptiveQuestionBank.realityCheckQuestions.length === 3 && adaptiveQuestionBank.deepDiveQuestions.length === 1)).toBe(true))
   it('08b has globally unique adaptive question IDs', () => {
@@ -59,23 +53,6 @@ describe('RIASEC scoring', () => {
   it('13 emits CLOSE_RANGE when the top-two gap is under five', () => {
     const answers = Object.fromEntries(RIASEC_QUESTIONS.map(({ id }) => [id, 3]))
     expect(scoreRiasec(answers).flags).toContain('RIASEC_CLOSE_RANGE')
-  })
-})
-
-describe('MBTI-style scoring', () => {
-  it('14 calculates percentages from 15 answers per axis', () => {
-    const answers = validInput().mbtiAnswers
-    const result = scoreMbti(answers)
-    expect((result.axes.EI as { percentages: { E: number } }).percentages.E).toBe(100)
-  })
-  it('15 labels clarity of 40 or more CLEAR', () => {
-    const result = scoreMbti(validInput().mbtiAnswers)
-    expect((result.axes.EI as { clarityLabel: string }).clarityLabel).toBe('CLEAR')
-  })
-  it('16 labels a near-even axis BORDERLINE', () => {
-    const input = validInput()
-    MBTI_QUESTIONS.filter(({ dimension }) => dimension === 'EI').slice(0, 7).forEach(({ id }) => { input.mbtiAnswers[id] = 'I' })
-    expect((scoreMbti(input.mbtiAnswers).axes.EI as { clarityLabel: string }).clarityLabel).toBe('BORDERLINE')
   })
 })
 
@@ -173,8 +150,7 @@ describe('service validation and report lifecycle', () => {
     expect((report.crossEvidence as { narrativeFallback: boolean }).narrativeFallback).toBe(true)
   })
   it('39 allows repeated assessment reports without a per-report purchase', async () => {
-    const service = new AssessmentService(); const invalid = validInput(); delete invalid.mbtiAnswers.EI01
-    await expect(service.evaluate(invalid)).rejects.toBeInstanceOf(BadRequestException)
+    const service = new AssessmentService()
     await expect(service.evaluate(validInput())).resolves.toHaveProperty('id')
     await expect(service.evaluate(validInput())).resolves.toHaveProperty('id')
   })

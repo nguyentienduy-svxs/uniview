@@ -1,18 +1,11 @@
-import { MBTI_QUESTIONS, RIASEC_QUESTIONS } from './assessment.data'
-import { AssessmentInput, MbtiPole, RiasecCode } from './assessment.types'
+import { RIASEC_QUESTIONS } from './assessment.data'
+import { AssessmentInput, RiasecCode } from './assessment.types'
 
 function riasecAnswers(high: RiasecCode[], medium: RiasecCode[] = []): Record<string, number> {
   return Object.fromEntries(RIASEC_QUESTIONS.map((question, index) => [
     question.id,
     high.includes(question.domain) ? (index % 2 ? 5 : 4) : medium.includes(question.domain) ? 3 : (index % 3 ? 2 : 1),
   ]))
-}
-
-function mbtiAnswers(type: string): Record<string, MbtiPole> {
-  return Object.fromEntries(MBTI_QUESTIONS.map((question) => {
-    const selected = question.options.find(({ value }) => type.includes(value)) ?? question.options[0]
-    return [question.id, selected.value]
-  }))
 }
 
 const detailed = (domainId: string, strong = true) => ({
@@ -31,7 +24,7 @@ export const DEMO_PERSONAS: Array<{ id: string; name: string; description: strin
     id: 'duy-tech', name: 'Nguyễn Tiến Duy', description: 'Hồ sơ thiên công nghệ, nghiên cứu và dự án lập trình.',
     input: {
       userId: 'demo-duy',
-      riasecAnswers: riasecAnswers(['I', 'R'], ['C']), mbtiAnswers: mbtiAnswers('INTJ'),
+      riasecAnswers: riasecAnswers(['I', 'R'], ['C']),
       experience: { domains: [detailed('technology'), detailed('research', false)] },
       profile: { admissionYear: '2027', regions: ['TP.HCM & lân cận'], tuitionRange: '25-45', strengths: ['Toán', 'Tin học', 'Tiếng Anh'], gpa: 8.8, priorities: ['logic', 'autonomy', 'research'] },
     },
@@ -40,7 +33,7 @@ export const DEMO_PERSONAS: Array<{ id: string; name: string; description: strin
     id: 'linh-creative', name: 'Trần Gia Linh', description: 'Hồ sơ thiên sáng tạo, thiết kế và trải nghiệm người dùng.',
     input: {
       userId: 'demo-linh',
-      riasecAnswers: riasecAnswers(['A'], ['I', 'S']), mbtiAnswers: mbtiAnswers('INFP'),
+      riasecAnswers: riasecAnswers(['A'], ['I', 'S']),
       experience: { domains: [detailed('design'), detailed('technology', false)] },
       profile: { admissionYear: '2027', regions: ['TP.HCM & lân cận'], tuitionRange: '25-45', strengths: ['Ngữ văn', 'Tin học'], gpa: 8.4, priorities: ['creative', 'human-centered'] },
     },
@@ -49,7 +42,7 @@ export const DEMO_PERSONAS: Array<{ id: string; name: string; description: strin
     id: 'mai-social', name: 'Lê Thanh Mai', description: 'Hồ sơ thiên hỗ trợ, giáo dục và làm việc với con người.',
     input: {
       userId: 'demo-mai',
-      riasecAnswers: riasecAnswers(['S'], ['E', 'I']), mbtiAnswers: mbtiAnswers('ESFJ'),
+      riasecAnswers: riasecAnswers(['S'], ['E', 'I']),
       experience: { domains: [detailed('support'), detailed('leadership', false)] },
       profile: { admissionYear: '2027', regions: ['TP.HCM & lân cận'], tuitionRange: '25-45', strengths: ['Ngữ văn', 'Tiếng Anh', 'Sinh học'], gpa: 8.6, priorities: ['human-centered', 'structure'] },
     },
@@ -58,7 +51,7 @@ export const DEMO_PERSONAS: Array<{ id: string; name: string; description: strin
     id: 'nam-low-exposure', name: 'Phạm Hoàng Nam', description: 'Hồ sơ ít cơ hội trải nghiệm, dùng để kiểm tra độ tin cậy thấp.',
     input: {
       userId: 'demo-nam',
-      riasecAnswers: riasecAnswers(['C'], ['R', 'I']), mbtiAnswers: mbtiAnswers('ISTJ'),
+      riasecAnswers: riasecAnswers(['C'], ['R', 'I']),
       experience: { noExperience: true, domains: [] },
       profile: { admissionYear: '2027', regions: [], strengths: ['Toán'], priorities: [] },
     },

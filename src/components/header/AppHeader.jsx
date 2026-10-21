@@ -296,6 +296,12 @@ export default function AppHeader() {
             >
               Làm khảo sát
             </NavLink>
+
+            {isLoggedIn && hasPersonalWorkspace && (
+              <NavLink to="/roadmap" className={desktopNavClass}>
+                Roadmap
+              </NavLink>
+            )}
         
         </nav>
 
@@ -433,8 +439,8 @@ export default function AppHeader() {
               {/* WISHLIST */}
 
               <NavLink
-                to="/wishlist"
-                title="Wishlist"
+                to="/shortlist"
+                title="Shortlist"
                 className={({ isActive }) =>
                   `
                     hidden
@@ -763,6 +769,10 @@ function MobileNavigation({
 
         {isLoggedIn && (
           <>
+            <NavLink to="/roadmap" className={mobileNavClass}>
+              Roadmap kiểm chứng ngành
+            </NavLink>
+
             <NavLink
               to="/account/plan"
               className={mobileNavClass}
@@ -788,10 +798,10 @@ function MobileNavigation({
             </NavLink>
 
             <NavLink
-              to="/wishlist"
+              to="/shortlist"
               className={mobileNavClass}
             >
-              Wishlist
+              Shortlist
             </NavLink>
 
             <NavLink

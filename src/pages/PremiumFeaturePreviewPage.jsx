@@ -1,4 +1,4 @@
-import { Link, useParams } from 'react-router-dom'
+import { Link, Navigate, useParams } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { PREMIUM_FEATURES } from '../data/premiumFeatures'
 import { formatPrice, PLAN_CATALOG, PLAN_IDS } from '../data/plans'
@@ -43,6 +43,8 @@ function PremiumFeaturePreviewPage() {
   const hasAdmissionPass = hasEntitlement('ADMISSION_PASS')
   const stats = featureStats[feature] ?? featureStats['decision-board']
 
+  if (hasAdmissionPass) return <Navigate to={content.to} replace />
+
   return (
     <main className="min-h-[calc(100vh-74px)] bg-[#f9f9ff] font-['Be_Vietnam_Pro'] text-[#121b2e]">
       <FeatureStatusBar content={content} isAuthenticated={isAuthenticated} />
@@ -78,10 +80,10 @@ function PremiumFeaturePreviewPage() {
             </div>
             <div className="mt-8 flex flex-wrap gap-3">
               <Link
-                to={isAuthenticated ? '/admission-pass' : '/register'}
+                to={hasAdmissionPass ? content.to : isAuthenticated ? '/admission-pass' : '/register'}
                 className="group inline-flex items-center gap-2 rounded-full bg-[#1D4ED8] px-6 py-3.5 text-sm font-bold text-white shadow-md transition hover:-translate-y-0.5 hover:bg-[#0037B0] hover:shadow-xl"
               >
-                {isAuthenticated ? 'Mở tính năng: Admission Pass' : 'Đăng ký miễn phí'}
+                {hasAdmissionPass ? `Mở ${content.shortTitle}` : isAuthenticated ? 'Xem Admission Pass' : 'Đăng ký miễn phí'}
                 <span className="transition-transform group-hover:translate-x-1"><ArrowIcon /></span>
               </Link>
               <a href="#feature-preview" className="inline-flex items-center gap-2 rounded-full bg-white px-5 py-3.5 text-sm font-semibold text-[#121b2e] shadow-sm transition hover:bg-[#f1f3ff]">

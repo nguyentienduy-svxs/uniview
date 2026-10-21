@@ -1,22 +1,11 @@
 export const RIASEC_CODES = ['R', 'I', 'A', 'S', 'E', 'C'] as const
-export const MBTI_AXES = ['EI', 'SN', 'TF', 'JP'] as const
-
 export type RiasecCode = (typeof RIASEC_CODES)[number]
-export type MbtiAxis = (typeof MBTI_AXES)[number]
-export type MbtiPole = 'E' | 'I' | 'S' | 'N' | 'T' | 'F' | 'J' | 'P'
 
 export interface RiasecQuestion {
   id: string
   domain: RiasecCode
   text: string
   example: string
-}
-
-export interface MbtiQuestion {
-  id: string
-  dimension: MbtiAxis
-  prompt: string
-  options: Array<{ label: string; value: MbtiPole }>
 }
 
 export interface ExperienceAnswer {
@@ -41,7 +30,6 @@ export interface ExperienceAnswer {
 export interface AssessmentInput {
   userId?: string
   riasecAnswers: Record<string, number>
-  mbtiAnswers: Record<string, MbtiPole>
   experience: {
     noExperience?: boolean
     domains?: ExperienceAnswer[]
@@ -77,7 +65,6 @@ export interface MajorProfile {
   riasec: Partial<Record<RiasecCode, number>>
   academicSubjects: string[]
   evidenceDomains: string[]
-  mbtiLetters: MbtiPole[]
   environments: string[]
   tuitionBands: string[]
   tradeoffs: string[]

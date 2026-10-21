@@ -29,9 +29,9 @@ const comparisonRows = [
   ['Assessment RIASEC và câu hỏi bối cảnh', 'Có', 'Có', 'Có'],
   ['Task, evidence, rubric và reflection', 'Có', 'Có', 'Có'],
   ['Roadmap thích ứng', 'Có', 'Có', 'Có'],
-  ['Nguồn tuyển sinh và ngày cập nhật', '—', 'Đã bao gồm', 'Có'],
-  ['Phương thức, điều kiện, hồ sơ và deadline', '—', 'Đã bao gồm', 'Có'],
-  ['Kịch bản điểm, nguyện vọng và kết quả', '—', 'Đã bao gồm', 'Có'],
+  ['Nguồn tuyển sinh và ngày cập nhật', '—', 'Có trong 1 mùa', 'Có'],
+  ['Phương thức, điều kiện, hồ sơ và deadline', '—', 'Có trong 1 mùa', 'Có'],
+  ['Kịch bản điểm, nguyện vọng và kết quả', '—', 'Có trong 1 mùa', 'Có'],
   ['Tự động gia hạn', 'Có thể tắt', 'Có thể tắt', 'Không'],
   ['Khi hết hạn', 'Xem dữ liệu cũ', 'Xem dữ liệu cũ', 'Xem lịch sử mùa cũ'],
 ]
@@ -111,7 +111,7 @@ function PricingPage() {
               Chọn gói theo mục tiêu hiện tại của bạn
             </h1>
             <p className="mx-auto mt-4 max-w-2xl text-base leading-7 text-[#667085] sm:text-lg">
-              Gói Tháng dành cho nhu cầu ngắn hạn. Gói Năm đồng hành trọn 12 tháng và đã bao gồm Admission Pass. Admission Pass cũng được bán riêng cho một mùa tuyển sinh.
+              Gói Năm đồng hành cùng Roadmap trong 12 tháng và bao gồm Admission Pass cho một mùa tuyển sinh. Gói Tháng có thể bổ sung Admission Pass riêng khi cần công cụ tuyển sinh.
             </p>
             <div className="mx-auto mt-6 flex max-w-2xl items-start gap-3 rounded-2xl border border-blue-100 bg-white/80 p-4 text-left text-sm text-[#434655]">
               <span className="material-symbols-outlined text-[#1D4ED8]">visibility</span>
@@ -130,7 +130,7 @@ function PricingPage() {
           <div className="border-b border-slate-100 px-6 py-6 sm:px-8">
             <p className="text-xs font-bold uppercase tracking-wider text-[#1D4ED8]">So sánh quyền lợi</p>
             <h2 className="mt-1 font-display text-2xl font-extrabold">Khác nhau ở thời hạn và mục tiêu sử dụng</h2>
-            <p className="mt-2 text-sm text-[#667085]">Gói Tháng mở hành trình khám phá; Gói Năm mở toàn bộ hành trình và Admission Mode; Admission Pass dành cho người chỉ cần hỗ trợ mùa tuyển sinh.</p>
+            <p className="mt-2 text-sm text-[#667085]">Gói Tháng mở hành trình khám phá giới hạn 3 task; Gói Năm mở Roadmap dài hạn và bao gồm Admission Mode cho một mùa tuyển sinh.</p>
           </div>
           <div className="overflow-x-auto">
             <table className="w-full min-w-[760px] border-collapse text-left text-sm">
@@ -159,7 +159,7 @@ function PricingPage() {
         <section className="mt-10 grid gap-5 md:grid-cols-3">
           {[
             ['Không mất dữ liệu', 'Khi gói hết hạn, bạn vẫn xem được hồ sơ, task, báo cáo và lịch sử đã tạo.'],
-            ['Gói Năm đã gồm Admission Pass', 'Học sinh dùng Gói Năm không phải trả thêm tiền cho Admission Pass trong thời gian gói còn hiệu lực.'],
+            ['Gói Năm đã bao gồm Admission Pass', 'Trong thời hạn Gói Năm, Decision Board và Admission Mode dùng được cho một mùa tuyển sinh; không cần mua thêm Pass.'],
             ['Không hứa trúng tuyển', 'Reach, Match và Safe là nhãn so sánh kịch bản, luôn đi cùng căn cứ và dữ liệu còn thiếu.'],
           ].map(([title, description]) => (
             <div key={title} className="rounded-2xl bg-[#f1f3ff] p-5">

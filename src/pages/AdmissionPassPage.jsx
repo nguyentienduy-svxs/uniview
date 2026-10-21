@@ -7,8 +7,9 @@ import { ENTITLEMENTS } from '../components/header/headerConfig'
 import { formatPrice, hasConfiguredPrice, PLAN_CATALOG, PLAN_IDS } from '../data/plans'
 
 export default function AdmissionPassPage() {
-  const { isAuthenticated, hasEntitlement } = useAuth()
+  const { activePlans, isAuthenticated, hasEntitlement } = useAuth()
   const hasAdmissionPass = hasEntitlement(ENTITLEMENTS.ADMISSION_PASS)
+  const includedInAnnual = activePlans.includes(PLAN_IDS.ANNUAL)
   const admissionPlan = PLAN_CATALOG[PLAN_IDS.ADMISSION_PASS]
   const admissionPrice = formatPrice(admissionPlan.price)
 
@@ -20,7 +21,7 @@ export default function AdmissionPassPage() {
             <svg className="h-4 w-4 text-emerald-600" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
               <path d="M5 13l4 4L19 7" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
-            Bạn đã kích hoạt Admission Pass
+            {includedInAnnual ? 'Admission Pass đã nằm trong Gói Năm của bạn' : 'Bạn đã kích hoạt Admission Pass'}
           </div>
           <h1 className="text-2xl font-extrabold text-[#172033]">Admission Pass của bạn đang hoạt động</h1>
           <p className="text-[#667085] text-sm leading-relaxed">
@@ -141,7 +142,7 @@ export default function AdmissionPassPage() {
             },
             {
               q: 'Tôi đang dùng Gói Năm có cần mua Admission Pass không?',
-              a: 'Không. Gói Năm đã bao gồm Admission Pass trong thời gian gói còn hiệu lực. Người dùng Gói Tháng có thể mua Admission Pass riêng khi bước vào mùa tuyển sinh.',
+              a: 'Không. Gói Năm đã bao gồm Decision Board và Admission Mode cho một mùa tuyển sinh trong thời hạn gói.',
             },
             {
               q: 'Admission Pass có tự động gia hạn sang mùa sau không?',

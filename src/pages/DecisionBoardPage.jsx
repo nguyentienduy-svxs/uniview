@@ -22,7 +22,6 @@ function Icon({ children, className = '' }) {
 function DecisionBoardPage() {
   const [query, setQuery] = useState('')
   const [modal, setModal] = useState(null)
-
   const choices = useMemo(() => {
     const normalized = query.trim().toLocaleLowerCase('vi')
     if (!normalized) return DECISION_BOARD.choices
