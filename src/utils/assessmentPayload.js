@@ -1,7 +1,6 @@
 export function buildAssessmentPayload(
   assessment,
   userId,
-  paidAttempt = false,
 ) {
   const experienceDomains =
     assessment.experience.selectedDomains.map(
@@ -31,7 +30,6 @@ export function buildAssessmentPayload(
 
   return {
     userId,
-    paidAttempt,
     riasecAnswers: assessment.riasecAnswers,
     mbtiAnswers: assessment.personalityAnswers,
     experience: {

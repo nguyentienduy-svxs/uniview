@@ -20,3 +20,22 @@ test('payload giữ trạng thái chính thức hoặc dự kiến của ba lo�
   assert.equal(profile.thptScoreStatus, 'EXPECTED')
   assert.equal(profile.dgnlScoreStatus, 'OFFICIAL')
 })
+
+test('payload không quy điểm bỏ trống thành 0', () => {
+  const assessment = {
+    riasecAnswers: {},
+    personalityAnswers: {},
+    experience: { selectedDomains: [], domainStates: {}, noExperience: true },
+    profile: {
+      admissionYear: '2027', regions: [], tuition: 'undecided', scholarship: false, strengths: [], priorities: [], certificates: [],
+      gpa: '', gpaStatus: 'EXPECTED',
+      thptScore: '', thptScoreStatus: 'EXPECTED',
+      dgnlScore: '', dgnlScoreStatus: 'EXPECTED',
+    },
+  }
+
+  const profile = buildAssessmentPayload(assessment).profile
+  assert.equal(profile.gpa, undefined)
+  assert.equal(profile.thptScore, undefined)
+  assert.equal(profile.dgnlScore, undefined)
+})

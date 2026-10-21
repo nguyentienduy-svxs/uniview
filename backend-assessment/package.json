@@ -2,7 +2,7 @@
   "name": "uniview-assessment-service",
   "version": "1.0.0",
   "private": true,
-  "description": "Deterministic assessment and Direction Snapshot service for UniView",
+  "description": "Deterministic personal direction assessment service for UniView",
   "scripts": {
     "build": "nest build",
     "start": "node dist/main.js",

@@ -1,8 +1,5 @@
 import { Link } from 'react-router-dom'
 
-import { ENTITLEMENTS } from '../data/user'
-import { useAuth } from '../context/AuthContext'
-
 const assessmentSteps = [
   {
     number: '01',
@@ -51,39 +48,6 @@ const assessmentSteps = [
 ]
 
 function AssessmentIntroPage() {
-  const {
-    user,
-    admissionSeason,
-    isAuthenticated,
-    hasEntitlement,
-  } = useAuth()
-
-  const hasAdmissionPass = hasEntitlement(
-    ENTITLEMENTS.ADMISSION_PASS,
-  )
-
-  const hasDirectionSnapshot =
-    hasAdmissionPass ||
-    hasEntitlement(
-      ENTITLEMENTS.DIRECTION_SNAPSHOT,
-    )
-
-  let planLabel = 'Gói Free'
-
-  if (hasDirectionSnapshot) {
-    planLabel = 'Direction Snapshot'
-  }
-
-  if (hasAdmissionPass) {
-    planLabel = admissionSeason
-      ? `Admission Pass ${admissionSeason}`
-      : 'Admission Pass'
-  }
-
-  if (!isAuthenticated) {
-    planLabel = 'Chưa đăng nhập'
-  }
-
   return (
     <main className="w-full flex-1 bg-surface">
       <div className="mx-auto flex w-full max-w-[1440px] flex-col gap-space-xl px-margin py-space-xl md:px-margin-md lg:px-margin-lg">
@@ -112,7 +76,7 @@ function AssessmentIntroPage() {
                   verified
                 </span>
                 <span>
-                  Direction Snapshot 59K · Đánh giá định hướng
+                  Personal Workspace · Đánh giá định hướng
                 </span>
               </div>
 
@@ -289,14 +253,18 @@ function AssessmentIntroPage() {
 
         <div className="flex flex-col items-center justify-between gap-space-md pt-space-xs sm:flex-row">
           <Link
-            to={isAuthenticated ? '/assessment/riasec' : '/login?next=/assessment/riasec'}
+            to="/assessment/riasec"
             className="group inline-flex w-full items-center justify-center gap-space-xs rounded-full bg-primary-container px-space-xl py-3.5 font-label-lg text-label-lg font-bold text-on-primary shadow-md transition-all hover:bg-primary hover:shadow-lg active:scale-[0.98] sm:w-auto"
           >
-            <span>{isAuthenticated ? 'Bắt đầu assessment (Bước 1)' : 'Đăng nhập để bắt đầu'}</span>
+            <span>Bắt đầu assessment (Bước 1)</span>
             <span className="material-symbols-outlined text-base transition-transform group-hover:translate-x-1">
               arrow_forward
             </span>
           </Link>
+
+          <p className="text-center font-label-sm text-label-sm text-on-surface-variant sm:text-left">
+            Không cần đăng nhập · Guest vẫn nhận được kết quả tổng quan
+          </p>
 
           <a
             href="#assessment-methodology"

@@ -1,4 +1,14 @@
+import { Link } from 'react-router-dom'
+
+import { useAuth } from '../context/AuthContext'
+import { formatPlanDate, formatPrice, hasConfiguredPrice, PLAN_CATALOG, PLAN_IDS } from '../data/plans'
+
 function CheckoutSuccessPage() {
+  const { admissionSeason, subscriptions, user } = useAuth()
+  const plan = PLAN_CATALOG[PLAN_IDS.ADMISSION_PASS]
+  const season = admissionSeason ?? user?.targetAdmissionYear ?? '2027'
+  const subscription = subscriptions.find(({ planId }) => planId === PLAN_IDS.ADMISSION_PASS)
+  const price = formatPrice(plan.price)
   return (
 <main className="w-full min-h-screen bg-surface flex items-center justify-center p-gutter"><div className="flex flex-col w-full">
 <div className="relative w-full max-w-[1240px] mx-auto py-space-xl px-gutter flex flex-col items-center">
@@ -13,7 +23,7 @@ function CheckoutSuccessPage() {
         Giao dịch hoàn tất thành công
       </div>
 <h1 className="font-headline-lg text-headline-lg text-on-surface mb-space-sm max-w-[620px]">
-        Admission Pass 2027 đã được mở khóa.
+        Admission Pass {season} đã được mở khóa.
       </h1>
 <p className="font-body-md text-body-md text-on-surface-variant max-w-[540px] mb-space-xl">
         Bạn có thể sử dụng ngay các công cụ hỗ trợ tuyển sinh nâng cao trên nền tảng Uniview cho lộ trình đại học của mình.
@@ -22,18 +32,18 @@ function CheckoutSuccessPage() {
 <div className="flex flex-wrap items-center justify-between gap-y-2 pb-space-md text-secondary text-label-md font-label-md">
 <div className="flex items-center gap-1.5">
 <span className="text-on-surface-variant font-label-lg text-label-lg">Mã giao dịch:</span>
-<span className="text-primary font-medium">#UV-PAY-2027-9481</span>
+<span className="text-primary font-medium">#UV-PAY-{season}-9481</span>
 </div>
 <div className="flex items-center gap-space-md">
 <span>Thời gian: <strong className="text-on-surface font-medium">Vừa xong</strong></span>
 <span>•</span>
-<span>Tài khoản: <strong className="text-on-surface font-medium">Minh Quân (Khóa 2027)</strong></span>
+<span>Tài khoản: <strong className="text-on-surface font-medium">{user?.fullName ?? 'Học sinh UniView'} (Khóa {season})</strong></span>
 </div>
 </div>
 <div className="grid grid-cols-1 md:grid-cols-2 gap-space-sm pt-space-md">
 <div className="flex items-start gap-2.5">
 <span className="material-symbols-outlined text-tertiary text-[20px] mt-0.5">verified</span>
-<span className="font-body-sm text-body-sm text-on-surface">Thanh toán thành công: <strong className="text-primary">30.000đ</strong> <span className="text-on-surface-variant">(Nâng cấp từ Personal Direction Report)</span></span>
+<span className="font-body-sm text-body-sm text-on-surface">{hasConfiguredPrice(plan) ? <>Thanh toán thành công: <strong className="text-primary">{price}</strong></> : <><strong className="text-primary">Giao dịch demo đã được xác nhận</strong></>} <span className="text-on-surface-variant">(Admission Pass {season})</span></span>
 </div>
 <div className="flex items-start gap-2.5">
 <span className="material-symbols-outlined text-tertiary text-[20px] mt-0.5">bolt</span>
@@ -41,7 +51,7 @@ function CheckoutSuccessPage() {
 </div>
 <div className="flex items-start gap-2.5">
 <span className="material-symbols-outlined text-tertiary text-[20px] mt-0.5">event_available</span>
-<span className="font-body-sm text-body-sm text-on-surface">Hiệu lực sử dụng: <strong className="text-on-surface">Hôm nay — 30/09/2027</strong></span>
+<span className="font-body-sm text-body-sm text-on-surface">Hiệu lực sử dụng: <strong className="text-on-surface">Hôm nay — {subscription?.endsAt ? formatPlanDate(subscription.endsAt) : `30/09/${season}`}</strong></span>
 </div>
 <div className="flex items-start gap-2.5">
 <span className="material-symbols-outlined text-tertiary text-[20px] mt-0.5">lock_clock</span>
@@ -52,7 +62,7 @@ function CheckoutSuccessPage() {
 <div className="w-full text-left mb-space-xl">
 <div className="flex items-center justify-between mb-space-md">
 <h2 className="font-headline-sm text-headline-sm text-on-surface">Đặc quyền đã kích hoạt cho bạn</h2>
-<span className="font-label-md text-label-md text-secondary">4 công cụ chuyên sâu</span>
+<span className="font-label-md text-label-md text-secondary">Admission Mode theo mùa</span>
 </div>
 <div className="grid grid-cols-1 md:grid-cols-2 gap-space-md">
 <div className="bg-lavender-subtle p-space-md rounded-xl flex items-start gap-space-md transition-all hover:bg-surface-container">
@@ -61,7 +71,7 @@ function CheckoutSuccessPage() {
 </div>
 <div>
 <h3 className="font-label-lg text-label-lg text-on-surface mb-0.5">Admission Routes</h3>
-<p className="font-body-sm text-body-sm text-on-surface-variant">Bản đồ con đường tuyển sinh 4+ luồng: thi THPT, ĐGNL, học bạ và xét tuyển chứng chỉ quốc tế.</p>
+<p className="font-body-sm text-body-sm text-on-surface-variant">Lập bản đồ phương thức, tổ hợp, điều kiện và hồ sơ cần nộp cho từng lựa chọn.</p>
 </div>
 </div>
 <div className="bg-sky-subtle p-space-md rounded-xl flex items-start gap-space-md transition-all hover:bg-surface-container">
@@ -70,7 +80,7 @@ function CheckoutSuccessPage() {
 </div>
 <div>
 <h3 className="font-label-lg text-label-lg text-on-surface mb-0.5">Scenario Comparison</h3>
-<p className="font-body-sm text-body-sm text-on-surface-variant">Mô phỏng động kịch bản điểm thi dự kiến, biên độ dao động điểm chuẩn và rủi ro cạnh tranh chỉ tiêu.</p>
+<p className="font-body-sm text-body-sm text-on-surface-variant">So sánh kịch bản điểm và phương án dự phòng dựa trên dữ liệu hiện có, không cam kết trúng tuyển.</p>
 </div>
 </div>
 <div className="bg-sage-subtle p-space-md rounded-xl flex items-start gap-space-md transition-all hover:bg-surface-container">
@@ -79,7 +89,7 @@ function CheckoutSuccessPage() {
 </div>
 <div>
 <h3 className="font-label-lg text-label-lg text-on-surface mb-0.5">Personalized Compare</h3>
-<p className="font-body-sm text-body-sm text-on-surface-variant">Đối sánh chuyên sâu 5 trường/ngành cùng lúc về học phí, cơ hội việc làm, môi trường và điều kiện phụ.</p>
+<p className="font-body-sm text-body-sm text-on-surface-variant">Đối chiếu ngành và trường theo học phí, địa điểm, điều kiện và các ưu tiên trong hồ sơ.</p>
 </div>
 </div>
 <div className="bg-sand-subtle p-space-md rounded-xl flex items-start gap-space-md transition-all hover:bg-surface-container">
@@ -88,7 +98,7 @@ function CheckoutSuccessPage() {
 </div>
 <div>
 <h3 className="font-label-lg text-label-lg text-on-surface mb-0.5">Advanced Decision Board</h3>
-<p className="font-body-sm text-body-sm text-on-surface-variant">Ma trận thông minh sắp xếp thứ tự nguyện vọng thực chiến, tối ưu hóa tỷ lệ trúng tuyển nhóm ưu tiên.</p>
+<p className="font-body-sm text-body-sm text-on-surface-variant">Theo dõi shortlist, deadline, hồ sơ, nguyện vọng, kết quả và checklist xác nhận nhập học.</p>
 </div>
 </div>
 </div>
@@ -96,22 +106,22 @@ function CheckoutSuccessPage() {
 <div className="w-full bg-surface-container-low/70 rounded-xl p-space-md flex items-center gap-space-md text-left mb-space-xl">
 <span className="material-symbols-outlined text-secondary text-[24px] shrink-0">mark_email_read</span>
 <p className="font-body-sm text-body-sm text-on-surface-variant">
-          Biên lai điện tử và thông tin xác nhận kích hoạt đã được gửi tới email <strong className="text-on-surface">minh.nguyen***@gmail.com</strong>. Điểm số và thông tin cá nhân vẫn có thể cập nhật miễn phí bất cứ lúc nào.
+          Biên lai điện tử và thông tin xác nhận kích hoạt đã được gửi tới email <strong className="text-on-surface">{user?.email ?? 'email tài khoản'}</strong>. Hồ sơ và lịch sử cũ vẫn được bảo toàn sau khi gói hết hiệu lực.
         </p>
 </div>
 <div className="w-full flex flex-col sm:flex-row items-center justify-center gap-space-md">
-<a className="w-full sm:w-auto px-7 py-3.5 rounded-full bg-primary-container hover:bg-primary text-on-primary font-label-lg text-label-lg inline-flex items-center justify-center gap-2 shadow-sm transition-all group" href="#admission-routes">
+<Link className="w-full sm:w-auto px-7 py-3.5 rounded-full bg-primary-container hover:bg-primary text-on-primary font-label-lg text-label-lg inline-flex items-center justify-center gap-2 shadow-sm transition-all group" to="/admission-route-mapping">
 <span>Xem Admission Routes ngay</span>
 <span className="material-symbols-outlined text-[20px] transition-transform group-hover:translate-x-1">arrow_forward</span>
-</a>
-<a className="w-full sm:w-auto px-7 py-3.5 rounded-full bg-surface-container-high/80 hover:bg-surface-container-highest text-on-surface font-label-lg text-label-lg inline-flex items-center justify-center transition-all" href="#decision-board">
+</Link>
+<Link className="w-full sm:w-auto px-7 py-3.5 rounded-full bg-surface-container-high/80 hover:bg-surface-container-highest text-on-surface font-label-lg text-label-lg inline-flex items-center justify-center transition-all" to="/decision-board">
           Quay lại Decision Board
-        </a>
+        </Link>
 </div>
-<a className="mt-space-lg text-primary hover:text-on-primary-fixed-variant font-label-lg text-label-lg inline-flex items-center gap-1 transition-colors" href="#my-plan">
+<Link className="mt-space-lg text-primary hover:text-on-primary-fixed-variant font-label-lg text-label-lg inline-flex items-center gap-1 transition-colors" to="/account/plan">
 <span>Xem chi tiết quyền lợi tại trang Gói của tôi</span>
 <span className="material-symbols-outlined text-[16px]">east</span>
-</a>
+</Link>
 </div>
 <div className="mt-space-lg flex items-center gap-2 text-secondary font-label-sm text-label-sm">
 <span className="material-symbols-outlined text-[16px]">verified_user</span>

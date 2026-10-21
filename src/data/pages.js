@@ -1,3 +1,5 @@
+import { ENTITLEMENTS, ROLES } from './user'
+
 export const pages = [
   {
     id: 'f5c241bc1d4d4d09ade3b61d7af9c16a',
@@ -131,8 +133,8 @@ export const pages = [
     id: 'b0d3ad63fe6847749b70e6c8c18efbe3',
     component: 'PremiumPreviewPage',
     path: '/reports/premium-preview',
-    title: 'UniView — Xem trước kết quả Premium',
-    shortTitle: 'Xem trước Premium',
+    title: 'UniView — Xem trước báo cáo chi tiết',
+    shortTitle: 'Xem trước báo cáo',
     group: 'Báo cáo',
   },
   {
@@ -174,6 +176,11 @@ export const pages = [
     title: 'UniView — Admission Route Mapping',
     shortTitle: 'Route Mapping',
     group: 'Công cụ',
+    requiresAuth: true,
+    requiredEntitlement: ENTITLEMENTS.ADMISSION_PASS,
+    allowExpiredReadOnly: true,
+    allowedRoles: [ROLES.STUDENT, ROLES.PARENT],
+    featureKey: 'admission-route-mapping',
   },
   {
     id: '5d8fc530a31c4a0a9673c090b784ecda',
@@ -182,6 +189,11 @@ export const pages = [
     title: 'UniView — So sánh kịch bản mục tiêu',
     shortTitle: 'So sánh kịch bản',
     group: 'Công cụ',
+    requiresAuth: true,
+    requiredEntitlement: ENTITLEMENTS.ADMISSION_PASS,
+    allowExpiredReadOnly: true,
+    allowedRoles: [ROLES.STUDENT, ROLES.PARENT],
+    featureKey: 'scenario-comparison',
   },
   {
     id: 'd835b3899c944619bcd82b3aec3cadcf',
@@ -190,6 +202,24 @@ export const pages = [
     title: 'UniView — My University Decision Board',
     shortTitle: 'Decision Board',
     group: 'Quyết định',
+    requiresAuth: true,
+    requiredEntitlement: ENTITLEMENTS.ADMISSION_PASS,
+    allowExpiredReadOnly: true,
+    allowedRoles: [ROLES.STUDENT, ROLES.PARENT],
+    featureKey: 'decision-board',
+  },
+  {
+    id: 'decision-board-detail',
+    component: 'DecisionBoardDetailPage',
+    path: '/decision-board/:choiceId',
+    title: 'UniView — Chi tiết kế hoạch xét tuyển',
+    shortTitle: 'Chi tiết kế hoạch',
+    group: 'Quyết định',
+    requiresAuth: true,
+    requiredEntitlement: ENTITLEMENTS.ADMISSION_PASS,
+    allowExpiredReadOnly: true,
+    allowedRoles: [ROLES.STUDENT, ROLES.PARENT],
+    featureKey: 'decision-board',
   },
   {
     id: 'd2d9638abeca4539bbd18f56a56a2a73',
@@ -198,6 +228,7 @@ export const pages = [
     title: 'UniView — Lựa chọn đã lưu',
     shortTitle: 'Lựa chọn đã lưu',
     group: 'Tài khoản',
+    requiresAuth: true,
   },
   {
     id: 'c61b7db961fa4658817fc476bed8ddf1',
@@ -206,6 +237,7 @@ export const pages = [
     title: 'UniView — Hồ sơ của bạn',
     shortTitle: 'Hồ sơ của bạn',
     group: 'Tài khoản',
+    requiresAuth: true,
   },
   {
     id: '12003206840328102946',
@@ -214,6 +246,7 @@ export const pages = [
     title: 'Uniview — Gói của tôi và quyền lợi tài khoản',
     shortTitle: 'Gói của tôi',
     group: 'Tài khoản',
+    requiresAuth: true,
   },
   {
     id: '14150929768595025087',
@@ -227,7 +260,7 @@ export const pages = [
     id: 'f9e8d7c6b5a4392817263544bb3ca1d2',
     component: 'AdmissionPassPage',
     path: '/admission-pass',
-    title: 'UniView — Personalized Admission Pass',
+    title: 'UniView — Admission Pass theo mùa tuyển sinh',
     shortTitle: 'Admission Pass',
     group: 'Tài khoản',
   },
@@ -254,22 +287,25 @@ export const pages = [
     title: 'Uniview — Xác nhận thanh toán an toàn',
     shortTitle: 'Thanh toán an toàn',
     group: 'Thanh toán',
+    requiresAuth: true,
   },
   {
     id: '1656321741670937514',
     component: 'PersonalDirectionCheckoutPage',
     path: '/checkout/personal-direction',
-    title: 'Uniview — Thanh toán Personal Direction Report',
-    shortTitle: 'Thanh toán báo cáo',
+    title: 'Uniview — Thanh toán Gói Tháng hoặc Gói Năm',
+    shortTitle: 'Thanh toán gói khám phá',
     group: 'Thanh toán',
+    requiresAuth: true,
   },
   {
     id: '5939715856164634941',
     component: 'AdmissionPassCheckoutPage',
     path: '/checkout/admission-pass',
-    title: 'Uniview — Thanh toán Admission Pass 2027',
+    title: 'Uniview — Thanh toán Admission Pass',
     shortTitle: 'Thanh toán Admission Pass',
     group: 'Thanh toán',
+    requiresAuth: true,
   },
   {
     id: '6289591666328605538',
@@ -278,6 +314,7 @@ export const pages = [
     title: 'Uniview — Kích hoạt Admission Pass thành công',
     shortTitle: 'Kích hoạt thành công',
     group: 'Thanh toán',
+    requiresAuth: true,
   },
 ]
 

@@ -11,7 +11,6 @@ const clone = <T>(value: T): T => structuredClone(value)
 function validInput(): AssessmentInput {
   return {
     userId: 'test-user',
-    paidAttempt: false,
     riasecAnswers: Object.fromEntries(RIASEC_QUESTIONS.map(({ id }) => [id, 3])),
     mbtiAnswers: Object.fromEntries(MBTI_QUESTIONS.map(({ id, options }) => [id, options[0].value])) as Record<string, MbtiPole>,
     experience: { noExperience: true, domains: [] },
@@ -19,7 +18,7 @@ function validInput(): AssessmentInput {
   }
 }
 
-describe('Direction Snapshot model', () => {
+describe('Personal direction assessment model', () => {
   it('01 has exactly 30 RIASEC questions', () => expect(RIASEC_QUESTIONS).toHaveLength(30))
   it('02 has exactly five RIASEC questions per domain', () => {
     for (const code of ['R', 'I', 'A', 'S', 'E', 'C']) expect(RIASEC_QUESTIONS.filter(({ domain }) => domain === code)).toHaveLength(5)
@@ -156,7 +155,7 @@ describe('report generation', () => {
   it('34 lowers certainty for low-exposure Nam', () => expect(evaluateAssessment(DEMO_PERSONAS[3].input).qualityFlags).toContain('LIMITED_EXPERIENCE'))
 })
 
-describe('service validation and attempt lifecycle', () => {
+describe('service validation and report lifecycle', () => {
   it('35 rejects incomplete RIASEC answers', async () => {
     const input = validInput(); delete input.riasecAnswers.R01
     await expect(new AssessmentService().evaluate(input)).rejects.toBeInstanceOf(BadRequestException)
@@ -173,10 +172,10 @@ describe('service validation and attempt lifecycle', () => {
     const report = await new AssessmentService().evaluate(validInput(), async () => { throw new Error('AI offline') })
     expect((report.crossEvidence as { narrativeFallback: boolean }).narrativeFallback).toBe(true)
   })
-  it('39 consumes a paid attempt only after successful report creation', async () => {
-    const service = new AssessmentService(); const invalid = validInput(); invalid.paidAttempt = true; delete invalid.mbtiAnswers.EI01
+  it('39 allows repeated assessment reports without a per-report purchase', async () => {
+    const service = new AssessmentService(); const invalid = validInput(); delete invalid.mbtiAnswers.EI01
     await expect(service.evaluate(invalid)).rejects.toBeInstanceOf(BadRequestException)
-    const valid = validInput(); valid.paidAttempt = true
-    await expect(service.evaluate(valid)).resolves.toMatchObject({ attempt: { consumed: true, remaining: 0 } })
+    await expect(service.evaluate(validInput())).resolves.toHaveProperty('id')
+    await expect(service.evaluate(validInput())).resolves.toHaveProperty('id')
   })
 })

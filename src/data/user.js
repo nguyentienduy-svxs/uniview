@@ -1,100 +1,167 @@
+import { PLAN_IDS } from './plans'
+
+export const ROLES = {
+  STUDENT: 'STUDENT',
+  PARENT: 'PARENT',
+}
+
+export const ROLE_LABELS = {
+  [ROLES.STUDENT]: 'Học sinh',
+  [ROLES.PARENT]: 'Phụ huynh',
+}
+
 export const ENTITLEMENTS = {
-  DIRECTION_SNAPSHOT: 'DIRECTION_SNAPSHOT',
+  PERSONAL_WORKSPACE: 'PERSONAL_WORKSPACE',
   ADMISSION_PASS: 'ADMISSION_PASS',
 }
 
-export const DEMO_CREDENTIALS = {
-  username: 'chiduy',
-  password: 'ChiDuy@2026',
+const baseAcademicProfile = {
+  gpa: { value: '8.84', status: 'OFFICIAL' },
+  thptScore: { value: '25.50', status: 'EXPECTED' },
+  dgnlScore: { value: '875', status: 'OFFICIAL' },
+  certificates: [
+    {
+      id: 'profile-ielts-65',
+      type: 'IELTS_ACADEMIC',
+      name: 'IELTS Academic',
+      score: '6.5',
+      status: 'OFFICIAL',
+      source: 'PROFILE',
+    },
+  ],
 }
 
-export const DEMO_USER = {
-  id: 'demo-chi-duy',
-  username: DEMO_CREDENTIALS.username,
-  fullName: 'Chí Duy',
-  email: 'chiduy@uniview.vn',
-  initials: 'CD',
-  avatarUrl: null,
-  plan: 'FREE',
-  grade: 'Lớp 12',
-  school: 'THPT Nguyễn Thị Minh Khai',
-  targetAdmissionYear: '2027',
-  preferredRegion: 'TP. Hồ Chí Minh',
-  targetMajors: ['Kỹ thuật Phần mềm', 'Trí tuệ Nhân tạo'],
-  academicProfile: {
-    gpa: { value: '8.84', status: 'OFFICIAL' },
-    thptScore: { value: '25.50', status: 'EXPECTED' },
-    dgnlScore: { value: '875', status: 'OFFICIAL' },
-    certificates: [
-      {
-        id: 'profile-ielts-65',
-        type: 'IELTS_ACADEMIC',
-        name: 'IELTS Academic',
-        score: '6.5',
-        status: 'OFFICIAL',
-        source: 'PROFILE',
-      },
-    ],
-  },
+function createStudent(overrides) {
+  return {
+    role: ROLES.STUDENT,
+    avatarUrl: null,
+    grade: 'Lớp 12',
+    school: 'THPT Nguyễn Thị Minh Khai',
+    targetAdmissionYear: '2027',
+    preferredRegion: 'TP. Hồ Chí Minh',
+    targetMajors: ['Kỹ thuật Phần mềm', 'Trí tuệ Nhân tạo'],
+    academicProfile: baseAcademicProfile,
+    ...overrides,
+  }
 }
 
-const MOCK_USER = DEMO_USER
-
-export const MOCK_SESSIONS = {
-  guest: {
-    user: null,
-    entitlements: [],
-    admissionSeason: null,
+export const DEMO_ACCOUNTS = [
+  {
+    id: 'chi-duy',
+    username: 'chiduy',
+    password: 'ChiDuy@2026',
+    planDescription: 'Gói Tháng',
+    session: {
+      user: createStudent({
+        id: 'demo-chi-duy',
+        username: 'chiduy',
+        fullName: 'Chí Duy',
+        email: 'chiduy@uniview.vn',
+        initials: 'CD',
+      }),
+      entitlements: [ENTITLEMENTS.PERSONAL_WORKSPACE],
+      activePlans: [PLAN_IDS.MONTHLY],
+      subscriptions: [
+        {
+          planId: PLAN_IDS.MONTHLY,
+          status: 'ACTIVE',
+          startedAt: '2026-10-01',
+          endsAt: '2026-10-31',
+          autoRenew: true,
+        },
+      ],
+      admissionSeason: null,
+    },
   },
-
-  free: {
-    user: MOCK_USER,
-    entitlements: [],
-    admissionSeason: null,
+  {
+    id: 'chi-man',
+    username: 'chiman',
+    password: 'ChiMan@2026',
+    planDescription: 'Gói Năm · Đã bao gồm Admission Pass',
+    session: {
+      user: createStudent({
+        id: 'demo-chi-man',
+        username: 'chiman',
+        fullName: 'Chí Mẫn',
+        email: 'chiman@uniview.vn',
+        initials: 'CM',
+      }),
+      entitlements: [ENTITLEMENTS.PERSONAL_WORKSPACE, ENTITLEMENTS.ADMISSION_PASS],
+      activePlans: [PLAN_IDS.ANNUAL],
+      subscriptions: [
+        {
+          planId: PLAN_IDS.ANNUAL,
+          status: 'ACTIVE',
+          startedAt: '2026-09-01',
+          endsAt: '2027-08-31',
+          autoRenew: true,
+        },
+      ],
+      admissionSeason: '2027',
+    },
   },
-
-  direction: {
-    user: MOCK_USER,
-    entitlements: [
-      ENTITLEMENTS.DIRECTION_SNAPSHOT,
-    ],
-    admissionSeason: null,
+  {
+    id: 'chi-an',
+    username: 'chian',
+    password: 'ChiAn@2026',
+    planDescription: 'Admission Pass mùa 2027',
+    session: {
+      user: createStudent({
+        id: 'demo-chi-an',
+        username: 'chian',
+        fullName: 'Chí An',
+        email: 'chian@uniview.vn',
+        initials: 'CA',
+      }),
+      entitlements: [
+        ENTITLEMENTS.PERSONAL_WORKSPACE,
+        ENTITLEMENTS.ADMISSION_PASS,
+      ],
+      activePlans: [PLAN_IDS.ADMISSION_PASS],
+      subscriptions: [
+        {
+          planId: PLAN_IDS.ADMISSION_PASS,
+          status: 'ACTIVE',
+          startedAt: '2026-09-01',
+          endsAt: '2027-09-30',
+          autoRenew: false,
+          admissionSeason: '2027',
+        },
+      ],
+      admissionSeason: '2027',
+    },
   },
+]
 
-  admission: {
-    user: MOCK_USER,
-    entitlements: [
-      ENTITLEMENTS.ADMISSION_PASS,
-    ],
-    admissionSeason: '2027',
-  },
-
-  both: {
-    user: MOCK_USER,
-    entitlements: [
-      ENTITLEMENTS.DIRECTION_SNAPSHOT,
-      ENTITLEMENTS.ADMISSION_PASS,
-    ],
-    admissionSeason: '2027',
-  },
+export const GUEST_SESSION = {
+  user: null,
+  entitlements: [],
+  activePlans: [],
+  subscriptions: [],
+  admissionSeason: null,
 }
 
-export const DEFAULT_MOCK_SESSION = 'free'
-
-export function getMockSession(sessionName) {
-  const normalizedName = String(
-    sessionName ?? DEFAULT_MOCK_SESSION,
-  )
-    .trim()
-    .toLowerCase()
-
-  return (
-    MOCK_SESSIONS[normalizedName] ??
-    MOCK_SESSIONS[DEFAULT_MOCK_SESSION]
-  )
+export function cloneSession(session) {
+  return {
+    ...session,
+    user: session.user ? { ...session.user } : null,
+    entitlements: [...(session.entitlements ?? [])],
+    activePlans: [...(session.activePlans ?? [])],
+    subscriptions: (session.subscriptions ?? []).map((subscription) => ({ ...subscription })),
+  }
 }
 
-// Set VITE_MOCK_SESSION to guest, free, direction, admission, or both.
-export const mockSession = getMockSession(
-  import.meta.env.VITE_MOCK_SESSION,
-)
+export function getDemoAccount(identifier, password) {
+  const normalizedIdentifier = String(identifier ?? '').trim().toLowerCase()
+
+  return DEMO_ACCOUNTS.find((account) => {
+    const identifiers = [account.username, account.session.user.email]
+      .map((value) => value.toLowerCase())
+    return identifiers.includes(normalizedIdentifier) && account.password === password
+  }) ?? null
+}
+
+export function getDefaultDemoSession(userId) {
+  const account = DEMO_ACCOUNTS.find(({ session }) => session.user.id === userId)
+  return account ? cloneSession(account.session) : null
+}

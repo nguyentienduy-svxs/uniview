@@ -51,7 +51,6 @@ public record ExperienceAnswerDTO(
 
 public record AssessmentInputDTO(
     @Nullable String userId,
-    @Nullable Boolean paidAttempt,
     Map<String, Integer> riasecAnswers,     // { "R01": 4 }
     Map<String, MbtiPole> mbtiAnswers,      // { "EI01": I }
     ExperiencePayloadDTO experience,
@@ -151,7 +150,7 @@ HIGH>=75 | MEDIUM>=50 | LOW<50
 
 ```java
 String ASSESSMENT_VERSION     = "2026.1";
-String SCORING_MODEL_VERSION  = "direction-snapshot-1.0.0";
+String SCORING_MODEL_VERSION  = "uniview-direction-1.0.0";
 ```
 
 Luu trong moi report de khong mat tracking khi upgrade model.

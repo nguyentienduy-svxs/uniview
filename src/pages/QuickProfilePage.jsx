@@ -125,6 +125,20 @@ function QuickProfilePage() {
     )
   }
 
+  const clearAcademicScores = () => {
+    updateProfile({
+      gpa: '',
+      thptScore: '',
+      dgnlScore: '',
+      certificates: [],
+    })
+    setCertificateDraft((current) => ({
+      ...current,
+      customName: '',
+      score: '',
+    }))
+  }
+
   return (
     <AssessmentStepShell
       step={4}
@@ -177,7 +191,7 @@ function QuickProfilePage() {
             try {
               const report = await submitAssessment({ userId: user?.id })
               if (
-                hasEntitlement('DIRECTION_SNAPSHOT') ||
+                hasEntitlement('PERSONAL_WORKSPACE') ||
                 hasEntitlement('ADMISSION_PASS')
               ) {
                 saveReportToHistory(report)
@@ -307,7 +321,7 @@ function QuickProfilePage() {
           <FormCard
             title="4. Học tập & Điểm số"
             fromProfile
-            helper="Không bắt buộc có đủ tất cả"
+            helper="Có thể bỏ trống toàn bộ nếu chưa thi"
           >
             <div className="flex flex-col gap-space-xs">
               <span className="text-xs font-semibold text-on-surface-variant">
@@ -355,6 +369,19 @@ function QuickProfilePage() {
                   </option>
                 </select>
               </div>
+            </div>
+
+            <div className="mt-space-xs flex flex-col justify-between gap-space-xs rounded-lg border border-dashed border-primary-container/30 bg-primary-fixed/15 px-space-sm py-space-xs sm:flex-row sm:items-center">
+              <span className="text-xs leading-relaxed text-on-surface-variant">
+                Chưa có GPA, điểm thi hoặc chứng chỉ? Bạn vẫn có thể hoàn thành assessment và nhận kết quả tổng quan.
+              </span>
+              <button
+                type="button"
+                onClick={clearAcademicScores}
+                className="shrink-0 rounded-full border border-primary-container/30 bg-white px-space-sm py-1.5 text-xs font-bold text-primary-container transition hover:bg-primary-fixed/30"
+              >
+                Chưa có điểm — Bỏ qua
+              </button>
             </div>
 
             <div className="mt-space-sm grid grid-cols-1 gap-space-sm sm:grid-cols-3">
@@ -694,7 +721,8 @@ function ScoreInput({
           aria-label={`Trạng thái ${label}`}
           value={status ?? 'EXPECTED'}
           onChange={(event) => onStatusChange(event.target.value)}
-          className={`max-w-[105px] rounded border px-1 py-0.5 text-[10px] font-bold outline-none ${status === 'OFFICIAL' ? 'border-emerald-200 bg-emerald-50 text-emerald-800' : 'border-amber-200 bg-amber-50 text-amber-800'}`}
+          disabled={!String(value ?? '').trim()}
+          className={`max-w-[105px] rounded border px-1 py-0.5 text-[10px] font-bold outline-none disabled:cursor-not-allowed disabled:border-slate-200 disabled:bg-slate-100 disabled:text-slate-400 ${status === 'OFFICIAL' ? 'border-emerald-200 bg-emerald-50 text-emerald-800' : 'border-amber-200 bg-amber-50 text-amber-800'}`}
         >
           <option value="OFFICIAL">Chính thức</option>
           <option value="EXPECTED">Dự kiến</option>
@@ -704,6 +732,7 @@ function ScoreInput({
         <input
           type="text"
           value={value}
+          placeholder="Có thể để trống"
           onChange={(event) =>
             onChange(event.target.value)
           }
