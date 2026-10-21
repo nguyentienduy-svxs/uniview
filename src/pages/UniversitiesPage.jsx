@@ -21,10 +21,11 @@ const normalizeText = (value) => String(value ?? '')
 const toggleItem = (items, item) =>
   items.includes(item) ? items.filter((value) => value !== item) : [...items, item]
 
-const readComparisonIds = () => {
+const readStoredIds = (key, limit) => {
   try {
-    const saved = JSON.parse(localStorage.getItem('uniview:comparison:universities') ?? '[]')
-    return Array.isArray(saved) ? saved.filter((id) => typeof id === 'string').slice(0, 4) : []
+    const saved = JSON.parse(localStorage.getItem(key) ?? '[]')
+    const ids = Array.isArray(saved) ? saved.filter((id) => typeof id === 'string') : []
+    return limit ? ids.slice(0, limit) : ids
   } catch {
     return []
   }
@@ -50,8 +51,8 @@ function UniversitiesPage() {
   const [selectedScoreBands, setSelectedScoreBands] = useState([])
   const [sortBy, setSortBy] = useState('relevance')
   const [visibleCount, setVisibleCount] = useState(PAGE_SIZE)
-  const [savedUniversityIds, setSavedUniversityIds] = useState([])
-  const [comparisonIds, setComparisonIds] = useState(readComparisonIds)
+  const [savedUniversityIds, setSavedUniversityIds] = useState(() => readStoredIds('uniview:saved:universities'))
+  const [comparisonIds, setComparisonIds] = useState(() => readStoredIds('uniview:comparison:universities', 4))
   const [comparisonMessage, setComparisonMessage] = useState('')
   const searchInputRef = useRef(null)
 
@@ -223,7 +224,9 @@ function UniversitiesPage() {
 
   const toggleSaved = (event, universityId) => {
     event.stopPropagation()
-    setSavedUniversityIds((current) => toggleItem(current, universityId))
+    const next = toggleItem(savedUniversityIds, universityId)
+    setSavedUniversityIds(next)
+    localStorage.setItem('uniview:saved:universities', JSON.stringify(next))
   }
 
   const toggleComparison = (event, universityId) => {

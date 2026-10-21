@@ -50,10 +50,11 @@ const sectionTabs = [
   ['section-universities', 'Trường đào tạo'],
 ]
 
-const readComparisonIds = () => {
+const readStoredUniversityIds = (key, limit) => {
   try {
-    const saved = JSON.parse(localStorage.getItem('uniview:comparison:universities') ?? '[]')
-    return Array.isArray(saved) ? saved.filter((id) => typeof id === 'string').slice(0, 4) : []
+    const saved = JSON.parse(localStorage.getItem(key) ?? '[]')
+    const ids = Array.isArray(saved) ? saved.filter((id) => typeof id === 'string') : []
+    return limit ? ids.slice(0, limit) : ids
   } catch {
     return []
   }
@@ -88,7 +89,8 @@ function MajorDetailPage() {
   const [universityFilters, setUniversityFilters] = useState({})
   const [readProgress, setReadProgress] = useState(16.667)
   const [activeSection, setActiveSection] = useState('section-overview')
-  const [comparisonIds, setComparisonIds] = useState(readComparisonIds)
+  const [savedUniversityIds, setSavedUniversityIds] = useState(() => readStoredUniversityIds('uniview:saved:universities'))
+  const [comparisonIds, setComparisonIds] = useState(() => readStoredUniversityIds('uniview:comparison:universities', 4))
   const [comparisonMessage, setComparisonMessage] = useState('')
   const tabsScrollerRef = useRef(null)
   const sectionNavRef = useRef(null)
@@ -322,6 +324,19 @@ function MajorDetailPage() {
   const comparisonUniversities = comparisonIds
     .map((id) => universitiesData.universities.find((university) => university.id === id))
     .filter(Boolean)
+
+  const toggleUniversitySaved = (event, university) => {
+    event.stopPropagation()
+    const universityId = university.catalogId
+    const alreadySaved = savedUniversityIds.includes(universityId)
+    const next = alreadySaved
+      ? savedUniversityIds.filter((id) => id !== universityId)
+      : [...savedUniversityIds, universityId]
+    setSavedUniversityIds(next)
+    localStorage.setItem('uniview:saved:universities', JSON.stringify(next))
+    setComparisonMessage(alreadySaved ? 'Đã bỏ trường khỏi wishlist' : 'Đã lưu trường vào wishlist')
+    window.setTimeout(() => setComparisonMessage(''), 1800)
+  }
 
   const toggleUniversityComparison = (event, university) => {
     event.stopPropagation()
@@ -863,7 +878,14 @@ function MajorDetailPage() {
                 <div className="mt-2 flex items-center justify-between gap-2 border-t border-slate-100 p-5 pt-4">
                   <a className="inline-flex items-center gap-1.5 text-xs font-bold text-[#1D4ED8] hover:underline" href={`/universities/uit?universityId=${university.catalogId}`}><span>Chi tiết trường</span><MaterialIcon className="text-[16px]">arrow_forward</MaterialIcon></a>
                   <div className="flex items-center gap-1.5">
-                    <button className="flex h-8 w-8 items-center justify-center rounded-full bg-slate-100 text-slate-500 transition-colors hover:bg-rose-50 hover:text-[#E11D48]" title="Lưu trường" type="button"><MaterialIcon className="text-[18px]">favorite_border</MaterialIcon></button>
+                    <button
+                      aria-label={savedUniversityIds.includes(university.catalogId) ? 'Bỏ lưu trường' : 'Lưu trường yêu thích'}
+                      aria-pressed={savedUniversityIds.includes(university.catalogId)}
+                      className={`flex h-8 w-8 items-center justify-center rounded-full transition-colors ${savedUniversityIds.includes(university.catalogId) ? 'bg-rose-100 text-[#E11D48]' : 'bg-slate-100 text-slate-500 hover:bg-rose-50 hover:text-[#E11D48]'}`}
+                      onClick={(event) => toggleUniversitySaved(event, university)}
+                      title={savedUniversityIds.includes(university.catalogId) ? 'Bỏ lưu trường' : 'Lưu trường yêu thích'}
+                      type="button"
+                    ><MaterialIcon className="text-[18px]">{savedUniversityIds.includes(university.catalogId) ? 'favorite' : 'favorite_border'}</MaterialIcon></button>
                     <button
                       aria-label={comparisonIds.includes(university.catalogId) ? 'Bỏ khỏi danh sách so sánh' : 'Thêm vào danh sách so sánh'}
                       aria-pressed={comparisonIds.includes(university.catalogId)}
