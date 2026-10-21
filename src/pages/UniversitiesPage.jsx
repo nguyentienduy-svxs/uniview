@@ -21,6 +21,16 @@ const normalizeText = (value) => String(value ?? '')
 const toggleItem = (items, item) =>
   items.includes(item) ? items.filter((value) => value !== item) : [...items, item]
 
+const readStoredIds = (key, limit) => {
+  try {
+    const saved = JSON.parse(localStorage.getItem(key) ?? '[]')
+    const ids = Array.isArray(saved) ? saved.filter((id) => typeof id === 'string') : []
+    return limit ? ids.slice(0, limit) : ids
+  } catch {
+    return []
+  }
+}
+
 const TUITION_RANGE_VISUALS = {
   'under-30': { start: 2, end: 20 },
   'under-40': { start: 2, end: 32 },
@@ -41,8 +51,9 @@ function UniversitiesPage() {
   const [selectedScoreBands, setSelectedScoreBands] = useState([])
   const [sortBy, setSortBy] = useState('relevance')
   const [visibleCount, setVisibleCount] = useState(PAGE_SIZE)
-  const [savedUniversityIds, setSavedUniversityIds] = useState([])
-  const [comparisonIds, setComparisonIds] = useState([])
+  const [savedUniversityIds, setSavedUniversityIds] = useState(() => readStoredIds('uniview:saved:universities'))
+  const [comparisonIds, setComparisonIds] = useState(() => readStoredIds('uniview:comparison:universities', 4))
+  const [comparisonMessage, setComparisonMessage] = useState('')
   const searchInputRef = useRef(null)
 
   const universities = universitiesData.universities
@@ -213,12 +224,32 @@ function UniversitiesPage() {
 
   const toggleSaved = (event, universityId) => {
     event.stopPropagation()
-    setSavedUniversityIds((current) => toggleItem(current, universityId))
+    const next = toggleItem(savedUniversityIds, universityId)
+    setSavedUniversityIds(next)
+    localStorage.setItem('uniview:saved:universities', JSON.stringify(next))
   }
 
   const toggleComparison = (event, universityId) => {
     event.stopPropagation()
-    setComparisonIds((current) => toggleItem(current, universityId))
+    const alreadySelected = comparisonIds.includes(universityId)
+    if (!alreadySelected && comparisonIds.length >= 4) {
+      setComparisonMessage('Bạn chỉ có thể so sánh tối đa 4 trường')
+      window.setTimeout(() => setComparisonMessage(''), 2400)
+      return
+    }
+
+    const next = alreadySelected
+      ? comparisonIds.filter((id) => id !== universityId)
+      : [...comparisonIds, universityId]
+    setComparisonIds(next)
+    localStorage.setItem('uniview:comparison:universities', JSON.stringify(next))
+    setComparisonMessage(alreadySelected ? 'Đã bỏ trường khỏi bảng so sánh' : 'Đã thêm trường vào bảng so sánh')
+    window.setTimeout(() => setComparisonMessage(''), 1800)
+  }
+
+  const clearComparison = () => {
+    setComparisonIds([])
+    localStorage.removeItem('uniview:comparison:universities')
   }
 
   const getUniversityImage = (university) => {
@@ -558,6 +589,35 @@ function UniversitiesPage() {
           </div>
         </section>
       </div>
+      {comparisonIds.length > 0 && (
+        <div className="fixed bottom-5 left-1/2 z-50 flex w-[min(920px,calc(100%-2rem))] -translate-x-1/2 flex-col gap-3 rounded-2xl border border-blue-200 bg-white/95 p-3 shadow-[0_18px_45px_rgba(15,23,42,0.18)] backdrop-blur-md sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex min-w-0 items-center gap-3">
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-blue-50 text-primary">
+              <span className="material-symbols-outlined">compare_arrows</span>
+            </div>
+            <div className="min-w-0">
+              <div className="flex items-center gap-2">
+                <p className="text-sm font-bold text-on-surface">Đang chọn {comparisonIds.length}/4 trường</p>
+                <button aria-label="Xóa danh sách so sánh" className="flex h-6 w-6 items-center justify-center rounded-md text-outline hover:bg-rose-50 hover:text-secondary" onClick={clearComparison} title="Xóa toàn bộ danh sách so sánh" type="button">
+                  <span className="material-symbols-outlined text-[16px]">delete_sweep</span>
+                </button>
+              </div>
+              <p className="truncate text-xs text-on-surface-variant">
+                {comparisonIds.map((id) => universities.find((university) => university.id === id)?.shortName ?? universities.find((university) => university.id === id)?.name).filter(Boolean).join(' · ')}
+              </p>
+            </div>
+          </div>
+          {comparisonIds.length >= 2 ? (
+            <Link className="inline-flex shrink-0 items-center justify-center gap-2 rounded-xl bg-primary px-5 py-2.5 text-sm font-bold text-on-primary shadow-sm transition hover:bg-primary-container" to="/compare">
+              So sánh ngay
+              <span className="material-symbols-outlined text-[18px]">arrow_forward</span>
+            </Link>
+          ) : (
+            <span className="shrink-0 text-center text-xs font-semibold text-outline">Chọn thêm ít nhất 1 trường</span>
+          )}
+        </div>
+      )}
+      {comparisonMessage && <div className="fixed bottom-28 left-1/2 z-[60] -translate-x-1/2 rounded-full bg-inverse-surface px-4 py-2 text-xs font-semibold text-inverse-on-surface shadow-lg">{comparisonMessage}</div>}
     </main>
   )
 }
@@ -673,7 +733,8 @@ function UniversityCard({
 
         <div className="flex items-center justify-between gap-2 border-t border-surface-container pt-3">
           <button
-            className={`inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-xl transition-all ${isCompared ? 'bg-secondary-fixed text-on-secondary-fixed' : 'bg-surface-container text-on-surface hover:bg-secondary-fixed hover:text-on-secondary-fixed'}`}
+            aria-pressed={isCompared}
+            className={`inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-xl transition-all ${isCompared ? 'bg-secondary-fixed text-on-secondary-fixed ring-2 ring-secondary/20' : 'bg-surface-container text-on-surface hover:bg-secondary-fixed hover:text-on-secondary-fixed'}`}
             onClick={onToggleComparison}
             title={isCompared ? 'Bỏ khỏi danh sách so sánh' : 'Thêm vào danh sách so sánh'}
             aria-label={isCompared ? 'Bỏ khỏi danh sách so sánh' : 'Thêm vào danh sách so sánh'}
