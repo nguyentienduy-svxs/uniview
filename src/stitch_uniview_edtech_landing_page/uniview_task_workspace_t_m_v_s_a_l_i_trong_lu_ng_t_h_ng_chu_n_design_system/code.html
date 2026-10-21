@@ -1,0 +1,694 @@
+<!DOCTYPE html>
+
+<html class="h-full" lang="vi"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>UniView Task Workspace - Mô phỏng kiểm thử giỏ hàng</title>
+<!-- Font chữ thống nhất Be Vietnam Pro theo Design System UniView -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400;1,500&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script>
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Be Vietnam Pro"', 'sans-serif'],
+          },
+          colors: {
+            brand: {
+              50: '#eff6ff',
+              100: '#dbeafe',
+              500: '#3b82f6',
+              600: '#2563eb',
+              700: '#1d4ed8',
+              800: '#1e40af',
+              900: '#1e3a8a',
+            },
+            coral: {
+              400: '#fb7185',
+              500: '#f43f5e',
+            }
+          }
+        }
+      }
+    };
+  </script>
+<style>
+    body {
+      font-family: 'Be Vietnam Pro', sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+    /* Custom scrollbar subtle */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #f1f5f9;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 9999px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #94a3b8;
+    }
+  </style>
+</head>
+<body class="bg-[#F8FAFC] text-[#0F172A] min-h-screen flex flex-col font-sans">
+<!-- 1. HEADER GỌN (DISTRACTION-FREE WORKSPACE HEADER) -->
+<header class="bg-white border-b border-slate-200 px-6 py-3.5 flex items-center justify-between sticky top-0 z-30 shadow-sm">
+<!-- Bên trái: Logo, Tiêu đề nhiệm vụ -->
+<div class="flex items-center gap-3 min-w-0">
+<div class="flex items-center gap-2 shrink-0">
+<img alt="UniView Logo" class="h-9 w-auto object-contain" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCtnsMSiB8y50ZOiRpaKMdsPs9iE4p5ylHFFn9sXuWmZAG3xfWoojyLh23ZCMnDdbbSlmGIu8HfQxlDPEfXexXHIBScfyuhy9SOKy4Al_Ro-B31K4aytr4oWL-6PM96QnPah19JpHudbeIkIwHifauwXj62auW1vSCcFx2HHV7OfXXnHJDDc8n4r_SoGgC4XSCc_Hmdd5SdN4e0aAUuai_7h0F3yX_G-r-5BZJROGzpdjL9PC77dqbbw95TP1jKwslUsQ"/>
+<span class="text-xl font-extrabold tracking-tight text-slate-900 hidden sm:inline">UniView</span>
+<span class="bg-blue-50 text-blue-700 border border-blue-200 rounded-md px-2 py-0.5 text-[11px] font-bold uppercase tracking-wider ml-1">
+          Task Workspace
+        </span>
+</div>
+<div class="h-5 w-px bg-slate-200 mx-1 hidden sm:block shrink-0"></div>
+<div class="flex items-center min-w-0 gap-2">
+<div class="w-2 h-2 rounded-full bg-blue-600 shrink-0 hidden md:block"></div>
+<h1 class="font-bold text-slate-800 text-sm md:text-base truncate">
+          Tìm và sửa lỗi trong luồng đặt hàng
+        </h1>
+<span class="hidden lg:inline-flex items-center px-2 py-0.5 rounded text-xs font-semibold bg-blue-50 text-blue-600 border border-blue-100 shrink-0">
+          Công nghệ thông tin
+        </span>
+</div>
+</div>
+<!-- Bên phải: Trạng thái lưu, Thoát, Profile -->
+<div class="flex items-center gap-4 shrink-0">
+<!-- Status lưu nháp -->
+<div class="hidden sm:flex items-center gap-1.5 text-xs text-emerald-600 font-medium bg-emerald-50 px-2.5 py-1 rounded-full border border-emerald-200/60">
+<svg class="w-3.5 h-3.5 text-emerald-600" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"></path>
+</svg>
+<span>Đã tự động lưu nháp 1 phút trước</span>
+</div>
+<!-- Thoát và làm tiếp sau -->
+<a class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-slate-600 hover:text-slate-900 bg-white hover:bg-slate-100 border border-slate-300 rounded-xl transition-all shadow-2xs" href="#">
+<svg class="w-4 h-4 text-slate-500" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+<span class="hidden sm:inline">Thoát và làm tiếp sau</span>
+<span class="sm:hidden">Thoát</span>
+</a>
+<!-- Avatar học sinh -->
+<div class="flex items-center gap-2 pl-1 border-l border-slate-200">
+<div class="relative">
+<div class="w-8 h-8 rounded-full bg-gradient-to-tr from-blue-600 to-indigo-500 text-white flex items-center justify-center font-bold text-xs ring-2 ring-white shadow-xs">
+            MQ
+          </div>
+<span class="absolute bottom-0 right-0 w-2.5 h-2.5 bg-emerald-500 border-2 border-white rounded-full"></span>
+</div>
+<div class="hidden xl:flex flex-col text-left leading-none">
+<span class="text-xs font-bold text-slate-800">Minh Quân</span>
+<span class="text-[11px] text-slate-400">Lớp 12 · Học sinh</span>
+</div>
+</div>
+</div>
+</header>
+<!-- 2. SUB-HEADER TIẾN ĐỘ & ĐỒNG HỒ (PROGRESS STRIP) -->
+<div class="bg-white border-b border-slate-200/80 px-6 py-2.5">
+<div class="max-w-[1536px] mx-auto flex flex-wrap items-center justify-between gap-3 text-xs">
+<!-- Stepper 4 bước ngang -->
+<nav aria-label="Tiến trình làm bài" class="flex items-center gap-2 overflow-x-auto py-0.5">
+<!-- Bước 1 -->
+<div class="flex items-center gap-1.5 text-emerald-600 font-medium shrink-0">
+<div class="w-5 h-5 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-700">
+<svg class="w-3 h-3" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round" stroke-width="3"></path>
+</svg>
+</div>
+<span>1. Bối cảnh &amp; Yêu cầu</span>
+</div>
+<svg class="w-3.5 h-3.5 text-slate-300 shrink-0" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M9 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+<!-- Bước 2 (Active) -->
+<div class="flex items-center gap-1.5 text-blue-700 font-bold bg-blue-50 px-3 py-1 rounded-full border border-blue-200 shrink-0 shadow-2xs">
+<span class="relative flex h-2 w-2">
+<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
+<span class="relative inline-flex rounded-full h-2 w-2 bg-blue-600"></span>
+</span>
+<span>2. Kiểm tra các trường hợp</span>
+</div>
+<svg class="w-3.5 h-3.5 text-slate-300 shrink-0" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M9 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+<!-- Bước 3 -->
+<div class="flex items-center gap-1.5 text-slate-400 font-medium shrink-0">
+<div class="w-5 h-5 rounded-full bg-slate-100 flex items-center justify-center text-slate-400 text-[10px]">3</div>
+<span>3. Phân tích nguyên nhân</span>
+</div>
+<svg class="w-3.5 h-3.5 text-slate-300 shrink-0" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M9 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+<!-- Bước 4 -->
+<div class="flex items-center gap-1.5 text-slate-400 font-medium shrink-0">
+<div class="w-5 h-5 rounded-full bg-slate-100 flex items-center justify-center text-slate-400 text-[10px]">4</div>
+<span>4. Đề xuất bản vá</span>
+</div>
+</nav>
+<!-- Bên phải: Đồng hồ + Lưu nháp -->
+<div class="flex items-center gap-4 text-slate-500 shrink-0">
+<div class="flex items-center gap-1.5 bg-slate-50 px-2.5 py-1 rounded-md border border-slate-200/80">
+<svg class="w-3.5 h-3.5 text-blue-600" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+<span><strong class="text-blue-700 font-bold">18:42</strong> <span class="text-slate-400">/ Dự kiến 35–45 phút</span></span>
+</div>
+<div class="hidden md:flex items-center gap-1 text-slate-400 text-[11px]">
+<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+<span>Cập nhật lưu nháp lúc 10:24 AM</span>
+</div>
+</div>
+</div>
+</div>
+<!-- 3. BỐ CỤC 3 VÙNG (THREE-COLUMN WORKSPACE LAYOUT) -->
+<main class="flex-1 max-w-[1536px] w-full mx-auto p-4 md:p-6 grid grid-cols-12 gap-6 items-start">
+<!-- ==================== CỘT TRÁI (3 CỘT) ==================== -->
+<aside class="col-span-12 lg:col-span-3 space-y-4">
+<!-- Card 1: Lộ trình nhiệm vụ -->
+<div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm space-y-4">
+<div class="flex items-center justify-between">
+<h2 class="font-bold text-slate-900 text-sm flex items-center gap-2">
+<svg class="w-4 h-4 text-blue-700" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+            Lộ trình nhiệm vụ
+          </h2>
+<span class="text-xs font-bold text-blue-700 bg-blue-50 px-2 py-0.5 rounded-full border border-blue-100">50% Hoàn thành</span>
+</div>
+<!-- Progress bar -->
+<div class="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
+<div class="bg-blue-600 h-full rounded-full transition-all duration-500" style="width: 50%"></div>
+</div>
+<!-- Steps checklist -->
+<div class="space-y-2 pt-1 text-xs">
+<!-- Step 1 -->
+<div class="flex items-start gap-2.5 p-2 rounded-xl bg-slate-50 border border-slate-100">
+<div class="w-4 h-4 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center shrink-0 mt-0.5">
+<svg class="w-2.5 h-2.5" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round" stroke-width="3"></path>
+</svg>
+</div>
+<div class="min-w-0">
+<p class="font-semibold text-slate-800">Bước 1: Bối cảnh &amp; Yêu cầu</p>
+<p class="text-slate-500 text-[11px]">Đã đọc xong tài liệu đặc tả</p>
+</div>
+</div>
+<!-- Step 2 (Active) -->
+<div class="flex items-start gap-2.5 p-2.5 rounded-xl bg-blue-50 border border-blue-200">
+<div class="w-4 h-4 rounded-full bg-blue-600 text-white flex items-center justify-center shrink-0 mt-0.5 font-bold text-[10px]">
+              2
+            </div>
+<div class="min-w-0">
+<div class="flex items-center gap-1.5">
+<p class="font-bold text-blue-900">Bước 2: Kiểm tra test case</p>
+<span class="text-[9px] font-bold bg-blue-600 text-white px-1.5 py-0.2 rounded-full">Đang làm</span>
+</div>
+<p class="text-blue-700 text-[11px] mt-0.5">Đối chiếu 4 kịch bản thực địa</p>
+</div>
+</div>
+<!-- Step 3 -->
+<div class="flex items-start gap-2.5 p-2 rounded-xl opacity-60">
+<div class="w-4 h-4 rounded-full bg-slate-200 text-slate-600 flex items-center justify-center shrink-0 mt-0.5 text-[10px] font-semibold">
+              3
+            </div>
+<div class="min-w-0">
+<p class="font-medium text-slate-700">Bước 3: Phân tích log &amp; code</p>
+<p class="text-slate-400 text-[11px]">Mở sau khi kiểm tra xong</p>
+</div>
+</div>
+<!-- Step 4 -->
+<div class="flex items-start gap-2.5 p-2 rounded-xl opacity-60">
+<div class="w-4 h-4 rounded-full bg-slate-200 text-slate-600 flex items-center justify-center shrink-0 mt-0.5 text-[10px] font-semibold">
+              4
+            </div>
+<div class="min-w-0">
+<p class="font-medium text-slate-700">Bước 4: Đề xuất bản vá</p>
+<p class="text-slate-400 text-[11px]">Báo cáo nghiệm thu kiểm thử</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Card 2: Đặc tả tính năng giỏ hàng & Quy tắc nghiệp vụ -->
+<div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm space-y-3.5">
+<div class="flex items-center gap-2 text-slate-900">
+<div class="w-7 h-7 rounded-lg bg-blue-50 text-blue-700 flex items-center justify-center shrink-0">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+</div>
+<h2 class="font-bold text-sm text-slate-900">Đặc tả tính năng giỏ hàng</h2>
+</div>
+<!-- Voucher Card -->
+<div class="bg-amber-50/70 border border-amber-200 rounded-xl p-3 space-y-2 text-xs">
+<div class="flex items-center justify-between">
+<span class="font-bold text-amber-900 text-[11px] uppercase tracking-wider">Mã khuyến mãi áp dụng:</span>
+<span class="font-mono font-bold text-blue-700 bg-blue-100/80 border border-blue-200 px-2 py-0.5 rounded text-xs tracking-wider">UNI2026</span>
+</div>
+<ul class="space-y-1.5 text-slate-700 text-xs">
+<li class="flex items-start gap-1.5">
+<svg class="w-3.5 h-3.5 text-amber-600 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"></path>
+</svg>
+<span>Giảm <strong>10%</strong> giá trị đơn hàng, tối đa <strong>50.000đ</strong>.</span>
+</li>
+<li class="flex items-start gap-1.5">
+<svg class="w-3.5 h-3.5 text-amber-600 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"></path>
+</svg>
+<span>Điều kiện: Đơn hàng đạt tối thiểu <strong>200.000đ</strong>.</span>
+</li>
+</ul>
+</div>
+<!-- Quy tắc then chốt -->
+<div class="bg-slate-50 border border-slate-200/90 rounded-xl p-3 text-xs text-slate-600 leading-relaxed">
+<span class="font-bold text-slate-900 block mb-1">⚡ Quy tắc nghiệp vụ then chốt:</span>
+          Khi thay đổi số lượng hoặc xóa sản phẩm, hệ thống bắt buộc phải tự động tính toán lại tổng tiền và tái kiểm tra điều kiện áp dụng voucher.
+        </div>
+<!-- Sandbox Status -->
+<div class="pt-1 flex items-center justify-between text-xs text-slate-500 border-t border-slate-100">
+<span class="flex items-center gap-1.5 font-mono text-[11px]">
+<span class="relative flex h-2 w-2">
+<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+<span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+</span>
+            UniCart API v2.4 (Live Sandbox)
+          </span>
+<span class="text-[10px] text-emerald-600 font-semibold bg-emerald-50 px-1.5 py-0.5 rounded">Online</span>
+</div>
+</div>
+<!-- Quick Nav Links -->
+<div class="bg-white rounded-2xl p-4 border border-slate-200 text-xs space-y-2">
+<span class="font-semibold text-slate-400 uppercase tracking-wider text-[10px]">Điều hướng nhanh trong trang</span>
+<div class="grid grid-cols-2 gap-2 text-slate-700">
+<a class="p-2 rounded-lg bg-slate-50 hover:bg-blue-50 hover:text-blue-700 transition font-medium flex items-center gap-1" href="#">
+<span>• Bối cảnh spec</span>
+</a>
+<a class="p-2 rounded-lg bg-blue-50 text-blue-700 font-semibold flex items-center gap-1" href="#">
+<span>• Dữ liệu test</span>
+</a>
+<a class="p-2 rounded-lg bg-slate-50 hover:bg-blue-50 hover:text-blue-700 transition font-medium flex items-center gap-1" href="#">
+<span>• Bài làm của bạn</span>
+</a>
+<a class="p-2 rounded-lg bg-slate-50 hover:bg-blue-50 hover:text-blue-700 transition font-medium flex items-center gap-1" href="#">
+<span>• Xem lại &amp; Nộp</span>
+</a>
+</div>
+</div>
+</aside>
+<!-- ==================== CỘT GIỮA (VÙNG CHÍNH - 6 CỘT) ==================== -->
+<section class="col-span-12 lg:col-span-6 space-y-5">
+<!-- Header Vùng Chính -->
+<div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm relative overflow-hidden">
+<div class="absolute -right-10 -top-10 w-44 h-44 bg-blue-50 rounded-full blur-2xl opacity-80 pointer-events-none"></div>
+<div class="relative z-10 space-y-2">
+<div class="flex items-center gap-2">
+<span class="bg-blue-50 text-blue-700 border border-blue-200 px-2.5 py-1 rounded-full text-xs font-bold uppercase tracking-wider">
+              Thực hành mô phỏng thực địa
+            </span>
+<span class="text-xs text-slate-500 font-medium">4 Kịch bản kiểm thử</span>
+</div>
+<h2 class="text-xl md:text-2xl font-extrabold text-slate-900 tracking-tight">
+            Bước 2: Kiểm tra các trường hợp (Test Cases)
+          </h2>
+<p class="text-slate-600 text-xs md:text-sm leading-relaxed">
+            Đối chiếu kết quả hệ thống giả lập UniCart trả về với các kịch bản thực tế để phát hiện lỗ hổng logic nghiệp vụ trong khâu tính tiền và xử lý mã giảm giá.
+          </p>
+</div>
+</div>
+<!-- DANH SÁCH 4 TEST CASE CARDS -->
+<div class="space-y-4">
+<!-- KỊCH BẢN 1: Chuẩn không mã -->
+<article class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm hover:border-slate-300 transition space-y-4">
+<div class="flex items-center justify-between flex-wrap gap-2 pb-3 border-b border-slate-100">
+<div class="flex items-center gap-3">
+<span class="w-7 h-7 rounded-xl bg-slate-100 text-blue-700 font-extrabold text-xs flex items-center justify-center">1</span>
+<div>
+<h3 class="font-bold text-slate-900 text-sm">Kịch bản 1: Không dùng mã giảm giá</h3>
+<p class="text-[11px] text-slate-500">Kiểm tra luồng tính giá chuẩn ban đầu</p>
+</div>
+</div>
+<span class="px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-600 text-xs font-medium">Đơn thông thường</span>
+</div>
+<!-- Dữ liệu Vào / Ra -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-3 bg-slate-50 p-3.5 rounded-xl text-xs">
+<div class="space-y-1">
+<span class="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Dữ liệu đầu vào giỏ hàng:</span>
+<p class="text-slate-800 leading-snug">
+                • 1x Áo thun (150.000đ)<br/>
+                • 1x Sách lập trình (80.000đ)<br/>
+<span class="text-slate-500 italic">• Không nhập mã voucher</span>
+</p>
+</div>
+<div class="space-y-1 border-t md:border-t-0 md:border-l md:pl-3 border-slate-200/80">
+<span class="text-[10px] uppercase font-bold text-blue-700 tracking-wider">Kết quả giả lập UniCart trả về:</span>
+<p class="text-slate-800 leading-snug">
+                Tổng tiền hàng: 230.000đ<br/>
+                Giảm voucher: 0đ<br/>
+<strong class="text-blue-700 font-bold">Tổng thanh toán: 230.000đ</strong>
+</p>
+</div>
+</div>
+<!-- Đánh giá học sinh -->
+<div class="space-y-2 pt-1 text-xs">
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+<span class="font-semibold text-slate-700">Đánh giá trạng thái kịch bản 1:</span>
+<div class="flex items-center gap-2">
+<label class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-blue-50 border border-blue-200 text-blue-800 font-semibold cursor-pointer">
+<input checked="" class="text-blue-600 focus:ring-0 w-3.5 h-3.5" name="scenario_1" type="radio"/>
+<span>✓ Chính xác / Không lỗi</span>
+</label>
+<label class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-600 hover:bg-slate-100 cursor-pointer">
+<input class="text-rose-600 focus:ring-0 w-3.5 h-3.5" name="scenario_1" type="radio"/>
+<span>Có lỗi ⚠️</span>
+</label>
+</div>
+</div>
+<div>
+<input class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-800 focus:bg-white focus:outline-none focus:ring-1 focus:ring-blue-500" type="text" value="Hệ thống cộng tiền 150k + 80k = 230k chuẩn xác."/>
+</div>
+</div>
+</article>
+<!-- KỊCH BẢN 2: Áp mã cơ bản -->
+<article class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm hover:border-slate-300 transition space-y-4">
+<div class="flex items-center justify-between flex-wrap gap-2 pb-3 border-b border-slate-100">
+<div class="flex items-center gap-3">
+<span class="w-7 h-7 rounded-xl bg-slate-100 text-blue-700 font-extrabold text-xs flex items-center justify-center">2</span>
+<div>
+<h3 class="font-bold text-slate-900 text-sm">Kịch bản 2: Áp dụng mã UNI2026 (Đơn 250k)</h3>
+<p class="text-[11px] text-slate-500">Kiểm tra tính năng giảm giá 10% cơ bản</p>
+</div>
+</div>
+<span class="px-2.5 py-0.5 rounded-full bg-blue-50 text-blue-700 text-xs font-semibold border border-blue-100">Đủ điều kiện &gt; 200k</span>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-3 bg-slate-50 p-3.5 rounded-xl text-xs">
+<div class="space-y-1">
+<span class="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Dữ liệu đầu vào giỏ hàng:</span>
+<p class="text-slate-800 leading-snug">
+                • 1x Áo thun (150.000đ)<br/>
+                • 1x Bình giữ nhiệt (100.000đ)<br/>
+                • Nhập mã: <strong class="text-blue-700 font-mono">UNI2026</strong>
+</p>
+</div>
+<div class="space-y-1 border-t md:border-t-0 md:border-l md:pl-3 border-slate-200/80">
+<span class="text-[10px] uppercase font-bold text-blue-700 tracking-wider">Kết quả giả lập UniCart trả về:</span>
+<p class="text-slate-800 leading-snug">
+                Tổng tiền gốc: 250.000đ<br/>
+                Giảm giá: <span class="text-rose-600 font-semibold">-25.000đ (10%)</span><br/>
+<strong class="text-blue-700 font-bold">Tổng thanh toán: 225.000đ</strong>
+</p>
+</div>
+</div>
+<div class="space-y-2 pt-1 text-xs">
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+<span class="font-semibold text-slate-700">Đánh giá trạng thái kịch bản 2:</span>
+<div class="flex items-center gap-2">
+<label class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-blue-50 border border-blue-200 text-blue-800 font-semibold cursor-pointer">
+<input checked="" class="text-blue-600 focus:ring-0 w-3.5 h-3.5" name="scenario_2" type="radio"/>
+<span>✓ Chính xác / Không lỗi</span>
+</label>
+<label class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-600 hover:bg-slate-100 cursor-pointer">
+<input class="text-rose-600 focus:ring-0 w-3.5 h-3.5" name="scenario_2" type="radio"/>
+<span>Có lỗi ⚠️</span>
+</label>
+</div>
+</div>
+<div>
+<input class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-800 focus:bg-white focus:outline-none focus:ring-1 focus:ring-blue-500" type="text" value="Đơn 250k &gt; 200k, giảm 10% là 25k (dưới trần 50k), thanh toán 225k hợp lệ."/>
+</div>
+</div>
+</article>
+<!-- KỊCH BẢN 3: EDGE CASE - TĂNG SỐ LƯỢNG (PHÁT HIỆN BUG) -->
+<article class="bg-white rounded-2xl p-5 border-2 border-amber-300 shadow-sm relative overflow-hidden space-y-4">
+<div class="absolute top-0 right-0 bg-amber-500 text-white text-[10px] font-bold px-3 py-0.5 rounded-bl-lg tracking-wider uppercase">
+            Tình huống biên (Edge Case)
+          </div>
+<div class="flex items-center justify-between flex-wrap gap-2 pb-3 border-b border-slate-100">
+<div class="flex items-center gap-3">
+<span class="w-7 h-7 rounded-xl bg-amber-100 text-amber-800 font-extrabold text-xs flex items-center justify-center">3</span>
+<div>
+<h3 class="font-bold text-slate-900 text-sm">Kịch bản 3: Tăng số lượng sản phẩm sau khi đã áp mã</h3>
+<p class="text-[11px] text-amber-800 font-medium">Kiểm tra cơ chế tái tính toán trần voucher (50.000đ)</p>
+</div>
+</div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-3 bg-amber-50/50 p-3.5 rounded-xl text-xs border border-amber-100">
+<div class="space-y-1">
+<span class="text-[10px] uppercase font-bold text-slate-500 tracking-wider">Thao tác người dùng:</span>
+<p class="text-slate-800 leading-relaxed">
+                Đơn ban đầu 250k (đang giảm 25k). Người dùng <strong>tăng Áo thun từ 1 lên 3 chiếc</strong>.<br/>
+<span class="text-blue-700 font-semibold">→ Tổng tiền mới: (3 x 150k) + 100k = 550.000đ.</span>
+</p>
+</div>
+<div class="space-y-1 border-t md:border-t-0 md:border-l md:pl-3 border-amber-200/80">
+<span class="text-[10px] uppercase font-bold text-rose-600 tracking-wider">Kết quả hệ thống trả về hiện tại:</span>
+<p class="text-slate-800 leading-snug">
+                Tổng tiền mới: 550.000đ<br/>
+                Giảm giá voucher: <span class="text-rose-600 font-bold bg-rose-50 px-1 py-0.5 rounded">-25.000đ (Vẫn giữ số cũ!)</span><br/>
+<strong class="text-slate-900 font-bold">Tổng thanh toán: 525.000đ</strong>
+</p>
+</div>
+</div>
+<!-- Chi tiết phân tích & đánh giá -->
+<div class="space-y-3 pt-1 text-xs">
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+<span class="font-semibold text-slate-800">Đánh giá trạng thái kịch bản 3:</span>
+<div class="flex items-center gap-2">
+<label class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-600 hover:bg-slate-100 cursor-pointer">
+<input class="text-blue-600 focus:ring-0 w-3.5 h-3.5" name="scenario_3" type="radio"/>
+<span>Chính xác</span>
+</label>
+<label class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-rose-50 border border-rose-300 text-rose-700 font-bold cursor-pointer shadow-2xs">
+<input checked="" class="text-rose-600 focus:ring-0 w-3.5 h-3.5" name="scenario_3" type="radio"/>
+<span>● Có lỗi phát hiện ⚠️</span>
+</label>
+</div>
+</div>
+<!-- Đối chiếu kết quả chi tiết -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-2 text-[11px] bg-slate-50 p-2.5 rounded-xl border border-slate-200/80">
+<div>
+<span class="font-bold text-emerald-700 block mb-0.5">✓ Kết quả mong đợi (Expected):</span>
+                Đơn 550k được giảm 10% = 55k, nhưng tối đa trần 50k → <strong>Phải giảm đúng 50.000đ</strong> (Thanh toán: 500.000đ).
+              </div>
+<div>
+<span class="font-bold text-rose-600 block mb-0.5">✗ Kết quả quan sát (Observed Bug):</span>
+                Hệ thống không recalculate voucher khi update số lượng, bị giữ số tiền 25.000đ cũ.
+              </div>
+</div>
+<div>
+<label class="font-medium text-slate-700 block mb-1">Ghi chú phân tích nguyên nhân:</label>
+<input class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-800 focus:bg-white focus:outline-none focus:ring-1 focus:ring-blue-500 font-medium" type="text" value="Hàm cập nhật số lượng thiếu trigger tính lại mức chiết khấu voucher."/>
+</div>
+</div>
+</article>
+<!-- KỊCH BẢN 4: EDGE CASE - XÓA MÓN KHIẾN DƯỚI 200K (PHÁT HIỆN BUG) -->
+<article class="bg-white rounded-2xl p-5 border-2 border-rose-300 shadow-sm relative overflow-hidden space-y-4">
+<div class="absolute top-0 right-0 bg-rose-500 text-white text-[10px] font-bold px-3 py-0.5 rounded-bl-lg tracking-wider uppercase">
+            Tình huống biên (Edge Case)
+          </div>
+<div class="flex items-center justify-between flex-wrap gap-2 pb-3 border-b border-slate-100">
+<div class="flex items-center gap-3">
+<span class="w-7 h-7 rounded-xl bg-rose-100 text-rose-700 font-extrabold text-xs flex items-center justify-center">4</span>
+<div>
+<h3 class="font-bold text-slate-900 text-sm">Kịch bản 4: Xóa sản phẩm sau khi áp mã</h3>
+<p class="text-[11px] text-rose-600 font-medium">Kiểm tra điều kiện ràng buộc tối thiểu (&gt;= 200.000đ) sau khi xóa</p>
+</div>
+</div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-3 bg-rose-50/40 p-3.5 rounded-xl text-xs border border-rose-100">
+<div class="space-y-1">
+<span class="text-[10px] uppercase font-bold text-slate-500 tracking-wider">Thao tác người dùng:</span>
+<p class="text-slate-800 leading-relaxed">
+                Đơn 250k (đã áp UNI2026), người dùng <strong>xóa Bình giữ nhiệt (100k)</strong>.<br/>
+<span class="text-rose-700 font-semibold">→ Giỏ hàng chỉ còn 150.000đ (&lt; 200k điều kiện voucher).</span>
+</p>
+</div>
+<div class="space-y-1 border-t md:border-t-0 md:border-l md:pl-3 border-rose-200/80">
+<span class="text-[10px] uppercase font-bold text-rose-600 tracking-wider">Kết quả hệ thống trả về hiện tại:</span>
+<p class="text-slate-800 leading-snug">
+                Tổng tiền hàng mới: 150.000đ<br/>
+                Giảm giá: <span class="text-rose-600 font-bold bg-rose-50 px-1 py-0.5 rounded">-15.000đ (Vẫn được giảm 10%!)</span><br/>
+<strong class="text-slate-900 font-bold">Tổng thanh toán: 135.000đ</strong>
+</p>
+</div>
+</div>
+<!-- Chi tiết phân tích & đánh giá -->
+<div class="space-y-3 pt-1 text-xs">
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+<span class="font-semibold text-slate-800">Đánh giá trạng thái kịch bản 4:</span>
+<div class="flex items-center gap-2">
+<label class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-600 hover:bg-slate-100 cursor-pointer">
+<input class="text-blue-600 focus:ring-0 w-3.5 h-3.5" name="scenario_4" type="radio"/>
+<span>Chính xác</span>
+</label>
+<label class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-rose-50 border border-rose-300 text-rose-700 font-bold cursor-pointer shadow-2xs">
+<input checked="" class="text-rose-600 focus:ring-0 w-3.5 h-3.5" name="scenario_4" type="radio"/>
+<span>● Có lỗi vi phạm điều kiện ⚠️</span>
+</label>
+</div>
+</div>
+<!-- Đối chiếu kết quả -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-2 text-[11px] bg-slate-50 p-2.5 rounded-xl border border-slate-200/80">
+<div>
+<span class="font-bold text-emerald-700 block mb-0.5">✓ Kết quả mong đợi (Expected):</span>
+                Đơn 150k &lt; 200k → <strong>Voucher phải tự hủy</strong>, Giảm giá = 0đ, Thanh toán: 150.000đ.
+              </div>
+<div>
+<span class="font-bold text-rose-600 block mb-0.5">✗ Kết quả quan sát (Observed Bug):</span>
+                Hệ thống vẫn tính 10% cho đơn 150k, vi phạm điều kiện tối thiểu 200k.
+              </div>
+</div>
+<div>
+<label class="font-medium text-slate-700 block mb-1">Ghi chú phân tích nguyên nhân:</label>
+<input class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-800 focus:bg-white focus:outline-none focus:ring-1 focus:ring-blue-500 font-medium" type="text" value="Thiếu bước re-validate điều kiện tối thiểu 200.000đ khi xóa item."/>
+</div>
+</div>
+</article>
+</div>
+<!-- KHU VỰC GHI CHÚ NHÁP (DRAFT NOTES) -->
+<div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm space-y-2">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<svg class="w-4 h-4 text-blue-700" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+<h3 class="font-bold text-slate-900 text-xs md:text-sm">Ghi chú nháp của bạn</h3>
+</div>
+<span class="text-[11px] text-slate-400">Mentor sẽ đọc phần này để hiểu cách tư duy</span>
+</div>
+<textarea class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-xs text-slate-800 placeholder:text-slate-400 focus:bg-white focus:outline-none focus:ring-1 focus:ring-blue-500" placeholder="Không cần vội vã. Bạn có thể ghi chú thêm bất kỳ nghi vấn nào tại đây trước khi nộp..." rows="3">Mình nhận thấy khi giỏ hàng phát sinh sự kiện thêm/bớt hàng, luồng xử lý chưa liên kết với module VoucherService để tính lại. Đây là lỗi logic state management phổ biến.</textarea>
+</div>
+<!-- THANH NÚT BẤM ĐIỀU HƯỚNG DƯỚI CHÂN -->
+<div class="bg-white rounded-2xl p-4 border border-slate-200 shadow-sm flex flex-wrap items-center justify-between gap-3">
+<button class="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl border border-slate-300 text-slate-700 text-xs font-semibold hover:bg-slate-50 transition" type="button">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M10 19l-7-7m0 0l7-7m-7 7h18" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+<span>Quay lại Bước 1</span>
+</button>
+<div class="flex items-center gap-2">
+<button class="px-3.5 py-2.5 rounded-xl border border-slate-300 text-slate-700 text-xs font-semibold hover:bg-slate-50 transition hidden sm:inline-flex items-center gap-1" type="button">
+<svg class="w-3.5 h-3.5 text-slate-500" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+<span>Lưu bản nháp</span>
+</button>
+<button class="inline-flex items-center gap-2 bg-[#1D4ED8] hover:bg-blue-700 text-white text-xs md:text-sm font-semibold px-5 py-2.5 rounded-xl shadow-md hover:shadow-lg transition-all" type="button">
+<span>Tiếp tục sang Bước 3: Phân tích nguyên nhân</span>
+<svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M14 5l7 7m0 0l-7 7m7-7H3" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+</button>
+</div>
+</div>
+</section>
+<!-- ==================== CỘT PHẢI THU GỌN (3 CỘT) ==================== -->
+<aside class="col-span-12 lg:col-span-3 space-y-4">
+<!-- Header thanh phải -->
+<div class="flex items-center justify-between px-1">
+<div class="flex items-center gap-2">
+<div class="w-6 h-6 rounded-lg bg-blue-100 text-blue-700 flex items-center justify-center font-bold text-xs">
+            💡
+          </div>
+<h2 class="font-bold text-slate-900 text-sm">Trợ giúp &amp; Gợi ý thực địa</h2>
+</div>
+<button class="text-xs text-slate-400 hover:text-slate-600 font-semibold p-1" type="button">
+          Thu gọn [-]
+        </button>
+</div>
+<!-- Card 1: Từ khó chuyên ngành IT -->
+<div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm space-y-3">
+<div class="flex items-center gap-1.5 text-blue-700 text-xs font-bold uppercase tracking-wider">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+<span>Từ khó chuyên ngành IT</span>
+</div>
+<div class="space-y-2.5 text-xs">
+<!-- Item 1 -->
+<div class="bg-slate-50 p-2.5 rounded-xl border border-slate-100">
+<div class="flex items-center justify-between">
+<span class="font-bold text-slate-900">Edge case</span>
+<span class="text-[10px] text-slate-400 font-medium">Trường hợp biên</span>
+</div>
+<p class="text-slate-600 text-[11px] mt-1 leading-relaxed">
+              Tình huống ít xảy ra hoặc người dùng thao tác "bất thường" (như đổi số lượng sau khi đã áp voucher). Lập trình viên giỏi luôn lường trước điều này.
+            </p>
+</div>
+<!-- Item 2 -->
+<div class="bg-slate-50 p-2.5 rounded-xl border border-slate-100">
+<div class="flex items-center justify-between">
+<span class="font-bold text-slate-900">Validation</span>
+<span class="text-[10px] text-slate-400 font-medium">Kiểm tra hợp lệ</span>
+</div>
+<p class="text-slate-600 text-[11px] mt-1 leading-relaxed">
+              Quá trình hệ thống tự động kiểm tra xem đơn hàng có thỏa mãn mọi điều kiện trước khi cho phép hưởng ưu đãi hoặc đặt hàng.
+            </p>
+</div>
+<!-- Item 3 -->
+<div class="bg-slate-50 p-2.5 rounded-xl border border-slate-100">
+<div class="flex items-center justify-between">
+<span class="font-bold text-slate-900">Bug</span>
+<span class="text-[10px] text-slate-400 font-medium">Lỗi phần mềm</span>
+</div>
+<p class="text-slate-600 text-[11px] mt-1 leading-relaxed">
+              Sự sai lệch giữa kết quả thực tế trên hệ thống và đặc tả nghiệp vụ mong muốn từ ban đầu.
+            </p>
+</div>
+</div>
+</div>
+<!-- Card 2: Mẹo tư duy kiểm thử -->
+<div class="bg-amber-50/80 rounded-2xl p-4 border border-amber-200 shadow-sm space-y-2">
+<div class="flex items-center gap-1.5 text-amber-900 text-xs font-bold uppercase tracking-wider">
+<svg class="w-4 h-4 text-amber-600" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+<span>Mẹo tư duy kiểm thử</span>
+</div>
+<p class="text-slate-800 text-xs leading-relaxed">
+          Hãy quan sát: <em>Khi người dùng thay đổi trạng thái giỏ hàng, hệ thống có gọi lại hàm kiểm tra mã giảm giá hay chỉ chạy một lần lúc người dùng ấn nút áp dụng?</em>
+</p>
+</div>
+<!-- Card 3: Tiêu chí ghi nhận bài tập -->
+<div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm space-y-2.5">
+<span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Tiêu chí ghi nhận bài tập</span>
+<ul class="space-y-2 text-xs text-slate-600">
+<li class="flex items-start gap-2">
+<span class="w-1.5 h-1.5 rounded-full bg-blue-600 mt-1.5 shrink-0"></span>
+<span>Khả năng phát hiện bao quát các tình huống bất thường (edge case).</span>
+</li>
+<li class="flex items-start gap-2">
+<span class="w-1.5 h-1.5 rounded-full bg-blue-600 mt-1.5 shrink-0"></span>
+<span>Sự tỉ mỉ khi đối chiếu từng con số tính toán tiền.</span>
+</li>
+<li class="flex items-start gap-2">
+<span class="w-1.5 h-1.5 rounded-full bg-blue-600 mt-1.5 shrink-0"></span>
+<span>Cách diễn đạt mạch lạc nguyên nhân gây ra sự sai lệch.</span>
+</li>
+</ul>
+</div>
+<!-- Card 4: Cần trợ giúp thêm? -->
+<div class="bg-gradient-to-br from-blue-50 to-indigo-50/60 rounded-2xl p-4 border border-blue-100 flex items-center justify-between gap-3">
+<div class="space-y-0.5">
+<p class="text-xs font-bold text-slate-900">Cần trợ giúp thêm?</p>
+<p class="text-[11px] text-slate-500">Hỏi nhanh Cố vấn chuyên môn UniView</p>
+</div>
+<button class="px-3 py-1.5 bg-blue-700 hover:bg-blue-800 text-white text-xs font-semibold rounded-xl shadow-xs transition shrink-0" type="button">
+          Hỏi ngay
+        </button>
+</div>
+</aside>
+</main>
+</body></html>

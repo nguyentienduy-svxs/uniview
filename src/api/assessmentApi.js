@@ -35,7 +35,6 @@ export const assessmentApi = {
   getDefinition: () =>
     assessmentRequest('/assessments/definition'),
   getRiasec: () => assessmentRequest('/assessments/riasec'),
-  getMbti: () => assessmentRequest('/assessments/mbti'),
   getExperienceDomains: () =>
     assessmentRequest('/assessments/experience-domains'),
   getExperienceDomain: (domain) =>

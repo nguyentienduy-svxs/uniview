@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+
+<html class="h-full bg-slate-100" lang="vi"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>UniView Task Workspace - Mô phỏng kiểm thử giỏ hàng</title>
+<!-- Google Fonts: Plus Jakarta Sans & Epilogue theo Design Theme -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Epilogue:ital,wght@0,500;0,600;0,700;0,800;1,600&amp;family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "primary": "#0037b0",
+            "primary-container": "#1d4ed8",
+            "on-primary": "#ffffff",
+            "tile-blue": "#EFF6FF",
+            "tile-amber": "#FFFBEB",
+            "surface-container-lowest": "#ffffff",
+            "surface-container-low": "#f1f3ff",
+            "surface-container": "#e9edff",
+            "on-surface": "#121b2e",
+            "on-surface-variant": "#434655",
+            "brand": {
+              50: '#eff6ff',
+              100: '#dbeafe',
+              500: '#3b82f6',
+              600: '#2563eb',
+              700: '#1d4ed8',
+              800: '#1e40af',
+              900: '#1e3a8a',
+            }
+          },
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+            display: ['"Epilogue"', 'sans-serif'],
+          }
+        }
+      }
+    };
+  </script>
+<style>
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+    h1, h2, h3, .font-display {
+      font-family: 'Epilogue', sans-serif;
+    }
+    /* Subtle custom scrollbar */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #f1f5f9;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 9999px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #94a3b8;
+    }
+  </style>
+<meta content="web_dashboard" name="shell-type"/>
+</head>
+<body class="bg-slate-100 text-slate-900 min-h-screen flex flex-col antialiased">
+<!-- 1. HEADER GỌN (DISTRACTION-FREE WORKSPACE HEADER) -->
+<header class="bg-white border-b border-slate-200 px-6 py-3 sticky top-0 z-40 shadow-xs">
+<div class="max-w-[1536px] mx-auto flex items-center justify-between gap-4">
+<!-- Bên trái: Logo, Tiêu đề nhiệm vụ -->
+<div class="flex items-center gap-3 min-w-0">
+<div class="flex items-center gap-2 shrink-0">
+<img alt="UniView Logo" class="h-8 w-auto object-contain" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCtnsMSiB8y50ZOiRpaKMdsPs9iE4p5ylHFFn9sXuWmZAG3xfWoojyLh23ZCMnDdbbSlmGIu8HfQxlDPEfXexXHIBScfyuhy9SOKy4Al_Ro-B31K4aytr4oWL-6PM96QnPah19JpHudbeIkIwHifauwXj62auW1vSCcFx2HHV7OfXXnHJDDc8n4r_SoGgC4XSCc_Hmdd5SdN4e0aAUuai_7h0F3yX_G-r-5BZJROGzpdjL9PC77dqbbw95TP1jKwslUsQ"/>
+<span class="text-lg font-display font-extrabold tracking-tight text-slate-900 hidden sm:inline">UniView</span>
+<span class="bg-blue-50 text-primary-container border border-blue-200 rounded-md px-2 py-0.5 text-[11px] font-bold uppercase tracking-wider ml-1">
+            Task Workspace
+          </span>
+</div>
+<div class="h-4 w-px bg-slate-200 mx-1 hidden sm:block shrink-0"></div>
+<div class="flex items-center min-w-0 gap-2">
+<div class="w-2 h-2 rounded-full bg-primary-container shrink-0 hidden md:block"></div>
+<h1 class="font-bold text-slate-800 text-sm md:text-base truncate">
+            Tìm và sửa lỗi trong luồng đặt hàng
+          </h1>
+<span class="hidden lg:inline-flex items-center px-2 py-0.5 rounded text-xs font-semibold bg-blue-50 text-blue-700 border border-blue-100 shrink-0">
+            Công nghệ thông tin
+          </span>
+</div>
+</div>
+<!-- Bên phải: Trạng thái lưu, Thoát, Profile -->
+<div class="flex items-center gap-3 shrink-0">
+<div class="hidden sm:flex items-center gap-1.5 text-xs text-emerald-700 font-medium bg-emerald-50 px-2.5 py-1 rounded-full border border-emerald-200">
+<span class="material-symbols-outlined text-sm text-emerald-600">check_circle</span>
+<span>Đã tự động lưu nháp 1 phút trước</span>
+</div>
+<a class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-slate-600 hover:text-slate-900 bg-white hover:bg-slate-50 border border-slate-300 rounded-lg transition shadow-2xs" href="#">
+<span class="material-symbols-outlined text-sm text-slate-500">exit_to_app</span>
+<span class="hidden sm:inline">Thoát và làm tiếp sau</span>
+<span class="sm:hidden">Thoát</span>
+</a>
+<div class="flex items-center gap-2 pl-2 border-l border-slate-200">
+<div class="relative">
+<div class="w-8 h-8 rounded-full bg-primary-container text-white flex items-center justify-center font-bold text-xs ring-2 ring-white shadow-xs">
+              MQ
+            </div>
+<span class="absolute bottom-0 right-0 w-2.5 h-2.5 bg-emerald-500 border-2 border-white rounded-full"></span>
+</div>
+<div class="hidden xl:flex flex-col text-left leading-tight">
+<span class="text-xs font-bold text-slate-800">Minh Quân</span>
+<span class="text-[11px] text-slate-500">Lớp 12 · Học sinh</span>
+</div>
+</div>
+</div>
+</div>
+</header>
+<!-- 2. SUB-HEADER TIẾN ĐỘ & ĐỒNG HỒ (PROGRESS STRIP) -->
+<div class="bg-white border-b border-slate-200 px-6 py-2">
+<div class="max-w-[1536px] mx-auto flex flex-wrap items-center justify-between gap-3 text-xs">
+<!-- Stepper 4 bước ngang -->
+<nav aria-label="Tiến trình làm bài" class="flex items-center gap-2 overflow-x-auto py-0.5">
+<div class="flex items-center gap-1.5 text-emerald-700 font-medium shrink-0">
+<span class="w-5 h-5 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-700 font-bold text-[10px]">✓</span>
+<span>1. Bối cảnh &amp; Yêu cầu</span>
+</div>
+<span class="material-symbols-outlined text-slate-300 text-sm">chevron_right</span>
+<div class="flex items-center gap-1.5 text-emerald-700 font-medium shrink-0">
+<span class="w-5 h-5 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-700 font-bold text-[10px]">✓</span>
+<span>2. Kiểm tra các trường hợp</span>
+</div>
+<span class="material-symbols-outlined text-slate-300 text-sm">chevron_right</span>
+<div class="flex items-center gap-1.5 text-emerald-700 font-medium shrink-0">
+<span class="w-5 h-5 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-700 font-bold text-[10px]">✓</span>
+<span>3. Phân tích nguyên nhân</span>
+</div>
+<span class="material-symbols-outlined text-slate-300 text-sm">chevron_right</span>
+<div class="flex items-center gap-1.5 text-primary-container font-bold bg-blue-50 px-3 py-1 rounded-full border border-blue-200 shrink-0">
+<span class="relative flex h-2 w-2">
+<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
+<span class="relative inline-flex rounded-full h-2 w-2 bg-primary-container"></span>
+</span>
+<span>4. Kiểm tra trước khi nộp</span>
+</div>
+</nav>
+<!-- Bên phải: Đồng hồ + Lưu nháp -->
+<div class="flex items-center gap-4 text-slate-500 shrink-0">
+<div class="flex items-center gap-1.5 bg-slate-50 px-2.5 py-1 rounded-md border border-slate-200">
+<span class="material-symbols-outlined text-sm text-primary-container">timer</span>
+<span><strong class="text-primary-container font-bold">18:42</strong> <span class="text-slate-400">/ Dự kiến 35–45 phút</span></span>
+</div>
+<div class="hidden md:flex items-center gap-1 text-slate-400 text-[11px]">
+<span class="material-symbols-outlined text-xs">history</span>
+<span>Cập nhật lưu nháp lúc 10:24 AM</span>
+</div>
+</div>
+</div>
+</div>
+<!-- 3. BỐ CỤC 3 CỘT RỘNG RÃI DESKTOP (W-FULL MAX-W-[1536PX] 3-COLUMN GRID) -->
+<div class="flex-1 max-w-[1536px] w-full mx-auto px-4 sm:px-6 py-6">
+<div class="grid grid-cols-12 gap-6 items-start">
+<!-- ==================== CỘT TRÁI (COL-SPAN-12 LG:COL-SPAN-3) ==================== -->
+<aside class="col-span-12 lg:col-span-3 flex flex-col gap-5">
+<!-- Card Lộ trình nhiệm vụ (75% Hoàn thành) -->
+<section class="bg-white rounded-2xl p-5 border border-slate-200 shadow-xs space-y-4">
+<div class="flex items-center justify-between">
+<span class="text-xs uppercase font-extrabold tracking-wider text-slate-500 font-display">Lộ trình nhiệm vụ</span>
+<span class="text-xs font-bold px-2.5 py-0.5 rounded-full bg-blue-50 text-primary-container border border-blue-100">75% Hoàn thành</span>
+</div>
+<!-- Progress bar -->
+<div class="w-full bg-slate-100 rounded-full h-2 overflow-hidden">
+<div class="bg-primary-container h-full rounded-full transition-all duration-500" style="width: 75%"></div>
+</div>
+<!-- Danh sách 4 bước -->
+<div class="space-y-3 pt-1 text-xs">
+<!-- Bước 1 -->
+<div class="flex items-start gap-2.5">
+<span class="w-5 h-5 rounded-full bg-emerald-500 text-white flex items-center justify-center shrink-0 text-xs font-bold shadow-2xs">✓</span>
+<div>
+<p class="font-bold text-slate-800">Bước 1: Bối cảnh &amp; Yêu cầu</p>
+<p class="text-[11px] text-slate-400">Đã đọc xong tài liệu đặc tả</p>
+</div>
+</div>
+<!-- Bước 2 -->
+<div class="flex items-start gap-2.5">
+<span class="w-5 h-5 rounded-full bg-emerald-500 text-white flex items-center justify-center shrink-0 text-xs font-bold shadow-2xs">✓</span>
+<div>
+<p class="font-bold text-slate-800">Bước 2: Kiểm tra test case</p>
+<p class="text-[11px] text-slate-400">Đã đối chiếu 4 kịch bản</p>
+</div>
+</div>
+<!-- Bước 3 -->
+<div class="flex items-start gap-2.5">
+<span class="w-5 h-5 rounded-full bg-emerald-500 text-white flex items-center justify-center shrink-0 text-xs font-bold shadow-2xs">✓</span>
+<div>
+<p class="font-bold text-slate-800">Bước 3: Phân tích log &amp; mã nguồn</p>
+<p class="text-[11px] text-slate-400">Đã chỉ ra bug logic</p>
+</div>
+</div>
+<!-- Bước 4 (Current) -->
+<div class="flex items-start gap-2.5 bg-blue-50/70 p-2.5 rounded-xl border border-blue-100">
+<span class="w-5 h-5 rounded-full bg-primary-container text-white flex items-center justify-center shrink-0 text-xs font-bold animate-pulse">4</span>
+<div>
+<p class="font-bold text-primary-container">Bước 4: Kiểm tra trước khi nộp</p>
+<p class="text-[11px] text-blue-700/80 font-medium">Rà soát tính đầy đủ bằng chứng</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Card Đặc tả tính năng giỏ hàng -->
+<section class="bg-white rounded-2xl p-5 border border-slate-200 shadow-xs space-y-4">
+<div class="flex items-center justify-between border-b border-slate-100 pb-3">
+<div class="flex items-center gap-1.5 font-display font-bold text-sm text-slate-800">
+<span class="material-symbols-outlined text-primary-container text-base">receipt_long</span>
+<span>Đặc tả tính năng giỏ hàng</span>
+</div>
+<span class="inline-flex items-center gap-1 text-[11px] font-semibold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-200">
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+              Live Sandbox
+            </span>
+</div>
+<!-- Khối MÃ KHUYẾN MÃI ÁP DỤNG -->
+<div class="bg-amber-50/80 border border-amber-200/70 rounded-xl p-3.5 space-y-2 text-xs">
+<div class="flex items-center justify-between">
+<span class="font-bold text-amber-900 text-[11px] uppercase tracking-wide">MÃ KHUYẾN MÃI ÁP DỤNG:</span>
+<code class="px-2 py-0.5 rounded bg-white text-slate-900 border border-amber-200 font-mono text-xs font-bold shadow-2xs">UNI2026</code>
+</div>
+<ul class="space-y-1.5 text-[11px] text-amber-950/90 list-disc list-inside">
+<li>Giảm trực tiếp <strong>10%</strong> giá trị đơn.</li>
+<li>Giảm tối đa <strong>50.000đ</strong> (trần khấu trừ).</li>
+<li>Áp dụng cho đơn từ <strong>200.000đ</strong> trở lên.</li>
+</ul>
+</div>
+<div class="space-y-2">
+<p class="text-[11px] font-bold text-slate-600 uppercase tracking-wide">Quy tắc nghiệp vụ then chốt:</p>
+<p class="text-xs text-slate-600 leading-relaxed bg-slate-50 p-2.5 rounded-lg border border-slate-100">
+              Khi người dùng cập nhật lại số lượng sản phẩm khiến giá trị tổng nhỏ hơn 200.000đ, hệ thống phải tự động gỡ bỏ voucher hoặc cảnh báo và hoàn lại giá gốc.
+            </p>
+</div>
+<div class="bg-slate-50 p-2.5 rounded-xl border border-slate-100 text-slate-500 text-[11px] flex items-center justify-between">
+<span class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-sm text-slate-400">dns</span>
+<span>UniCart API v2.4</span>
+</span>
+<span class="text-emerald-600 font-bold flex items-center gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Online
+            </span>
+</div>
+</section>
+<!-- Card Điều hướng nhanh -->
+<nav class="bg-white rounded-2xl p-4 border border-slate-200 shadow-xs space-y-1 text-xs">
+<p class="text-[11px] uppercase tracking-wider text-slate-400 font-bold mb-2 px-2 font-display">Điều hướng nhanh</p>
+<a class="flex items-center justify-between p-2 rounded-lg text-slate-700 hover:bg-slate-50 transition-colors" href="#">
+<span class="flex items-center gap-2">
+<span class="material-symbols-outlined text-sm text-slate-400">description</span>
+              Bối cảnh spec
+            </span>
+<span class="material-symbols-outlined text-sm text-slate-400">chevron_right</span>
+</a>
+<a class="flex items-center justify-between p-2 rounded-lg text-slate-700 hover:bg-slate-50 transition-colors" href="#">
+<span class="flex items-center gap-2">
+<span class="material-symbols-outlined text-sm text-slate-400">data_object</span>
+              Dữ liệu test
+            </span>
+<span class="material-symbols-outlined text-sm text-slate-400">chevron_right</span>
+</a>
+<a class="flex items-center justify-between p-2 rounded-lg text-primary-container font-semibold bg-blue-50/70 border border-blue-100 transition-colors" href="#checklist-heading">
+<span class="flex items-center gap-2">
+<span class="material-symbols-outlined text-sm text-primary-container">fact_check</span>
+              Checklist bằng chứng
+            </span>
+<span class="material-symbols-outlined text-sm text-primary-container">arrow_downward</span>
+</a>
+<a class="flex items-center justify-between p-2 rounded-lg text-slate-700 hover:bg-slate-50 transition-colors" href="#attachment-section">
+<span class="flex items-center gap-2">
+<span class="material-symbols-outlined text-sm text-slate-400">attach_file</span>
+              Tệp &amp; link
+            </span>
+<span class="material-symbols-outlined text-sm text-slate-400">chevron_right</span>
+</a>
+</nav>
+</aside>
+<!-- ==================== CỘT GIỮA (COL-SPAN-12 LG:COL-SPAN-6 - TRỌNG TÂM) ==================== -->
+<main class="col-span-12 lg:col-span-6 flex flex-col gap-5">
+<!-- Khối tiêu đề: BƯỚC KIỂM TRA BẰNG CHỨNG TRƯỚC KHI NỘP -->
+<section class="bg-white rounded-2xl p-6 border border-slate-200 shadow-xs" id="checklist-heading">
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-3">
+<div class="flex items-start gap-3">
+<div class="w-10 h-10 rounded-xl bg-blue-50 text-primary-container flex items-center justify-center shrink-0 border border-blue-100">
+<span class="material-symbols-outlined text-2xl">checklist_rtl</span>
+</div>
+<div>
+<span class="text-[11px] font-bold tracking-wider text-primary-container uppercase font-display">Giai đoạn 4 / 4: Hoàn thiện hồ sơ</span>
+<h2 class="text-lg md:text-xl font-bold font-display text-slate-900 leading-snug">
+                  BƯỚC KIỂM TRA BẰNG CHỨNG TRƯỚC KHI NỘP
+                </h2>
+</div>
+</div>
+<!-- Thống kê huy hiệu: 4 Mục hợp lệ / 1 Cần bổ sung -->
+<div class="flex items-center gap-2 shrink-0 self-start sm:self-center">
+<span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-emerald-50 text-emerald-700 border border-emerald-200 font-bold text-xs">
+<span class="material-symbols-outlined text-sm">check_circle</span>
+                4 Mục hợp lệ (✓)
+              </span>
+<span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-amber-50 text-amber-800 border border-amber-200 font-bold text-xs animate-pulse">
+<span class="material-symbols-outlined text-sm text-amber-600">warning</span>
+                1 Cần bổ sung (⚠️)
+              </span>
+</div>
+</div>
+<p class="text-xs text-slate-600 leading-relaxed border-t border-slate-100 pt-3">
+            Hệ thống rà soát tự động không chấm điểm năng lực. UniView hỗ trợ kiểm tra tính đầy đủ của bằng chứng (evidence) và quyền truy cập tệp/liên kết nhằm đảm bảo bài nộp của bạn sẵn sàng nhất trước khi chuyển sang bước phản tư và chấm theo Rubric.
+          </p>
+</section>
+<!-- Banner Cảnh báo nổi bật Actionable -->
+<div class="bg-amber-50 border border-amber-200 rounded-2xl p-5 shadow-xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4" id="warning-banner">
+<div class="flex items-start gap-3.5">
+<div class="w-10 h-10 rounded-xl bg-amber-500 text-white flex items-center justify-center shrink-0 shadow-xs">
+<span class="material-symbols-outlined text-xl">priority_high</span>
+</div>
+<div>
+<h3 class="text-xs sm:text-sm font-bold text-amber-950 font-display leading-snug">
+                PHÁT HIỆN MỤC CHƯA HOÀN THIỆN: Bạn còn thiếu phần đề xuất cách sửa (Fix proposition / Code patch).
+              </h3>
+<p class="text-xs text-amber-900/80 mt-1">
+                Đề xuất ít nhất 1 phương án sửa hàm tính tổng để người hướng dẫn có đầy đủ cơ sở đối chiếu.
+              </p>
+</div>
+</div>
+<button class="shrink-0 px-4 py-2 rounded-xl bg-amber-500 text-white text-xs font-bold hover:bg-amber-600 transition shadow-xs" onclick="document.getElementById('patch-textarea').focus(); document.getElementById('patch-section').scrollIntoView({behavior: 'smooth'})">
+            Bổ sung ngay →
+          </button>
+</div>
+<!-- CHECKLIST 5 TIÊU CHÍ BẰNG CHỨNG -->
+<div class="space-y-4">
+<!-- Tiêu chí 1 -->
+<article class="bg-white rounded-2xl p-5 border border-slate-200 shadow-xs transition hover:border-slate-300">
+<div class="flex items-start justify-between gap-3">
+<div class="space-y-1.5">
+<h4 class="font-bold text-slate-900 text-sm font-display">1. Kiểm tra đủ bốn trường hợp (Test cases)</h4>
+<p class="text-xs text-slate-600 leading-relaxed">
+                  Đã hoàn tất kiểm thử và ghi nhận nhật ký cả 4/4 kịch bản luồng giỏ hàng: Áp mã voucher, đổi số lượng, hủy voucher, đơn giá 0đ.
+                </p>
+</div>
+<span class="shrink-0 inline-flex items-center gap-1 px-3 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 text-xs font-bold">
+<span class="material-symbols-outlined text-xs">check</span> Đầy đủ ✓
+              </span>
+</div>
+<!-- Log preview chips -->
+<div class="mt-3 flex flex-wrap gap-2 pt-2 border-t border-slate-100">
+<span class="px-2.5 py-1 rounded-md bg-slate-100 text-slate-700 text-[11px] font-mono">TC01_VALID_VOUCHER: PASS</span>
+<span class="px-2.5 py-1 rounded-md bg-slate-100 text-slate-700 text-[11px] font-mono">TC02_CHANGE_QTY: PASS</span>
+<span class="px-2.5 py-1 rounded-md bg-rose-50 text-rose-700 border border-rose-200 text-[11px] font-mono font-bold">TC03_MAX_CAP: FAIL</span>
+<span class="px-2.5 py-1 rounded-md bg-rose-50 text-rose-700 border border-rose-200 text-[11px] font-mono font-bold">TC04_MIN_SUBTOTAL: FAIL</span>
+</div>
+</article>
+<!-- Tiêu chí 2 -->
+<article class="bg-white rounded-2xl p-5 border border-slate-200 shadow-xs transition hover:border-slate-300">
+<div class="flex items-start justify-between gap-3">
+<div class="space-y-1.5">
+<h4 class="font-bold text-slate-900 text-sm font-display">2. Xác định ít nhất một trường hợp có lỗi</h4>
+<p class="text-xs text-slate-600 leading-relaxed">
+                  Đã phát hiện <strong>2 lỗi logic</strong>: Áp voucher giảm giá vượt quá trần quy định (giảm 85.000đ thay vì tối đa 50.000đ) và bỏ qua điều kiện giá trị đơn hàng tối thiểu khi đổi số lượng về dưới 200.000đ.
+                </p>
+</div>
+<span class="shrink-0 inline-flex items-center gap-1 px-3 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 text-xs font-bold">
+<span class="material-symbols-outlined text-xs">check</span> Đầy đủ ✓
+              </span>
+</div>
+</article>
+<!-- Tiêu chí 3 -->
+<article class="bg-white rounded-2xl p-5 border border-slate-200 shadow-xs transition hover:border-slate-300">
+<div class="flex items-start justify-between gap-3">
+<div class="space-y-1.5">
+<h4 class="font-bold text-slate-900 text-sm font-display">3. Giải thích nguyên nhân cốt lõi</h4>
+<p class="text-xs text-slate-600 leading-relaxed">
+                  Đã phân tích đoạn mã xử lý hàm <code class="font-mono text-[11px] bg-slate-100 px-1.5 py-0.5 rounded text-primary-container font-bold">reCalculateCartTotal()</code>: thiếu validation middleware ở phía backend API khi cập nhật lại <code class="font-mono text-[11px] bg-slate-100 px-1.5 py-0.5 rounded text-primary-container font-bold">items.quantity</code> và không clamp trần discount tối đa.
+                </p>
+</div>
+<span class="shrink-0 inline-flex items-center gap-1 px-3 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 text-xs font-bold">
+<span class="material-symbols-outlined text-xs">check</span> Đầy đủ ✓
+              </span>
+</div>
+</article>
+<!-- Tiêu chí 4 (CẦN BỔ SUNG - INTERACTIVE BOX) -->
+<article class="bg-white rounded-2xl p-5 border-2 border-amber-300 shadow-sm" id="patch-section">
+<div class="flex items-start justify-between gap-3 mb-2">
+<div>
+<h4 class="font-bold text-amber-950 text-sm font-display flex items-center gap-1.5">
+<span class="material-symbols-outlined text-amber-600 text-base">edit_note</span>
+                  4. Đề xuất cách sửa (Fix proposition / Code patch)
+                </h4>
+<p class="text-xs text-amber-900/80 mt-1">
+                  Hiện chưa có ghi chú phương án xử lý lỗi trong nhật ký. Vui lòng nhập nhanh giải pháp kỹ thuật bên dưới.
+                </p>
+</div>
+<span class="shrink-0 inline-flex items-center gap-1 px-3 py-1 rounded-full bg-amber-500 text-white text-xs font-bold shadow-2xs" id="badge-patch">
+<span class="material-symbols-outlined text-xs">warning</span> Cần bổ sung ⚠️
+              </span>
+</div>
+<!-- Inline Edit Area -->
+<div class="mt-4 bg-slate-50 border border-slate-200 rounded-xl p-4 space-y-3">
+<label class="block text-xs font-bold text-slate-800" for="patch-textarea">
+                Điền nhanh tóm tắt giải pháp khắc phục (hoặc đoạn code patch mẫu):
+              </label>
+<textarea class="w-full bg-white border border-slate-300 rounded-xl p-3 font-mono text-xs text-slate-800 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition shadow-2xs" id="patch-textarea" placeholder="Ví dụ: Thêm câu lệnh if (discountAmount &gt; maxDiscountCap) discountAmount = maxDiscountCap; đồng thời gọi validateCartRule(cart) trước khi trả về tổng thanh toán..." rows="3"></textarea>
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pt-1">
+<span class="text-[11px] text-slate-500 flex items-center gap-1">
+<span class="material-symbols-outlined text-xs text-slate-400">info</span>
+                  Bạn cũng có thể đính kèm file .patch hoặc commit GitHub ở cột bên phải
+                </span>
+<button class="px-4 py-2 rounded-xl bg-primary-container text-white text-xs font-bold hover:bg-brand-700 transition shadow-xs flex items-center justify-center gap-1.5 shrink-0" id="btn-save-patch" onclick="savePatchHandler()">
+<span class="material-symbols-outlined text-sm">save</span>
+                  Lưu &amp; Cập nhật trạng thái
+                </button>
+</div>
+</div>
+</article>
+<!-- Tiêu chí 5 -->
+<article class="bg-white rounded-2xl p-5 border border-slate-200 shadow-xs transition hover:border-slate-300">
+<div class="flex items-start justify-between gap-3">
+<div class="space-y-1.5">
+<h4 class="font-bold text-slate-900 text-sm font-display">5. Tệp và đường dẫn đính kèm mở được</h4>
+<p class="text-xs text-slate-600 leading-relaxed">
+                  Đã kiểm tra tự động mã phản hồi <strong>HTTP 200 (OK)</strong> cho liên kết GitHub Repository công khai và tính toàn vẹn của tệp tài liệu PDF (1.8 MB).
+                </p>
+</div>
+<span class="shrink-0 inline-flex items-center gap-1 px-3 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 text-xs font-bold">
+<span class="material-symbols-outlined text-xs">check</span> Đầy đủ ✓
+              </span>
+</div>
+</article>
+</div>
+<!-- Quy ước trạng thái hệ thống -->
+<div class="flex items-center gap-4 text-xs text-slate-500 bg-white p-3.5 rounded-xl border border-slate-200">
+<span class="font-bold text-slate-700">Quy ước trạng thái hệ thống:</span>
+<span class="flex items-center gap-1 text-emerald-700 font-semibold"><span class="w-2 h-2 rounded-full bg-emerald-500"></span> Đầy đủ</span>
+<span class="flex items-center gap-1 text-amber-700 font-semibold"><span class="w-2 h-2 rounded-full bg-amber-500"></span> Cần bổ sung</span>
+<span class="flex items-center gap-1 text-slate-400 font-semibold"><span class="w-2 h-2 rounded-full bg-slate-300"></span> Không áp dụng</span>
+</div>
+<!-- Footer hàng nút điều hướng -->
+<footer class="bg-white rounded-2xl p-4 border border-slate-200 shadow-xs flex flex-col sm:flex-row items-center justify-between gap-3">
+<div class="flex items-center gap-2 w-full sm:w-auto">
+<button class="w-full sm:w-auto px-4 py-2.5 rounded-xl text-slate-600 bg-slate-100 hover:bg-slate-200 text-xs font-bold transition flex items-center justify-center gap-1.5">
+<span class="material-symbols-outlined text-sm">arrow_back</span>
+              Quay lại chỉnh sửa bài
+            </button>
+<button class="w-full sm:w-auto px-4 py-2.5 rounded-xl text-slate-700 bg-white hover:bg-slate-50 border border-slate-200 text-xs font-bold transition shadow-2xs">
+              Lưu nháp hiện tại
+            </button>
+</div>
+<button class="w-full sm:w-auto px-6 py-2.5 rounded-full bg-primary-container text-white text-xs font-bold hover:bg-brand-700 transition shadow-md flex items-center justify-center gap-2 group" id="btn-submit-task" onclick="submitTaskHandler()">
+<span>Xác nhận &amp; Nộp bài →</span>
+</button>
+</footer>
+</main>
+<!-- ==================== CỘT PHẢI (COL-SPAN-12 LG:COL-SPAN-3) ==================== -->
+<aside class="col-span-12 lg:col-span-3 flex flex-col gap-5" id="attachment-section">
+<!-- Card Tệp & Liên kết đính kèm (2/2 Sẵn sàng) -->
+<section class="bg-white rounded-2xl p-5 border border-slate-200 shadow-xs space-y-4">
+<div class="flex items-center justify-between border-b border-slate-100 pb-3">
+<h3 class="text-sm font-bold font-display text-slate-900">Tệp &amp; Liên kết đính kèm</h3>
+<span class="px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 font-bold text-[11px]">2/2 Sẵn sàng</span>
+</div>
+<div class="space-y-3">
+<!-- File PDF -->
+<div class="p-3 bg-slate-50 border border-slate-200 rounded-xl space-y-2 hover:border-slate-300 transition">
+<div class="flex items-start gap-2.5">
+<span class="w-8 h-8 rounded-lg bg-rose-100 text-rose-600 flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-base">picture_as_pdf</span>
+</span>
+<div class="min-w-0 flex-1">
+<p class="text-xs font-bold text-slate-800 truncate" title="unicart_bug_report_and_patch.pdf">unicart_bug_report_and_patch.pdf</p>
+<p class="text-[11px] text-slate-400">1.8 MB · Báo cáo kèm ảnh chụp lỗi</p>
+</div>
+</div>
+<div class="flex items-center justify-between text-xs pt-1 border-t border-slate-200/60">
+<span class="text-emerald-700 font-bold text-[11px] flex items-center gap-1">
+<span class="material-symbols-outlined text-xs">check_circle</span> Đã tải lên
+                </span>
+<div class="flex items-center gap-1.5">
+<button class="px-2 py-0.5 rounded bg-white text-slate-700 border border-slate-200 font-semibold hover:bg-slate-100 transition text-[11px]">
+                    Xem trước
+                  </button>
+<button class="px-2 py-0.5 rounded bg-white text-slate-700 border border-slate-200 font-semibold hover:bg-slate-100 transition text-[11px]">
+                    Thay file
+                  </button>
+</div>
+</div>
+</div>
+<!-- Liên kết GitHub -->
+<div class="p-3 bg-slate-50 border border-slate-200 rounded-xl space-y-2 hover:border-slate-300 transition">
+<div class="flex items-start gap-2.5">
+<span class="w-8 h-8 rounded-lg bg-slate-900 text-white flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-base">code</span>
+</span>
+<div class="min-w-0 flex-1">
+<div class="flex items-center gap-1.5">
+<p class="text-xs font-bold text-slate-800 truncate" title="minhquan-dev/unicart-sandbox-fix">minhquan-dev/unicart-sandbox-fix</p>
+</div>
+<p class="text-[11px] text-slate-400">GitHub Repository · Branch main</p>
+</div>
+</div>
+<div class="flex items-center justify-between text-[11px] pt-1 border-t border-slate-200/60">
+<span class="text-emerald-700 font-semibold flex items-center gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Public 🌐
+                </span>
+<button class="text-primary-container font-bold hover:underline">Kiểm tra lại</button>
+</div>
+<p class="text-[10px] text-slate-500 italic">Quyền truy cập công khai: Người chấm có thể đọc</p>
+</div>
+</div>
+<button class="w-full py-2.5 rounded-xl border border-dashed border-slate-300 hover:border-slate-400 text-slate-600 hover:text-slate-800 font-semibold text-xs transition flex items-center justify-center gap-1.5 bg-slate-50/50">
+<span class="material-symbols-outlined text-sm">add</span>
+            + Thêm file ảnh log hoặc link bổ sung (nếu có)
+          </button>
+</section>
+<!-- Card Quy trình sau khi nộp -->
+<section class="bg-white rounded-2xl p-5 border border-slate-200 shadow-xs space-y-3">
+<h3 class="text-sm font-bold font-display text-slate-900">Quy trình sau khi nộp</h3>
+<div class="bg-blue-50/60 border border-blue-100 p-2.5 rounded-xl text-xs text-blue-900/90 leading-relaxed">
+            Sau khi nộp, bài sẽ được rà soát theo Rubric đánh giá năng lực tư duy kỹ thuật. Bạn vẫn cần hoàn thành bước Reflection (phản tư ngắn) để kết quả chính thức được ghi nhận vào Roadmap cá nhân.
+          </div>
+<div class="space-y-3 pt-1 text-xs">
+<div class="flex items-start gap-2.5">
+<div class="w-5 h-5 rounded-full bg-blue-100 text-primary-container flex items-center justify-center font-bold text-[10px] shrink-0 mt-0.5">1</div>
+<div>
+<p class="font-bold text-slate-800">1. Nộp bằng chứng (Evidence Submitted)</p>
+<p class="text-slate-500 text-[11px]">Lưu trữ tệp nhật ký kiểm thử và mã giải pháp.</p>
+</div>
+</div>
+<div class="flex items-start gap-2.5">
+<div class="w-5 h-5 rounded-full bg-amber-100 text-amber-800 flex items-center justify-center font-bold text-[10px] shrink-0 mt-0.5">2</div>
+<div>
+<p class="font-bold text-slate-800">2. Phản tư 3 câu hỏi nhanh (3 phút)</p>
+<p class="text-slate-500 text-[11px]">Đánh giá mức độ trải nghiệm và độ tự tin giải thuật.</p>
+</div>
+</div>
+<div class="flex items-start gap-2.5">
+<div class="w-5 h-5 rounded-full bg-slate-100 text-slate-600 flex items-center justify-center font-bold text-[10px] shrink-0 mt-0.5">3</div>
+<div>
+<p class="font-bold text-slate-800">3. Nhận phản hồi &amp; Rubric</p>
+<p class="text-slate-500 text-[11px]">Cố vấn UniView phản hồi điểm mạnh và cập nhật Roadmap.</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Card Cần trợ giúp thêm? -->
+<section class="bg-blue-50 border border-blue-100 rounded-2xl p-4 shadow-xs flex items-center justify-between gap-3">
+<div class="flex items-center gap-3">
+<div class="w-9 h-9 rounded-xl bg-primary-container text-white flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-lg">support_agent</span>
+</div>
+<div>
+<p class="text-xs font-bold text-slate-900">Cần trợ giúp thêm?</p>
+<p class="text-[11px] text-slate-600">Hỏi nhanh Cố vấn chuyên môn UniView</p>
+</div>
+</div>
+<button class="px-3 py-1.5 rounded-lg bg-white text-primary-container border border-blue-200 text-xs font-bold shadow-2xs hover:bg-slate-50 transition shrink-0">
+            Hỏi ngay
+          </button>
+</section>
+</aside>
+</div>
+</div>
+<!-- TOAST THÀNH CÔNG (TRIGGER KHI SUBMIT) -->
+<aside class="fixed bottom-6 right-6 z-50 max-w-md w-full bg-white rounded-2xl p-5 border border-slate-200 shadow-2xl transition-all duration-300 transform translate-y-28 opacity-0 pointer-events-none" id="success-toast">
+<div class="flex items-start gap-3.5">
+<div class="w-10 h-10 rounded-full bg-emerald-500 text-white flex items-center justify-center shrink-0 shadow-md">
+<span class="material-symbols-outlined text-2xl">celebration</span>
+</div>
+<div class="flex-1 pr-1">
+<div class="flex items-center justify-between">
+<h4 class="font-bold font-display text-slate-900 text-sm">🎉 Đã nộp bằng chứng thành công!</h4>
+<button class="text-slate-400 hover:text-slate-600 text-sm p-1" onclick="hideToast()">✕</button>
+</div>
+<p class="text-xs text-slate-600 mt-1 leading-relaxed">
+          Tiếp theo, hãy cho UniView biết trải nghiệm của bạn để hoàn thiện đánh giá theo Rubric.
+        </p>
+<div class="mt-4 flex items-center gap-3">
+<a class="px-4 py-2 rounded-full bg-primary-container text-white text-xs font-bold hover:bg-brand-700 transition shadow-xs flex items-center gap-1.5" href="#">
+            Bắt đầu Reflection (3 phút) →
+          </a>
+<button class="px-3 py-1.5 text-xs font-semibold text-slate-500 hover:text-slate-800" onclick="hideToast()">
+            Để sau
+          </button>
+</div>
+</div>
+</div>
+</aside>
+<!-- MICRO INTERACTION JAVASCRIPT -->
+<script>
+    function savePatchHandler() {
+      const textarea = document.getElementById('patch-textarea');
+      const textVal = textarea.value.trim();
+      const badge = document.getElementById('badge-patch');
+      const warningBanner = document.getElementById('warning-banner');
+
+      if (!textVal) {
+        textarea.value = "if (discountAmount > maxDiscountCap) {\n  discountAmount = maxDiscountCap;\n}\nif (cartTotal < minOrderRequirement) {\n  discountAmount = 0;\n}";
+      }
+
+      // Update badge to complete
+      badge.className = "shrink-0 inline-flex items-center gap-1 px-3 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 text-xs font-bold";
+      badge.innerHTML = '<span class="material-symbols-outlined text-xs">check</span> Đầy đủ ✓';
+
+      // Update button state
+      const btnSave = document.getElementById('btn-save-patch');
+      btnSave.classList.remove('bg-primary-container');
+      btnSave.classList.add('bg-emerald-600');
+      btnSave.innerHTML = '<span class="material-symbols-outlined text-sm">check</span> Đã lưu phương án';
+
+      // Soft hide warning banner
+      if (warningBanner) {
+        warningBanner.style.opacity = '0.5';
+        warningBanner.style.filter = 'grayscale(100%)';
+      }
+    }
+
+    function submitTaskHandler() {
+      const toast = document.getElementById('success-toast');
+      toast.classList.remove('translate-y-28', 'opacity-0', 'pointer-events-none');
+      toast.classList.add('translate-y-0', 'opacity-100', 'pointer-events-auto');
+    }
+
+    function hideToast() {
+      const toast = document.getElementById('success-toast');
+      toast.classList.add('translate-y-28', 'opacity-0', 'pointer-events-none');
+      toast.classList.remove('translate-y-0', 'opacity-100', 'pointer-events-auto');
+    }
+  </script>
+</body></html>

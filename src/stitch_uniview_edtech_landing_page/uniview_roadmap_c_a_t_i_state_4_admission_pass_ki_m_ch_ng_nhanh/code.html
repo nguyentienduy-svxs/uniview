@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+
+<html class="h-full" lang="vi"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/><meta content="web_standard" name="shell-type"/><title>UniView - Nền tảng Định hướng &amp; Tuyển sinh Đại học</title><link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=Epilogue:wght@500;600;700;800&amp;family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config = { darkMode: "class", theme: { extend: { "colors": { "surface-tint": "#2151da", "outline": "#747686", "on-error-container": "#93000a", "primary-fixed": "#dce1ff", "tile-rose": "#FFF1F2", "secondary-fixed-dim": "#ffb2b9", "surface": "#f9f9ff", "tile-blue": "#EFF6FF", "primary-fixed-dim": "#b7c4ff", "on-background": "#121b2e", "primary": "#0037b0", "inverse-on-surface": "#edf0ff", "tertiary": "#594100", "surface-container-low": "#f1f3ff", "surface-bright": "#f9f9ff", "surface-dim": "#d1daf4", "error": "#ba1a1a", "tertiary-fixed-dim": "#f9bd22", "on-primary-fixed-variant": "#0039b5", "background": "#f9f9ff", "on-primary-fixed": "#001551", "surface-container-lowest": "#ffffff", "surface-container": "#e9edff", "on-secondary-container": "#730425", "on-tertiary": "#ffffff", "tertiary-container": "#765700", "on-surface-variant": "#434655", "on-tertiary-container": "#ffce63", "on-error": "#ffffff", "on-tertiary-fixed-variant": "#5c4300", "secondary-container": "#fe7488", "primary-container": "#1d4ed8", "inverse-surface": "#172033", "surface-container-high": "#e1e8ff", "on-secondary": "#ffffff", "error-container": "#ffdad6", "on-primary": "#ffffff", "surface-variant": "#d9e2fc", "on-secondary-fixed-variant": "#891933", "secondary": "#a93349", "on-primary-container": "#cad3ff", "outline-variant": "#c4c5d7", "surface-container-highest": "#d9e2fc", "tile-amber": "#FFFBEB", "on-surface": "#121b2e", "inverse-primary": "#b7c4ff", "secondary-fixed": "#ffdadc", "on-tertiary-fixed": "#261a00", "on-secondary-fixed": "#400010", "tertiary-fixed": "#ffdf9f" }, "borderRadius": { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" }, "spacing": { "margin-md": "3rem", "margin-lg": "5rem", "margin": "1.5rem", "space-sm": "0.5rem", "gutter-lg": "2rem", "space-lg": "1.5rem", "space-xl": "2.5rem", "gutter-sm": "1rem", "space-2xl": "4rem", "space-xs": "0.25rem", "space-md": "1rem", "gutter": "1.5rem" }, "fontFamily": { "headline-md": ["Epilogue"], "headline-sm": ["Epilogue"], "label-md": ["Plus Jakarta Sans"], "body-md": ["Plus Jakarta Sans"], "display-mobile": ["Epilogue"], "body-sm": ["Plus Jakarta Sans"], "body-lg": ["Plus Jakarta Sans"], "display": ["Epilogue"], "headline-lg-mobile": ["Epilogue"], "label-lg": ["Plus Jakarta Sans"], "label-sm": ["Plus Jakarta Sans"], "headline-lg": ["Epilogue"] }, "fontSize": { "headline-md": ["28px", { "lineHeight": "36px", "letterSpacing": "-0.01em", "fontWeight": "600" }], "headline-sm": ["22px", { "lineHeight": "30px", "letterSpacing": "0em", "fontWeight": "600" }], "label-md": ["12px", { "lineHeight": "16px", "letterSpacing": "0.03em", "fontWeight": "600" }], "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }], "display-mobile": ["38px", { "lineHeight": "46px", "letterSpacing": "-0.02em", "fontWeight": "800" }], "body-sm": ["14px", { "lineHeight": "20px", "fontWeight": "400" }], "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }], "display": ["56px", { "lineHeight": "64px", "letterSpacing": "-0.03em", "fontWeight": "800" }], "headline-lg-mobile": ["28px", { "lineHeight": "36px", "letterSpacing": "-0.015em", "fontWeight": "700" }], "label-lg": ["14px", { "lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "600" }], "label-sm": ["11px", { "lineHeight": "14px", "letterSpacing": "0.05em", "fontWeight": "700" }], "headline-lg": ["40px", { "lineHeight": "48px", "letterSpacing": "-0.02em", "fontWeight": "700" }] } } } };</script></head><body class="min-h-full bg-background font-body-md text-on-surface antialiased flex flex-col"><header class="fixed top-0 left-0 right-0 z-50 bg-surface-container-lowest/90 backdrop-blur-md shadow-[0_1px_8px_rgba(0,0,0,0.04)]"><div class="h-20 max-w-[1440px] mx-auto px-margin md:px-margin-md lg:px-margin-lg flex items-center justify-between gap-space-md"><div class="flex items-center gap-space-lg"><a class="flex items-center gap-space-sm group focus:outline-none" data-path="kham-pha-nganh" href="#"><div class="w-10 h-10 rounded-full bg-tile-blue flex items-center justify-center p-1 overflow-hidden transition-transform group-hover:scale-105"><img alt="UniView Mascot" class="w-8 h-8 rounded-full object-cover" src="https://lh3.googleusercontent.com/aida/AEtjO1WZOqZY_bNzQeLt-VC6FxWqfmeLd0xAz4ooasdOVKBPsByvleas8IWvr9yQ20UxannvIjH5BoEUpPRwpgKkkp5IC40Bji-Pgn8aY4Pb5RersbuXLOyjMQY7INQefQ3ZqbkqtHHfc16EwX_sGx15NCEnjpOhVipEn6-pF1mDGtbgzEYCqwbIKT5loy5A-SO78SICyRkIUO9VPqpmeGasWPxq_19990kbuJIdE9P6Gb7xPIUSBXB9I7FnDr784iWwDfdc62OxQKOkwA"/></div><div class="flex flex-col"><span class="font-headline-sm text-headline-sm text-primary tracking-tight font-bold leading-none">UniView</span><span class="font-label-sm text-label-sm text-on-surface-variant font-medium tracking-wide uppercase">EdTech Platform</span></div></a><nav class="hidden lg:flex items-center gap-space-xs p-1 rounded-full bg-surface-container-low" data-active-classes="bg-primary-container text-on-primary font-label-lg shadow-sm"><a class="px-space-md py-space-sm rounded-full font-label-lg text-label-lg text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-colors" data-path="kham-pha-nganh" href="#">Khám phá ngành</a><a class="px-space-md py-space-sm rounded-full font-label-lg text-label-lg text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-colors" data-path="kham-pha-truong" href="#">Khám phá trường</a><a class="px-space-md py-space-sm rounded-full font-label-lg text-label-lg text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-colors" data-path="cong-cu-tuyen-sinh" href="#">Công cụ tuyển sinh</a><a class="px-space-md py-space-sm rounded-full font-label-lg text-label-lg text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-colors" data-path="ke-hoach-xet-tuyen" href="#">Kế hoạch xét tuyển</a><a class="px-space-md py-space-sm rounded-full font-label-lg text-label-lg text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-colors" data-path="roadmap" href="#">Roadmap</a></nav></div><div class="flex items-center gap-space-md"><div class="flex items-center gap-space-sm pl-space-md py-space-xs pr-space-sm rounded-full bg-surface-container-low hover:bg-surface-container transition-colors"><div class="flex flex-col text-right hidden sm:flex"><span class="font-label-lg text-label-lg text-on-surface font-semibold leading-tight">Minh Quân</span><span class="font-label-sm text-label-sm text-on-surface-variant">Học sinh Lớp 12</span></div><img alt="Profile" class="w-8 h-8 rounded-full object-cover" src="https://lh3.googleusercontent.com/aida/AEtjO1WZOqZY_bNzQeLt-VC6FxWqfmeLd0xAz4ooasdOVKBPsByvleas8IWvr9yQ20UxannvIjH5BoEUpPRwpgKkkp5IC40Bji-Pgn8aY4Pb5RersbuXLOyjMQY7INQefQ3ZqbkqtHHfc16EwX_sGx15NCEnjpOhVipEn6-pF1mDGtbgzEYCqwbIKT5loy5A-SO78SICyRkIUO9VPqpmeGasWPxq_19990kbuJIdE9P6Gb7xPIUSBXB9I7FnDr784iWwDfdc62OxQKOkwA"/></div></div></div></header><main class="flex-1 w-full pt-20 bg-background max-w-[1440px] mx-auto px-margin md:px-margin-md lg:px-margin-lg"><div class="flex flex-col w-full">
+<!-- Dynamic Top Bar Navigation & Context Action -->
+<div class="w-full flex flex-col md:flex-row md:items-center justify-between gap-space-md pb-space-lg">
+<div class="flex items-center gap-space-sm flex-wrap">
+<a class="inline-flex items-center gap-space-xs px-space-md py-space-xs rounded-full bg-surface-container hover:bg-surface-container-high text-on-surface font-label-lg text-label-lg transition-all group shadow-sm" data-path="ke-hoach-xet-tuyen" href="#">
+<span class="material-symbols-outlined text-primary text-[18px] transition-transform group-hover:-translate-x-1">arrow_back</span>
+<span>Quay lại Kế hoạch xét tuyển</span>
+</a>
+<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-tile-amber text-tertiary font-label-sm text-label-sm font-bold tracking-wide">
+<span class="w-2 h-2 rounded-full bg-tertiary animate-ping"></span>
+        CHIẾN LƯỢC MÙA THI 2027
+      </span>
+<span class="text-on-surface-variant font-label-sm text-label-sm hidden sm:inline-block">Cập nhật 15 phút trước theo Decision Board</span>
+</div>
+<div class="flex items-center gap-space-sm">
+<button class="px-space-md py-space-xs rounded-full bg-surface-container-lowest text-secondary font-label-md text-label-md hover:bg-tile-rose transition-colors shadow-sm flex items-center gap-1" onclick="skipAllValidationTasks()">
+<span class="material-symbols-outlined text-[16px]">fast_forward</span>
+<span>Bỏ qua tất cả task kiểm chứng</span>
+</button>
+<div class="h-6 w-px bg-surface-variant hidden sm:block"></div>
+<div class="flex items-center gap-1 text-on-surface-variant font-label-sm text-label-sm bg-surface-container-low px-3 py-1 rounded-full">
+<span class="material-symbols-outlined text-primary text-[16px]">verified_user</span>
+<span>Hồ sơ đã đồng bộ: <strong>4 NV</strong></span>
+</div>
+</div>
+</div>
+<!-- Primary Admission Pass Strategic Header -->
+<section class="relative w-full rounded-3xl bg-surface-container-low p-space-lg md:p-space-xl overflow-hidden shadow-sm">
+<div class="absolute -right-20 -top-24 w-80 h-80 rounded-full bg-primary-fixed opacity-40 blur-[90px] pointer-events-none"></div>
+<div class="absolute right-1/4 -bottom-24 w-72 h-72 rounded-full bg-tile-rose opacity-60 blur-[100px] pointer-events-none"></div>
+<div class="relative z-10 max-w-4xl flex flex-col gap-space-sm">
+<div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary text-on-primary w-fit shadow-sm">
+<span class="material-symbols-outlined text-[18px] text-tertiary-fixed">bolt</span>
+<span class="font-label-md text-label-md font-bold tracking-wide uppercase">Admission Pass 2027 · Kiểm chứng nhanh trong mùa tuyển sinh</span>
+</div>
+<h1 class="font-headline-lg text-headline-lg text-on-surface tracking-tight font-bold mt-space-xs">
+        Roadmap kiểm chứng nhanh phục vụ quyết định tuyển sinh
+      </h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant leading-relaxed max-w-3xl">
+        Tập trung vào 4 task kiểm chứng nhanh đối với các ngành bạn đang phân vân trong Kế hoạch xét tuyển. Deadline tuyển sinh được ưu tiên hơn các task dài hạn. Bạn có thể bỏ qua task để quay lại chốt nguyện vọng bất cứ lúc nào.
+      </p>
+<!-- Sub-stats Bar -->
+<div class="flex flex-wrap items-center gap-y-2 gap-x-space-lg pt-space-sm">
+<div class="flex items-center gap-2">
+<span class="w-2.5 h-2.5 rounded-full bg-primary"></span>
+<span class="font-label-md text-label-md text-on-surface font-semibold">4 Task Shortlist (20–30 phút/task)</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="w-2.5 h-2.5 rounded-full bg-error"></span>
+<span class="font-label-md text-label-md text-error font-semibold">Ưu tiên deadline đợt 1 (Tháng 5/2026)</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="w-2.5 h-2.5 rounded-full bg-on-surface-variant opacity-60"></span>
+<span class="font-label-md text-label-md text-on-surface-variant">Quyền quyết định 100% thuộc về bạn</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Main Asymmetric Workspace (7 : 5 Editorial Split) -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-gutter-lg mt-space-xl items-start">
+<!-- LEFT COLUMN (Cols 1-7): Task Queue & Fast Validation Deck -->
+<div class="lg:col-span-7 flex flex-col gap-space-xl">
+<!-- Section: Urgent Task Stream -->
+<div class="flex flex-col gap-space-md">
+<div class="flex items-center justify-between">
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm text-primary uppercase font-bold tracking-widest">Hành động trọng tâm</span>
+<h2 class="font-headline-md text-headline-md text-on-surface font-bold">Việc ưu tiên hiện tại (4 Task kiểm chứng nhanh)</h2>
+</div>
+<span class="px-3 py-1 rounded-full bg-surface-container-high text-on-surface font-label-md text-label-md font-semibold">
+            Đã mở 4/4
+          </span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant">
+          Mỗi task mô phỏng đúng tính chất công việc hoặc bài kiểm tra năng khiếu thực tế của ngành tương ứng nhằm xác nhận mức độ phù hợp trước khi đặt bút nộp lệ phí xét tuyển.
+        </p>
+<!-- Task Item 1: IN PROGRESS (Tied to NV1) -->
+<div class="group relative rounded-2xl bg-surface-container-lowest p-space-md md:p-space-lg shadow-sm hover:shadow-md transition-all">
+<div class="flex flex-col gap-space-sm">
+<div class="flex items-start justify-between gap-space-sm flex-wrap">
+<div class="flex items-center gap-space-xs flex-wrap">
+<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-primary-container text-on-primary font-label-sm text-label-sm font-bold">
+<span class="material-symbols-outlined text-[14px]">play_circle</span>
+                  Đang làm
+                </span>
+<span class="px-2.5 py-1 rounded-full bg-tile-blue text-primary font-label-sm text-label-sm font-bold">
+                  Gắn với Nguyện vọng 1 · Thiết kế ĐH Kiến trúc
+                </span>
+</div>
+<div class="flex items-center gap-1 text-on-surface-variant font-label-sm text-label-sm">
+<span class="material-symbols-outlined text-[16px] text-tertiary">timer</span>
+<span>Thời lượng: <strong>30 phút</strong></span>
+</div>
+</div>
+<div class="flex flex-col gap-1">
+<h3 class="font-headline-sm text-headline-sm text-on-surface font-bold group-hover:text-primary transition-colors">
+                Thử sức vẽ bố cục hình khối cơ bản (Chuẩn bị môn Vẽ UAH)
+              </h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant">
+                Đánh giá cảm nhận tỷ lệ không gian 3 chiều và độ nhạy hình họa mỹ thuật thông qua bài test vẽ 3 hình khối phối cảnh dưới góc chiếu sáng 45 độ.
+              </p>
+</div>
+<!-- Validation Metric Pill -->
+<div class="p-3 rounded-xl bg-surface-container-low flex items-center justify-between text-on-surface-variant font-body-sm text-body-sm">
+<span class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-[18px]">psychology</span>
+                Mục đích: Xác định xem bạn có thích bài thi năng khiếu H00
+              </span>
+<span class="font-label-sm text-label-sm font-bold text-primary">Tác động: 40% Điểm xét tuyển</span>
+</div>
+<div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-space-sm pt-space-xs">
+<a class="px-space-md py-2.5 rounded-full bg-primary text-on-primary font-label-lg text-label-lg font-bold shadow-sm hover:bg-primary-container transition-all flex items-center justify-center gap-2 group-hover:shadow-md" href="#">
+<span>Làm bài nhanh</span>
+<span class="material-symbols-outlined text-[18px] transition-transform group-hover:translate-x-1">arrow_forward</span>
+</a>
+<button class="px-space-md py-2.5 rounded-full bg-surface-container text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high font-label-md text-label-md transition-colors text-center" onclick="skipTask(1)">
+                Bỏ qua task này (Đã quyết định ngành)
+              </button>
+</div>
+</div>
+</div>
+<!-- Task Item 2: PENDING (Tied to NV2) -->
+<div class="group relative rounded-2xl bg-surface-container-lowest p-space-md md:p-space-lg shadow-sm hover:shadow-md transition-all">
+<div class="flex flex-col gap-space-sm">
+<div class="flex items-start justify-between gap-space-sm flex-wrap">
+<div class="flex items-center gap-space-xs flex-wrap">
+<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-surface-container-high text-on-surface-variant font-label-sm text-label-sm font-bold">
+<span class="material-symbols-outlined text-[14px]">hourglass_empty</span>
+                  Chờ làm
+                </span>
+<span class="px-2.5 py-1 rounded-full bg-tile-amber text-tertiary font-label-sm text-label-sm font-bold">
+                  Gắn với Nguyện vọng 2 · Marketing UIT/FPT
+                </span>
+</div>
+<div class="flex items-center gap-1 text-on-surface-variant font-label-sm text-label-sm">
+<span class="material-symbols-outlined text-[16px] text-tertiary">timer</span>
+<span>Thời lượng: <strong>20 phút</strong></span>
+</div>
+</div>
+<div class="flex flex-col gap-1">
+<h3 class="font-headline-sm text-headline-sm text-on-surface font-bold group-hover:text-primary transition-colors">
+                So sánh văn hóa làm việc Agency vs In-house (Marketing UIT/FPT)
+              </h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant">
+                Đọc case study phân bổ ngân sách chiến dịch thực chiến và chọn môi trường phù hợp với phong cách cá nhân của bạn.
+              </p>
+</div>
+<div class="p-3 rounded-xl bg-surface-container-low flex items-center justify-between text-on-surface-variant font-body-sm text-body-sm">
+<span class="flex items-center gap-2">
+<span class="material-symbols-outlined text-tertiary text-[18px]">domain</span>
+                Mục đích: Định vị vai trò nghề nghiệp sau khi tốt nghiệp Marketing
+              </span>
+<span class="font-label-sm text-label-sm font-bold text-on-surface">Độ dài: 8 câu hỏi tình huống</span>
+</div>
+<div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-space-sm pt-space-xs">
+<button class="px-space-md py-2.5 rounded-full bg-surface-container-high hover:bg-primary hover:text-on-primary text-on-surface font-label-lg text-label-lg font-bold transition-all flex items-center justify-center gap-2">
+<span>Bắt đầu</span>
+<span class="material-symbols-outlined text-[18px]">play_arrow</span>
+</button>
+<button class="px-space-md py-2.5 rounded-full bg-transparent hover:bg-surface-container text-on-surface-variant font-label-md text-label-md transition-colors text-center" onclick="skipTask(2)">
+                Bỏ qua task
+              </button>
+</div>
+</div>
+</div>
+<!-- Task Item 3: COMPLETED -->
+<div class="relative rounded-2xl bg-surface-container-lowest/80 p-space-md md:p-space-lg shadow-sm opacity-90">
+<div class="flex flex-col gap-space-sm">
+<div class="flex items-start justify-between gap-space-sm flex-wrap">
+<div class="flex items-center gap-space-xs flex-wrap">
+<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-tile-blue text-primary font-label-sm text-label-sm font-bold">
+<span class="material-symbols-outlined text-[14px] text-primary">check_circle</span>
+                  Đã hoàn thành · Đã nộp
+                </span>
+<span class="px-2.5 py-1 rounded-full bg-surface-container text-on-surface-variant font-label-sm text-label-sm">
+                  CNTT / Phân tích Nghiệp vụ (BA)
+                </span>
+</div>
+<span class="px-2 py-0.5 rounded-full bg-tile-blue text-primary font-label-sm text-label-sm font-bold">
+                Tín hiệu tích cực (88% tương thích)
+              </span>
+</div>
+<div class="flex items-center justify-between gap-space-md">
+<div class="flex flex-col">
+<h4 class="font-headline-sm text-headline-sm text-on-surface font-semibold line-through decoration-on-surface-variant/40">
+                  Đọc nhanh spec sản phẩm phần mềm (BA check)
+                </h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant">
+                  Hoàn thành lúc 14:20 ngày 02/05/2026. Phản xạ logic đạt mức Xuất sắc trong các bài phân tích luồng người dùng.
+                </p>
+</div>
+<span class="material-symbols-outlined text-[32px] text-primary shrink-0">task_alt</span>
+</div>
+</div>
+</div>
+<!-- Task Item 4: COMPLETED -->
+<div class="relative rounded-2xl bg-surface-container-lowest/80 p-space-md md:p-space-lg shadow-sm opacity-90">
+<div class="flex flex-col gap-space-sm">
+<div class="flex items-start justify-between gap-space-sm flex-wrap">
+<div class="flex items-center gap-space-xs flex-wrap">
+<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-tile-amber text-tertiary font-label-sm text-label-sm font-bold">
+<span class="material-symbols-outlined text-[14px]">check_circle</span>
+                  Đã hoàn thành · Đã nộp
+                </span>
+<span class="px-2.5 py-1 rounded-full bg-surface-container text-on-surface-variant font-label-sm text-label-sm">
+                  Khoa học Dữ liệu / Tài chính
+                </span>
+</div>
+<span class="px-2 py-0.5 rounded-full bg-surface-container-high text-on-surface-variant font-label-sm text-label-sm font-semibold">
+                Tín hiệu trung tính (Độ yêu thích: 55%)
+              </span>
+</div>
+<div class="flex items-center justify-between gap-space-md">
+<div class="flex flex-col">
+<h4 class="font-headline-sm text-headline-sm text-on-surface font-semibold line-through decoration-on-surface-variant/40">
+                  Kiểm tra độ nhạy số liệu định lượng
+                </h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant">
+                  Hoàn thành lúc 09:15 ngày 28/04/2026. Bạn cảm thấy khá áp lực với các bảng tính Excel lặp đi lặp lại.
+                </p>
+</div>
+<span class="material-symbols-outlined text-[32px] text-tertiary shrink-0">analytics</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Banner Hỗ Trợ Học Sinh: Tự Tin & Chốt Nguyện Vọng -->
+<div class="rounded-3xl bg-surface-container-low p-space-lg flex flex-col md:flex-row items-center justify-between gap-space-md">
+<div class="flex items-start gap-space-md">
+<div class="w-12 h-12 rounded-2xl bg-primary text-on-primary flex items-center justify-center shrink-0 shadow-sm">
+<span class="material-symbols-outlined text-[26px]">school</span>
+</div>
+<div class="flex flex-col gap-1">
+<h4 class="font-headline-sm text-headline-sm text-on-surface font-bold">Bạn đã tự tin với ngành mình chọn?</h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant max-w-xl">
+              Bạn hoàn toàn có thể bấm "Bỏ qua các task còn lại" để tập trung 100% thời gian cho việc ôn thi tốt nghiệp THPT và chuẩn bị hồ sơ xét tuyển.
+            </p>
+</div>
+</div>
+<a class="shrink-0 px-space-md py-3 rounded-full bg-surface-container-lowest text-primary hover:bg-primary hover:text-on-primary font-label-lg text-label-lg font-bold shadow-sm transition-all flex items-center gap-2" data-path="ke-hoach-xet-tuyen" href="#">
+<span>Bỏ qua task &amp; Tiếp tục kế hoạch tuyển sinh</span>
+<span class="material-symbols-outlined text-[18px]">arrow_forward</span>
+</a>
+</div>
+<!-- Linked Target Disciplines Matrix directly connected to Decision Board -->
+<div class="flex flex-col gap-space-md pt-space-xs">
+<div class="flex items-center justify-between">
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider font-bold">Liên kết Nguyện Vọng Tuyển Sinh</span>
+<h3 class="font-headline-md text-headline-md text-on-surface font-bold">4 Hướng ngành liên kết từ Decision Board</h3>
+</div>
+<a class="text-primary font-label-md text-label-md font-semibold hover:underline flex items-center gap-1" data-path="ke-hoach-xet-tuyen" href="#">
+<span>Chỉnh sửa NV</span>
+<span class="material-symbols-outlined text-[16px]">edit</span>
+</a>
+</div>
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-space-md">
+<!-- Major 1: NV1 -->
+<div class="p-space-md rounded-2xl bg-surface-container-lowest shadow-sm flex flex-col justify-between gap-space-sm group hover:-translate-y-0.5 transition-transform">
+<div class="flex items-start justify-between gap-2">
+<span class="px-2.5 py-1 rounded-full bg-tile-rose text-secondary font-label-sm text-label-sm font-bold">
+                NV1 · ĐH Kiến trúc TP.HCM
+              </span>
+<span class="material-symbols-outlined text-secondary text-[20px]">architecture</span>
+</div>
+<div>
+<div class="font-headline-sm text-headline-sm text-on-surface font-bold">Thiết kế Đồ họa / Nội thất</div>
+<div class="font-body-sm text-body-sm text-on-surface-variant mt-0.5">Mã tổ hợp: H00, V00 · Điểm chuẩn 2025: 25.4</div>
+</div>
+<div class="pt-2 border-t border-surface-variant flex items-center justify-between font-label-sm text-label-sm">
+<span class="text-on-surface-variant">Tình trạng: <strong>Cần thi môn Vẽ</strong></span>
+<span class="text-primary font-bold">1 Task đang mở</span>
+</div>
+</div>
+<!-- Major 2: NV2 -->
+<div class="p-space-md rounded-2xl bg-surface-container-lowest shadow-sm flex flex-col justify-between gap-space-sm group hover:-translate-y-0.5 transition-transform">
+<div class="flex items-start justify-between gap-2">
+<span class="px-2.5 py-1 rounded-full bg-tile-blue text-primary font-label-sm text-label-sm font-bold">
+                NV2 · ĐH FPT TP.HCM
+              </span>
+<span class="material-symbols-outlined text-primary text-[20px]">code</span>
+</div>
+<div>
+<div class="font-headline-sm text-headline-sm text-on-surface font-bold">Công nghệ Thông tin (CNTT)</div>
+<div class="font-body-sm text-body-sm text-on-surface-variant mt-0.5">Xét tuyển học bạ + Top 40 SchoolRank</div>
+</div>
+<div class="pt-2 border-t border-surface-variant flex items-center justify-between font-label-sm text-label-sm">
+<span class="text-on-surface-variant">Tình trạng: <strong>Đủ điều kiện vòng 1</strong></span>
+<span class="text-on-surface font-semibold">Đã hoàn thành</span>
+</div>
+</div>
+<!-- Major 3: NV3 -->
+<div class="p-space-md rounded-2xl bg-surface-container-lowest shadow-sm flex flex-col justify-between gap-space-sm group hover:-translate-y-0.5 transition-transform">
+<div class="flex items-start justify-between gap-2">
+<span class="px-2.5 py-1 rounded-full bg-tile-amber text-tertiary font-label-sm text-label-sm font-bold">
+                NV3 · ĐH RMIT Việt Nam
+              </span>
+<span class="material-symbols-outlined text-tertiary text-[20px]">campaign</span>
+</div>
+<div>
+<div class="font-headline-sm text-headline-sm text-on-surface font-bold">Digital Marketing Quốc tế</div>
+<div class="font-body-sm text-body-sm text-on-surface-variant mt-0.5">Yêu cầu IELTS ≥ 6.5 &amp; GPA Lớp 12 ≥ 7.0</div>
+</div>
+<div class="pt-2 border-t border-surface-variant flex items-center justify-between font-label-sm text-label-sm">
+<span class="text-on-surface-variant">Tình trạng: <strong>Chờ làm task so sánh</strong></span>
+<span class="text-tertiary font-bold">1 Task chờ</span>
+</div>
+</div>
+<!-- Major 4: Dự phòng -->
+<div class="p-space-md rounded-2xl bg-surface-container-lowest shadow-sm flex flex-col justify-between gap-space-sm group hover:-translate-y-0.5 transition-transform">
+<div class="flex items-start justify-between gap-2">
+<span class="px-2.5 py-1 rounded-full bg-surface-container-high text-on-surface font-label-sm text-label-sm font-bold">
+                NV4 (Dự phòng) · ĐH Kinh tế TP.HCM (UEH)
+              </span>
+<span class="material-symbols-outlined text-on-surface-variant text-[20px]">bar_chart</span>
+</div>
+<div>
+<div class="font-headline-sm text-headline-sm text-on-surface font-bold">Khoa học Dữ liệu Kinh doanh</div>
+<div class="font-body-sm text-body-sm text-on-surface-variant mt-0.5">Tổ hợp: A00, A01, D01, D07</div>
+</div>
+<div class="pt-2 border-t border-surface-variant flex items-center justify-between font-label-sm text-label-sm">
+<span class="text-on-surface-variant">Tình trạng: <strong>Tín hiệu trung tính</strong></span>
+<span class="text-on-surface font-semibold">Đã kiểm chứng</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- RIGHT COLUMN (Cols 8-12): Widget Gói Dịch Vụ & Deadline Radar -->
+<div class="lg:col-span-5 flex flex-col gap-space-lg lg:sticky lg:top-24">
+<!-- Widget: Admission Pass Overview Card -->
+<div class="rounded-3xl bg-surface-container-lowest p-space-lg md:p-space-xl shadow-md flex flex-col gap-space-md relative overflow-hidden">
+<div class="flex items-start justify-between">
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm text-primary font-bold uppercase tracking-wider">Gói đồng hành tuyển sinh</span>
+<h3 class="font-headline-md text-headline-md text-on-surface font-bold">Admission Pass 2027</h3>
+</div>
+<span class="px-3 py-1 rounded-full bg-tile-blue text-primary font-label-sm text-label-sm font-bold flex items-center gap-1 shadow-sm">
+<span class="material-symbols-outlined text-[15px]">flash_on</span>
+            Fast-track Validation
+          </span>
+</div>
+<!-- Scope & Quota -->
+<div class="grid grid-cols-2 gap-space-sm p-space-md rounded-2xl bg-surface-container-low">
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm text-on-surface-variant">Khối lượng</span>
+<span class="font-headline-sm text-headline-sm text-on-surface font-bold">4 task nhanh</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">tổng cộng</span>
+</div>
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm text-on-surface-variant">Hạn dùng</span>
+<span class="font-headline-sm text-headline-sm text-on-surface font-bold">30/09/2027</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">hết mùa tuyển sinh</span>
+</div>
+</div>
+<!-- Progress Track -->
+<div class="flex flex-col gap-space-xs">
+<div class="flex items-center justify-between">
+<span class="font-label-md text-label-md text-on-surface font-semibold">Tiến độ kiểm chứng</span>
+<span class="font-label-md text-label-md text-primary font-bold">Đã hoàn thành 2/4 task (50%)</span>
+</div>
+<!-- Progress Bar -->
+<div class="w-full h-3 rounded-full bg-surface-container-high overflow-hidden">
+<div class="h-full bg-primary rounded-full transition-all duration-700" style="width: 50%;"></div>
+</div>
+<div class="flex items-center justify-between text-on-surface-variant font-label-sm text-label-sm pt-1">
+<span>2 Task đã nộp kết quả</span>
+<span>2 Task còn lại</span>
+</div>
+</div>
+<!-- Critical Deadline Alert Card -->
+<div class="p-space-md rounded-2xl bg-tile-rose text-on-secondary-container flex flex-col gap-space-xs">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-secondary text-[22px]">warning</span>
+<span class="font-label-md text-label-md font-bold uppercase tracking-wide text-secondary">Cảnh báo mùa thi &amp; Deadline</span>
+</div>
+<p class="font-body-sm text-body-sm leading-relaxed text-on-secondary-container">
+<strong>Mốc gần nhất:</strong> Hạn nộp hồ sơ ĐH Kiến trúc TP.HCM (H00) còn <strong>12 ngày</strong> (15/05/2026). Hãy ưu tiên hoàn thành task Vẽ hoặc xác nhận bỏ qua để nộp hồ sơ.
+          </p>
+</div>
+<!-- Action Button -->
+<a class="w-full py-3 px-space-md rounded-full bg-primary text-on-primary font-label-lg text-label-lg font-bold text-center shadow-md hover:bg-primary-container transition-all flex items-center justify-center gap-2 group" data-path="ke-hoach-xet-tuyen" href="#">
+<span>Đến bảng theo dõi deadline</span>
+<span class="material-symbols-outlined text-[18px] transition-transform group-hover:translate-x-1">arrow_forward</span>
+</a>
+</div>
+<!-- Compact Quick Mentor Guidance Box -->
+<div class="rounded-3xl bg-surface-container-low p-space-lg flex flex-col gap-space-sm shadow-sm">
+<div class="flex items-center gap-space-sm">
+<div class="w-10 h-10 rounded-full bg-tile-blue flex items-center justify-center text-primary shrink-0">
+<span class="material-symbols-outlined text-[20px]">support_agent</span>
+</div>
+<div>
+<div class="font-headline-sm text-headline-sm text-on-surface font-bold text-base">Cố vấn học đường UniView</div>
+<div class="font-label-sm text-label-sm text-on-surface-variant">Chế độ giải đáp ưu tiên 24/7</div>
+</div>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant leading-relaxed">
+          "Nếu bạn đã đạt trên 26 điểm thử cho tổ hợp D01 và thích môi trường sáng tạo thực hành, Nguyện vọng 1 tại UAH hoàn toàn có khả năng trúng tuyển cao. Hãy hoàn thành bản vẽ trước thứ Tư tới!"
+        </p>
+<div class="flex items-center justify-between pt-2">
+<span class="font-label-sm text-label-sm font-semibold text-primary">Thầy Hoàng Nam · Chuyên gia Admissions</span>
+<button class="font-label-sm text-label-sm text-on-surface hover:text-primary transition-colors underline">Nhắn tin cố vấn</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+<script>
+  function skipTask(taskId) {
+    if (confirm("Bạn có chắc chắn muốn bỏ qua task này để dành thời gian tập trung vào việc chuẩn bị hồ sơ hoặc ôn thi tốt nghiệp? Bạn có thể mở lại bất kỳ lúc nào.")) {
+      alert("Đã ghi nhận bỏ qua task " + taskId + ". Trạng thái nguyện vọng đã được chuyển sang sẵn sàng nộp hồ sơ!");
+    }
+  }
+
+  function skipAllValidationTasks() {
+    if (confirm("Chuyển trạng thái sang 'Chốt toàn bộ nguyện vọng'? Bạn sẽ bỏ qua các task kiểm chứng còn lại để tập trung vào bảng theo dõi Deadline tuyển sinh 2027.")) {
+      window.location.hash = "#ke-hoach-xet-tuyen";
+    }
+  }
+</script></main><footer class="w-full bg-surface-container-lowest mt-space-2xl shadow-[0_-1px_8px_rgba(0,0,0,0.03)]"><div class="max-w-[1440px] mx-auto px-margin md:px-margin-md lg:px-margin-lg py-space-2xl"><div class="grid grid-cols-1 md:grid-cols-12 gap-gutter-lg pb-space-xl"><div class="md:col-span-5 flex flex-col gap-space-sm"><div class="flex items-center gap-space-sm"><div class="w-9 h-9 rounded-full bg-tile-blue flex items-center justify-center p-1"><img alt="UniView Mascot" class="w-7 h-7 rounded-full object-cover" src="https://lh3.googleusercontent.com/aida/AEtjO1WZOqZY_bNzQeLt-VC6FxWqfmeLd0xAz4ooasdOVKBPsByvleas8IWvr9yQ20UxannvIjH5BoEUpPRwpgKkkp5IC40Bji-Pgn8aY4Pb5RersbuXLOyjMQY7INQefQ3ZqbkqtHHfc16EwX_sGx15NCEnjpOhVipEn6-pF1mDGtbgzEYCqwbIKT5loy5A-SO78SICyRkIUO9VPqpmeGasWPxq_19990kbuJIdE9P6Gb7xPIUSBXB9I7FnDr784iWwDfdc62OxQKOkwA"/></div><span class="font-headline-sm text-headline-sm text-primary tracking-tight font-bold">UniView</span></div><p class="font-body-sm text-body-sm text-on-surface-variant max-w-sm mt-space-xs">Nền tảng công nghệ định hướng học tập và tối ưu hóa lộ trình tuyển sinh đại học hàng đầu dành cho học sinh THPT và phụ huynh.</p></div><div class="md:col-span-7 grid grid-cols-2 sm:grid-cols-3 gap-gutter-md"><div class="flex flex-col gap-space-sm"><span class="font-label-md text-label-md text-on-surface uppercase tracking-wider font-bold">Khám phá</span><a class="font-body-sm text-body-sm text-on-surface-variant hover:text-primary transition-colors" data-path="kham-pha-nganh" href="#">Nhóm ngành Hot</a><a class="font-body-sm text-body-sm text-on-surface-variant hover:text-primary transition-colors" data-path="kham-pha-truong" href="#">Top trường đại học</a><a class="font-body-sm text-body-sm text-on-surface-variant hover:text-primary transition-colors" data-path="roadmap" href="#">Lộ trình cá nhân</a></div><div class="flex flex-col gap-space-sm"><span class="font-label-md text-label-md text-on-surface uppercase tracking-wider font-bold">Giải pháp</span><a class="font-body-sm text-body-sm text-on-surface-variant hover:text-primary transition-colors" data-path="cong-cu-tuyen-sinh" href="#">Máy tính điểm chuẩn</a><a class="font-body-sm text-body-sm text-on-surface-variant hover:text-primary transition-colors" data-path="ke-hoach-xet-tuyen" href="#">Theo dõi nguyện vọng</a></div><div class="flex flex-col gap-space-sm"><span class="font-label-md text-label-md text-on-surface uppercase tracking-wider font-bold">Hỗ trợ</span><span class="font-body-sm text-body-sm text-on-surface-variant">Tư vấn học đường</span><span class="font-body-sm text-body-sm text-on-surface-variant">Điều khoản dịch vụ</span></div></div></div><div class="pt-space-lg flex flex-col sm:flex-row items-center justify-between gap-space-sm"><span class="font-body-sm text-body-sm text-on-surface-variant">© 2025 UniView EdTech Platform. Bản quyền thuộc về UniView Vietnam.</span><div class="flex items-center gap-space-lg"><span class="font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors">Bảo mật thông tin</span><span class="font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors">Hướng dẫn sử dụng</span></div></div></div></footer></body></html>

@@ -57,7 +57,7 @@ function ActivePlanCard({ plan, admissionSeason, subscription, onToggleRenewal }
           {isAdmissionPass
             ? 'Pass gắn đúng một năm tuyển sinh, không chuyển nhượng và không đổi sang năm khác.'
             : plan.id === PLAN_IDS.ANNUAL
-              ? 'Gói Năm đã bao gồm Admission Pass; tắt gia hạn không xóa hồ sơ hoặc dữ liệu cũ.'
+              ? 'Gói Năm mở Roadmap kiểm chứng ngành và bao gồm Admission Pass cho một mùa tuyển sinh trong thời hạn gói. Tắt gia hạn không xóa dữ liệu cũ.'
             : 'Tắt gia hạn không làm mất quyền trong thời gian còn lại và không xóa hồ sơ.'}
         </p>
         {!isAdmissionPass && (
@@ -136,7 +136,7 @@ function AccountPlanPage() {
         <section className="mt-8 grid gap-5 md:grid-cols-3">
           {[
             ['Dữ liệu được bảo toàn', 'Hết hạn chỉ dừng tạo hành động mới; hồ sơ và lịch sử cũ vẫn xem được.'],
-            ['Gói Năm đã gồm Pass', 'Không thu thêm Admission Pass khi Gói Năm vẫn còn hiệu lực. Gói Tháng có thể mua Pass riêng.'],
+            ['Admission Pass đã nằm trong Gói Năm', 'Gói Năm bao gồm quyền dùng Decision Board và Admission Mode trong một mùa tuyển sinh thuộc thời hạn gói.'],
             ['Phụ huynh dùng tài khoản riêng', 'Học sinh kiểm soát dữ liệu nào được chia sẻ trong workspace.'],
           ].map(([title, description]) => (
             <div key={title} className="rounded-2xl bg-[#f1f3ff] p-5">

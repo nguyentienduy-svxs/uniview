@@ -215,10 +215,10 @@ export function UserDropdown({
           )}
 
           <UserMenuLink
-            to="/wishlist"
+            to="/shortlist"
             onClick={onClose}
           >
-            Wishlist
+            Shortlist
           </UserMenuLink>
 
           <UserMenuLink

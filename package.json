@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "test": "node --test src/utils/experienceAssessment.test.js src/utils/certificates.test.js src/utils/assessmentPayload.test.js && npm --prefix backend-assessment test -- --runInBand",
+    "test": "node --test src/utils/experienceAssessment.test.js src/utils/certificates.test.js src/utils/assessmentPayload.test.js src/utils/clickNavigation.test.js src/domain/accessPolicy.test.js src/data/taskWorkspaces.test.js src/data/careerReport.test.js && npm --prefix backend-assessment test -- --runInBand",
     "lint": "oxlint",
     "preview": "vite preview"
   },

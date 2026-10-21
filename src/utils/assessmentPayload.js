@@ -31,7 +31,6 @@ export function buildAssessmentPayload(
   return {
     userId,
     riasecAnswers: assessment.riasecAnswers,
-    mbtiAnswers: assessment.personalityAnswers,
     experience: {
       noExperience:
         assessment.experience.noExperience,

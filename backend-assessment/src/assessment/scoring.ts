@@ -1,7 +1,6 @@
 import { createHash } from 'node:crypto'
 import {
   MAJOR_PROFILES,
-  MBTI_QUESTIONS,
   RIASEC_QUESTIONS,
   UNIVERSITIES,
 } from './assessment.data'
@@ -11,8 +10,6 @@ import {
   ComponentScore,
   ExperienceAnswer,
   MajorProfile,
-  MBTI_AXES,
-  MbtiPole,
   RIASEC_CODES,
   RiasecCode,
 } from './assessment.types'
@@ -22,9 +19,8 @@ const FIT_WEIGHTS = {
   riasec: 0.3,
   academic: 0.2,
   evidence: 0.2,
-  mbti: 0.15,
-  environment: 0.1,
-  practical: 0.05,
+  environment: 0.2,
+  practical: 0.1,
 } as const
 
 const VALUE_SCORES = {
@@ -72,33 +68,6 @@ export function scoreRiasec(answers: Record<string, number>) {
   const flags = ranking[0].score - ranking[1].score < 5 ? ['RIASEC_CLOSE_RANGE'] : []
 
   return { scores, ranking, top3: ranking.slice(0, 3).map(({ code }) => code).join('-'), flags }
-}
-
-export function scoreMbti(answers: Record<string, MbtiPole>) {
-  const result: Record<string, unknown> = {}
-  const type: string[] = []
-  const flags: string[] = []
-
-  for (const axis of MBTI_AXES) {
-    const [left, right] = axis.split('') as [MbtiPole, MbtiPole]
-    const questions = MBTI_QUESTIONS.filter((question) => question.dimension === axis)
-    const leftCount = questions.filter((question) => answers[question.id] === left).length
-    const rightCount = questions.filter((question) => answers[question.id] === right).length
-    const clarity = round((Math.abs(leftCount - rightCount) / 15) * 100)
-    const winningPole = leftCount >= rightCount ? left : right
-    const clarityLabel = clarity >= 40 ? 'CLEAR' : clarity >= 20 ? 'MODERATE' : 'BORDERLINE'
-    if (clarityLabel === 'BORDERLINE') flags.push(`MBTI_BORDERLINE_${axis}`)
-    type.push(winningPole)
-    result[axis] = {
-      counts: { [left]: leftCount, [right]: rightCount },
-      percentages: { [left]: round(leftCount / 15 * 100), [right]: round(rightCount / 15 * 100) },
-      clarity,
-      clarityLabel,
-      winningPole,
-    }
-  }
-
-  return { type: type.join(''), axes: result, flags, disclaimer: 'Chỉ báo phong cách kiểu MBTI, không phải bài MBTI chính thức.' }
 }
 
 function mapped(value: string | undefined) {
@@ -214,11 +183,6 @@ function evidenceFit(scores: ReturnType<typeof scoreExperience>[], major: MajorP
   return matches.length ? round(mean(matches.map(({ evidenceStrength }) => evidenceStrength))) : null
 }
 
-function mbtiFit(type: string, major: MajorProfile): number | null {
-  if (type.length !== 4) return null
-  return round(major.mbtiLetters.filter((letter) => type.includes(letter)).length / major.mbtiLetters.length * 100)
-}
-
 function environmentFit(input: AssessmentInput, major: MajorProfile): number | null {
   const priorities = input.profile?.priorities ?? []
   if (!priorities.length) return null
@@ -233,12 +197,11 @@ function practicalFit(input: AssessmentInput, major: MajorProfile): number | nul
   return major.tuitionBands.includes(tuition) ? 90 : 45
 }
 
-function buildComponents(input: AssessmentInput, major: MajorProfile, riasec: ReturnType<typeof scoreRiasec>, mbti: ReturnType<typeof scoreMbti>, experience: ReturnType<typeof scoreExperience>[]) {
+function buildComponents(input: AssessmentInput, major: MajorProfile, riasec: ReturnType<typeof scoreRiasec>, experience: ReturnType<typeof scoreExperience>[]) {
   const raw: Record<keyof typeof FIT_WEIGHTS, number | null> = {
     riasec: riasecFit(riasec.scores, major),
     academic: academicFit(input, major),
     evidence: evidenceFit(experience, major),
-    mbti: mbtiFit(mbti.type, major),
     environment: environmentFit(input, major),
     practical: practicalFit(input, major),
   }
@@ -273,8 +236,8 @@ function confidenceScore(components: Record<string, ComponentScore>, flags: stri
   }
 }
 
-function qualityFlags(input: AssessmentInput, riasec: ReturnType<typeof scoreRiasec>, mbti: ReturnType<typeof scoreMbti>, experience: ReturnType<typeof scoreExperience>[]) {
-  const flags = [...riasec.flags, ...mbti.flags]
+function qualityFlags(input: AssessmentInput, riasec: ReturnType<typeof scoreRiasec>, experience: ReturnType<typeof scoreExperience>[]) {
+  const flags = [...riasec.flags]
   if (input.experience.noExperience || !experience.length) flags.push('LIMITED_EXPERIENCE')
   if (!input.profile?.gpa && !(input.profile?.strengths?.length)) flags.push('MISSING_ACADEMIC_DATA')
   if (!input.profile?.tuitionRange || !(input.profile?.regions?.length)) flags.push('MISSING_PRACTICAL_CONSTRAINTS')
@@ -285,12 +248,11 @@ function qualityFlags(input: AssessmentInput, riasec: ReturnType<typeof scoreRia
 export function evaluateAssessment(input: AssessmentInput, generatedAt = new Date().toISOString()): AssessmentReport {
   const snapshot = structuredClone(input)
   const riasec = scoreRiasec(snapshot.riasecAnswers)
-  const mbti = scoreMbti(snapshot.mbtiAnswers)
   const experience = (snapshot.experience.domains ?? []).map(scoreExperience)
-  const flags = qualityFlags(snapshot, riasec, mbti, experience)
+  const flags = qualityFlags(snapshot, riasec, experience)
 
   const majors = MAJOR_PROFILES.map((major) => {
-    const components = buildComponents(snapshot, major, riasec, mbti, experience)
+    const components = buildComponents(snapshot, major, riasec, experience)
     const fitScore = round(Object.values(components).reduce((sum, item) => sum + (item.score ?? 0) * item.effectiveWeight, 0))
     const confidence = confidenceScore(components, flags, experience)
     const topComponents = Object.entries(components)
@@ -327,9 +289,9 @@ export function evaluateAssessment(input: AssessmentInput, generatedAt = new Dat
     scoringModelVersion: 'uniview-direction-1.0.0',
     generatedAt,
     inputSnapshot: snapshot,
-    overview: { riasec, mbti, confidence: { score: majors[0].confidenceScore, label: majors[0].confidenceLabel }, disclaimer: 'Kết quả hỗ trợ khám phá, không khẳng định một “ngành hoàn hảo”.' },
+    overview: { riasec, confidence: { score: majors[0].confidenceScore, label: majors[0].confidenceLabel }, disclaimer: 'Kết quả hỗ trợ khám phá, không khẳng định một “ngành hoàn hảo”.' },
     onePageProfile: {
-      strongestSignals: [riasec.ranking[0], riasec.ranking[1], { mbtiStyle: mbti.type }],
+      strongestSignals: [riasec.ranking[0], riasec.ranking[1]],
       currentEvidence: experience,
       practicalConstraints: snapshot.profile ?? null,
       unknowns: flags,

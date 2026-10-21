@@ -1,6 +1,6 @@
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common'
 import { DEMO_PERSONAS } from './demo-personas'
-import { EXPERIENCE_DOMAINS, MAJOR_PROFILES, MBTI_QUESTIONS, RIASEC_QUESTIONS } from './assessment.data'
+import { EXPERIENCE_DOMAINS, MAJOR_PROFILES, RIASEC_QUESTIONS } from './assessment.data'
 import { calculateBaseEvidence, evaluateAssessment, getEvidenceLabel, selectAdaptiveBranch } from './scoring'
 import { ADAPTIVE_QUESTION_BANKS, BASE_EVIDENCE_QUESTIONS, DOMAIN_METADATA, DomainCode, getAdaptiveQuestions } from './adaptive-domain-questions'
 import { AssessmentInput, AssessmentReport, ExperienceAnswer } from './assessment.types'
@@ -17,11 +17,10 @@ export class AssessmentService {
       title: 'Đánh giá định hướng cá nhân',
       assessmentVersion: '2026.1',
       scoringModelVersion: 'uniview-direction-1.0.0',
-      sequence: ['RIASEC', 'MBTI_STYLE', 'ADAPTIVE_EXPERIENCE', 'PRACTICAL_PROFILE'],
-      counts: { riasec: 30, mbti: 60, experienceDomains: 8, adaptiveQuestionsPerDomain: 5 },
+      sequence: ['RIASEC', 'ADAPTIVE_EXPERIENCE', 'PRACTICAL_PROFILE'],
+      counts: { riasec: 30, experienceDomains: 8, adaptiveQuestionsPerDomain: 5 },
       disclaimers: [
         'Kết quả hỗ trợ khám phá và đối chiếu tín hiệu, không khẳng định một “ngành hoàn hảo”.',
-        'Chỉ báo phong cách kiểu MBTI, không phải bài MBTI chính thức.',
         'Liên kết hoặc mô tả minh chứng do người dùng cung cấp luôn có trạng thái UNVERIFIED.',
       ],
     }
@@ -29,10 +28,6 @@ export class AssessmentService {
 
   riasec() {
     return { scale: { min: 1, max: 5 }, questions: RIASEC_QUESTIONS.map(({ domain: _domain, ...publicQuestion }) => publicQuestion) }
-  }
-
-  mbti() {
-    return { disclaimer: 'Chỉ báo phong cách kiểu MBTI, không phải bài MBTI chính thức.', questions: MBTI_QUESTIONS }
   }
 
   experienceDomains() {
@@ -129,20 +124,12 @@ export class AssessmentService {
     if (!input || typeof input !== 'object') throw new BadRequestException({ code: 'INVALID_PAYLOAD' })
     const errors: Array<{ field: string; message: string }> = []
     const riasecIds = new Set(RIASEC_QUESTIONS.map(({ id }) => id))
-    const mbtiById = new Map(MBTI_QUESTIONS.map((question) => [question.id, question]))
     const riasecAnswers = input.riasecAnswers ?? {}
-    const mbtiAnswers = input.mbtiAnswers ?? {}
 
     if (Object.keys(riasecAnswers).length !== 30) errors.push({ field: 'riasecAnswers', message: 'Cần trả lời đủ đúng 30 câu RIASEC.' })
     for (const [id, value] of Object.entries(riasecAnswers)) {
       if (!riasecIds.has(id) || !Number.isInteger(value) || value < 1 || value > 5) errors.push({ field: `riasecAnswers.${id}`, message: 'ID hoặc giá trị RIASEC không hợp lệ (1–5).' })
     }
-    if (Object.keys(mbtiAnswers).length !== 60) errors.push({ field: 'mbtiAnswers', message: 'Cần trả lời đủ đúng 60 câu phong cách.' })
-    for (const [id, value] of Object.entries(mbtiAnswers)) {
-      const question = mbtiById.get(id)
-      if (!question || !question.options.some((option) => option.value === value)) errors.push({ field: `mbtiAnswers.${id}`, message: 'ID hoặc lựa chọn phong cách không hợp lệ.' })
-    }
-
     const domains = input.experience?.domains ?? []
     if (!input.experience || (!input.experience.noExperience && domains.length === 0)) errors.push({ field: 'experience', message: 'Chọn ít nhất một lĩnh vực hoặc xác nhận chưa có cơ hội trải nghiệm.' })
     const knownDomains = new Set(DOMAIN_METADATA.flatMap(({ domain, legacyId }) => [domain, legacyId]))

@@ -8,39 +8,42 @@ import NotFoundPage from './pages/NotFoundPage'
 import AppHeader from './components/header/AppHeader'
 import { AuthProvider } from './context/AuthContext'
 import { AssessmentProvider } from './context/AssessmentContext'
+import { JourneyProvider } from './context/JourneyContext'
 
 function App() {
   return (
     <BrowserRouter>
       <AuthProvider>
         <AssessmentProvider>
-          <ScrollToTop />
+          <JourneyProvider>
+            <ScrollToTop />
 
-          <div className="min-h-screen bg-[#f9f9ff] text-[#121b2e]">
-            <AppHeader />
+            <div className="min-h-screen bg-[#f9f9ff] text-[#121b2e]">
+              <AppHeader />
 
-            <Routes>
-              {pages.map((page) => (
+              <Routes>
+                {pages.map((page) => (
+                  <Route
+                    key={page.id}
+                    path={page.path}
+                    element={<PageRenderer page={page} />}
+                  />
+                ))}
+
                 <Route
-                  key={page.id}
-                  path={page.path}
-                  element={<PageRenderer page={page} />}
+                  path="/screens"
+                  element={<AllPagesPage />}
                 />
-              ))}
 
-              <Route
-                path="/screens"
-                element={<AllPagesPage />}
-              />
+                <Route
+                  path="*"
+                  element={<NotFoundPage />}
+                />
+              </Routes>
 
-              <Route
-                path="*"
-                element={<NotFoundPage />}
-              />
-            </Routes>
-
-            <AppFooter />
-          </div>
+              <AppFooter />
+            </div>
+          </JourneyProvider>
         </AssessmentProvider>
       </AuthProvider>
     </BrowserRouter>

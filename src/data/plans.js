@@ -11,10 +11,12 @@ function readConfiguredPrice(value) {
   return Number.isFinite(price) && price > 0 ? price : null
 }
 
+const PLAN_ENV = import.meta.env ?? {}
+
 const CONFIGURED_PRICES = {
-  [PLAN_IDS.MONTHLY]: readConfiguredPrice(import.meta.env.VITE_MONTHLY_PLAN_PRICE),
-  [PLAN_IDS.ANNUAL]: readConfiguredPrice(import.meta.env.VITE_ANNUAL_PLAN_PRICE),
-  [PLAN_IDS.ADMISSION_PASS]: readConfiguredPrice(import.meta.env.VITE_ADMISSION_PASS_PRICE),
+  [PLAN_IDS.MONTHLY]: readConfiguredPrice(PLAN_ENV.VITE_MONTHLY_PLAN_PRICE),
+  [PLAN_IDS.ANNUAL]: readConfiguredPrice(PLAN_ENV.VITE_ANNUAL_PLAN_PRICE),
+  [PLAN_IDS.ADMISSION_PASS]: readConfiguredPrice(PLAN_ENV.VITE_ADMISSION_PASS_PRICE),
 }
 
 export const PLAN_CATALOG = {
@@ -45,13 +47,14 @@ export const PLAN_CATALOG = {
     durationLabel: '12 tháng từ khi thanh toán thành công',
     billingLabel: 'Thuê bao theo năm · Có thể tắt tự động gia hạn',
     audience: 'Học sinh lớp 12 hoặc người muốn được đồng hành liên tục trong cả năm.',
-    description: 'Toàn bộ hành trình khám phá trong 12 tháng và đã bao gồm Admission Pass.',
+    description: 'Hành trình khám phá và kiểm chứng ngành trong 12 tháng, kèm Admission Pass cho một mùa tuyển sinh.',
     features: [
       'Toàn bộ quyền lợi của Gói Tháng',
       'Theo dõi nhiều vòng task, evidence và reflection',
       'Giữ mạch roadmap xuyên suốt 12 tháng',
       'Theo dõi sự thay đổi của các giả thuyết ngành',
-      'Đã bao gồm Admission Pass trong thời gian gói còn hiệu lực',
+      'Tối đa 5 task đang mở cùng lúc; hoàn thành hoặc dừng task sẽ giải phóng slot',
+      'Bao gồm Admission Pass cho một mùa tuyển sinh trong thời hạn Gói Năm',
     ],
     checkoutPath: '/checkout/personal-direction?plan=annual',
     accent: 'rose',

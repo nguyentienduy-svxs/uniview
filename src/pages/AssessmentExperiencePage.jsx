@@ -120,7 +120,7 @@ function AssessmentExperiencePage() {
     ? getAdaptiveQuestions(activeDomain, activeState.adaptiveBranch)
     : []
   return (
-    <AssessmentStepShell step={3} eyebrow="Hoạt động & trải nghiệm thực tế">
+    <AssessmentStepShell step={2} eyebrow="Hoạt động & trải nghiệm thực tế">
       <div className="mx-auto flex max-w-[1240px] flex-col gap-space-lg px-margin py-space-xl md:px-margin-md lg:px-gutter-lg">
         <section className="rounded-3xl bg-gradient-to-br from-surface-container-low to-surface-container-high p-space-lg shadow-sm md:p-space-xl">
           <div className="max-w-3xl">
@@ -204,7 +204,7 @@ function AssessmentExperiencePage() {
                     <QuestionField key={item.id} index={index} prompt={item.prompt} helpText={item.helpText} options={getStableQuestionOptions(item, experience.attemptSeed)} selectedId={activeState.adaptiveAnswers.find(({ questionId }) => questionId === item.id)?.optionId} onSelect={(optionId) => answerAdaptive(item.id, optionId)} />
                   ))}
                   <ArtifactField state={activeState} onChange={(artifactUrl) => updateActiveState({ artifactUrl, verificationStatus: artifactUrl.trim() ? 'ARTIFACT_PROVIDED_UNVERIFIED' : 'SELF_REPORTED' })} />
-                  <p className="rounded-xl bg-emerald-50 px-space-md py-space-sm text-sm text-emerald-900">Câu cuối cùng sẽ được tự lưu. UniView sẽ chuyển sang lĩnh vực chưa hoàn thành tiếp theo, hoặc sang Bước 4 khi bạn đã hoàn tất tất cả.</p>
+                  <p className="rounded-xl bg-emerald-50 px-space-md py-space-sm text-sm text-emerald-900">Câu cuối cùng sẽ được tự lưu. UniView sẽ chuyển sang lĩnh vực chưa hoàn thành tiếp theo, hoặc sang phần hồ sơ khi bạn đã hoàn tất.</p>
                 </>
               )}
 
@@ -227,11 +227,11 @@ function AssessmentExperiencePage() {
           </div>
         ) : null}
 
-        {experience.selectedDomains.length > 0 && experience.selectedDomains.some((domain) => experience.domainStates[domain]?.status !== 'COMPLETED') && <p className="rounded-xl bg-amber-50 px-space-md py-space-sm text-sm text-amber-900">Bạn vẫn còn lĩnh vực chưa hoàn tất. Bạn có thể tiếp tục trả lời, hoặc sang Bước 4 và quay lại chỉnh sửa sau.</p>}
+        {experience.selectedDomains.length > 0 && experience.selectedDomains.some((domain) => experience.domainStates[domain]?.status !== 'COMPLETED') && <p className="rounded-xl bg-amber-50 px-space-md py-space-sm text-sm text-amber-900">Bạn vẫn còn lĩnh vực chưa hoàn tất. Bạn có thể tiếp tục trả lời, hoặc sang phần hồ sơ và quay lại chỉnh sửa sau.</p>}
 
         <div className="flex flex-col items-center justify-between gap-space-md pb-space-xl sm:flex-row">
-          <button type="button" onClick={() => navigate('/assessment/preferences')} className="inline-flex w-full items-center justify-center gap-space-xs rounded-full bg-surface-container-low px-space-lg py-space-sm font-label-lg text-label-lg font-semibold text-on-surface hover:bg-surface-container sm:w-auto"><span className="material-symbols-outlined text-lg">arrow_back</span>Quay lại Bước 2</button>
-          <button type="button" onClick={() => navigate('/assessment/quick-profile')} className="group inline-flex w-full items-center justify-center gap-space-sm rounded-full bg-primary-container px-space-xl py-space-md font-label-lg text-label-lg font-bold text-on-primary shadow-lg transition-all hover:bg-primary sm:w-auto">Tiếp tục Bước 4<span className="material-symbols-outlined text-xl">arrow_forward</span></button>
+          <button type="button" onClick={() => navigate('/assessment/riasec')} className="inline-flex w-full items-center justify-center gap-space-xs rounded-full bg-surface-container-low px-space-lg py-space-sm font-label-lg text-label-lg font-semibold text-on-surface hover:bg-surface-container sm:w-auto"><span className="material-symbols-outlined text-lg">arrow_back</span>Quay lại RIASEC</button>
+          <button type="button" onClick={() => navigate('/assessment/quick-profile')} className="group inline-flex w-full items-center justify-center gap-space-sm rounded-full bg-primary-container px-space-xl py-space-md font-label-lg text-label-lg font-bold text-on-primary shadow-lg transition-all hover:bg-primary sm:w-auto">Tiếp tục hồ sơ thực tế<span className="material-symbols-outlined text-xl">arrow_forward</span></button>
         </div>
       </div>
     </AssessmentStepShell>
