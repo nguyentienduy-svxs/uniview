@@ -6,11 +6,14 @@ import {
 } from './HeaderIcons'
 
 import { admissionTools } from './headerConfig'
+import { getActivePlanSummary } from '../../data/plans'
+import { ROLE_LABELS } from '../../data/user'
 
 export function AdmissionToolsDropdown({
   open,
   active,
   hasAdmissionPass,
+  canViewAdmissionTools = hasAdmissionPass,
   onToggle,
   onClose,
 }) {
@@ -58,7 +61,7 @@ export function AdmissionToolsDropdown({
           {admissionTools.map((tool) => {
             const locked =
               tool.requiredEntitlement &&
-              !hasAdmissionPass
+              !canViewAdmissionTools
 
             return (
               <NavLink
@@ -94,7 +97,7 @@ export function AdmissionToolsDropdown({
                 {locked && (
                   <span className="flex shrink-0 items-center gap-1 rounded-full bg-[#FFF1F2] px-2 py-1 text-[10px] font-semibold text-[#FB7185]">
                     <LockIcon />
-                    89k
+                    Pass
                   </span>
                 )}
               </NavLink>
@@ -109,25 +112,16 @@ export function AdmissionToolsDropdown({
 export function UserDropdown({
   user,
   admissionSeason,
+  activePlans = [],
   open,
-  hasDirectionSnapshot,
+  hasPersonalWorkspace,
   hasAdmissionPass,
+  canViewAdmissionTools = hasAdmissionPass,
   onToggle,
   onClose,
   onLogout,
-  onResetDemo,
 }) {
-  let planLabel = 'Preview'
-
-  if (hasDirectionSnapshot) {
-    planLabel = 'Gói Tháng / Gói Năm'
-  }
-
-  if (hasAdmissionPass) {
-    planLabel = admissionSeason
-      ? `Admission Pass ${admissionSeason}`
-      : 'Admission Pass'
-  }
+  const planLabel = getActivePlanSummary(activePlans, admissionSeason)
 
   return (
     <div className="relative">
@@ -191,11 +185,14 @@ export function UserDropdown({
             </p>
 
             <p className="mt-1 text-xs font-medium text-[#1D4ED8]">
-              {(hasDirectionSnapshot ||
+              {(hasPersonalWorkspace ||
                 hasAdmissionPass) &&
                 '✓ '}
 
               {planLabel}
+            </p>
+            <p className="mt-1 text-[11px] text-slate-500">
+              {ROLE_LABELS[user?.role] ?? user?.role ?? 'Thành viên'}
             </p>
           </div>
 
@@ -208,7 +205,7 @@ export function UserDropdown({
             Hồ sơ của tôi
           </UserMenuLink>
 
-          {hasDirectionSnapshot && (
+          {hasPersonalWorkspace && (
             <UserMenuLink
               to="/assessment/result"
               onClick={onClose}
@@ -226,24 +223,24 @@ export function UserDropdown({
 
           <UserMenuLink
             to={
-              hasAdmissionPass
+              canViewAdmissionTools
                 ? '/decision-board'
                 : '/feature-preview/decision-board'
             }
             onClick={onClose}
           >
             Bảng quyết định
-            {!hasAdmissionPass && (
+            {!canViewAdmissionTools && (
               <span className="mt-1 inline-flex items-center gap-1 rounded-full bg-[#FFF1F2] px-2 py-1 text-[10px] font-semibold text-[#FB7185]">
                 <LockIcon />
-                89k
+                Pass
               </span>
             )}
           </UserMenuLink>
 
           <MenuDivider />
 
-          {!hasDirectionSnapshot &&
+          {!hasPersonalWorkspace &&
             !hasAdmissionPass && (
               <NavLink
                 to="/pricing"
@@ -260,7 +257,7 @@ export function UserDropdown({
               </NavLink>
             )}
 
-          {hasDirectionSnapshot &&
+          {hasPersonalWorkspace &&
             !hasAdmissionPass && (
               <NavLink
                 to="/admission-pass"
@@ -272,17 +269,17 @@ export function UserDropdown({
                 </p>
 
                 <p className="mt-1 text-[11px] text-slate-500">
-                  Công cụ cho một mùa tuyển sinh · 89.000đ
+                  Mở công cụ cho đúng một mùa tuyển sinh
                 </p>
               </NavLink>
             )}
 
-          {hasAdmissionPass && (
+          {activePlans.length > 0 && (
             <UserMenuLink
               to="/account/plan"
               onClick={onClose}
             >
-              Quản lý gói
+              Gói & quyền lợi
             </UserMenuLink>
           )}
 
@@ -292,17 +289,6 @@ export function UserDropdown({
           >
             Cài đặt
           </UserMenuLink>
-
-          <button
-            type="button"
-            onClick={() => {
-              onResetDemo()
-              onClose()
-            }}
-            className="mt-1 w-full rounded-xl bg-amber-50 px-3 py-2.5 text-left text-sm font-semibold text-amber-800 hover:bg-amber-100"
-          >
-            Demo: đặt Chí Duy về gói Admission Pass 89k
-          </button>
 
           <button
             type="button"

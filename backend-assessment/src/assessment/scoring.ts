@@ -324,7 +324,7 @@ export function evaluateAssessment(input: AssessmentInput, generatedAt = new Dat
   return {
     id: reportId,
     assessmentVersion: '2026.1',
-    scoringModelVersion: 'direction-snapshot-1.0.0',
+    scoringModelVersion: 'uniview-direction-1.0.0',
     generatedAt,
     inputSnapshot: snapshot,
     overview: { riasec, mbti, confidence: { score: majors[0].confidenceScore, label: majors[0].confidenceLabel }, disclaimer: 'Kết quả hỗ trợ khám phá, không khẳng định một “ngành hoàn hảo”.' },
@@ -344,6 +344,5 @@ export function evaluateAssessment(input: AssessmentInput, generatedAt = new Dat
     schoolMatch,
     nextSteps: selected.nextActions,
     qualityFlags: flags,
-    attempt: { consumed: false, remaining: null },
   }
 }

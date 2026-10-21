@@ -1,12 +1,12 @@
-import { useState } from 'react'
 import { Link } from 'react-router-dom'
 
 import { useAuth } from '../context/AuthContext'
-import { formatPrice, getPlan, PLAN_IDS } from '../data/plans'
+import { formatPlanDate, formatPrice, getPlan, hasConfiguredPrice, PLAN_IDS } from '../data/plans'
 import { ENTITLEMENTS } from '../data/user'
 
-function ActivePlanCard({ plan, admissionSeason, autoRenew, onToggleRenewal }) {
+function ActivePlanCard({ plan, admissionSeason, subscription, onToggleRenewal }) {
   const isAdmissionPass = plan.id === PLAN_IDS.ADMISSION_PASS
+  const autoRenew = Boolean(subscription?.autoRenew)
 
   return (
     <article className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
@@ -25,7 +25,7 @@ function ActivePlanCard({ plan, admissionSeason, autoRenew, onToggleRenewal }) {
         </div>
         <div className="sm:text-right">
           <strong className="font-display text-2xl text-[#1D4ED8]">{formatPrice(plan.price)}</strong>
-          <p className="mt-1 text-xs text-[#667085]">{plan.priceSuffix.replace('/ ', '')}</p>
+          {hasConfiguredPrice(plan) && <p className="mt-1 text-xs text-[#667085]">{plan.priceSuffix.replace('/ ', '')}</p>}
         </div>
       </div>
 
@@ -33,9 +33,11 @@ function ActivePlanCard({ plan, admissionSeason, autoRenew, onToggleRenewal }) {
         <div>
           <p className="text-xs font-bold uppercase tracking-wider text-[#667085]">Thời hạn</p>
           <p className="mt-1 text-sm font-semibold text-[#172033]">
-            {isAdmissionPass && admissionSeason
-              ? `01/09/${Number(admissionSeason) - 1} – 30/09/${admissionSeason}`
-              : plan.durationLabel}
+            {subscription?.startedAt && subscription?.endsAt
+              ? `${formatPlanDate(subscription.startedAt)} – ${formatPlanDate(subscription.endsAt)}`
+              : isAdmissionPass && admissionSeason
+                ? `01/09/${Number(admissionSeason) - 1} – 30/09/${admissionSeason}`
+                : plan.durationLabel}
           </p>
         </div>
         <div>
@@ -54,6 +56,8 @@ function ActivePlanCard({ plan, admissionSeason, autoRenew, onToggleRenewal }) {
         <p className="text-sm text-[#667085]">
           {isAdmissionPass
             ? 'Pass gắn đúng một năm tuyển sinh, không chuyển nhượng và không đổi sang năm khác.'
+            : plan.id === PLAN_IDS.ANNUAL
+              ? 'Gói Năm đã bao gồm Admission Pass; tắt gia hạn không xóa hồ sơ hoặc dữ liệu cũ.'
             : 'Tắt gia hạn không làm mất quyền trong thời gian còn lại và không xóa hồ sơ.'}
         </p>
         {!isAdmissionPass && (
@@ -71,8 +75,14 @@ function ActivePlanCard({ plan, admissionSeason, autoRenew, onToggleRenewal }) {
 }
 
 function AccountPlanPage() {
-  const { activePlans, admissionSeason, hasEntitlement, user } = useAuth()
-  const [autoRenew, setAutoRenew] = useState(true)
+  const {
+    activePlans,
+    admissionSeason,
+    hasEntitlement,
+    setSubscriptionAutoRenew,
+    subscriptions,
+    user,
+  } = useAuth()
 
   const fallbackPlans = []
   if (hasEntitlement(ENTITLEMENTS.ADMISSION_PASS)) fallbackPlans.push(PLAN_IDS.ADMISSION_PASS)
@@ -106,8 +116,11 @@ function AccountPlanPage() {
                 key={plan.id}
                 plan={plan}
                 admissionSeason={admissionSeason}
-                autoRenew={autoRenew}
-                onToggleRenewal={() => setAutoRenew((current) => !current)}
+                subscription={subscriptions.find(({ planId }) => planId === plan.id)}
+                onToggleRenewal={() => {
+                  const subscription = subscriptions.find(({ planId }) => planId === plan.id)
+                  setSubscriptionAutoRenew(plan.id, !subscription?.autoRenew)
+                }}
               />
             ))}
           </section>
@@ -123,7 +136,7 @@ function AccountPlanPage() {
         <section className="mt-8 grid gap-5 md:grid-cols-3">
           {[
             ['Dữ liệu được bảo toàn', 'Hết hạn chỉ dừng tạo hành động mới; hồ sơ và lịch sử cũ vẫn xem được.'],
-            ['Pass có thể mua thêm', 'Admission Pass không tự hủy Gói Tháng hoặc Gói Năm đang hoạt động.'],
+            ['Gói Năm đã gồm Pass', 'Không thu thêm Admission Pass khi Gói Năm vẫn còn hiệu lực. Gói Tháng có thể mua Pass riêng.'],
             ['Phụ huynh dùng tài khoản riêng', 'Học sinh kiểm soát dữ liệu nào được chia sẻ trong workspace.'],
           ].map(([title, description]) => (
             <div key={title} className="rounded-2xl bg-[#f1f3ff] p-5">

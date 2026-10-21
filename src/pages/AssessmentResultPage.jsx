@@ -236,8 +236,8 @@ function AssessmentResultPage() {
     ? new Date(activeReport.generatedAt).toLocaleDateString('vi-VN')
     : 'Chưa ghi nhận'
   const reportCode = activeReport?.id
-    ? String(activeReport.id).toUpperCase().replace('UV-LOCAL-', 'UV-DS-')
-    : `UV-DS-${String(riasecAnswered * 103 + personalityAnswered * 17 + 2026).padStart(5, '0')}`
+    ? String(activeReport.id).toUpperCase().replace('UV-LOCAL-', 'UV-AS-')
+    : `UV-AS-${String(riasecAnswered * 103 + personalityAnswered * 17 + 2026).padStart(5, '0')}`
 
   const axisPercent = (axis, code) =>
     personalityResult.axes[axis]?.percentages?.[code] ?? 0
@@ -362,7 +362,7 @@ function AssessmentResultPage() {
 
           <div className="grid grid-cols-2 gap-space-sm rounded-xl bg-white p-space-md shadow-sm sm:grid-cols-4">
             {[
-              ['Học sinh', user?.fullName ?? 'Chí Duy'],
+              ['Học sinh', user?.fullName ?? 'Khách chưa đăng nhập'],
               ['Mã báo cáo', reportCode],
               ['Phiên bản', '1.0 · Tiêu chuẩn'],
               ['Độ đầy đủ dữ liệu', `${confidence}%`],

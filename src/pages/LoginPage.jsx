@@ -6,9 +6,9 @@ import { useAuth } from '../context/AuthContext'
 function LoginPage() {
   const navigate = useNavigate()
   const location = useLocation()
-  const { login, demoCredentials } = useAuth()
-  const [identifier, setIdentifier] = useState(demoCredentials.username)
-  const [password, setPassword] = useState(demoCredentials.password)
+  const { login, demoAccounts } = useAuth()
+  const [identifier, setIdentifier] = useState(demoAccounts[0]?.username ?? '')
+  const [password, setPassword] = useState(demoAccounts[0]?.password ?? '')
   const [showPassword, setShowPassword] = useState(false)
   const [error, setError] = useState('')
   const [submitting, setSubmitting] = useState(false)
@@ -174,9 +174,30 @@ function LoginPage() {
 
               <form className="space-y-4" id="loginForm" onSubmit={handleSubmit}>
 
-                <div className="rounded-xl border border-blue-200 bg-blue-50 p-3 text-sm text-blue-900">
-                  <p className="font-bold">Tài khoản demo — Chí Duy</p>
-                  <p className="mt-1">Username: <strong>{demoCredentials.username}</strong> · Mật khẩu: <strong>{demoCredentials.password}</strong></p>
+                <div className="rounded-2xl border border-blue-200 bg-blue-50 p-3">
+                  <p className="text-xs font-extrabold uppercase tracking-wider text-blue-900">Chọn tài khoản theo gói để kiểm thử</p>
+                  <div className="mt-2 grid gap-2 sm:grid-cols-3">
+                    {demoAccounts.map((account) => {
+                      const selected = identifier === account.username
+                      return (
+                        <button
+                          className={`rounded-xl border p-2.5 text-left transition ${selected ? 'border-[#1D4ED8] bg-white shadow-sm' : 'border-blue-100 bg-blue-50/50 hover:bg-white'}`}
+                          key={account.id}
+                          onClick={() => {
+                            setIdentifier(account.username)
+                            setPassword(account.password)
+                            setError('')
+                          }}
+                          type="button"
+                        >
+                          <span className="block text-xs font-bold text-[#172033]">{account.fullName}</span>
+                          <span className="mt-1 block text-[10px] font-semibold text-[#1D4ED8]">{account.planDescription}</span>
+                          <span className="mt-1 block text-[10px] text-slate-500">{account.username}</span>
+                        </button>
+                      )
+                    })}
+                  </div>
+                  <p className="mt-2 text-[10px] text-slate-600">Mật khẩu được tự điền khi chọn tài khoản.</p>
                 </div>
 
                 <div>
@@ -190,7 +211,7 @@ function LoginPage() {
                         <path d="M22 7L13.03 12.7a2 2 0 0 1-2.06 0L2 7"></path>
                       </svg>
                     </div>
-                    <input className="w-full pl-11 pr-4 py-3 rounded-xl bg-surface-container-lowest text-on-surface placeholder:text-slate-400 font-body-sm text-body-sm focus:outline-none focus:ring-2 focus:ring-primary-container shadow-sm transition-all" id="emailInput" placeholder="chiduy" required type="text" value={identifier} onChange={(event) => setIdentifier(event.target.value)} />
+                    <input className="w-full pl-11 pr-4 py-3 rounded-xl bg-surface-container-lowest text-on-surface placeholder:text-slate-400 font-body-sm text-body-sm focus:outline-none focus:ring-2 focus:ring-primary-container shadow-sm transition-all" id="emailInput" placeholder="Username hoặc email" required type="text" value={identifier} onChange={(event) => setIdentifier(event.target.value)} />
                   </div>
                 </div>
 

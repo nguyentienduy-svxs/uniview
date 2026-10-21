@@ -6,7 +6,6 @@ import { pages } from './data/pages'
 import AllPagesPage from './pages/AllPagesPage'
 import NotFoundPage from './pages/NotFoundPage'
 import AppHeader from './components/header/AppHeader'
-import DevToolbar from './components/DevToolbar'
 import { AuthProvider } from './context/AuthContext'
 import { AssessmentProvider } from './context/AssessmentContext'
 
@@ -41,7 +40,6 @@ function App() {
             </Routes>
 
             <AppFooter />
-            <DevToolbar />
           </div>
         </AssessmentProvider>
       </AuthProvider>

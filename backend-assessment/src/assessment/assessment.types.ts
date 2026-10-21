@@ -40,7 +40,6 @@ export interface ExperienceAnswer {
 
 export interface AssessmentInput {
   userId?: string
-  paidAttempt?: boolean
   riasecAnswers: Record<string, number>
   mbtiAnswers: Record<string, MbtiPole>
   experience: {
@@ -118,5 +117,4 @@ export interface AssessmentReport {
   schoolMatch: unknown
   nextSteps: unknown
   qualityFlags: string[]
-  attempt: { consumed: boolean; remaining: number | null }
 }

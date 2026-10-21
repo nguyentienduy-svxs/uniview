@@ -2,13 +2,17 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
 import { useAuth } from '../context/AuthContext'
-import { formatPrice, PLAN_CATALOG, PLAN_IDS } from '../data/plans'
+import { formatPrice, hasConfiguredPrice, PLAN_CATALOG, PLAN_IDS } from '../data/plans'
 
 function AdmissionPassCheckoutPage() {
   const navigate = useNavigate()
-  const { isAuthenticated, purchaseAdmissionPass } = useAuth()
+  const { admissionSeason, isAuthenticated, purchaseAdmissionPass, user } = useAuth()
   const [confirming, setConfirming] = useState(false)
-  const price = formatPrice(PLAN_CATALOG[PLAN_IDS.ADMISSION_PASS].price)
+  const admissionPlan = PLAN_CATALOG[PLAN_IDS.ADMISSION_PASS]
+  const price = formatPrice(admissionPlan.price)
+  const priceConfigured = hasConfiguredPrice(admissionPlan)
+  const season = admissionSeason ?? user?.targetAdmissionYear ?? '2027'
+  const seasonStartYear = Number(season) - 1
 
   const confirmDemoPayment = () => {
     if (!isAuthenticated) {
@@ -16,7 +20,7 @@ function AdmissionPassCheckoutPage() {
       return
     }
     setConfirming(true)
-    purchaseAdmissionPass('2027')
+    purchaseAdmissionPass(season)
     navigate('/checkout/success', { replace: true })
   }
 
@@ -34,7 +38,7 @@ function AdmissionPassCheckoutPage() {
 <span className="material-symbols-outlined text-[14px]">chevron_right</span>
 <a className="hover:text-primary transition-colors" data-path="bang-gia-va-goi-dich-vu" href="#">Bảng giá &amp; Gói dịch vụ</a>
 <span className="material-symbols-outlined text-[14px]">chevron_right</span>
-<span className="text-on-surface font-semibold">Xác nhận thanh toán Admission Pass 2027</span>
+<span className="text-on-surface font-semibold">Xác nhận thanh toán Admission Pass {season}</span>
 </nav>
 <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-sage-subtle text-sage-text font-label-sm text-label-sm shadow-sm">
 <span className="material-symbols-outlined text-[16px]">lock</span>
@@ -42,9 +46,9 @@ function AdmissionPassCheckoutPage() {
 </div>
 </div>
 <div className="flex flex-col gap-1 max-w-3xl">
-<h1 className="font-headline-lg text-headline-lg text-on-surface font-semibold tracking-tight">Xác nhận đăng ký Admission Pass 2027</h1>
+<h1 className="font-headline-lg text-headline-lg text-on-surface font-semibold tracking-tight">Xác nhận đăng ký Admission Pass {season}</h1>
 <p className="font-body-md text-body-md text-on-surface-variant">
-            Mở khóa trọn bộ công cụ cố vấn tuyển sinh đa phương thức và báo cáo hướng nghiệp cho mùa thi 2027.
+            Mở khóa bộ công cụ theo dõi phương thức, điều kiện, deadline và kết quả cho mùa tuyển sinh {season}.
           </p>
 </div>
 </div>
@@ -63,13 +67,13 @@ function AdmissionPassCheckoutPage() {
 <div className="flex items-center gap-2">
 <span className="px-2 py-0.5 rounded-full bg-secondary-fixed text-on-secondary-fixed font-label-sm text-label-sm flex items-center gap-1">
 <span className="material-symbols-outlined text-[14px]">workspace_premium</span>
-                      Khóa Tuyển Sinh 2027
+                      Mùa Tuyển Sinh {season}
                     </span>
-<span className="px-2 py-0.5 rounded-full bg-tertiary-fixed text-on-tertiary-fixed font-label-sm text-label-sm">Bản hoàn chỉnh</span>
+<span className="px-2 py-0.5 rounded-full bg-tertiary-fixed text-on-tertiary-fixed font-label-sm text-label-sm">Theo năm tuyển sinh</span>
 </div>
-<h2 className="font-headline-md text-headline-md text-on-surface font-semibold mt-1">Uniview Admission Pass 2027</h2>
+<h2 className="font-headline-md text-headline-md text-on-surface font-semibold mt-1">UniView Admission Pass {season}</h2>
 <p className="font-body-sm text-body-sm text-on-surface-variant mt-0.5">
-                    Cho tuyển sinh đại học 2027 · Phân tích chiến lược &amp; tối ưu điểm chuẩn đa phương thức
+                    Theo dõi một mùa tuyển sinh cụ thể · Không tự động gia hạn
                   </p>
 </div>
 </div>
@@ -78,6 +82,12 @@ function AdmissionPassCheckoutPage() {
 <span className="font-headline-lg text-headline-lg text-primary font-bold">{price}</span>
 </div>
 </div>
+
+{!priceConfigured && (
+<div className="rounded-xl border border-amber-200 bg-amber-50 p-3 text-xs leading-relaxed text-amber-900">
+  Giá Admission Pass chưa được cấu hình trong bảng giá quản trị. Màn hình này chỉ mô phỏng luồng kích hoạt và không thực hiện giao dịch thật.
+</div>
+)}
 
 <div className="p-3.5 rounded-xl bg-sage-subtle flex items-start gap-3 text-sage-text">
 <span className="material-symbols-outlined text-[20px] shrink-0 mt-0.5 text-sage-text">verified</span>
@@ -93,11 +103,11 @@ function AdmissionPassCheckoutPage() {
 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-on-surface">
 <div className="flex items-center gap-2 font-body-sm text-body-sm">
 <span className="material-symbols-outlined text-primary text-[18px]">bolt</span>
-<span>Bắt đầu: <strong className="font-semibold">Ngay sau thanh toán</strong></span>
+<span>Kích hoạt: <strong className="font-semibold">Sau thanh toán thành công</strong></span>
 </div>
 <div className="flex items-center gap-2 font-body-sm text-body-sm">
 <span className="material-symbols-outlined text-primary text-[18px]">event_available</span>
-<span>Hiệu lực: <strong className="font-semibold">Hết 30/09/2027</strong></span>
+<span>Khung hiệu lực: <strong className="font-semibold">01/09/{seasonStartYear} – 30/09/{season}</strong></span>
 </div>
 </div>
 <div className="flex items-center gap-2 text-on-surface-variant font-label-sm text-label-sm pt-1">
@@ -115,26 +125,26 @@ function AdmissionPassCheckoutPage() {
 <div className="flex items-center justify-between">
 <span className="font-label-lg text-label-lg text-lavender-text font-semibold flex items-center gap-1.5">
 <span className="material-symbols-outlined text-[18px]">psychology</span>
-                    Nhóm 1: Báo cáo định hướng cá nhân (Đã bao gồm sẵn)
+                    Nhóm 1: Personal Workspace và hành trình khám phá
                   </span>
 <span className="text-[11px] font-semibold uppercase px-2 py-0.5 rounded-full bg-surface-container-lowest text-lavender-text shadow-sm">Đã bao gồm</span>
 </div>
 <ul className="flex flex-col gap-2 font-body-sm text-body-sm text-on-surface">
 <li className="flex items-start gap-2">
 <span className="material-symbols-outlined text-primary-container text-[18px] shrink-0">check_circle</span>
-<span><strong>Full Assessment Analysis:</strong> Phân tích toàn diện 6 nhóm RIASEC và lập hồ sơ năng lực tư duy.</span>
+<span><strong>Assessment:</strong> RIASEC và câu hỏi bối cảnh do UniView xây dựng, dùng để tạo giả thuyết chứ không kết luận ngành thay học sinh.</span>
 </li>
 <li className="flex items-start gap-2">
 <span className="material-symbols-outlined text-primary-container text-[18px] shrink-0">check_circle</span>
-<span><strong>Personalized Major Shortlist:</strong> Danh sách 7 ngành mục tiêu kèm lý giải chi tiết phù hợp tố chất.</span>
+<span><strong>Giả thuyết ngành:</strong> Hai đến ba hướng ban đầu, kèm lý do xuất hiện, dữ liệu còn mâu thuẫn và điều chưa biết.</span>
 </li>
 <li className="flex items-start gap-2">
 <span className="material-symbols-outlined text-primary-container text-[18px] shrink-0">check_circle</span>
-<span><strong>Phân tích rào cản thực tế:</strong> Cảnh báo độ cạnh tranh, yêu cầu kỹ năng và mức độ phù hợp tài chính.</span>
+<span><strong>Task và evidence:</strong> Làm việc trải nghiệm nhỏ, nộp bằng chứng, nhận rubric và reflection tách riêng.</span>
 </li>
 <li className="flex items-start gap-2">
 <span className="material-symbols-outlined text-primary-container text-[18px] shrink-0">check_circle</span>
-<span><strong>Initial University Shortlist:</strong> Khuyến nghị 12 trường đại học trọng điểm ban đầu dựa trên năng lực.</span>
+<span><strong>Roadmap thích ứng:</strong> Chọn một đến ba việc ưu tiên dựa trên hồ sơ, task, thời gian và deadline hiện tại.</span>
 </li>
 </ul>
 </div>
@@ -143,30 +153,30 @@ function AdmissionPassCheckoutPage() {
 <div className="flex items-center justify-between">
 <span className="font-label-lg text-label-lg text-primary font-semibold flex items-center gap-1.5">
 <span className="material-symbols-outlined text-[18px]">auto_graph</span>
-                    Nhóm 2: Bộ công cụ chiến lược tuyển sinh 2027
+                    Nhóm 2: Bộ công cụ chiến lược tuyển sinh {season}
                   </span>
 <span className="text-[11px] font-semibold uppercase px-2 py-0.5 rounded-full bg-surface-container-lowest text-primary shadow-sm">Độc quyền Pass</span>
 </div>
 <ul className="flex flex-col gap-2 font-body-sm text-body-sm text-on-surface">
 <li className="flex items-start gap-2">
 <span className="material-symbols-outlined text-tertiary text-[18px] shrink-0">check_circle</span>
-<span><strong>Admission Route Mapping:</strong> Bản đồ con đường tuyển sinh 4+ phương thức (THPT, ĐGNL ĐHQG, ĐGTD ĐHBK, Học bạ + CCQT).</span>
+<span><strong>Admission Route Mapping:</strong> Lập bản đồ phương thức, tổ hợp, điều kiện và hồ sơ cho từng lựa chọn ngành – trường.</span>
 </li>
 <li className="flex items-start gap-2">
 <span className="material-symbols-outlined text-tertiary text-[18px] shrink-0">check_circle</span>
-<span><strong>Scenario Comparison:</strong> Giả lập kịch bản biến động điểm sàn 3 năm &amp; mô phỏng ngân sách 4 năm học chuẩn xác.</span>
+<span><strong>Scenario Comparison:</strong> So sánh kịch bản theo điểm, học phí, địa điểm và dữ liệu hiện có; luôn nêu căn cứ và phần còn thiếu.</span>
 </li>
 <li className="flex items-start gap-2">
 <span className="material-symbols-outlined text-tertiary text-[18px] shrink-0">check_circle</span>
-<span><strong>Personalized Compare:</strong> So sánh đối chiếu chuyên sâu cùng lúc 5 trường/ngành theo hồ sơ riêng.</span>
+<span><strong>Eligibility:</strong> Kiểm tra đang đủ điều kiện, thiếu điều kiện hay chưa đủ dữ liệu cho từng phương thức.</span>
 </li>
 <li className="flex items-start gap-2">
 <span className="material-symbols-outlined text-tertiary text-[18px] shrink-0">check_circle</span>
-<span><strong>Advanced Decision Board:</strong> Bảng ma trận quyết định nguyện vọng an toàn / mục tiêu / thử thách.</span>
+<span><strong>Decision Board:</strong> Theo dõi shortlist, hồ sơ, deadline, người phụ trách, nguyện vọng và trạng thái kết quả.</span>
 </li>
 <li className="flex items-start gap-2">
 <span className="material-symbols-outlined text-tertiary text-[18px] shrink-0">check_circle</span>
-<span><strong>Live Tracker 2027:</strong> Tự động đồng bộ đề án tuyển sinh và chỉ tiêu thực tế từ 142 trường ĐH suốt mùa thi.</span>
+<span><strong>Nguồn tuyển sinh:</strong> Mỗi thông tin có nguồn chính thức, ngày cập nhật và cảnh báo nếu đã cũ hoặc chưa kiểm chứng.</span>
 </li>
 </ul>
 </div>
@@ -180,15 +190,15 @@ function AdmissionPassCheckoutPage() {
 </div>
 <div className="flex flex-col">
 <span className="font-label-sm text-label-sm text-on-surface-variant uppercase">Tài khoản thụ hưởng</span>
-<span className="font-label-lg text-label-lg text-on-surface font-semibold">nguyen.duc.anh2009@gmail.com</span>
+<span className="font-label-lg text-label-lg text-on-surface font-semibold">{user?.email ?? 'Email tài khoản'}</span>
 </div>
 </div>
 <p className="font-body-sm text-body-sm text-on-surface-variant">
-              Toàn bộ quyền lợi Pass 2027 và Báo cáo định hướng được kích hoạt tự động ngay sau khi giao dịch hoàn tất.
+              Toàn bộ quyền lợi Admission Pass {season} được kích hoạt sau khi giao dịch được xác nhận thành công.
             </p>
 <div className="flex items-center gap-2 text-sage-text bg-sage-subtle p-2.5 rounded-lg font-label-sm text-label-sm">
 <span className="material-symbols-outlined text-[16px]">cloud_done</span>
-<span>Dữ liệu học bạ và nguyện vọng của bạn được bảo toàn vĩnh viễn trong tài khoản ngay cả sau khi chu kỳ 30/09/2027 kết thúc.</span>
+<span>Dữ liệu và lịch sử mùa tuyển sinh vẫn xem được sau khi Pass hết hiệu lực ngày 30/09/{season}.</span>
 </div>
 </div>
 </div>
@@ -282,7 +292,7 @@ function AdmissionPassCheckoutPage() {
 <div className="p-2.5 rounded-lg bg-surface-container flex flex-col gap-1">
 <span className="font-label-sm text-label-sm text-on-surface-variant">Nội dung chuyển khoản (Bắt buộc giữ nguyên):</span>
 <div className="flex items-center justify-between">
-<span className="font-mono font-bold text-primary tracking-wide text-sm" id="bank-memo">UNIVIEW 88294 PASS27</span>
+<span className="font-mono font-bold text-primary tracking-wide text-sm" id="bank-memo">UNIVIEW 88294 PASS{String(season).slice(-2)}</span>
 <button className="flex items-center gap-1 px-2.5 py-1 rounded-md bg-primary-container text-on-primary font-label-sm text-label-sm hover:bg-primary transition-colors" type="button">
 <span className="material-symbols-outlined text-[14px]">content_copy</span>
 <span>Copy mã</span>
@@ -353,7 +363,7 @@ function AdmissionPassCheckoutPage() {
 
 <div className="flex flex-col gap-2 pt-2">
 <div className="flex items-center justify-between text-on-surface">
-<span className="font-body-md text-body-md text-on-surface-variant">Admission Pass 2027 (Trọn gói)</span>
+<span className="font-body-md text-body-md text-on-surface-variant">Admission Pass {season}</span>
 <span className="font-label-lg text-label-lg font-semibold">{price}</span>
 </div>
 <div className="flex items-center justify-between text-sage-text font-body-sm text-body-sm">
@@ -364,7 +374,7 @@ function AdmissionPassCheckoutPage() {
 <div className="flex items-center justify-between text-on-surface">
 <div className="flex flex-col">
 <span className="font-headline-sm text-headline-sm font-bold">Tổng thanh toán</span>
-<span className="font-label-sm text-label-sm text-on-surface-variant">Đã gồm VAT &amp; toàn bộ tính năng 2027</span>
+<span className="font-label-sm text-label-sm text-on-surface-variant">Toàn bộ công cụ cho mùa tuyển sinh {season}</span>
 </div>
 <span className="font-headline-lg text-headline-lg font-bold text-primary">{price}</span>
 </div>
@@ -372,7 +382,7 @@ function AdmissionPassCheckoutPage() {
 
 <div className="flex flex-col gap-2.5 pt-1">
 <button className="w-full py-4 px-6 rounded-full bg-primary-container text-on-primary font-label-lg text-label-lg hover:bg-primary transition-all shadow-md flex items-center justify-center gap-2 group disabled:cursor-wait disabled:opacity-70" disabled={confirming} onClick={confirmDemoPayment} type="button">
-<span>{confirming ? 'Đang kích hoạt...' : `Xác nhận demo · ${price}`}</span>
+<span>{confirming ? 'Đang kích hoạt...' : priceConfigured ? `Xác nhận demo · ${price}` : 'Xác nhận kích hoạt demo'}</span>
 <span className="material-symbols-outlined text-[18px] group-hover:translate-x-1 transition-transform">arrow_forward</span>
 </button>
 <a className="w-full py-2.5 text-center font-label-md text-label-md text-on-surface-variant hover:text-on-surface transition-colors" data-path="bang-gia-va-goi-dich-vu" href="#">
@@ -424,7 +434,7 @@ function AdmissionPassCheckoutPage() {
 <span className="material-symbols-outlined text-[22px]">support_agent</span>
 </div>
 <div className="flex flex-col">
-<h3 className="font-label-lg text-label-lg text-on-surface font-semibold">Đồng hành mùa thi 2027</h3>
+<h3 className="font-label-lg text-label-lg text-on-surface font-semibold">Đồng hành mùa thi {season}</h3>
 <p className="font-body-sm text-body-sm text-on-surface-variant mt-0.5">
               Đội ngũ chuyên viên tư vấn chiến lược hỗ trợ phụ huynh &amp; học sinh trong suốt quá trình đăng ký nguyện vọng.
             </p>

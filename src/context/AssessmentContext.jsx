@@ -235,7 +235,6 @@ export function AssessmentProvider({ children }) {
 
   const submitAssessment = async ({
     userId,
-    paidAttempt = false,
   } = {}) => {
     const missing = validateBeforeSubmit(assessment)
 
@@ -253,7 +252,6 @@ export function AssessmentProvider({ children }) {
     const payload = buildAssessmentPayload(
       snapshot,
       userId,
-      paidAttempt,
     )
 
     try {

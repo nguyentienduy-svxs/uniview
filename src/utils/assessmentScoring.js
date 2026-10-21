@@ -224,7 +224,7 @@ export function createLocalAssessmentReport(
     id: `uv-local-${Date.now().toString(36)}`,
     assessmentVersion: '2026.1',
     scoringModelVersion:
-      'direction-snapshot-1.0.0-local',
+      'uniview-direction-1.0.0-local',
     generatedAt,
     inputSnapshot: structuredClone(payload),
     clientInputSnapshot:
@@ -251,9 +251,5 @@ export function createLocalAssessmentReport(
         ? []
         : ['LIMITED_EXPERIENCE']),
     ],
-    attempt: {
-      consumed: false,
-      remaining: null,
-    },
   }
 }

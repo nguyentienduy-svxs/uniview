@@ -1,10 +1,10 @@
 // src/pages/AdmissionPassPage.jsx
 // Route: /admission-pass
-// Landing/purchase page for Personalized Admission Pass
+// Landing/purchase page for Admission Pass
 import { Link } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { ENTITLEMENTS } from '../components/header/headerConfig'
-import { formatPrice, PLAN_CATALOG, PLAN_IDS } from '../data/plans'
+import { formatPrice, hasConfiguredPrice, PLAN_CATALOG, PLAN_IDS } from '../data/plans'
 
 export default function AdmissionPassPage() {
   const { isAuthenticated, hasEntitlement } = useAuth()
@@ -52,25 +52,25 @@ export default function AdmissionPassPage() {
               <svg className="h-3.5 w-3.5" fill="currentColor" viewBox="0 0 20 20">
                 <path clipRule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" fillRule="evenodd" />
               </svg>
-              PERSONALIZED ADMISSION PASS
+              ADMISSION PASS THEO MÙA TUYỂN SINH
             </div>
             <h1 className="text-3xl sm:text-4xl font-extrabold text-[#172033] tracking-tight leading-tight">
               Mở khóa toàn bộ công cụ tuyển sinh<br className="hidden sm:inline" />
               <span className="text-[#1D4ED8]"> cá nhân hóa</span>
             </h1>
             <p className="text-base text-[#667085] leading-relaxed">
-              Một gói duy nhất mở khóa Decision Board, Admission Route Mapping và Scenario Comparison — tất cả đều dựa trên hồ sơ học tập thực tế của bạn.
+              Gói tuyển sinh mở Decision Board, Admission Route Mapping và Scenario Comparison cho đúng năm bạn chọn, đồng thời dùng lại hồ sơ học tập hiện có.
             </p>
             <div className="flex flex-wrap items-baseline justify-center gap-2">
-              <span className="text-4xl font-extrabold text-[#172033]">{admissionPrice}</span>
-              <span className="text-[#667085] text-base">/ mùa tuyển sinh</span>
+              <span className={hasConfiguredPrice(admissionPlan) ? 'text-4xl font-extrabold text-[#172033]' : 'text-xl font-extrabold text-[#172033]'}>{admissionPrice}</span>
+              {hasConfiguredPrice(admissionPlan) && <span className="text-[#667085] text-base">/ mùa tuyển sinh</span>}
             </div>
             <div className="flex flex-wrap gap-3 justify-center pt-2">
               <Link
                 to="/checkout/admission-pass"
                 className="inline-flex items-center gap-2 rounded-xl bg-[#1D4ED8] px-8 py-3.5 text-sm font-bold text-white shadow-lg transition-all hover:-translate-y-0.5 hover:bg-blue-700 hover:shadow-xl"
               >
-                Mua Admission Pass — {admissionPrice}
+                Chọn Admission Pass
                 <svg className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                   <path d="M9 5l7 7-7 7" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
@@ -140,8 +140,8 @@ export default function AdmissionPassPage() {
               a: 'Decision Board đầy đủ, Admission Route Mapping cá nhân hóa, và Scenario Comparison — tất cả trong một mùa tuyển sinh.',
             },
             {
-              q: 'Admission Pass có thay thế Gói Tháng hoặc Gói Năm không?',
-              a: 'Không. Admission Pass là gói riêng cho một mùa tuyển sinh và có thể mua cùng thuê bao đang hoạt động. Pass dùng lại toàn bộ hồ sơ, bằng chứng đã có và không tự hủy thuê bao.',
+              q: 'Tôi đang dùng Gói Năm có cần mua Admission Pass không?',
+              a: 'Không. Gói Năm đã bao gồm Admission Pass trong thời gian gói còn hiệu lực. Người dùng Gói Tháng có thể mua Admission Pass riêng khi bước vào mùa tuyển sinh.',
             },
             {
               q: 'Admission Pass có tự động gia hạn sang mùa sau không?',
@@ -165,7 +165,7 @@ export default function AdmissionPassPage() {
             to="/checkout/admission-pass"
             className="inline-flex items-center gap-2 rounded-xl bg-[#1D4ED8] px-8 py-4 text-base font-bold text-white shadow-lg transition-all hover:-translate-y-0.5 hover:bg-blue-700 hover:shadow-xl"
           >
-            Mua Admission Pass — {admissionPrice}
+            Chọn Admission Pass
           </Link>
           <p className="text-xs text-[#667085]">Thanh toán an toàn • Không tự động gia hạn</p>
         </div>

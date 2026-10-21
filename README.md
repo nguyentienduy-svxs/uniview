@@ -16,22 +16,12 @@ The React Compiler is not enabled on this template because of its impact on dev 
 If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and Oxlint's TypeScript related rules in your project.
 # uniview
 
-## Test phân quyền bằng mock user
+## Test phân quyền bằng tài khoản mock
 
-Auth chạy ở chế độ mock theo mặc định. Thêm các biến sau vào file `.env` ở thư mục gốc:
+Đặt `VITE_AUTH_MODE=mock` trong `.env`, sau đó đăng nhập bằng một trong ba tài khoản:
 
-```env
-VITE_AUTH_MODE=mock
-VITE_MOCK_SESSION=guest
-```
+- `chiduy / ChiDuy@2026`: Gói Tháng — Personal Workspace trong 30 ngày.
+- `chiman / ChiMan@2026`: Gói Năm — toàn bộ hành trình 12 tháng và đã bao gồm Admission Pass.
+- `chian / ChiAn@2026`: Admission Pass 2027 — công cụ cho một mùa tuyển sinh.
 
-`VITE_MOCK_SESSION` nhận một trong các giá trị:
-
-- `guest`: chưa đăng nhập
-- `preview`: đã đăng nhập nhưng chưa mua gói
-- `monthly`: có Gói Tháng
-- `annual`: có Gói Năm
-- `admission`: có gói Admission Pass
-- `annual_admission`: có Gói Năm và Admission Pass
-
-Khởi động lại Vite sau khi đổi giá trị. Khi `VITE_AUTH_MODE=mock`, nút `Dev — Mock Session` xuất hiện ở góc phải phía dưới để đổi trạng thái trực tiếp mà không cần sửa `.env` mỗi lần. Khi nối backend thật, đổi thành `VITE_AUTH_MODE=api`; `AuthContext` sẽ gọi `/auth/me` qua `authApi`.
+Bảng giá được cấu hình tập trung trong `.env` bằng `VITE_MONTHLY_PLAN_PRICE`, `VITE_ANNUAL_PLAN_PRICE` và `VITE_ADMISSION_PASS_PRICE`. Khi nối backend thật, đổi `VITE_AUTH_MODE=api`; `AuthContext` sẽ gọi `/auth/me` qua `authApi`.

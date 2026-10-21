@@ -56,7 +56,7 @@ interface ExperienceAnswerPayload {
 }
 
 interface AssessmentPayload {
-  userId?: string; paidAttempt?: boolean
+  userId?: string
   riasecAnswers: Record<string, number>   // { R01: 4, I01: 3 ... }
   mbtiAnswers:   Record<string, MbtiPole> // { EI01: 'I', SN01: 'S' ... }
   experience: { noExperience?: boolean; domains?: ExperienceAnswerPayload[] }
@@ -75,7 +75,7 @@ interface AssessmentReport {
   overview: unknown; onePageProfile: unknown; crossEvidence: unknown
   majors: RankedMajor[]           // luon dung 6
   selectedMajorDetail: RankedMajor; schoolMatch: unknown[]
-  nextSteps: unknown; qualityFlags: string[]; attempt: { consumed: boolean; remaining: number | null }
+  nextSteps: unknown; qualityFlags: string[]
 }
 ```
 
@@ -129,14 +129,14 @@ async function submitAssessment(state: AssessmentPayload): Promise<AssessmentRep
 }
 ```
 
-Truyền `paidAttempt: true` CHI KHI nguoi dung da thanh toan. Backend chi consume attempt sau khi report tao thanh cong.
+Assessment không bán theo lượt. Guest có thể hoàn thành bài đánh giá và xem kết quả tổng quan; ứng dụng chỉ lưu lịch sử khi người dùng đã đăng nhập.
 
 ---
 
 ## 7. Render Loading / Error
 
 ```tsx
-if (status === 'loading') return <Spinner message="Dang tao Direction Snapshot..." />
+if (status === 'loading') return <Spinner message="Dang tao ket qua dinh huong..." />
 if (status === 'error')   return <ErrorBanner message={errorMsg} />
 if (status === 'done')    return <ReportView report={report!} />
 ```

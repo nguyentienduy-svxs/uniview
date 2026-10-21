@@ -30,7 +30,7 @@ export const DEMO_PERSONAS: Array<{ id: string; name: string; description: strin
   {
     id: 'duy-tech', name: 'Nguyễn Tiến Duy', description: 'Hồ sơ thiên công nghệ, nghiên cứu và dự án lập trình.',
     input: {
-      userId: 'demo-duy', paidAttempt: false,
+      userId: 'demo-duy',
       riasecAnswers: riasecAnswers(['I', 'R'], ['C']), mbtiAnswers: mbtiAnswers('INTJ'),
       experience: { domains: [detailed('technology'), detailed('research', false)] },
       profile: { admissionYear: '2027', regions: ['TP.HCM & lân cận'], tuitionRange: '25-45', strengths: ['Toán', 'Tin học', 'Tiếng Anh'], gpa: 8.8, priorities: ['logic', 'autonomy', 'research'] },
@@ -39,7 +39,7 @@ export const DEMO_PERSONAS: Array<{ id: string; name: string; description: strin
   {
     id: 'linh-creative', name: 'Trần Gia Linh', description: 'Hồ sơ thiên sáng tạo, thiết kế và trải nghiệm người dùng.',
     input: {
-      userId: 'demo-linh', paidAttempt: false,
+      userId: 'demo-linh',
       riasecAnswers: riasecAnswers(['A'], ['I', 'S']), mbtiAnswers: mbtiAnswers('INFP'),
       experience: { domains: [detailed('design'), detailed('technology', false)] },
       profile: { admissionYear: '2027', regions: ['TP.HCM & lân cận'], tuitionRange: '25-45', strengths: ['Ngữ văn', 'Tin học'], gpa: 8.4, priorities: ['creative', 'human-centered'] },
@@ -48,7 +48,7 @@ export const DEMO_PERSONAS: Array<{ id: string; name: string; description: strin
   {
     id: 'mai-social', name: 'Lê Thanh Mai', description: 'Hồ sơ thiên hỗ trợ, giáo dục và làm việc với con người.',
     input: {
-      userId: 'demo-mai', paidAttempt: false,
+      userId: 'demo-mai',
       riasecAnswers: riasecAnswers(['S'], ['E', 'I']), mbtiAnswers: mbtiAnswers('ESFJ'),
       experience: { domains: [detailed('support'), detailed('leadership', false)] },
       profile: { admissionYear: '2027', regions: ['TP.HCM & lân cận'], tuitionRange: '25-45', strengths: ['Ngữ văn', 'Tiếng Anh', 'Sinh học'], gpa: 8.6, priorities: ['human-centered', 'structure'] },
@@ -57,7 +57,7 @@ export const DEMO_PERSONAS: Array<{ id: string; name: string; description: strin
   {
     id: 'nam-low-exposure', name: 'Phạm Hoàng Nam', description: 'Hồ sơ ít cơ hội trải nghiệm, dùng để kiểm tra độ tin cậy thấp.',
     input: {
-      userId: 'demo-nam', paidAttempt: false,
+      userId: 'demo-nam',
       riasecAnswers: riasecAnswers(['C'], ['R', 'I']), mbtiAnswers: mbtiAnswers('ISTJ'),
       experience: { noExperience: true, domains: [] },
       profile: { admissionYear: '2027', regions: [], strengths: ['Toán'], priorities: [] },

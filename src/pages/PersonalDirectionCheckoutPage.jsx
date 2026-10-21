@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 
 import { useAuth } from '../context/AuthContext'
-import { formatPrice, getPlan, PLAN_IDS } from '../data/plans'
+import { formatPrice, getPlan, hasConfiguredPrice, PLAN_IDS } from '../data/plans'
 
 const PLAN_BY_QUERY = {
   monthly: PLAN_IDS.MONTHLY,
@@ -58,6 +58,12 @@ function PersonalDirectionCheckoutPage() {
               <p className="mt-1 text-xs font-semibold text-[#434655]">{plan.billingLabel}</p>
             </div>
 
+            {!hasConfiguredPrice(plan) && (
+              <p className="mt-3 rounded-xl border border-amber-200 bg-amber-50 p-3 text-xs leading-5 text-amber-900">
+                Giá chưa được cấu hình trong bảng giá quản trị. Checkout này chỉ mô phỏng kích hoạt gói và không thực hiện giao dịch thật.
+              </p>
+            )}
+
             <h2 className="mt-7 font-bold">Quyền lợi được kích hoạt</h2>
             <ul className="mt-3 space-y-3">
               {plan.features.map((feature) => (
@@ -87,7 +93,7 @@ function PersonalDirectionCheckoutPage() {
               onClick={confirmDemoPayment}
               className="mt-8 inline-flex w-full items-center justify-center gap-2 rounded-full bg-white px-5 py-3.5 text-sm font-bold text-[#172033] transition hover:bg-blue-50 disabled:cursor-wait disabled:opacity-70"
             >
-              {confirming ? 'Đang kích hoạt...' : `Xác nhận demo · ${formatPrice(plan.price)}`}
+              {confirming ? 'Đang kích hoạt...' : hasConfiguredPrice(plan) ? `Xác nhận demo · ${formatPrice(plan.price)}` : 'Xác nhận kích hoạt demo'}
               <span className="material-symbols-outlined text-lg">arrow_forward</span>
             </button>
             <p className="mt-3 text-center text-xs text-slate-400">Bản demo MVP không thực hiện giao dịch thật.</p>

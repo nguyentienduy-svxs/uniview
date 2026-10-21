@@ -10,14 +10,13 @@ type NarrativeGenerator = (report: AssessmentReport) => Promise<Record<string, u
 @Injectable()
 export class AssessmentService {
   private readonly reports = new Map<string, AssessmentReport>()
-  private readonly remainingAttempts = new Map<string, number>()
 
   definition() {
     return {
-      id: 'direction-snapshot-59k',
-      title: 'Direction Snapshot 59K',
+      id: 'personal-direction-assessment',
+      title: 'Đánh giá định hướng cá nhân',
       assessmentVersion: '2026.1',
-      scoringModelVersion: 'direction-snapshot-1.0.0',
+      scoringModelVersion: 'uniview-direction-1.0.0',
       sequence: ['RIASEC', 'MBTI_STYLE', 'ADAPTIVE_EXPERIENCE', 'PRACTICAL_PROFILE'],
       counts: { riasec: 30, mbti: 60, experienceDomains: 8, adaptiveQuestionsPerDomain: 5 },
       disclaimers: [
@@ -107,12 +106,6 @@ export class AssessmentService {
 
   async evaluate(input: AssessmentInput, narrativeGenerator?: NarrativeGenerator) {
     this.validate(input)
-    const userId = input.userId ?? 'anonymous'
-    const paid = input.paidAttempt === true
-    const before = this.remainingAttempts.get(userId) ?? 1
-    if (paid && before <= 0) throw new BadRequestException({ code: 'NO_PAID_ATTEMPTS', message: 'Không còn lượt Direction Snapshot đã thanh toán.' })
-
-    // Nothing is persisted or consumed before all deterministic work succeeds.
     const report = evaluateAssessment(input)
     if (narrativeGenerator) {
       try {
@@ -123,10 +116,6 @@ export class AssessmentService {
       }
     }
 
-    if (paid) {
-      this.remainingAttempts.set(userId, before - 1)
-      report.attempt = { consumed: true, remaining: before - 1 }
-    }
     this.reports.set(report.id, structuredClone(report))
     return report
   }
