@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
-import { useSearchParams } from 'react-router-dom'
+import { Link, useSearchParams } from 'react-router-dom'
 
 import majorDetails from '../data/majorDetails.json'
 import majors from '../data/majors.json'
@@ -50,6 +50,15 @@ const sectionTabs = [
   ['section-universities', 'Trường đào tạo'],
 ]
 
+const readComparisonIds = () => {
+  try {
+    const saved = JSON.parse(localStorage.getItem('uniview:comparison:universities') ?? '[]')
+    return Array.isArray(saved) ? saved.filter((id) => typeof id === 'string').slice(0, 4) : []
+  } catch {
+    return []
+  }
+}
+
 function MaterialIcon({ children, className = '' }) {
   return (
     <span className={`material-symbols-outlined ${className}`} aria-hidden="true">
@@ -79,6 +88,8 @@ function MajorDetailPage() {
   const [universityFilters, setUniversityFilters] = useState({})
   const [readProgress, setReadProgress] = useState(16.667)
   const [activeSection, setActiveSection] = useState('section-overview')
+  const [comparisonIds, setComparisonIds] = useState(readComparisonIds)
+  const [comparisonMessage, setComparisonMessage] = useState('')
   const tabsScrollerRef = useRef(null)
   const sectionNavRef = useRef(null)
 
@@ -308,6 +319,45 @@ function MajorDetailPage() {
       || university.regionId === activeUniversityFilter
       || university.ownershipId === activeUniversityFilter,
   )
+  const comparisonUniversities = comparisonIds
+    .map((id) => universitiesData.universities.find((university) => university.id === id))
+    .filter(Boolean)
+
+  const toggleUniversityComparison = (event, university) => {
+    event.stopPropagation()
+    const universityId = university.catalogId
+    const alreadySelected = comparisonIds.includes(universityId)
+
+    if (!alreadySelected && comparisonIds.length >= 4) {
+      setComparisonMessage('Bạn chỉ có thể so sánh tối đa 4 trường')
+      window.setTimeout(() => setComparisonMessage(''), 2400)
+      return
+    }
+
+    const next = alreadySelected
+      ? comparisonIds.filter((id) => id !== universityId)
+      : [...comparisonIds, universityId]
+    setComparisonIds(next)
+    localStorage.setItem('uniview:comparison:universities', JSON.stringify(next))
+
+    try {
+      const selectedMajors = JSON.parse(localStorage.getItem('uniview:comparison:majors') ?? '{}')
+      if (alreadySelected) delete selectedMajors[universityId]
+      else selectedMajors[universityId] = major.id
+      localStorage.setItem('uniview:comparison:majors', JSON.stringify(selectedMajors))
+    } catch {
+      localStorage.setItem('uniview:comparison:majors', JSON.stringify({ [universityId]: major.id }))
+    }
+
+    setComparisonMessage(alreadySelected ? 'Đã bỏ trường khỏi bảng so sánh' : `Đã thêm trường cùng ngành ${major.name}`)
+    window.setTimeout(() => setComparisonMessage(''), 1800)
+  }
+
+  const clearUniversityComparison = () => {
+    setComparisonIds([])
+    localStorage.removeItem('uniview:comparison:universities')
+    localStorage.removeItem('uniview:comparison:majors')
+  }
 
   const toggleSaved = () => {
     setSavedMajorIds((currentIds) => currentIds.includes(major.id)
@@ -723,14 +773,11 @@ function MajorDetailPage() {
         <section className="mb-14 scroll-mt-24" id="section-related">
           <SectionHeading eyebrow="Tránh nhầm lẫn" title={`Các ngành gần với ${major.name}`} description={`Đối chiếu ${major.name} với các ngành cùng nhóm để nhìn rõ khác biệt về trọng tâm học tập và hướng nghề nghiệp.`} accent="text-slate-400" />
           <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
-            {major.relatedMajors.map((related, index) => (
+            {major.relatedMajors.map((related) => (
               <div className="flex flex-col justify-between space-y-4 rounded-2xl border border-slate-200/80 bg-white p-6 shadow-xs transition-shadow hover:shadow-md" key={related.id}>
                 <div className="space-y-3">
-                  <div className="flex items-center justify-between">
+                  <div className="flex items-center">
                     <span className="text-xs font-bold uppercase tracking-wider text-slate-400">Mã: {related.code}</span>
-                    <div className={`flex h-8 w-8 items-center justify-center rounded-lg ${accentStyles[index % accentStyles.length]}`}>
-                      <MaterialIcon className="text-[18px]">compare_arrows</MaterialIcon>
-                    </div>
                   </div>
                   <div>
                     <h3 className="text-lg font-bold text-[#172033]">{related.name}</h3>
@@ -817,7 +864,16 @@ function MajorDetailPage() {
                   <a className="inline-flex items-center gap-1.5 text-xs font-bold text-[#1D4ED8] hover:underline" href={`/universities/uit?universityId=${university.catalogId}`}><span>Chi tiết trường</span><MaterialIcon className="text-[16px]">arrow_forward</MaterialIcon></a>
                   <div className="flex items-center gap-1.5">
                     <button className="flex h-8 w-8 items-center justify-center rounded-full bg-slate-100 text-slate-500 transition-colors hover:bg-rose-50 hover:text-[#E11D48]" title="Lưu trường" type="button"><MaterialIcon className="text-[18px]">favorite_border</MaterialIcon></button>
-                    <button className="flex h-8 w-8 items-center justify-center rounded-full bg-slate-100 text-slate-500 transition-colors hover:bg-blue-50 hover:text-[#1D4ED8]" title="So sánh trường" type="button"><MaterialIcon className="text-[18px]">compare_arrows</MaterialIcon></button>
+                    <button
+                      aria-label={comparisonIds.includes(university.catalogId) ? 'Bỏ khỏi danh sách so sánh' : 'Thêm vào danh sách so sánh'}
+                      aria-pressed={comparisonIds.includes(university.catalogId)}
+                      className={`flex h-8 w-8 items-center justify-center rounded-full transition-all ${comparisonIds.includes(university.catalogId) ? 'bg-blue-100 text-[#1D4ED8] ring-2 ring-blue-200' : 'bg-slate-100 text-slate-500 hover:bg-blue-50 hover:text-[#1D4ED8]'}`}
+                      onClick={(event) => toggleUniversityComparison(event, university)}
+                      title={comparisonIds.includes(university.catalogId) ? 'Bỏ khỏi danh sách so sánh' : 'Thêm vào danh sách so sánh'}
+                      type="button"
+                    >
+                      <MaterialIcon className="text-[18px]">compare_arrows</MaterialIcon>
+                    </button>
                   </div>
                 </div>
               </div>
@@ -853,6 +909,26 @@ function MajorDetailPage() {
           </div>
         </section>
       </div>
+      {comparisonIds.length > 0 && (
+        <div className="fixed bottom-5 left-1/2 z-50 flex w-[min(920px,calc(100%-2rem))] -translate-x-1/2 flex-col gap-3 rounded-2xl border border-blue-200 bg-white/95 p-3 shadow-[0_18px_45px_rgba(15,23,42,0.18)] backdrop-blur-md sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex min-w-0 items-center gap-3">
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-blue-50 text-[#1D4ED8]"><MaterialIcon>compare_arrows</MaterialIcon></div>
+            <div className="min-w-0">
+              <div className="flex items-center gap-2">
+                <p className="text-sm font-bold text-[#172033]">Đang chọn {comparisonIds.length}/4 trường</p>
+                <button aria-label="Xóa danh sách so sánh" className="flex h-6 w-6 items-center justify-center rounded-md text-slate-400 hover:bg-rose-50 hover:text-[#E11D48]" onClick={clearUniversityComparison} title="Xóa toàn bộ danh sách so sánh" type="button"><MaterialIcon className="text-[16px]">delete_sweep</MaterialIcon></button>
+              </div>
+              <p className="truncate text-xs text-slate-500">{comparisonUniversities.map((university) => university.shortName ?? university.name).join(' · ')}</p>
+            </div>
+          </div>
+          {comparisonIds.length >= 2 ? (
+            <Link className="inline-flex shrink-0 items-center justify-center gap-2 rounded-xl bg-[#1D4ED8] px-5 py-2.5 text-sm font-bold text-white shadow-sm transition hover:bg-[#1e40af]" to="/compare">So sánh ngay<MaterialIcon className="text-[18px]">arrow_forward</MaterialIcon></Link>
+          ) : (
+            <span className="shrink-0 text-center text-xs font-semibold text-slate-400">Chọn thêm ít nhất 1 trường</span>
+          )}
+        </div>
+      )}
+      {comparisonMessage && <div className="fixed bottom-28 left-1/2 z-[60] -translate-x-1/2 rounded-full bg-[#172033] px-4 py-2 text-xs font-semibold text-white shadow-lg">{comparisonMessage}</div>}
       </main>
     </>
   )
