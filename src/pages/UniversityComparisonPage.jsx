@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
 import majorDetails from '../data/majorDetails.json'
@@ -20,6 +20,19 @@ const DEFAULT_MAJOR_IDS = {
   'hcmut-vnuhcm': '7480101',
   'fpt-university-hcm': '7480103',
 }
+
+const comparisonTabs = [
+  ['section-overview', 'dashboard', '1. Tổng quan'],
+  ['section-budget', 'payments', '2. Học phí & Ngân sách'],
+  ['section-location', 'location_on', '3. Vị trí & Cơ sở'],
+  ['section-major', 'code', '4. Ngành học & Đào tạo'],
+  ['section-admission', 'how_to_reg', '5. Tuyển sinh & Điểm'],
+  ['section-scholarships', 'workspace_premium', '6. Học bổng'],
+  ['section-fit', 'tune', '7. Độ tương thích'],
+  ['section-tradeoffs', 'balance', '8. Trade-offs'],
+  ['section-missing-info', 'fact_check', '9. Checklist'],
+  ['section-notes', 'edit_note', '10. Ghi chú'],
+]
 
 const normalizeText = (value = '') => value
   .normalize('NFD')
@@ -105,6 +118,11 @@ function UniversityComparisonPage() {
   const [majorPickerUniversityId, setMajorPickerUniversityId] = useState(null)
   const [profileOpen, setProfileOpen] = useState(false)
   const [toast, setToast] = useState('')
+  const [activeTab, setActiveTab] = useState('section-overview')
+  const tabsRef = useRef(null)
+  const pendingTabRef = useRef(null)
+  const pendingTabTimerRef = useRef(0)
+  const scrollFrameRef = useRef(0)
   const [notes, setNotes] = useState(() => {
     const saved = localStorage.getItem('uniview:comparison:notes')
     return saved ? JSON.parse(saved) : {}
@@ -131,6 +149,82 @@ function UniversityComparisonPage() {
       fitScore: calculateFitScore({ university, major }, profile),
     }
   }), [profile, selectedMajorIds, selectedUniversities])
+
+  useEffect(() => {
+    const sections = comparisonTabs
+      .map(([id]) => document.getElementById(id))
+      .filter(Boolean)
+    if (!sections.length) return undefined
+
+    const updateActiveTab = () => {
+      scrollFrameRef.current = 0
+      const headerHeight = document.querySelector('body > #root header')?.getBoundingClientRect().height ?? 74
+      const tabsHeight = tabsRef.current?.parentElement?.getBoundingClientRect().height ?? 52
+      const activationY = window.scrollY + headerHeight + tabsHeight + 28
+      const pendingId = pendingTabRef.current
+
+      if (pendingId) {
+        setActiveTab(pendingId)
+        return
+      }
+
+      let nextId = sections[0].id
+      sections.forEach((section) => {
+        const sectionTop = section.getBoundingClientRect().top + window.scrollY
+        if (sectionTop <= activationY) nextId = section.id
+      })
+      if (window.scrollY + window.innerHeight >= document.documentElement.scrollHeight - 4) {
+        nextId = sections[sections.length - 1].id
+      }
+      setActiveTab((current) => current === nextId ? current : nextId)
+    }
+
+    const handleScroll = () => {
+      if (!scrollFrameRef.current) {
+        scrollFrameRef.current = window.requestAnimationFrame(updateActiveTab)
+      }
+    }
+
+    handleScroll()
+    window.addEventListener('scroll', handleScroll, { passive: true })
+    window.addEventListener('resize', handleScroll)
+    return () => {
+      window.removeEventListener('scroll', handleScroll)
+      window.removeEventListener('resize', handleScroll)
+      if (scrollFrameRef.current) window.cancelAnimationFrame(scrollFrameRef.current)
+      if (pendingTabTimerRef.current) window.clearTimeout(pendingTabTimerRef.current)
+    }
+  }, [])
+
+  useEffect(() => {
+    const scroller = tabsRef.current
+    const activeElement = scroller?.querySelector(`[data-comparison-tab="${activeTab}"]`)
+    if (!scroller || !activeElement) return
+
+    const left = activeElement.offsetLeft
+      - ((scroller.clientWidth - activeElement.clientWidth) / 2)
+    scroller.scrollTo({ left: Math.max(0, left), behavior: 'smooth' })
+  }, [activeTab])
+
+  const handleTabClick = (event, id) => {
+    event.preventDefault()
+    event.stopPropagation()
+    const target = document.getElementById(id)
+    if (!target) return
+
+    pendingTabRef.current = id
+    if (pendingTabTimerRef.current) window.clearTimeout(pendingTabTimerRef.current)
+    pendingTabTimerRef.current = window.setTimeout(() => {
+      pendingTabRef.current = null
+      window.dispatchEvent(new Event('scroll'))
+    }, 900)
+    setActiveTab(id)
+    const headerHeight = document.querySelector('body > #root header')?.getBoundingClientRect().height ?? 74
+    const tabsHeight = tabsRef.current?.parentElement?.getBoundingClientRect().height ?? 52
+    const top = target.getBoundingClientRect().top + window.scrollY - headerHeight - tabsHeight - 20
+    window.scrollTo({ top: Math.max(0, top), behavior: 'smooth' })
+    window.history.replaceState(null, '', `${window.location.pathname}${window.location.search}#${id}`)
+  }
 
   const showToast = (message) => {
     setToast(message)
@@ -328,16 +422,15 @@ function UniversityComparisonPage() {
 </section>
 
 <div className="sticky top-[74px] z-30 -mx-4 md:-mx-6 lg:-mx-8 px-4 md:px-6 lg:px-8 py-2 bg-white/[0.96] backdrop-blur-md border-y border-slate-200/80 shadow-sm space-y-2">
-<div className="max-w-[1360px] mx-auto flex items-center gap-2 overflow-x-auto hide-scrollbar text-xs font-semibold py-0.5">
-<a className="px-3 py-1.5 rounded-lg bg-[#1D4ED8] text-white shrink-0 shadow-xs flex items-center gap-1" href="#section-overview"><span className="material-symbols-outlined text-[15px]">dashboard</span><span>1. Tổng quan</span></a>
-{[['section-budget','payments','2. Học phí & Ngân sách'],['section-location','location_on','3. Vị trí & Cơ sở'],['section-major','code','4. Ngành học & Đào tạo'],['section-admission','how_to_reg','5. Tuyển sinh & Điểm'],['section-scholarships','workspace_premium','6. Học bổng'],['section-fit','tune','7. Độ tương thích'],['section-tradeoffs','balance','8. Trade-offs'],['section-missing-info','fact_check','9. Checklist'],['section-notes','edit_note','10. Ghi chú']].map(([id, icon, label]) => <a className="px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-blue-50 text-slate-700 hover:text-blue-700 shrink-0 transition-colors flex items-center gap-1" href={`#${id}`} key={id}><span className="material-symbols-outlined text-[15px]">{icon}</span><span>{label}</span></a>)}
+<div ref={tabsRef} className="max-w-[1360px] mx-auto flex items-center gap-2 overflow-x-auto hide-scrollbar text-xs font-semibold py-0.5">
+{comparisonTabs.map(([id, icon, label]) => <a className={`px-3 py-1.5 rounded-lg shrink-0 transition-all duration-200 flex items-center gap-1 ${activeTab === id ? 'bg-[#1D4ED8] text-white shadow-sm' : 'bg-slate-100 text-slate-700 hover:bg-blue-50 hover:text-blue-700'}`} data-comparison-tab={id} href={`#${id}`} key={id} onClick={(event) => handleTabClick(event, id)}><span className="material-symbols-outlined text-[15px]">{icon}</span><span>{label}</span></a>)}
 {selectedUniversities.length < 4 && <button className="px-3 py-1.5 rounded-lg border border-dashed border-slate-300 hover:border-blue-400 hover:text-blue-700 shrink-0 transition-colors flex items-center gap-1" onClick={(event) => { event.stopPropagation(); setPickerSlot(selectedUniversities.length) }} type="button"><span className="material-symbols-outlined text-[15px]">add</span>Thêm trường thứ {selectedUniversities.length + 1}</button>}
 </div>
 </div>
 
 <div className="space-y-6">
 
-<section className="bg-white rounded-2xl border border-slate-200 p-5 md:p-6 shadow-sm space-y-4" id="section-overview">
+<section className="scroll-mt-36 bg-white rounded-2xl border border-slate-200 p-5 md:p-6 shadow-sm space-y-4" id="section-overview">
 <div className="flex items-center justify-between border-b border-slate-100 pb-3">
 <div className="flex items-center gap-2.5">
 <span className="w-7 h-7 rounded-lg bg-blue-100 text-blue-700 flex items-center justify-center font-bold text-xs">1</span>
@@ -379,7 +472,7 @@ function UniversityComparisonPage() {
 </div>
 </section>
 
-<section className="bg-white rounded-2xl border border-slate-200 p-5 md:p-6 shadow-sm space-y-5" id="section-budget">
+<section className="scroll-mt-36 bg-white rounded-2xl border border-slate-200 p-5 md:p-6 shadow-sm space-y-5" id="section-budget">
 <div className="flex items-center justify-between border-b border-slate-100 pb-3">
 <div className="flex items-center gap-2.5">
 <span className="w-7 h-7 rounded-lg bg-emerald-100 text-emerald-700 flex items-center justify-center font-bold text-xs">2</span>
@@ -416,7 +509,7 @@ function UniversityComparisonPage() {
 </div>
 </section>
 
-<section className="bg-white rounded-2xl border border-slate-200 p-5 md:p-6 shadow-sm space-y-4" id="section-location">
+<section className="scroll-mt-36 bg-white rounded-2xl border border-slate-200 p-5 md:p-6 shadow-sm space-y-4" id="section-location">
 <div className="flex items-center justify-between border-b border-slate-100 pb-3">
 <div className="flex items-center gap-2.5">
 <span className="w-3 h-3 rounded-full bg-blue-500"></span>
@@ -435,7 +528,7 @@ function UniversityComparisonPage() {
 </div>
 </section>
 
-<section className="bg-white rounded-2xl border border-slate-200 p-5 md:p-6 shadow-sm space-y-4" id="section-major">
+<section className="scroll-mt-36 bg-white rounded-2xl border border-slate-200 p-5 md:p-6 shadow-sm space-y-4" id="section-major">
 <div className="flex items-center justify-between border-b border-slate-100 pb-3">
 <div className="flex items-center gap-2.5">
 <span className="w-3 h-3 rounded-full bg-[#1D4ED8]"></span>
@@ -448,7 +541,7 @@ function UniversityComparisonPage() {
 </div>
 </section>
 
-<section className="bg-white rounded-2xl border border-slate-200 p-5 md:p-6 shadow-sm space-y-4" id="section-admission">
+<section className="scroll-mt-36 bg-white rounded-2xl border border-slate-200 p-5 md:p-6 shadow-sm space-y-4" id="section-admission">
 <div className="flex items-center justify-between border-b border-slate-100 pb-3">
 <div className="flex items-center gap-2.5">
 <span className="w-3 h-3 rounded-full bg-[#1D4ED8]"></span>
@@ -467,7 +560,7 @@ function UniversityComparisonPage() {
 </div>
 </section>
 
-<section className="bg-white rounded-2xl border border-slate-200 p-5 md:p-6 shadow-sm space-y-4" id="section-scholarships">
+<section className="scroll-mt-36 bg-white rounded-2xl border border-slate-200 p-5 md:p-6 shadow-sm space-y-4" id="section-scholarships">
 <div className="flex items-center justify-between border-b border-slate-100 pb-3">
 <div className="flex items-center gap-2.5">
 <span className="w-3 h-3 rounded-full bg-amber-500"></span>
@@ -480,7 +573,7 @@ function UniversityComparisonPage() {
 </div>
 </section>
 
-<section className="bg-blue-50/50 rounded-2xl border border-blue-200/80 p-5 md:p-6 shadow-sm space-y-5" id="section-fit">
+<section className="scroll-mt-36 bg-blue-50/50 rounded-2xl border border-blue-200/80 p-5 md:p-6 shadow-sm space-y-5" id="section-fit">
 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-blue-200/60 pb-3">
 <div className="flex items-center gap-2.5">
 <span className="text-base">🎯</span>
@@ -506,7 +599,7 @@ function UniversityComparisonPage() {
 </div>
 </section>
 
-<section className="bg-white rounded-2xl border border-slate-200 p-5 md:p-6 shadow-sm space-y-4" id="section-tradeoffs">
+<section className="scroll-mt-36 bg-white rounded-2xl border border-slate-200 p-5 md:p-6 shadow-sm space-y-4" id="section-tradeoffs">
 <div className="flex items-center justify-between border-b border-slate-100 pb-3">
 <div className="flex items-center gap-2.5">
 <span className="text-base">⚖️</span>
@@ -530,7 +623,7 @@ function UniversityComparisonPage() {
 </div>
 </section>
 
-<section className="bg-white rounded-2xl border border-slate-200 p-5 md:p-6 shadow-sm space-y-4" id="section-missing-info">
+<section className="scroll-mt-36 bg-white rounded-2xl border border-slate-200 p-5 md:p-6 shadow-sm space-y-4" id="section-missing-info">
 <div className="flex items-center justify-between border-b border-slate-100 pb-3">
 <div className="flex items-center gap-2.5">
 <span className="w-3 h-3 rounded-full bg-slate-400"></span>
@@ -543,7 +636,7 @@ function UniversityComparisonPage() {
 </div>
 </section>
 
-<section className="bg-white rounded-2xl border border-slate-200 p-5 md:p-6 shadow-sm space-y-5" id="section-notes">
+<section className="scroll-mt-36 bg-white rounded-2xl border border-slate-200 p-5 md:p-6 shadow-sm space-y-5" id="section-notes">
 <div className="flex items-center justify-between border-b border-slate-100 pb-3">
 <div className="flex items-center gap-2.5">
 <span className="text-base">📝</span>

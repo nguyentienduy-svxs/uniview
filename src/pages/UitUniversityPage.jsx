@@ -1,5 +1,166 @@
 
+const UIT_ID = 'uit-vnuhcm'
+const UIT_DEFAULT_MAJOR_ID = '7480103'
+
+const universityTabs = [
+  ['tong-quan', '1. Tổng quan'],
+  ['nganh-dao-tao', '2. Ngành đào tạo (14)'],
+  ['phuong-thuc', '3. Phương thức tuyển sinh'],
+  ['diem-chuan', '4. Điểm chuẩn các năm'],
+  ['hoc-phi-hoc-bong', '5. Học phí & Học bổng'],
+  ['sinh-vien', '6. Sinh viên & Đời sống'],
+]
+
+const majorFilters = [
+  ['all', 'Tất cả ngành'],
+  ['ai', 'Khoa học máy tính & AI'],
+  ['software', 'CN Phần mềm & Hệ thống'],
+  ['sec', 'An toàn thông tin & Mạng'],
+  ['biz', 'Kinh tế số & TMĐT'],
+]
+
+const uitMajorIndex = [
+  { group: 'ai', name: 'khoa học máy tính trí tuệ nhân tạo data science' },
+  { group: 'software', name: 'kỹ thuật phần mềm software engineering' },
+  { group: 'sec', name: 'an toàn thông tin information security ctf an ninh mạng' },
+  { group: 'sec', name: 'mạng máy tính truyền thông dữ liệu' },
+  { group: 'software', name: 'công nghệ thông tin chương trình tiên tiến tiếng anh liên kết quốc tế' },
+  { group: 'biz', name: 'thương mại điện tử e-commerce fintech kinh tế số' },
+]
+
+const cutoffRows = [
+  { name: 'Khoa học Máy tính', code: '7480101', thpt: { 2023: 26.9, 2024: 27.4, 2025: 27.8 }, dgnl: { 2025: 930 }, criteria: 'Toán ≥ 9.0; Thứ tự NV ≤ 2' },
+  { name: 'Kỹ thuật Phần mềm', code: '7480103', thpt: { 2023: 26.8, 2024: 27.25, 2025: 27.5 }, dgnl: { 2025: 915 }, criteria: 'Toán ≥ 8.8; Thứ tự NV ≤ 3' },
+  { name: 'An toàn Thông tin', code: '7480202', thpt: { 2023: 26.2, 2024: 26.7, 2025: 26.9 }, dgnl: { 2025: 890 }, criteria: 'Toán ≥ 8.6; Tiếng Anh ≥ 7.0' },
+  { name: 'Mạng máy tính & TT Dữ liệu', code: '7480102', thpt: { 2023: 25.3, 2024: 25.7, 2025: 25.8 }, dgnl: { 2025: 850 }, criteria: 'Toán ≥ 8.2' },
+  { name: 'Công nghệ Thông tin (Chương trình CLC)', code: '7480201', thpt: { 2023: 26, 2024: 26.3, 2025: 26.2 }, dgnl: { 2025: 870 }, criteria: 'IELTS ≥ 5.5 hoặc thi Anh ≥ 7.5' },
+  { name: 'Thương mại Điện tử', code: '7340122', thpt: { 2023: 25.8, 2024: 26.2, 2025: 26.4 }, dgnl: { 2025: 865 }, criteria: 'Toán ≥ 8.4; NV ≤ 4' },
+]
+
+const normalizeText = (value = '') => value
+  .normalize('NFD')
+  .replace(/[\u0300-\u036f]/g, '')
+  .replace(/đ/g, 'd')
+  .toLowerCase()
+
+const readStoredArray = (key) => {
+  try {
+    const saved = JSON.parse(localStorage.getItem(key) ?? '[]')
+    return Array.isArray(saved) ? saved : []
+  } catch {
+    return []
+  }
+}
+
 function UitUniversityPage() {
+  const [activeTab, setActiveTab] = useState('tong-quan')
+  const [majorSearch, setMajorSearch] = useState('')
+  const [majorFilter, setMajorFilter] = useState('all')
+  const [selectedYear, setSelectedYear] = useState(2025)
+  const [scoreScale, setScoreScale] = useState('thpt')
+  const [savedUniversityIds, setSavedUniversityIds] = useState(() => readStoredArray('uniview:saved:universities'))
+  const [comparisonIds, setComparisonIds] = useState(() => readStoredArray('uniview:comparison:universities').slice(0, 4))
+  const [toast, setToast] = useState('')
+  const tabsRef = useRef(null)
+  const majorsListRef = useRef(null)
+
+  const isSaved = savedUniversityIds.includes(UIT_ID)
+  const isCompared = comparisonIds.includes(UIT_ID)
+  const visibleMajorCount = uitMajorIndex.filter((item) =>
+    (majorFilter === 'all' || item.group === majorFilter)
+    && (!normalizeText(majorSearch).trim() || normalizeText(item.name).includes(normalizeText(majorSearch).trim())),
+  ).length
+
+  const showToast = (message) => {
+    setToast(message)
+    window.setTimeout(() => setToast(''), 2000)
+  }
+
+  useEffect(() => {
+    const sections = universityTabs
+      .map(([id]) => document.getElementById(id))
+      .filter(Boolean)
+    if (!sections.length) return undefined
+
+    const observer = new IntersectionObserver((entries) => {
+      const visible = entries
+        .filter((entry) => entry.isIntersecting)
+        .sort((first, second) => second.intersectionRatio - first.intersectionRatio)
+      if (visible[0]) setActiveTab(visible[0].target.id)
+    }, {
+      rootMargin: '-150px 0px -58% 0px',
+      threshold: [0.05, 0.25, 0.5],
+    })
+
+    sections.forEach((section) => observer.observe(section))
+    return () => observer.disconnect()
+  }, [])
+
+  useEffect(() => {
+    tabsRef.current
+      ?.querySelector(`[data-section-tab="${activeTab}"]`)
+      ?.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' })
+  }, [activeTab])
+
+  const handleTabClick = (event, id) => {
+    event.preventDefault()
+    event.stopPropagation()
+    const target = document.getElementById(id)
+    if (!target) return
+
+    setActiveTab(id)
+    const headerHeight = document.querySelector('body > #root header')?.getBoundingClientRect().height ?? 74
+    const tabsHeight = tabsRef.current?.parentElement?.getBoundingClientRect().height ?? 56
+    const top = target.getBoundingClientRect().top + window.scrollY - headerHeight - tabsHeight - 12
+    window.scrollTo({ top: Math.max(0, top), behavior: 'smooth' })
+    window.history.replaceState(null, '', `${window.location.pathname}${window.location.search}#${id}`)
+  }
+
+  useEffect(() => {
+    const cards = [...(majorsListRef.current?.querySelectorAll('.major-card') ?? [])]
+    const search = normalizeText(majorSearch).trim()
+
+    cards.forEach((card) => {
+      const matchesGroup = majorFilter === 'all' || card.dataset.group === majorFilter
+      const matchesSearch = !search || normalizeText(card.dataset.name).includes(search)
+      const visible = matchesGroup && matchesSearch
+      card.hidden = !visible
+    })
+  }, [majorFilter, majorSearch])
+
+  const toggleSavedUniversity = () => {
+    const next = isSaved
+      ? savedUniversityIds.filter((id) => id !== UIT_ID)
+      : [...savedUniversityIds, UIT_ID]
+    setSavedUniversityIds(next)
+    localStorage.setItem('uniview:saved:universities', JSON.stringify(next))
+    showToast(isSaved ? 'Đã bỏ lưu UIT' : 'Đã lưu UIT vào danh sách')
+  }
+
+  const toggleUniversityComparison = () => {
+    if (!isCompared && comparisonIds.length >= 4) {
+      showToast('Bạn chỉ có thể so sánh tối đa 4 trường')
+      return
+    }
+
+    const next = isCompared
+      ? comparisonIds.filter((id) => id !== UIT_ID)
+      : [...comparisonIds, UIT_ID]
+    setComparisonIds(next)
+    localStorage.setItem('uniview:comparison:universities', JSON.stringify(next))
+
+    try {
+      const selectedMajors = JSON.parse(localStorage.getItem('uniview:comparison:majors') ?? '{}')
+      if (isCompared) delete selectedMajors[UIT_ID]
+      else selectedMajors[UIT_ID] = UIT_DEFAULT_MAJOR_ID
+      localStorage.setItem('uniview:comparison:majors', JSON.stringify(selectedMajors))
+    } catch {
+      localStorage.setItem('uniview:comparison:majors', JSON.stringify({ [UIT_ID]: UIT_DEFAULT_MAJOR_ID }))
+    }
+
+    showToast(isCompared ? 'Đã bỏ UIT khỏi bảng so sánh' : 'Đã thêm UIT vào bảng so sánh')
+  }
+
   return (
 <><main className="w-full pt-20 bg-surface min-h-[calc(100vh-80px)]"><div className="flex flex-col w-full">
 
@@ -73,13 +234,13 @@ function UitUniversityPage() {
 <span className="">Xem ngành đào tạo</span>
 <span className="material-symbols-outlined text-[18px]">south</span>
 </a>
-<button className="inline-flex items-center gap-2 px-6 py-3.5 rounded-full bg-surface-container-lowest text-on-surface font-label-lg text-label-lg shadow-sm hover:shadow-md hover:bg-surface-container transition-all" id="hero-compare-btn">
+<button aria-pressed={isCompared} className={`inline-flex items-center gap-2 px-6 py-3.5 rounded-full font-label-lg text-label-lg shadow-sm hover:shadow-md transition-all ${isCompared ? 'bg-primary-fixed text-primary ring-2 ring-primary/20' : 'bg-surface-container-lowest text-on-surface hover:bg-surface-container'}`} id="hero-compare-btn" onClick={(event) => { event.stopPropagation(); toggleUniversityComparison() }} type="button">
 <span className="material-symbols-outlined text-[18px] text-primary">swap_horiz</span>
-<span className="">Thêm vào so sánh</span>
+<span className="">{isCompared ? 'Đã thêm vào so sánh' : 'Thêm vào so sánh'}</span>
 </button>
-<button className="inline-flex items-center gap-2 px-4 py-3.5 rounded-full bg-secondary-fixed text-on-secondary-fixed-variant font-label-lg text-label-lg hover:bg-secondary-container hover:text-on-secondary transition-all" id="save-uni-btn">
-<span className="material-symbols-outlined text-[20px]" id="heart-icon">favorite_border</span>
-<span id="save-uni-text" className="">Lưu trường</span>
+<button aria-pressed={isSaved} className={`inline-flex items-center gap-2 px-4 py-3.5 rounded-full font-label-lg text-label-lg transition-all ${isSaved ? 'bg-secondary text-on-secondary' : 'bg-secondary-fixed text-on-secondary-fixed-variant hover:bg-secondary-container hover:text-on-secondary'}`} id="save-uni-btn" onClick={(event) => { event.stopPropagation(); toggleSavedUniversity() }} type="button">
+<span className="material-symbols-outlined text-[20px]" id="heart-icon" style={isSaved ? { fontVariationSettings: "'FILL' 1" } : undefined}>{isSaved ? 'favorite' : 'favorite_border'}</span>
+<span id="save-uni-text" className="">{isSaved ? 'Đã lưu trường' : 'Lưu trường'}</span>
 </button>
 </div>
 </div>
@@ -149,13 +310,18 @@ function UitUniversityPage() {
 </section>
 
 <section className="sticky top-20 z-40 w-full bg-surface-container-lowest/90 backdrop-blur-md shadow-sm">
-<div className="max-w-[1240px] mx-auto px-6 lg:px-12 overflow-x-auto scrollbar-none flex items-center gap-8 py-3.5 text-on-surface-variant font-label-lg text-label-lg">
-<a className="text-primary font-bold border-b-2 border-primary pb-1 whitespace-nowrap" href="#tong-quan">1. Tổng quan</a>
-<a className="hover:text-primary transition-colors whitespace-nowrap" href="#nganh-dao-tao">2. Ngành đào tạo (14)</a>
-<a className="hover:text-primary transition-colors whitespace-nowrap" href="#phuong-thuc">3. Phương thức tuyển sinh</a>
-<a className="hover:text-primary transition-colors whitespace-nowrap" href="#diem-chuan">4. Điểm chuẩn các năm</a>
-<a className="hover:text-primary transition-colors whitespace-nowrap" href="#hoc-phi-hoc-bong">5. Học phí &amp; Học bổng</a>
-<a className="hover:text-primary transition-colors whitespace-nowrap" href="#sinh-vien">6. Sinh viên &amp; Đời sống</a>
+<div ref={tabsRef} className="hide-scrollbar max-w-[1240px] mx-auto px-6 lg:px-12 overflow-x-auto flex items-center gap-1.5 py-2.5 text-on-surface-variant font-label-lg text-label-lg">
+{universityTabs.map(([id, label]) => (
+  <a
+    className={`shrink-0 whitespace-nowrap rounded-xl px-4 py-2 transition-all duration-200 ${activeTab === id ? 'bg-primary font-bold text-on-primary shadow-sm' : 'font-medium text-on-surface-variant hover:bg-primary-fixed hover:text-primary'}`}
+    data-section-tab={id}
+    href={`#${id}`}
+    key={id}
+    onClick={(event) => handleTabClick(event, id)}
+  >
+    {label}
+  </a>
+))}
 </div>
 </section>
 
@@ -178,7 +344,7 @@ function UitUniversityPage() {
 </div>
 </section>
 
-<section className="w-full px-6 lg:px-12 py-space-xl bg-surface" id="tong-quan">
+<section className="scroll-mt-36 w-full px-6 lg:px-12 py-space-xl bg-surface" id="tong-quan">
 <div className="max-w-[1240px] mx-auto flex flex-col gap-space-lg">
 
 <div className="flex flex-col max-w-3xl">
@@ -248,7 +414,7 @@ function UitUniversityPage() {
 </div>
 </section>
 
-<section className="w-full px-6 lg:px-12 py-space-xl bg-surface-container-low" id="nganh-dao-tao">
+<section className="scroll-mt-36 w-full px-6 lg:px-12 py-space-xl bg-surface-container-low" id="nganh-dao-tao">
 <div className="max-w-[1240px] mx-auto flex flex-col gap-space-lg">
 
 <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
@@ -263,30 +429,18 @@ function UitUniversityPage() {
 </div>
 
 <div className="relative w-full md:w-80">
-<input className="w-full pl-10 pr-4 py-2.5 rounded-full bg-surface-container-lowest text-on-surface font-body-sm text-body-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-primary" id="major-search-input" placeholder="Tìm kiếm ngành học..." type="text" />
+<input className="w-full pl-10 pr-4 py-2.5 rounded-full bg-surface-container-lowest text-on-surface font-body-sm text-body-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-primary" id="major-search-input" onChange={(event) => setMajorSearch(event.target.value)} placeholder="Tìm kiếm ngành học..." type="search" value={majorSearch} />
 <span className="material-symbols-outlined absolute left-3 top-2.5 text-[20px] text-outline">search</span>
 </div>
 </div>
 
 <div className="flex items-center gap-2 overflow-x-auto scrollbar-none pb-1" id="filter-chips-container">
-<button className="major-filter-btn px-4 py-2 rounded-full bg-primary text-on-primary font-label-md text-label-md font-semibold whitespace-nowrap shadow-sm">
-          Tất cả ngành (14)
-        </button>
-<button className="major-filter-btn px-4 py-2 rounded-full bg-surface-container-lowest text-on-surface-variant hover:text-on-surface font-label-md text-label-md whitespace-nowrap shadow-sm">
-          Khoa học máy tính &amp; AI (4)
-        </button>
-<button className="major-filter-btn px-4 py-2 rounded-full bg-surface-container-lowest text-on-surface-variant hover:text-on-surface font-label-md text-label-md whitespace-nowrap shadow-sm">
-          CN Phần mềm &amp; Hệ thống (5)
-        </button>
-<button className="major-filter-btn px-4 py-2 rounded-full bg-surface-container-lowest text-on-surface-variant hover:text-on-surface font-label-md text-label-md whitespace-nowrap shadow-sm">
-          An toàn thông tin &amp; Mạng (3)
-        </button>
-<button className="major-filter-btn px-4 py-2 rounded-full bg-surface-container-lowest text-on-surface-variant hover:text-on-surface font-label-md text-label-md whitespace-nowrap shadow-sm">
-          Kinh tế số &amp; TMĐT (2)
-        </button>
+{majorFilters.map(([id, label]) => (
+  <button className={`major-filter-btn px-4 py-2 rounded-full font-label-md text-label-md font-semibold whitespace-nowrap shadow-sm transition-colors ${majorFilter === id ? 'bg-primary text-on-primary' : 'bg-surface-container-lowest text-on-surface-variant hover:text-on-surface'}`} key={id} onClick={(event) => { event.stopPropagation(); setMajorFilter(id) }} type="button">{label}</button>
+))}
 </div>
 
-<div className="flex flex-col gap-3.5" id="majors-list">
+<div ref={majorsListRef} className="flex flex-col gap-3.5" id="majors-list">
 
 <div className="major-card bg-surface-container-lowest p-5 md:p-6 rounded-2xl shadow-sm hover:shadow-md transition-shadow flex flex-col lg:flex-row lg:items-center justify-between gap-4" data-group="ai" data-name="khoa học máy tính trí tuệ nhân tạo data science">
 <div className="flex flex-col lg:w-2/5">
@@ -315,7 +469,7 @@ function UitUniversityPage() {
 </div>
 </div>
 <div className="lg:w-1/5 flex items-center justify-end">
-<a className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-full bg-surface-container text-primary font-label-md text-label-md font-semibold hover:bg-primary hover:text-on-primary transition-all" href="#">
+<a className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-full bg-surface-container text-primary font-label-md text-label-md font-semibold hover:bg-primary hover:text-on-primary transition-all" href="/majors/software-engineering?majorId=7480101">
 <span className="">Lộ trình ngành</span>
 <span className="material-symbols-outlined text-[16px]">arrow_forward</span>
 </a>
@@ -349,7 +503,7 @@ function UitUniversityPage() {
 </div>
 </div>
 <div className="lg:w-1/5 flex items-center justify-end">
-<a className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-full bg-surface-container text-primary font-label-md text-label-md font-semibold hover:bg-primary hover:text-on-primary transition-all" href="#">
+<a className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-full bg-surface-container text-primary font-label-md text-label-md font-semibold hover:bg-primary hover:text-on-primary transition-all" href="/majors/software-engineering?majorId=7480103">
 <span className="">Lộ trình ngành</span>
 <span className="material-symbols-outlined text-[16px]">arrow_forward</span>
 </a>
@@ -383,7 +537,7 @@ function UitUniversityPage() {
 </div>
 </div>
 <div className="lg:w-1/5 flex items-center justify-end">
-<a className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-full bg-surface-container text-primary font-label-md text-label-md font-semibold hover:bg-primary hover:text-on-primary transition-all" href="#">
+<a className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-full bg-surface-container text-primary font-label-md text-label-md font-semibold hover:bg-primary hover:text-on-primary transition-all" href="/majors/software-engineering?majorId=7480202">
 <span className="">Lộ trình ngành</span>
 <span className="material-symbols-outlined text-[16px]">arrow_forward</span>
 </a>
@@ -417,7 +571,7 @@ function UitUniversityPage() {
 </div>
 </div>
 <div className="lg:w-1/5 flex items-center justify-end">
-<a className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-full bg-surface-container text-primary font-label-md text-label-md font-semibold hover:bg-primary hover:text-on-primary transition-all" href="#">
+<a className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-full bg-surface-container text-primary font-label-md text-label-md font-semibold hover:bg-primary hover:text-on-primary transition-all" href="/majors/software-engineering?majorId=7480102">
 <span className="">Lộ trình ngành</span>
 <span className="material-symbols-outlined text-[16px]">arrow_forward</span>
 </a>
@@ -451,7 +605,7 @@ function UitUniversityPage() {
 </div>
 </div>
 <div className="lg:w-1/5 flex items-center justify-end">
-<a className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-full bg-surface-container text-primary font-label-md text-label-md font-semibold hover:bg-primary hover:text-on-primary transition-all" href="#">
+<a className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-full bg-surface-container text-primary font-label-md text-label-md font-semibold hover:bg-primary hover:text-on-primary transition-all" href="/majors/software-engineering?majorId=7480201">
 <span className="">Lộ trình ngành</span>
 <span className="material-symbols-outlined text-[16px]">arrow_forward</span>
 </a>
@@ -485,17 +639,18 @@ function UitUniversityPage() {
 </div>
 </div>
 <div className="lg:w-1/5 flex items-center justify-end">
-<a className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-full bg-surface-container text-primary font-label-md text-label-md font-semibold hover:bg-primary hover:text-on-primary transition-all" href="#">
+<a className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-full bg-surface-container text-primary font-label-md text-label-md font-semibold hover:bg-primary hover:text-on-primary transition-all" href="/majors/software-engineering?majorId=7340122">
 <span className="">Lộ trình ngành</span>
 <span className="material-symbols-outlined text-[16px]">arrow_forward</span>
 </a>
 </div>
 </div>
+{visibleMajorCount === 0 && <div className="rounded-2xl border border-slate-200 bg-surface-container-lowest p-8 text-center"><span className="material-symbols-outlined text-3xl text-outline">search_off</span><p className="mt-2 font-bold text-on-surface">Không tìm thấy ngành phù hợp</p><button className="mt-2 text-sm font-semibold text-primary hover:underline" onClick={() => { setMajorSearch(''); setMajorFilter('all') }} type="button">Đặt lại tìm kiếm</button></div>}
 </div>
 </div>
 </section>
 
-<section className="w-full px-6 lg:px-12 py-space-xl bg-surface" id="phuong-thuc">
+<section className="scroll-mt-36 w-full px-6 lg:px-12 py-space-xl bg-surface" id="phuong-thuc">
 <div className="max-w-[1240px] mx-auto flex flex-col gap-space-lg">
 <div className="flex flex-col max-w-3xl">
 <span className="font-label-sm text-label-sm text-primary uppercase font-bold tracking-widest mb-1">CHƯƠNG 03</span>
@@ -592,7 +747,7 @@ function UitUniversityPage() {
 </div>
 </section>
 
-<section className="w-full px-6 lg:px-12 py-space-xl bg-surface-container-low" id="diem-chuan">
+<section className="scroll-mt-36 w-full px-6 lg:px-12 py-space-xl bg-surface-container-low" id="diem-chuan">
 <div className="max-w-[1240px] mx-auto flex flex-col gap-space-lg">
 <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
 <div>
@@ -608,22 +763,22 @@ function UitUniversityPage() {
 <div className="flex flex-wrap items-center gap-3">
 
 <div className="flex items-center p-1 rounded-full bg-surface-container-lowest shadow-sm">
-<button className="year-btn px-4 py-1.5 rounded-full bg-primary text-on-primary font-label-sm text-label-sm font-bold shadow-sm">
+<button className={`year-btn px-4 py-1.5 rounded-full font-label-sm text-label-sm transition-all ${selectedYear === 2025 ? 'bg-primary text-on-primary font-bold shadow-sm' : 'text-on-surface-variant hover:text-on-surface'}`} onClick={() => setSelectedYear(2025)} type="button">
               2025 (Chính thức)
             </button>
-<button className="year-btn px-4 py-1.5 rounded-full text-on-surface-variant hover:text-on-surface font-label-sm text-label-sm font-medium">
+<button className={`year-btn px-4 py-1.5 rounded-full font-label-sm text-label-sm transition-all ${selectedYear === 2024 ? 'bg-primary text-on-primary font-bold shadow-sm' : 'text-on-surface-variant hover:text-on-surface font-medium'}`} onClick={() => setSelectedYear(2024)} type="button">
               2024
             </button>
-<button className="year-btn px-4 py-1.5 rounded-full text-on-surface-variant hover:text-on-surface font-label-sm text-label-sm font-medium">
+<button className={`year-btn px-4 py-1.5 rounded-full font-label-sm text-label-sm transition-all ${selectedYear === 2023 ? 'bg-primary text-on-primary font-bold shadow-sm' : 'text-on-surface-variant hover:text-on-surface font-medium'}`} onClick={() => setSelectedYear(2023)} type="button">
               2023
             </button>
 </div>
 
 <div className="flex items-center p-1 rounded-full bg-surface-container-lowest shadow-sm">
-<button className="scale-btn px-4 py-1.5 rounded-full bg-surface-container-high text-primary font-label-sm text-label-sm font-bold">
+<button className={`scale-btn px-4 py-1.5 rounded-full font-label-sm text-label-sm transition-all ${scoreScale === 'thpt' ? 'bg-surface-container-high text-primary font-bold' : 'text-on-surface-variant hover:text-on-surface font-medium'}`} onClick={() => setScoreScale('thpt')} type="button">
               Điểm thi THPT (Thang 30)
             </button>
-<button className="scale-btn px-4 py-1.5 rounded-full text-on-surface-variant hover:text-on-surface font-label-sm text-label-sm font-medium">
+<button className={`scale-btn px-4 py-1.5 rounded-full font-label-sm text-label-sm transition-all ${scoreScale === 'dgnl' ? 'bg-surface-container-high text-primary font-bold' : 'text-on-surface-variant hover:text-on-surface font-medium'}`} onClick={() => setScoreScale('dgnl')} type="button">
               Kỳ thi ĐGNL (Thang 1200)
             </button>
 </div>
@@ -637,80 +792,19 @@ function UitUniversityPage() {
 <tr>
 <th className="py-4 px-6">Tên ngành / Chuyên ngành</th>
 <th className="py-4 px-4 text-center">Mã ngành</th>
-<th className="py-4 px-4 text-center">2023</th>
-<th className="py-4 px-4 text-center">2024</th>
-<th className="py-4 px-4 text-center bg-surface-container-high text-primary font-bold">2025 (Chính thức)</th>
+{[2023, 2024, 2025].map((year) => <th className={`py-4 px-4 text-center transition-colors ${selectedYear === year ? 'bg-surface-container-high text-primary font-bold' : ''}`} key={year}>{year}{year === 2025 ? ' (Chính thức)' : ''}</th>)}
 <th className="py-4 px-4 text-center">Biến động (Δ)</th>
 <th className="py-4 px-6">Tiêu chí phụ</th>
 </tr>
 </thead>
 <tbody className="divide-y-0 text-on-surface" id="cutoff-table-body">
-<tr className="hover:bg-surface-container-low transition-colors">
-<td className="py-4 px-6 font-semibold">Khoa học Máy tính</td>
-<td className="py-4 px-4 text-center text-outline">7480101</td>
-<td className="py-4 px-4 text-center">26.90</td>
-<td className="py-4 px-4 text-center">27.40</td>
-<td className="py-4 px-4 text-center bg-surface-container-high/40 font-bold text-primary">27.80</td>
-<td className="py-4 px-4 text-center">
-<span className="inline-flex items-center text-secondary font-bold font-label-sm text-label-sm">+0.40 ↑</span>
-</td>
-<td className="py-4 px-6 text-on-surface-variant">Toán ≥ 9.0; Thứ tự NV ≤ 2</td>
-</tr>
-<tr className="hover:bg-surface-container-low transition-colors bg-surface-container-lowest">
-<td className="py-4 px-6 font-semibold">Kỹ thuật Phần mềm</td>
-<td className="py-4 px-4 text-center text-outline">7480103</td>
-<td className="py-4 px-4 text-center">26.80</td>
-<td className="py-4 px-4 text-center">27.25</td>
-<td className="py-4 px-4 text-center bg-surface-container-high/40 font-bold text-primary">27.50</td>
-<td className="py-4 px-4 text-center">
-<span className="inline-flex items-center text-secondary font-bold font-label-sm text-label-sm">+0.25 ↑</span>
-</td>
-<td className="py-4 px-6 text-on-surface-variant">Toán ≥ 8.8; Thứ tự NV ≤ 3</td>
-</tr>
-<tr className="hover:bg-surface-container-low transition-colors">
-<td className="py-4 px-6 font-semibold">An toàn Thông tin</td>
-<td className="py-4 px-4 text-center text-outline">7480202</td>
-<td className="py-4 px-4 text-center">26.20</td>
-<td className="py-4 px-4 text-center">26.70</td>
-<td className="py-4 px-4 text-center bg-surface-container-high/40 font-bold text-primary">26.90</td>
-<td className="py-4 px-4 text-center">
-<span className="inline-flex items-center text-secondary font-bold font-label-sm text-label-sm">+0.20 ↑</span>
-</td>
-<td className="py-4 px-6 text-on-surface-variant">Toán ≥ 8.6; Tiếng Anh ≥ 7.0</td>
-</tr>
-<tr className="hover:bg-surface-container-low transition-colors bg-surface-container-lowest">
-<td className="py-4 px-6 font-semibold">Mạng máy tính &amp; TT Dữ liệu</td>
-<td className="py-4 px-4 text-center text-outline">7480102</td>
-<td className="py-4 px-4 text-center">25.30</td>
-<td className="py-4 px-4 text-center">25.70</td>
-<td className="py-4 px-4 text-center bg-surface-container-high/40 font-bold text-primary">25.80</td>
-<td className="py-4 px-4 text-center">
-<span className="inline-flex items-center text-secondary font-bold font-label-sm text-label-sm">+0.10 ↑</span>
-</td>
-<td className="py-4 px-6 text-on-surface-variant">Toán ≥ 8.2</td>
-</tr>
-<tr className="hover:bg-surface-container-low transition-colors">
-<td className="py-4 px-6 font-semibold">Công nghệ Thông tin (Chương trình CLC)</td>
-<td className="py-4 px-4 text-center text-outline">7480201</td>
-<td className="py-4 px-4 text-center">26.00</td>
-<td className="py-4 px-4 text-center">26.30</td>
-<td className="py-4 px-4 text-center bg-surface-container-high/40 font-bold text-primary">26.20</td>
-<td className="py-4 px-4 text-center">
-<span className="inline-flex items-center text-primary font-bold font-label-sm text-label-sm">-0.10 ↓</span>
-</td>
-<td className="py-4 px-6 text-on-surface-variant">IELTS ≥ 5.5 hoặc thi Anh ≥ 7.5</td>
-</tr>
-<tr className="hover:bg-surface-container-low transition-colors bg-surface-container-lowest">
-<td className="py-4 px-6 font-semibold">Thương mại Điện tử</td>
-<td className="py-4 px-4 text-center text-outline">7340122</td>
-<td className="py-4 px-4 text-center">25.80</td>
-<td className="py-4 px-4 text-center">26.20</td>
-<td className="py-4 px-4 text-center bg-surface-container-high/40 font-bold text-primary">26.40</td>
-<td className="py-4 px-4 text-center">
-<span className="inline-flex items-center text-secondary font-bold font-label-sm text-label-sm">+0.20 ↑</span>
-</td>
-<td className="py-4 px-6 text-on-surface-variant">Toán ≥ 8.4; NV ≤ 4</td>
-</tr>
+{cutoffRows.map((row, rowIndex) => {
+  const values = scoreScale === 'thpt' ? row.thpt : row.dgnl
+  const current = values[selectedYear]
+  const previous = values[selectedYear - 1]
+  const delta = current !== undefined && previous !== undefined ? current - previous : null
+  return <tr className={`hover:bg-surface-container-low transition-colors ${rowIndex % 2 ? 'bg-surface-container-lowest' : ''}`} key={row.code}><td className="py-4 px-6 font-semibold">{row.name}</td><td className="py-4 px-4 text-center text-outline">{row.code}</td>{[2023, 2024, 2025].map((year) => <td className={`py-4 px-4 text-center transition-colors ${selectedYear === year ? 'bg-surface-container-high/40 font-bold text-primary' : ''}`} key={year}>{values[year] ?? '—'}</td>)}<td className="py-4 px-4 text-center">{delta === null ? <span className="text-outline">Chưa đủ dữ liệu</span> : <span className={`inline-flex font-bold font-label-sm text-label-sm ${delta >= 0 ? 'text-secondary' : 'text-primary'}`}>{delta >= 0 ? '+' : ''}{delta.toFixed(scoreScale === 'thpt' ? 2 : 0)} {delta >= 0 ? '↑' : '↓'}</span>}</td><td className="py-4 px-6 text-on-surface-variant">{scoreScale === 'thpt' ? row.criteria : 'Dữ liệu ĐGNL tham chiếu theo ngành'}</td></tr>
+})}
 </tbody>
 </table>
 </div>
@@ -723,7 +817,7 @@ function UitUniversityPage() {
 </div>
 </section>
 
-<section className="w-full px-6 lg:px-12 py-space-xl bg-surface" id="hoc-phi-hoc-bong">
+<section className="scroll-mt-36 w-full px-6 lg:px-12 py-space-xl bg-surface" id="hoc-phi-hoc-bong">
 <div className="max-w-[1240px] mx-auto flex flex-col gap-space-lg">
 <div className="flex flex-col max-w-3xl">
 <span className="font-label-sm text-label-sm text-primary uppercase font-bold tracking-widest mb-1">CHƯƠNG 05</span>
@@ -837,7 +931,7 @@ function UitUniversityPage() {
 </div>
 </section>
 
-<section className="w-full px-6 lg:px-12 py-space-xl bg-surface-container-low" id="sinh-vien">
+<section className="scroll-mt-36 w-full px-6 lg:px-12 py-space-xl bg-surface-container-low" id="sinh-vien">
 <div className="max-w-[1240px] mx-auto flex flex-col gap-space-lg">
 <div className="flex flex-col max-w-3xl">
 <span className="font-label-sm text-label-sm text-primary uppercase font-bold tracking-widest mb-1">CHƯƠNG 06</span>
@@ -899,9 +993,9 @@ function UitUniversityPage() {
           Đặt UIT cạnh Trường ĐH Bách Khoa (HCMUT) và Trường ĐH Khoa học Tự nhiên (HCMUS) để nhìn rõ sự khác biệt về học phí, chỉ tiêu tuyển sinh và định hướng đào tạo thực chiến.
         </p>
 </div>
-<button className="shrink-0 inline-flex items-center gap-2 px-7 py-3.5 rounded-full bg-primary-container text-on-primary font-label-lg text-label-lg hover:bg-primary shadow-lg transition-all hover:scale-105">
+<button aria-pressed={isCompared} className={`shrink-0 inline-flex items-center gap-2 px-7 py-3.5 rounded-full font-label-lg text-label-lg shadow-lg transition-all hover:scale-105 ${isCompared ? 'bg-emerald-600 text-white' : 'bg-primary-container text-on-primary hover:bg-primary'}`} onClick={(event) => { event.stopPropagation(); toggleUniversityComparison() }} type="button">
 <span className="material-symbols-outlined text-[20px]">swap_horiz</span>
-<span className="">Thêm UIT vào khay so sánh</span>
+<span className="">{isCompared ? 'UIT đã ở trong khay so sánh' : 'Thêm UIT vào khay so sánh'}</span>
 </button>
 </div>
 </section>
@@ -1003,9 +1097,8 @@ function UitUniversityPage() {
 </div>
 </section>
 
-<div className="fixed bottom-5 left-1/2 -translate-x-1/2 z-50 w-auto max-w-[94vw] lg:max-w-[1000px] transition-all duration-300" id="sticky-compare-tray">
-
-</div>
+{comparisonIds.length > 0 && <div className="fixed bottom-5 left-1/2 -translate-x-1/2 z-50 w-[min(760px,calc(100%-2rem))] transition-all duration-300" id="sticky-compare-tray"><div className="flex flex-col gap-3 rounded-2xl border border-blue-200 bg-white/95 p-3 shadow-[0_18px_45px_rgba(15,23,42,0.18)] backdrop-blur-md sm:flex-row sm:items-center sm:justify-between"><div className="flex items-center gap-3"><div className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-50 text-primary"><span className="material-symbols-outlined">compare_arrows</span></div><div><p className="text-sm font-bold text-on-surface">Đang chọn {comparisonIds.length}/4 trường</p><p className="text-xs text-on-surface-variant">{isCompared ? `UIT${comparisonIds.length > 1 ? ` và ${comparisonIds.length - 1} trường khác` : ''}` : `${comparisonIds.length} trường đã chọn`}</p></div></div>{comparisonIds.length >= 2 ? <Link className="inline-flex items-center justify-center gap-2 rounded-xl bg-primary px-5 py-2.5 text-sm font-bold text-on-primary hover:bg-primary-container" to="/compare">So sánh ngay<span className="material-symbols-outlined text-[18px]">arrow_forward</span></Link> : <span className="text-center text-xs font-semibold text-outline">Chọn thêm ít nhất 1 trường</span>}</div></div>}
+{toast && <div className="fixed bottom-28 left-1/2 z-[70] -translate-x-1/2 rounded-full bg-inverse-surface px-4 py-2 text-xs font-semibold text-inverse-on-surface shadow-lg">{toast}</div>}
 </div>
 
 </main>
