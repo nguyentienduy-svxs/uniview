@@ -4,7 +4,6 @@ import { useSearchParams } from 'react-router-dom'
 import majorDetails from '../data/majorDetails.json'
 import majors from '../data/majors.json'
 import universitiesData from '../data/universities.json'
-import FloatingMascot from '../components/FloatingMascot'
 
 const DEFAULT_MAJOR_ID = '7480103'
 
@@ -366,7 +365,6 @@ function MajorDetailPage() {
 
   return (
     <>
-      <FloatingMascot />
       <main className="w-full flex-1 bg-[#FFFDFB]" data-major-id={major.id}>
       <div className="sticky top-[74px] z-40 h-1 w-full bg-slate-200/80">
         <div className="h-full bg-[#1D4ED8] transition-all duration-300" style={{ width: `${readProgress}%` }} />

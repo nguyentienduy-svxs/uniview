@@ -1,5 +1,6 @@
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import AppFooter from './components/AppFooter'
+import FloatingMascot from './components/FloatingMascot'
 import PageRenderer from './components/PageRenderer'
 import ScrollToTop from './components/ScrollToTop'
 import { pages } from './data/pages'
@@ -20,6 +21,7 @@ function App() {
 
             <div className="min-h-screen bg-[#f9f9ff] text-[#121b2e]">
               <AppHeader />
+              <FloatingMascot />
 
               <Routes>
                 {pages.map((page) => (

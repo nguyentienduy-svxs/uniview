@@ -1,8 +1,7 @@
-import FloatingMascot from '../components/FloatingMascot'
 
 function UitUniversityPage() {
   return (
-<><FloatingMascot discoveryLabel="trường đại học" /><main className="w-full pt-20 bg-surface min-h-[calc(100vh-80px)]"><div className="flex flex-col w-full">
+<><main className="w-full pt-20 bg-surface min-h-[calc(100vh-80px)]"><div className="flex flex-col w-full">
 
 <section className="w-full bg-surface-container-low px-6 lg:px-12 py-3.5 border-none">
 <div className="max-w-[1240px] mx-auto flex flex-col md:flex-row md:items-center justify-between gap-3 text-on-surface-variant font-label-md text-label-md">
