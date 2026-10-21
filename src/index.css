@@ -157,6 +157,25 @@
   -webkit-font-smoothing: antialiased;
 }
 
+.hide-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+@keyframes mascotFloat {
+  0%, 100% { transform: translateY(0) rotate(-1deg); }
+  50% { transform: translateY(-7px) rotate(1deg); }
+}
+
+.mascot-float {
+  animation: mascotFloat 3.6s ease-in-out infinite;
+  transform-origin: 50% 80%;
+}
+
 .stitch-screen {
   min-height: 60vh;
   isolation: isolate;
