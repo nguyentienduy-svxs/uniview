@@ -27,6 +27,7 @@ function createInitialState() {
     validationReports: {},
     shortlist: [],
     shortlistNotes: {},
+    shortlistDetails: {},
     decisionChoices: [],
     roadmapCreatedAt: null,
     updatedAt: now(),
@@ -360,9 +361,18 @@ export function JourneyProvider({ children }) {
     return { ...current, taskRecords: next }
   })
 
-  const toggleShortlist = (schoolId) => {
+  const toggleShortlist = (schoolId, details = null) => {
     const exists = state.shortlist.includes(schoolId)
-    update((current) => ({ ...current, shortlist: exists ? current.shortlist.filter((id) => id !== schoolId) : [...current.shortlist, schoolId] }))
+    update((current) => {
+      const shortlistDetails = { ...(current.shortlistDetails ?? {}) }
+      if (exists) delete shortlistDetails[schoolId]
+      else if (details) shortlistDetails[schoolId] = details
+      return {
+        ...current,
+        shortlist: exists ? current.shortlist.filter((id) => id !== schoolId) : [...current.shortlist, schoolId],
+        shortlistDetails,
+      }
+    })
     setToast({ type: 'success', message: exists ? 'Đã xóa khỏi Shortlist.' : 'Đã lưu trường vào Shortlist.' })
   }
 

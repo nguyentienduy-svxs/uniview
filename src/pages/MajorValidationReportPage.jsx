@@ -50,7 +50,7 @@ function MajorValidationReportPage() {
       setToast({ type: 'success', message: 'Trường này đã có trong Shortlist.' })
       return
     }
-    toggleShortlist(school.id)
+    toggleShortlist(school.id, { source: 'report', sourceLabel: 'Đã lưu từ báo cáo', majorId: major.id, majorName: major.name, program: school.program, criteria: school.criteria })
     setToast({ type: 'success', message: `Đã lưu ${school.name} vào Shortlist.` })
   }
 

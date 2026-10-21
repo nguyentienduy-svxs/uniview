@@ -170,7 +170,7 @@ function AnnualReportPage() {
             </section>
 
             <ReportSection id="universities" eyebrow="Gợi ý theo hồ sơ hiện tại" title={`Trường nên tìm hiểu cho ${primaryMajor?.name}`} intro="Các trường được trình bày để so sánh, không phải quảng cáo hoặc dự đoán xác suất trúng tuyển. Thông tin demo phải được đối chiếu lại với nguồn chính thức." action={<Link to={`/schools/recommendations?major=${primaryMajorId}`} className="uv-report-link text-sm font-bold text-[#1D4ED8] hover:text-[#1E40AF]">Xem đầy đủ →</Link>}>
-              <div className="mt-7 grid items-stretch gap-5 xl:grid-cols-3">{universities.map((school) => <UniversityRecommendationCard key={school.id} school={school} saved={state.shortlist.includes(school.id)} onToggle={() => toggleShortlist(school.id)} />)}</div>
+              <div className="mt-7 grid items-stretch gap-5 xl:grid-cols-3">{universities.map((school) => <UniversityRecommendationCard key={school.id} school={school} saved={state.shortlist.includes(school.id)} onToggle={() => toggleShortlist(school.id, { source: 'report', sourceLabel: 'Đã lưu từ báo cáo', majorId: primaryMajorId, majorName: primaryMajor?.name, program: school.program, criteria: school.criteria })} />)}</div>
             </ReportSection>
 
             <section id="next-steps" className="uv-report-surface uv-report-section relative overflow-hidden border-l-4 border-l-[#1D4ED8]">
