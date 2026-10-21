@@ -1,8 +1,10 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
 
 import majorDetails from '../data/majorDetails.json'
 import majors from '../data/majors.json'
+import universitiesData from '../data/universities.json'
+import FloatingMascot from '../components/FloatingMascot'
 
 const DEFAULT_MAJOR_ID = '7480103'
 
@@ -20,6 +22,32 @@ const careerBadgeStyles = [
   'bg-slate-100 text-slate-700',
   'bg-slate-100 text-slate-700',
   'border border-amber-100 bg-amber-50 text-amber-800',
+]
+
+const universityVisuals = {
+  uit: { code: 'QSC', shortName: 'UIT', gradient: 'from-blue-600 via-blue-700 to-indigo-900', accent: 'blue' },
+  hcmut: { code: 'QSB', shortName: 'HCMUT', gradient: 'from-cyan-700 via-blue-800 to-slate-900', accent: 'cyan' },
+  'fpt-hcm': { code: 'FPT', shortName: 'FPT', gradient: 'from-amber-600 via-orange-600 to-rose-700', accent: 'orange' },
+  hust: { code: 'BKA', shortName: 'HUST', gradient: 'from-red-700 via-rose-800 to-slate-900', accent: 'red' },
+}
+
+const universityCatalogIds = {
+  uit: 'uit-vnuhcm',
+  hcmut: 'hcmut-vnuhcm',
+  'fpt-hcm': 'fpt-university-hcm',
+  hust: 'hust',
+}
+
+const sectionTabs = [
+  ['section-overview', 'Tổng quan'],
+  ['section-curriculum', 'Bạn sẽ học gì'],
+  ['section-activities', 'Hoạt động thực tế'],
+  ['section-self-reflect', 'Tự quan sát'],
+  ['section-careers', 'Bản đồ nghề nghiệp'],
+  ['section-challenges', 'Thách thức thực tế'],
+  ['section-quick-check', 'Quick Self Check'],
+  ['section-related', 'Ngành gần'],
+  ['section-universities', 'Trường đào tạo'],
 ]
 
 function MaterialIcon({ children, className = '' }) {
@@ -49,6 +77,10 @@ function MajorDetailPage() {
   const [quickCheckSteps, setQuickCheckSteps] = useState({})
   const [completedQuickChecks, setCompletedQuickChecks] = useState([])
   const [universityFilters, setUniversityFilters] = useState({})
+  const [readProgress, setReadProgress] = useState(16.667)
+  const [activeSection, setActiveSection] = useState('section-overview')
+  const tabsScrollerRef = useRef(null)
+  const sectionNavRef = useRef(null)
 
   const requestedMajorId = searchParams.get('majorId') ?? DEFAULT_MAJOR_ID
 
@@ -66,6 +98,72 @@ function MajorDetailPage() {
   useEffect(() => {
     document.title = `${major.name} | UniView`
   }, [major.name])
+
+  useEffect(() => {
+    const updateReadProgress = () => {
+      const scrollableHeight = document.documentElement.scrollHeight - window.innerHeight
+      const percentage = scrollableHeight > 0
+        ? (window.scrollY / scrollableHeight) * 100
+        : 0
+      setReadProgress(Math.max(16.667, Math.min(100, percentage)))
+    }
+
+    updateReadProgress()
+    window.addEventListener('scroll', updateReadProgress, { passive: true })
+    window.addEventListener('resize', updateReadProgress)
+    return () => {
+      window.removeEventListener('scroll', updateReadProgress)
+      window.removeEventListener('resize', updateReadProgress)
+    }
+  }, [])
+
+  useEffect(() => {
+    const sections = sectionTabs
+      .map(([id]) => document.getElementById(id))
+      .filter(Boolean)
+    if (!sections.length) return undefined
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const visible = entries
+          .filter((entry) => entry.isIntersecting)
+          .sort((a, b) => b.intersectionRatio - a.intersectionRatio)
+        if (visible[0]) setActiveSection(visible[0].target.id)
+      },
+      { rootMargin: '-130px 0px -58% 0px', threshold: [0.1, 0.35, 0.7] },
+    )
+
+    sections.forEach((section) => observer.observe(section))
+    return () => observer.disconnect()
+  }, [])
+
+  const scrollTabs = (direction) => {
+    tabsScrollerRef.current?.scrollBy({
+      left: direction * 260,
+      behavior: 'smooth',
+    })
+  }
+
+  const handleSectionTabClick = (event, id) => {
+    event.preventDefault()
+    setActiveSection(id)
+
+    const target = document.getElementById(id)
+    if (!target) return
+
+    const header = document.querySelector('body > #root header')
+    const headerHeight = header?.getBoundingClientRect().height ?? 74
+    const tabHeight = sectionNavRef.current?.getBoundingClientRect().height ?? 52
+    // Leave a little more breathing room below the sticky tab so the section
+    // starts slightly higher instead of feeling like it overshoots.
+    const top = target.getBoundingClientRect().top + window.scrollY - headerHeight - tabHeight - 32
+
+    window.scrollTo({
+      top: Math.max(0, top),
+      behavior: 'smooth',
+    })
+    window.history.replaceState(null, '', `${window.location.pathname}${window.location.search}#${id}`)
+  }
 
   const isSaved = savedMajorIds.includes(major.id)
   const quickCheckQuestions = major.quickCheck.questions
@@ -104,13 +202,108 @@ function MajorDetailPage() {
           title: 'Nên khám phá thêm',
           description: `Mức độ hứng thú hiện tại chưa cao. Bạn có thể xem các ngành gần với ${major.name} để tìm lựa chọn phù hợp hơn.`,
         }
-  const defaultUniversityFilter = major.universities.items.some(
-    (university) => university.regionId === 'ho-chi-minh-city',
-  )
-    ? 'ho-chi-minh-city'
-    : 'all'
+  // Show the full set first, matching the Stitch reference; pills can narrow it.
+  const defaultUniversityFilter = 'all'
   const activeUniversityFilter = universityFilters[major.id] ?? defaultUniversityFilter
-  const visibleUniversities = major.universities.items.filter((university) =>
+  const usesGeneralUniversityCatalog = !(major.universities.items?.length > 0)
+  const universityItems = useMemo(() => {
+    const catalogItems = universitiesData.universities.filter((university) =>
+      university.featuredMajors?.some((featuredMajor) => featuredMajor.toLowerCase() === major.name.toLowerCase()),
+    )
+    const fallbackItems = catalogItems.length > 0
+      ? catalogItems
+      : universitiesData.universities.slice(0, 6)
+    const curatedItems = major.universities.items ?? []
+    const sourceItems = curatedItems.length > 0
+      ? curatedItems
+      : fallbackItems.map((university) => {
+          const location = university.location?.campus
+            ? `${university.location.campus}, ${university.location.city}`
+            : university.location?.city ?? university.city
+          const tuition = university.tuition
+          const scoreRange = university.admission?.scoreRange
+          const tuitionLabel = tuition
+            ? `${tuition.minMillionVnd} – ${tuition.maxMillionVnd} ${tuition.unit}`
+            : 'Đang cập nhật'
+          const methodLabel = university.admission?.methods?.slice(0, 2).map((method) => method.label).join(', ')
+
+          return {
+            id: university.id,
+            catalogId: university.id,
+            name: university.shortName ?? university.name,
+            fullName: university.name,
+            shortName: university.shortName,
+            code: university.code,
+            location,
+            regionId: university.regionId,
+            ownershipId: university.ownership,
+            ownershipLabel: university.ownershipLabel,
+            badge: [university.parentSystem, university.ownershipLabel].filter(Boolean).join(' · '),
+            website: university.website,
+            featuredMajors: university.featuredMajors ?? [],
+            tuition: university.tuition,
+            admission: university.admission,
+            details: [
+              { label: 'Học phí tham chiếu', value: tuitionLabel },
+              { label: 'Điểm tham chiếu', value: scoreRange?.label ?? 'Đang cập nhật' },
+              { label: 'Phương thức', value: methodLabel || 'Xem đề án tuyển sinh' },
+            ],
+          }
+        })
+
+    return sourceItems.map((item) => {
+      const catalogUniversity = universitiesData.universities.find((university) =>
+        university.id === universityCatalogIds[item.id]
+        || university.id === item.catalogId
+        || university.code === item.code
+        || university.shortName === item.shortName
+        || university.name === item.fullName,
+      )
+
+      const merged = {
+        ...catalogUniversity,
+        ...item,
+      }
+      const location = typeof merged.location === 'object'
+        ? (merged.location?.campus
+            ? `${merged.location.campus}, ${merged.location.city}`
+            : merged.location?.city ?? merged.city)
+        : merged.location
+      const tuition = merged.tuition
+      const scoreRange = merged.admission?.scoreRange
+
+      return {
+        ...merged,
+        catalogId: catalogUniversity?.id ?? item.catalogId ?? item.id,
+        name: merged.name ?? merged.shortName,
+        fullName: merged.fullName ?? merged.name,
+        shortName: merged.shortName,
+        code: merged.code,
+        location,
+        regionId: merged.regionId ?? merged.location?.regionId,
+        ownershipId: merged.ownershipId ?? merged.ownership,
+        badge: merged.badge ?? [merged.parentSystem, merged.ownershipLabel].filter(Boolean).join(' · '),
+        website: merged.website,
+        featuredMajors: merged.featuredMajors ?? [],
+        tuition,
+        admission: merged.admission,
+        details: merged.details ?? [
+          {
+            label: 'Học phí tham chiếu',
+            value: tuition
+              ? `${tuition.minMillionVnd} – ${tuition.maxMillionVnd} ${tuition.unit}`
+              : 'Đang cập nhật',
+          },
+          { label: 'Điểm tham chiếu', value: scoreRange?.label ?? 'Đang cập nhật' },
+          {
+            label: 'Phương thức',
+            value: merged.admission?.methods?.slice(0, 2).map((method) => method.label).join(', ') || 'Xem đề án tuyển sinh',
+          },
+        ],
+      }
+    })
+  }, [major])
+  const visibleUniversities = universityItems.filter((university) =>
     activeUniversityFilter === 'all'
       || university.regionId === activeUniversityFilter
       || university.ownershipId === activeUniversityFilter,
@@ -172,9 +365,11 @@ function MajorDetailPage() {
   }
 
   return (
-    <main className="w-full flex-1 bg-[#FFFDFB]" data-major-id={major.id}>
+    <>
+      <FloatingMascot />
+      <main className="w-full flex-1 bg-[#FFFDFB]" data-major-id={major.id}>
       <div className="sticky top-[74px] z-40 h-1 w-full bg-slate-200/80">
-        <div className="h-full w-1/6 bg-[#1D4ED8] transition-all duration-300" />
+        <div className="h-full bg-[#1D4ED8] transition-all duration-300" style={{ width: `${readProgress}%` }} />
       </div>
 
       <div className="mx-auto w-full max-w-[1240px] px-4 py-4 sm:px-6 lg:px-8">
@@ -239,13 +434,13 @@ function MajorDetailPage() {
                   </div>
 
                   <div className="space-y-1 text-slate-300">
-                    <p><span className="text-rose-400">interface</span> <span className="font-semibold text-amber-300">{major.heroPreview.interfaceName}</span> {'{'}</p>
+                    <p><span className="text-rose-400">{major.heroPreview.syntax === 'pipeline' ? 'const' : 'interface'}</span> <span className="font-semibold text-amber-300">{major.heroPreview.interfaceName}</span> {major.heroPreview.syntax === 'pipeline' ? '= [' : '{'}</p>
                     {major.heroPreview.properties.map((property) => (
-                      <p className="pl-4" key={property.name}>
-                        {property.name}: <span className="text-blue-300">{typeof property.value === 'string' ? `'${property.value}'` : String(property.value)}</span>;
+                      <p className="pl-4 font-sans text-xs" key={property.name}>
+                        <span className="font-mono text-blue-300">{property.name}</span>: <span className="text-slate-300">{typeof property.value === 'string' ? (major.heroPreview.syntax === 'pipeline' ? property.value : `'${property.value}'`) : String(property.value)}</span>
                       </p>
                     ))}
-                    <p>{'}'}</p>
+                    <p>{major.heroPreview.syntax === 'pipeline' ? '];' : '}'}</p>
                   </div>
 
                   <div className="mt-3 flex items-center justify-between rounded-lg border border-slate-100 bg-white p-3 text-[#172033] shadow-sm">
@@ -264,7 +459,7 @@ function MajorDetailPage() {
 
                 <div className="absolute bottom-4 right-4 flex max-w-[calc(100%-2rem)] items-center gap-2 rounded-full border border-slate-200/80 bg-white/95 px-3.5 py-1.5 text-[#172033] shadow-md backdrop-blur-sm">
                   <span className="h-2 w-2 shrink-0 animate-ping rounded-full bg-emerald-500" />
-                  <span className="truncate text-xs font-semibold text-slate-700">{major.market.demandGrowthLabel}</span>
+                  <span className="truncate text-xs font-semibold text-slate-700">{major.heroPreview.badgeLabel ?? major.market.demandGrowthLabel}</span>
                 </div>
               </div>
             </div>
@@ -290,20 +485,37 @@ function MajorDetailPage() {
           </div>
         </section>
 
-        <nav className="sticky top-[78px] z-30 mb-8 rounded-xl border-y border-slate-200/60 bg-[#FFFDFB]/95 py-2.5 shadow-xs backdrop-blur-md">
-          <div className="no-scrollbar flex items-center gap-2 overflow-x-auto px-2 text-sm font-medium text-slate-600">
-            {[
-              ['section-overview', '1. Tổng quan'],
-              ['section-curriculum', '2. Bạn sẽ học gì'],
-              ['section-activities', '3. Hoạt động thực tế'],
-              ['section-careers', '4. Bản đồ nghề nghiệp'],
-              ['section-quick-check', '5. Quick Self Check'],
-              ['section-related', '6. Ngành gần'],
-              ['section-universities', `7. Trường đào tạo (${major.market.universityCount})`],
-            ].map(([id, label], index) => (
-              <a className={`whitespace-nowrap rounded-full px-4 py-1.5 transition-colors ${index === 0 ? 'bg-blue-50 font-semibold text-[#1D4ED8]' : 'hover:bg-slate-100 hover:text-[#172033]'}`} href={`#${id}`} key={id}>{label}</a>
+        <nav ref={sectionNavRef} className="sticky top-[78px] z-30 mb-8 rounded-2xl border border-slate-200/80 bg-[#FFFDFB]/95 p-1.5 shadow-sm backdrop-blur-md">
+          <button
+            aria-label="Cuộn tab sang trái"
+            className="absolute left-2 top-1/2 z-10 hidden h-8 w-8 -translate-y-1/2 items-center justify-center rounded-full border border-slate-200 bg-white/95 text-slate-500 shadow-sm transition hover:border-blue-200 hover:text-[#1D4ED8] md:flex"
+            onClick={() => scrollTabs(-1)}
+            type="button"
+          >
+            <MaterialIcon className="text-[18px]">chevron_left</MaterialIcon>
+          </button>
+          <div className="pointer-events-none absolute inset-y-1.5 left-0 z-[1] hidden w-12 rounded-l-2xl bg-gradient-to-r from-[#FFFDFB] to-transparent md:block" />
+          <div className="pointer-events-none absolute inset-y-1.5 right-0 z-[1] hidden w-12 rounded-r-2xl bg-gradient-to-l from-[#FFFDFB] to-transparent md:block" />
+          <div ref={tabsScrollerRef} className="hide-scrollbar flex snap-x items-center gap-1 overflow-x-auto scroll-smooth px-1 text-sm font-medium text-slate-600 md:px-10">
+            {sectionTabs.map(([id, label]) => (
+              <a
+                className={`shrink-0 snap-start whitespace-nowrap rounded-full px-4 py-2 transition-all ${activeSection === id ? 'bg-[#EFF6FF] font-semibold text-[#1D4ED8] shadow-xs' : 'text-slate-600 hover:bg-slate-100 hover:text-[#172033]'}`}
+                href={`#${id}`}
+                key={id}
+                onClick={(event) => handleSectionTabClick(event, id)}
+              >
+                {label}
+              </a>
             ))}
           </div>
+          <button
+            aria-label="Cuộn tab sang phải"
+            className="absolute right-2 top-1/2 z-10 hidden h-8 w-8 -translate-y-1/2 items-center justify-center rounded-full border border-slate-200 bg-white/95 text-slate-500 shadow-sm transition hover:border-blue-200 hover:text-[#1D4ED8] md:flex"
+            onClick={() => scrollTabs(1)}
+            type="button"
+          >
+            <MaterialIcon className="text-[18px]">chevron_right</MaterialIcon>
+          </button>
         </nav>
 
         <section className="mb-10">
@@ -339,7 +551,7 @@ function MajorDetailPage() {
         <section className="mb-14 scroll-mt-24" id="section-curriculum">
           <SectionHeading {...major.curriculum} />
           <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {major.curriculum.topics.map((topic, index) => (
+            {major.curriculum.topics.slice(0, 4).map((topic, index) => (
               <div className={`space-y-3 rounded-2xl border border-slate-200/80 bg-white p-6 shadow-xs transition-all hover:border-blue-200 hover:shadow-md ${major.curriculum.topics.length % 3 === 2 && index === major.curriculum.topics.length - 1 ? 'lg:col-span-2' : ''}`} key={topic.id}>
                 <div className={`flex h-11 w-11 items-center justify-center rounded-xl ${accentStyles[index % accentStyles.length]}`}>
                   <MaterialIcon className="text-[24px]">{topic.icon}</MaterialIcon>
@@ -354,12 +566,16 @@ function MajorDetailPage() {
               </div>
             ))}
           </div>
+          <div className="mt-6 flex items-start gap-3 rounded-2xl border border-amber-100 bg-amber-50/70 p-4 text-sm text-amber-900">
+            <MaterialIcon className="mt-0.5 text-[20px] text-amber-600">lightbulb</MaterialIcon>
+            <p><strong>Thực hành đồ án từ năm thứ 2:</strong> Hãy ưu tiên các môn có sản phẩm đầu ra, làm việc nhóm và cơ hội triển khai thật để biến kiến thức thành portfolio.</p>
+          </div>
         </section>
 
         <section className="mb-14 scroll-mt-24" id="section-activities">
           <SectionHeading {...major.activities} accent="text-[#E11D48]" />
           <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {major.activities.items.map((activity, index) => (
+            {major.activities.items.slice(0, 4).map((activity, index) => (
               <div className="space-y-2.5 rounded-2xl border border-slate-200/80 bg-white p-5 shadow-xs transition-all hover:border-blue-200 hover:shadow-md" key={activity.id}>
                 <div className={`flex h-10 w-10 items-center justify-center rounded-xl ${accentStyles[index % accentStyles.length]}`}>
                   <MaterialIcon className="text-[22px]">{activity.icon}</MaterialIcon>
@@ -369,9 +585,13 @@ function MajorDetailPage() {
               </div>
             ))}
           </div>
+          <div className="mt-6 flex items-start gap-3 rounded-2xl border border-blue-100 bg-blue-50/70 p-4 text-sm text-slate-700">
+            <MaterialIcon className="mt-0.5 text-[20px] text-[#1D4ED8]">groups</MaterialIcon>
+            <p><strong className="text-[#172033]">Cộng tác đa chức năng trong thực tế:</strong> Kỹ sư phần mềm thường xuyên phối hợp cùng Product, UX/UI, QA và vận hành để đưa một tính năng từ ý tưởng đến người dùng.</p>
+          </div>
         </section>
 
-        <section className="mb-14">
+        <section className="mb-14 scroll-mt-24" id="section-self-reflect">
           <div className="space-y-4 rounded-2xl border border-slate-200/80 bg-slate-50 p-6 sm:p-8">
             <SectionHeading {...major.selfObservation} />
             <div className="flex flex-wrap gap-2.5">
@@ -403,6 +623,23 @@ function MajorDetailPage() {
             ))}
           </div>
         </section>
+
+        {major.challenges && (
+          <section className="mb-14 scroll-mt-24" id="section-challenges">
+            <SectionHeading {...major.challenges} accent="text-[#E11D48]" />
+            <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
+              {major.challenges.items.map((challenge, index) => (
+                <article className="space-y-3 rounded-2xl border border-slate-200/80 bg-white p-6 shadow-xs transition-all hover:border-rose-200 hover:shadow-md" key={challenge.id}>
+                  <div className={`flex h-11 w-11 items-center justify-center rounded-xl ${accentStyles[(index + 2) % accentStyles.length]}`}>
+                    <MaterialIcon className="text-[24px]">{challenge.icon}</MaterialIcon>
+                  </div>
+                  <h3 className="text-lg font-bold text-[#172033]">{challenge.title}</h3>
+                  <p className="text-sm leading-relaxed text-slate-600">{challenge.description}</p>
+                </article>
+              ))}
+            </div>
+          </section>
+        )}
 
         <section className="mb-14 scroll-mt-24" id="section-quick-check">
           <div className="space-y-6 rounded-3xl border border-slate-200/80 bg-gradient-to-br from-slate-50 to-blue-50/40 p-6 shadow-sm sm:p-8 lg:p-10">
@@ -515,6 +752,11 @@ function MajorDetailPage() {
 
         <section className="mb-14 scroll-mt-24" id="section-universities">
           <SectionHeading eyebrow="Dữ liệu trường học" title={major.universities.title} description={major.universities.description} />
+          {usesGeneralUniversityCatalog && (
+            <p className="-mt-3 mb-5 text-xs text-slate-500">
+              Danh sách đang dùng dữ liệu trường chung của UniView; thông tin theo từng ngành sẽ được bổ sung dần.
+            </p>
+          )}
           <div className="mb-6 flex flex-wrap items-center gap-2">
             {major.universities.filters.map((filter) => (
               <button className={`rounded-full px-4 py-1.5 text-xs font-semibold transition-colors ${filter.id === activeUniversityFilter ? 'bg-[#1D4ED8] text-white shadow-xs' : 'bg-slate-100 text-slate-700 hover:bg-slate-200'}`} key={filter.id} onClick={() => setUniversityFilters((current) => ({ ...current, [major.id]: filter.id }))} type="button">{filter.label}</button>
@@ -525,10 +767,28 @@ function MajorDetailPage() {
             {visibleUniversities.map((university) => (
               <div className="group flex flex-col justify-between overflow-hidden rounded-2xl border border-slate-200/80 bg-white shadow-xs transition-all hover:border-slate-300 hover:shadow-md" key={university.id}>
                 <div>
-                  <div className="relative h-48 w-full overflow-hidden">
-                    <img alt={university.fullName} className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" src={university.image} />
-                    <div className="absolute left-3 top-3 rounded-full bg-white/95 px-3 py-1 text-xs font-bold text-[#172033] shadow-xs backdrop-blur-md">{university.badge}</div>
-                  </div>
+                  {(() => {
+                    const visual = universityVisuals[university.id]
+                      ?? Object.values(universityVisuals).find((item) => item.code === university.code || item.shortName === university.shortName)
+                      ?? {
+                        code: university.code ?? '—',
+                        shortName: university.shortName ?? university.code ?? 'UNI',
+                        gradient: 'from-slate-600 via-slate-700 to-slate-900',
+                      }
+                    return (
+                      <div className={`relative flex h-44 w-full flex-col justify-between overflow-hidden bg-gradient-to-br ${visual.gradient} p-5 text-white`}>
+                        <div className="absolute -bottom-6 -right-6 h-32 w-32 rounded-full bg-white/10 blur-xl" />
+                        <div className="z-10 flex items-center justify-between gap-2">
+                          <span className="rounded-full border border-white/20 bg-white/20 px-3 py-1 text-xs font-bold text-white backdrop-blur-md">{university.badge}</span>
+                          <span className="rounded bg-white/15 px-2 py-0.5 font-mono text-xs text-white/80">Mã: {visual.code}</span>
+                        </div>
+                        <div className="z-10">
+                          <span className="block text-3xl font-extrabold tracking-tight text-white">{visual.shortName}</span>
+                          <span className="text-xs font-medium text-white/75">{university.fullName}</span>
+                        </div>
+                      </div>
+                    )
+                  })()}
                   <div className="space-y-3 p-5">
                     <div className="space-y-0.5">
                       <h3 className="line-clamp-1 text-base font-bold text-[#172033]">{university.name}</h3>
@@ -542,10 +802,19 @@ function MajorDetailPage() {
                         </div>
                       ))}
                     </div>
+                    {university.featuredMajors?.length > 0 && (
+                      <div className="flex flex-wrap gap-1.5">
+                        {university.featuredMajors.slice(0, 3).map((featuredMajor) => (
+                          <span className="rounded-md bg-blue-50 px-2 py-1 text-[11px] font-medium text-[#1D4ED8]" key={featuredMajor}>
+                            {featuredMajor}
+                          </span>
+                        ))}
+                      </div>
+                    )}
                   </div>
                 </div>
                 <div className="mt-2 flex items-center justify-between gap-2 border-t border-slate-100 p-5 pt-4">
-                  <a className="inline-flex items-center gap-1.5 text-xs font-bold text-[#1D4ED8] hover:underline" href="#"><span>Chi tiết trường</span><MaterialIcon className="text-[16px]">arrow_forward</MaterialIcon></a>
+                  <a className="inline-flex items-center gap-1.5 text-xs font-bold text-[#1D4ED8] hover:underline" href={`/universities/uit?universityId=${university.catalogId}`}><span>Chi tiết trường</span><MaterialIcon className="text-[16px]">arrow_forward</MaterialIcon></a>
                   <div className="flex items-center gap-1.5">
                     <button className="flex h-8 w-8 items-center justify-center rounded-full bg-slate-100 text-slate-500 transition-colors hover:bg-rose-50 hover:text-[#E11D48]" title="Lưu trường" type="button"><MaterialIcon className="text-[18px]">favorite_border</MaterialIcon></button>
                     <button className="flex h-8 w-8 items-center justify-center rounded-full bg-slate-100 text-slate-500 transition-colors hover:bg-blue-50 hover:text-[#1D4ED8]" title="So sánh trường" type="button"><MaterialIcon className="text-[18px]">compare_arrows</MaterialIcon></button>
@@ -584,7 +853,8 @@ function MajorDetailPage() {
           </div>
         </section>
       </div>
-    </main>
+      </main>
+    </>
   )
 }
 
