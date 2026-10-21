@@ -379,10 +379,10 @@ export const pages = [
   },
   {
     id: 'd2d9638abeca4539bbd18f56a56a2a73',
-    component: 'WishlistPage',
+    component: 'PersonalizedShortlistPage',
     path: '/wishlist',
-    title: 'UniView — Lựa chọn đã lưu',
-    shortTitle: 'Lựa chọn đã lưu',
+    title: 'UniView — Shortlist trường đại học cá nhân hóa',
+    shortTitle: 'Shortlist cá nhân hóa',
     group: 'Tài khoản',
     requiresAuth: true,
   },
