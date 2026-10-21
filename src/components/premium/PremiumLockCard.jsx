@@ -1,6 +1,7 @@
 ﻿// src/components/premium/PremiumLockCard.jsx
-import { Link, useNavigate } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import { useAuth } from '../../context/AuthContext'
+import { formatPrice, PLAN_CATALOG, PLAN_IDS } from '../../data/plans'
 import { ENTITLEMENTS } from '../header/headerConfig'
 
 /**
@@ -9,20 +10,19 @@ import { ENTITLEMENTS } from '../header/headerConfig'
  * Shown inside premium feature pages when the user does NOT have ADMISSION_PASS.
  * Handles three user states:
  *   - Guest (not logged in)
- *   - Free (logged in, no entitlements)
- *   - Direction Snapshot only (has DIRECTION_SNAPSHOT but NOT ADMISSION_PASS)
+ *   - Preview (logged in, no entitlements)
+ *   - Gói Tháng / Gói Năm (workspace only, without ADMISSION_PASS)
  */
 export default function PremiumLockCard({ className = '' }) {
   const { isAuthenticated, hasEntitlement } = useAuth()
   const hasAdmissionPass = hasEntitlement(ENTITLEMENTS.ADMISSION_PASS)
-  const hasDirectionSnapshot = hasEntitlement(ENTITLEMENTS.DIRECTION_SNAPSHOT)
+  const hasPersonalWorkspace = hasEntitlement(ENTITLEMENTS.PERSONAL_WORKSPACE)
+  const admissionPassPrice = formatPrice(PLAN_CATALOG[PLAN_IDS.ADMISSION_PASS].price)
 
   // If user already has the pass, render nothing
   if (hasAdmissionPass) return null
 
-  const isDirectionSnapshotOnly = isAuthenticated && hasDirectionSnapshot && !hasAdmissionPass
-  const isFreeLoggedIn = isAuthenticated && !hasAdmissionPass
-
+  const hasCorePlanOnly = isAuthenticated && hasPersonalWorkspace && !hasAdmissionPass
   return (
     <div
       className={`relative overflow-hidden rounded-2xl border border-blue-200 bg-gradient-to-br from-[#EFF6FF] via-white to-[#FFF1F2] shadow-lg ${className}`}
@@ -41,7 +41,7 @@ export default function PremiumLockCard({ className = '' }) {
               fillRule="evenodd"
             />
           </svg>
-          PERSONALIZED ADMISSION PASS
+          ADMISSION PASS THEO MÙA TUYỂN SINH
         </div>
 
         {/* Heading */}
@@ -49,20 +49,21 @@ export default function PremiumLockCard({ className = '' }) {
           Mở khóa tính năng này với Admission Pass
         </h2>
 
-        {/* Direction Snapshot note */}
-        {isDirectionSnapshotOnly && (
+        {/* Existing exploration subscription note */}
+        {hasCorePlanOnly && (
           <div className="mb-4 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900">
-            <span className="font-semibold">Direction Snapshot của bạn không bao gồm tính năng này.</span>
-            <span className="ml-1 text-amber-700">Mở thêm Personalized Admission Pass để truy cập.</span>
+            <span className="font-semibold">Gói khám phá của bạn chưa bao gồm công cụ tuyển sinh này.</span>
+            <span className="ml-1 text-amber-700">Mở thêm Admission Pass cho năm tuyển sinh cần theo dõi.</span>
           </div>
         )}
 
         {/* Package + price */}
         <div className="mb-5 flex flex-wrap items-baseline gap-2">
-          <span className="text-sm font-semibold text-[#667085]">Personalized Admission Pass</span>
-          <span className="text-2xl font-extrabold text-[#172033]">89.000đ</span>
+          <span className="text-sm font-semibold text-[#667085]">Admission Pass</span>
+          <span className="text-2xl font-extrabold text-[#172033]">{admissionPassPrice}</span>
           <span className="text-sm text-[#667085]">/ mùa tuyển sinh</span>
         </div>
+        <p className="-mt-3 mb-5 text-xs font-semibold text-[#A93349]">Đã bao gồm trong Gói Năm</p>
 
         {/* What you get */}
         <ul className="mb-6 space-y-2">
@@ -87,7 +88,7 @@ export default function PremiumLockCard({ className = '' }) {
             to="/admission-pass"
             className="inline-flex items-center gap-2 rounded-xl bg-[#1D4ED8] px-6 py-3 text-sm font-bold text-white shadow-md transition-all hover:-translate-y-0.5 hover:bg-blue-700 hover:shadow-lg"
           >
-            Mở Admission Pass — 89.000đ
+            Xem quyền lợi Admission Pass
             <svg className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
               <path d="M9 5l7 7-7 7" strokeLinecap="round" strokeLinejoin="round" />
             </svg>

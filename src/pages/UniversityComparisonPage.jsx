@@ -82,6 +82,14 @@ function Tooltip({ label, children }) {
   )
 }
 
+function UniversityLabel({ university, children }) {
+  return (
+    <Tooltip label={university.name}>
+      <span tabIndex="0">{children ?? university.shortName ?? university.name}</span>
+    </Tooltip>
+  )
+}
+
 function UniversityComparisonPage() {
   const navigate = useNavigate()
   const [selectedIds, setSelectedIds] = useState(() => {
@@ -302,15 +310,15 @@ function UniversityComparisonPage() {
   <div className="grid grid-cols-1 md:grid-cols-4 gap-3.5 pt-1 text-xs">
     <div className="bg-white rounded-xl p-3.5 border border-slate-200/80 shadow-xs space-y-2">
       <span className="font-bold text-slate-700 flex items-center gap-1.5"><span className="material-symbols-outlined text-[16px] text-emerald-600">payments</span>Ngân sách (≤ {profile.budget} tr/năm)</span>
-      <div className="space-y-1.5 pt-1">{selectedChoices.map(({ university }) => { const average = getTuitionAverage(university); const within = average !== null && average <= profile.budget; return <div className="flex items-center justify-between gap-2 text-[11px]" key={university.id}><span className="font-semibold text-slate-600">{university.shortName ?? university.code}:</span><span className={`font-bold px-2 py-0.5 rounded ${within ? 'text-emerald-700 bg-emerald-50' : 'text-rose-700 bg-rose-50'}`}>{within ? 'Thỏa mãn' : average === null ? 'Chưa có dữ liệu' : 'Vượt trần'}</span></div> })}</div>
+      <div className="space-y-1.5 pt-1">{selectedChoices.map(({ university }) => { const average = getTuitionAverage(university); const within = average !== null && average <= profile.budget; return <div className="flex items-center justify-between gap-2 text-[11px]" key={university.id}><span className="font-semibold text-slate-600"><UniversityLabel university={university} />:</span><span className={`font-bold px-2 py-0.5 rounded ${within ? 'text-emerald-700 bg-emerald-50' : 'text-rose-700 bg-rose-50'}`}>{within ? 'Thỏa mãn' : average === null ? 'Chưa có dữ liệu' : 'Vượt trần'}</span></div> })}</div>
     </div>
     <div className="bg-white rounded-xl p-3.5 border border-slate-200/80 shadow-xs space-y-2">
       <span className="font-bold text-slate-700 flex items-center gap-1.5"><span className="material-symbols-outlined text-[16px] text-blue-600">award_star</span>Tuyển sinh (ĐGNL {profile.competencyScore}, THPT {profile.thptScore})</span>
-      <div className="space-y-1.5 pt-1">{selectedChoices.map(({ university }) => <div className="flex items-center justify-between gap-2 text-[11px]" key={university.id}><span className="font-semibold text-slate-600">{university.shortName ?? university.code}:</span><span className="text-blue-700 font-bold bg-blue-50 px-2 py-0.5 rounded">{university.admission?.scoreRange?.max && profile.thptScore >= university.admission.scoreRange.max - 2 ? 'Có lợi thế' : 'Cần đối chiếu'}</span></div>)}</div>
+      <div className="space-y-1.5 pt-1">{selectedChoices.map(({ university }) => <div className="flex items-center justify-between gap-2 text-[11px]" key={university.id}><span className="font-semibold text-slate-600"><UniversityLabel university={university} />:</span><span className="text-blue-700 font-bold bg-blue-50 px-2 py-0.5 rounded">{university.admission?.scoreRange?.max && profile.thptScore >= university.admission.scoreRange.max - 2 ? 'Có lợi thế' : 'Cần đối chiếu'}</span></div>)}</div>
     </div>
     <div className="bg-white rounded-xl p-3.5 border border-slate-200/80 shadow-xs space-y-2">
       <span className="font-bold text-slate-700 flex items-center gap-1.5"><span className="material-symbols-outlined text-[16px] text-indigo-600">school</span>Định hướng đào tạo</span>
-      <div className="space-y-1.5 pt-1">{selectedChoices.map(({ university, major }) => <div className="text-[11px] text-slate-700" key={university.id}><strong className="text-slate-900">{university.shortName ?? university.code}:</strong> {major?.name ?? 'Chưa chọn ngành'}</div>)}</div>
+      <div className="space-y-1.5 pt-1">{selectedChoices.map(({ university, major }) => <div className="text-[11px] text-slate-700" key={university.id}><strong className="text-slate-900"><UniversityLabel university={university} />:</strong> {major?.name ?? 'Chưa chọn ngành'}</div>)}</div>
     </div>
     <div className="bg-white rounded-xl p-3.5 border border-slate-200/80 shadow-xs space-y-2">
       <span className="font-bold text-slate-700 flex items-center gap-1.5"><span className="material-symbols-outlined text-[16px] text-amber-600">lightbulb</span>Lưu tâm & Hành động</span>

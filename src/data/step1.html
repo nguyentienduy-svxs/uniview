@@ -1,0 +1,475 @@
+<!DOCTYPE html><html lang="vi"><head><meta charset="utf-8"><meta content="width=device-width, initial-scale=1.0" name="viewport"><meta content="web_standard" name="shell-type"><link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&amp;display=swap" rel="stylesheet"><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config={darkMode:"class",theme:{extend:{"colors":{"secondary-fixed":"#d5e4f5","error":"#ba1a1a","on-tertiary-container":"#adeec5","secondary":"#52606e","on-primary-container":"#dbdeff","sand-subtle":"#F5F2EB","outline-variant":"#c5c5d7","inverse-primary":"#bbc3ff","on-error-container":"#93000a","on-surface-variant":"#444655","on-tertiary-fixed":"#002111","surface-container-highest":"#dee2f3","surface-container-high":"#e4e8f9","background":"#faf9ff","secondary-fixed-dim":"#b9c8d8","on-background":"#161b27","surface-container-low":"#f1f3ff","surface-bright":"#faf9ff","primary-fixed":"#dfe0ff","inverse-surface":"#2b303d","tertiary-fixed":"#b0f1c8","surface-dim":"#d5d9ea","primary":"#1D4ED8","sky-subtle":"#EBF3FE","on-secondary-fixed":"#0f1d29","error-container":"#ffdad6","surface-tint":"#1D4ED8","secondary-container":"#d5e4f5","on-tertiary":"#ffffff","on-tertiary-fixed-variant":"#0e5133","on-error":"#ffffff","sage-text":"#2F6F4E","tertiary":"#145537","surface":"#faf9ff","outline":"#757686","on-primary-fixed":"#000d5f","primary-container":"#1D4ED8","surface-container":"#e9edfe","surface-container-lowest":"#ffffff","on-secondary-container":"#586674","sage-subtle":"#EBF4EE","lavender-text":"#554784","on-secondary":"#ffffff","on-primary-fixed-variant":"#122fc6","tertiary-fixed-dim":"#95d4ad","inverse-on-surface":"#edf0ff","on-surface":"#161b27","surface-variant":"#dee2f3","on-primary":"#ffffff","primary-fixed-dim":"#bbc3ff","lavender-subtle":"#F3F1FA","tertiary-container":"#316e4e","on-secondary-fixed-variant":"#3a4856","tile-blue":"#EFF6FF","tile-amber":"#FFFBEB","tile-rose":"#FFF1F2","coral":"#FB7185"},"borderRadius":{"DEFAULT":"0.25rem","lg":"0.5rem","xl":"0.75rem","full":"9999px"},"spacing":{"margin":"2.5rem","gutter-mobile":"1rem","space-2xl":"4rem","margin-mobile":"1.25rem","space-xs":"0.25rem","gutter":"1.5rem","space-sm":"0.5rem","space-xl":"2.5rem","space-md":"1rem","space-lg":"1.5rem"},"fontFamily":{"body-md":["Be Vietnam Pro"],"headline-sm":["Be Vietnam Pro"],"label-sm":["Be Vietnam Pro"],"label-lg":["Be Vietnam Pro"],"display-lg-mobile":["Be Vietnam Pro"],"headline-lg":["Be Vietnam Pro"],"label-md":["Be Vietnam Pro"],"body-sm":["Be Vietnam Pro"],"headline-md":["Be Vietnam Pro"],"body-lg":["Be Vietnam Pro"],"headline-lg-mobile":["Be Vietnam Pro"],"display-lg":["Be Vietnam Pro"]},"fontSize":{"body-md":["15px",{"lineHeight":"24px","fontWeight":"400"}],"headline-sm":["20px",{"lineHeight":"28px","fontWeight":"600"}],"label-sm":["11px",{"lineHeight":"14px","letterSpacing":"0.04em","fontWeight":"600"}],"label-lg":["14px",{"lineHeight":"20px","letterSpacing":"0.01em","fontWeight":"600"}],"display-lg-mobile":["34px",{"lineHeight":"42px","letterSpacing":"-0.02em","fontWeight":"600"}],"headline-lg":["32px",{"lineHeight":"40px","letterSpacing":"-0.02em","fontWeight":"600"}],"label-md":["12px",{"lineHeight":"16px","letterSpacing":"0.02em","fontWeight":"500"}],"body-sm":["13px",{"lineHeight":"20px","fontWeight":"400"}],"headline-md":["24px",{"lineHeight":"32px","letterSpacing":"-0.01em","fontWeight":"500"}],"body-lg":["18px",{"lineHeight":"28px","fontWeight":"400"}],"headline-lg-mobile":["26px",{"lineHeight":"34px","letterSpacing":"-0.015em","fontWeight":"600"}],"display-lg":["48px",{"lineHeight":"58px","letterSpacing":"-0.03em","fontWeight":"600"}]}}}}</script><style>
+  .mascot-pose {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: opacity 180ms ease;
+    pointer-events: none;
+  }
+</style></head><body class="bg-background font-body-md text-on-surface antialiased min-h-screen flex flex-col justify-between"><header class="fixed top-0 left-0 right-0 z-50 bg-surface/80 backdrop-blur-xl shadow-[0_1px_8px_rgba(0,0,0,0.04)]"><div class="h-16 max-w-[1240px] mx-auto px-margin-mobile lg:px-margin flex items-center justify-between"><div class="flex items-center gap-space-sm"><div class="w-9 h-9 rounded-xl bg-primary flex items-center justify-center shadow-sm"><span class="font-headline-sm text-on-primary font-bold">U</span></div><div class="flex flex-col"><span class="font-headline-sm text-on-surface leading-none tracking-tight font-semibold">Uniview</span><span class="font-label-sm text-secondary leading-tight">Assessment</span></div></div><nav class="hidden md:flex items-center gap-space-md" data-active-classes="text-primary font-semibold"><a class="font-label-md text-on-surface-variant hover:text-on-surface transition-colors" data-path="assessment-intro" href="#">Khởi đầu</a><span class="font-label-sm text-outline-variant">/</span><a class="font-label-md text-primary font-semibold transition-colors" data-path="interests-evaluation" href="#">Sở thích &amp; Xu hướng</a><span class="font-label-sm text-outline-variant">/</span><a class="font-label-md text-on-surface-variant hover:text-on-surface transition-colors" data-path="strengths-evaluation" href="#">Năng lực học thuật</a><span class="font-label-sm text-outline-variant">/</span><a class="font-label-md text-on-surface-variant hover:text-on-surface transition-colors" data-path="academic-benchmark" href="#">Nguyện vọng tuyển sinh</a><span class="font-label-sm text-outline-variant">/</span><a class="font-label-md text-on-surface-variant hover:text-on-surface transition-colors" data-path="report-summary" href="#">Tổng hợp kết quả</a></nav><div class="flex items-center gap-space-md"><button class="rounded-full bg-surface-container-high hover:bg-surface-container-highest px-space-md py-space-xs font-label-md text-on-surface transition-colors flex items-center gap-space-xs" type="button">Lưu và thoát</button><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div></div></div></header><main class="w-full pt-16 flex-1 flex flex-col"><div class="flex flex-col w-full">
+<div class="relative w-full overflow-hidden">
+<div class="absolute -top-24 left-1/4 w-96 h-96 rounded-full bg-secondary-container/40 blur-3xl pointer-events-none"></div>
+<div class="absolute top-48 right-12 w-80 h-80 rounded-full bg-tertiary-fixed/30 blur-3xl pointer-events-none"></div>
+<div class="max-w-[1240px] mx-auto px-margin-mobile lg:px-margin py-space-xl relative z-10 flex flex-col gap-space-xl">
+<!-- Stage Breadcrumb & Progress Meter -->
+<section class="flex flex-col gap-space-md">
+<div class="flex flex-col md:flex-row md:items-center justify-between gap-space-sm">
+<div class="flex flex-wrap items-center gap-space-xs">
+<span class="px-3.5 py-1.5 rounded-full bg-primary text-on-primary font-label-sm tracking-wide uppercase font-semibold">
+              BƯỚC 1 / 4 — SỞ THÍCH NGHỀ NGHIỆP
+            </span>
+<span class="text-outline-variant text-label-sm">/</span>
+<span class="px-3.5 py-1.5 rounded-full bg-surface-container-low text-on-surface-variant font-label-sm flex items-center gap-1.5 font-medium">
+<span class="w-2 h-2 rounded-full bg-primary"></span>
+              Khảo sát sở thích nghề nghiệp RIASEC
+            </span>
+</div>
+<div class="flex items-center gap-space-sm font-label-md text-secondary">
+<span class="">Tiến độ câu hỏi</span>
+<span class="font-headline-sm text-primary leading-none" id="current-q-num">04</span>
+<span class="text-outline-variant font-medium">/ 30</span>
+</div>
+</div>
+<!-- Progress Gauge (4/30 = ~13.3%) -->
+<div class="relative w-full h-2.5 bg-surface-container rounded-full overflow-hidden shadow-inner">
+<div class="absolute left-0 top-0 bottom-0 bg-primary rounded-full transition-all duration-500 ease-out" id="progress-fill" style="width: 13.33%;"></div>
+</div>
+<div class="flex justify-between items-center text-label-sm text-on-surface-variant">
+<span class="flex items-center gap-1.5 font-label-md text-on-surface">
+<span class="material-symbols-outlined text-[16px] text-tertiary">check_circle</span>
+            Đã tự động lưu
+          </span>
+<div class="flex items-center gap-space-md">
+<span class="hidden sm:inline text-secondary">Ước tính thời gian còn lại: ~5 phút</span>
+<button class="inline-flex items-center gap-1 text-secondary hover:text-primary transition-colors font-label-sm" type="button">
+<span class="material-symbols-outlined text-[15px]">exit_to_app</span>
+<span class="">Lưu và thoát</span>
+</button>
+</div>
+</div>
+</section>
+<!-- Main Asymmetric Workspace (Question + Mascot Companion) -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-space-lg items-start">
+<!-- Left Column: The Core Evaluative Prompt (7 cols) -->
+<div class="lg:col-span-7 flex flex-col gap-space-lg">
+<div class="bg-surface-container-lowest rounded-2xl p-space-lg md:p-space-xl shadow-sm flex flex-col gap-space-lg transition-opacity duration-300" id="question-card">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-space-xs text-label-sm text-secondary font-label-md">
+<span class="w-7 h-7 rounded-full bg-surface-container-high flex items-center justify-center font-bold text-primary" id="question-badge-num">4</span>
+<span class="tracking-wider uppercase font-semibold text-primary">KHẢO SÁT XU HƯỚNG HOẠT ĐỘNG</span>
+</div>
+<span class="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-surface-container text-on-surface-variant font-label-sm font-medium">
+<span class="material-symbols-outlined text-[14px]">psychology</span> Câu 04 / 30
+              </span>
+</div>
+<!-- The Question Headline -->
+<div class="flex flex-col gap-space-sm">
+<h2 class="font-headline-md md:font-headline-lg text-on-surface leading-tight font-bold">
+                Bạn cảm thấy hứng thú ở mức nào với hoạt động sau?
+              </h2>
+<div class="p-space-md md:p-space-lg rounded-2xl bg-surface-container-low shadow-sm">
+<p class="font-headline-sm md:text-[22px] text-on-surface leading-relaxed font-semibold" id="question-headline">
+                  “Phân tích dữ liệu hoặc số liệu để tìm ra nguyên nhân cốt lõi của một vấn đề phức tạp.”
+                </p>
+</div>
+</div>
+<!-- Context Hint Box -->
+<div class="bg-tile-blue rounded-xl p-space-md flex items-start gap-space-sm border border-blue-100">
+<div class="w-8 h-8 rounded-lg bg-primary-fixed flex items-center justify-center shrink-0 mt-0.5">
+<span class="material-symbols-outlined text-primary text-[20px]">lightbulb</span>
+</div>
+<div class="flex flex-col gap-0.5">
+<span class="font-label-md text-primary font-bold">Ví dụ minh họa:</span>
+<p class="font-body-sm text-on-surface-variant leading-relaxed">
+                  Ví dụ: đọc biểu đồ xu hướng, bóc tách kết quả khảo sát hoặc tìm nguyên nhân vì sao một hoạt động không đạt hiệu quả.
+                </p>
+</div>
+</div>
+<!-- 5-Point Likert Rating Selector -->
+<div class="flex flex-col gap-space-sm pt-space-xs">
+<div class="flex justify-between items-center">
+<span class="font-label-md text-on-surface uppercase tracking-wider font-semibold">Mức độ hứng thú của bạn</span>
+<span class="font-label-sm text-primary font-semibold" id="rating-status-hint">Đã chọn: Mức 5/5 (Rất hứng thú!)</span>
+</div>
+<!-- Interactive 5-point buttons (Default selected: 4) -->
+<div aria-label="Likert Scale" class="grid grid-cols-1 sm:grid-cols-5 gap-space-xs" id="rating-group" role="radiogroup">
+<!-- Option 1 -->
+<button aria-checked="false" class="rating-btn group relative flex flex-col items-center justify-between p-space-sm py-4 rounded-xl bg-surface-container-low hover:bg-surface-container transition-all duration-200 text-center gap-2 cursor-pointer shadow-sm border border-transparent" data-val="1" onclick="selectRating(1)" role="radio" type="button">
+<div class="w-8 h-8 rounded-full bg-surface-container-highest flex items-center justify-center font-headline-sm text-secondary group-hover:scale-105 transition-transform">
+                    1
+                  </div>
+<span class="font-label-sm text-on-surface leading-tight font-medium">Không<br>hứng thú</span>
+<div class="indicator w-4 h-4 rounded-full border border-outline-variant flex items-center justify-center"></div>
+</button>
+<!-- Option 2 -->
+<button aria-checked="false" class="rating-btn group relative flex flex-col items-center justify-between p-space-sm py-4 rounded-xl bg-surface-container-low hover:bg-surface-container transition-all duration-200 text-center gap-2 cursor-pointer shadow-sm border border-transparent" data-val="2" onclick="selectRating(2)" role="radio" type="button">
+<div class="w-8 h-8 rounded-full bg-surface-container-highest flex items-center justify-center font-headline-sm text-secondary group-hover:scale-105 transition-transform">
+                    2
+                  </div>
+<span class="font-label-sm text-on-surface leading-tight font-medium">Hơi ít<br>hứng thú</span>
+<div class="indicator w-4 h-4 rounded-full border border-outline-variant flex items-center justify-center"></div>
+</button>
+<!-- Option 3 -->
+<button aria-checked="false" class="rating-btn group relative flex flex-col items-center justify-between p-space-sm py-4 rounded-xl bg-surface-container-low hover:bg-surface-container transition-all duration-200 text-center gap-2 cursor-pointer shadow-sm border border-transparent" data-val="3" onclick="selectRating(3)" role="radio" type="button">
+<div class="w-8 h-8 rounded-full bg-surface-container-highest flex items-center justify-center font-headline-sm text-secondary group-hover:scale-105 transition-transform">
+                    3
+                  </div>
+<span class="font-label-sm text-on-surface leading-tight font-medium">Bình<br>thường</span>
+<div class="indicator w-4 h-4 rounded-full border border-outline-variant flex items-center justify-center"></div>
+</button>
+<!-- Option 4 (Default Active) -->
+<button aria-checked="false" class="rating-btn group relative flex flex-col items-center justify-between p-space-sm py-4 rounded-xl bg-surface-container-low hover:bg-surface-container transition-all duration-200 text-center gap-2 cursor-pointer shadow-sm border border-transparent" data-val="4" onclick="selectRating(4)" role="radio" type="button">
+<div class="w-8 h-8 rounded-full bg-surface-container-highest flex items-center justify-center font-headline-sm text-secondary group-hover:scale-105 transition-transform">
+                    4
+                  </div>
+<span class="font-label-sm text-on-surface leading-tight font-medium">Khá<br>hứng thú</span>
+<div class="indicator w-4 h-4 rounded-full border border-outline-variant flex items-center justify-center"></div>
+</button>
+<!-- Option 5 -->
+<button aria-checked="true" class="rating-btn active group relative flex flex-col items-center justify-between p-space-sm py-4 rounded-xl bg-tile-blue ring-2 ring-primary border border-primary transition-all duration-200 text-center gap-2 cursor-pointer shadow-md -translate-y-0.5" data-val="5" onclick="selectRating(5)" role="radio" type="button">
+<div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center font-headline-sm text-on-primary shadow-sm">
+                    5
+                  </div>
+<span class="font-label-sm text-primary leading-tight font-bold">Rất<br>hứng thú</span>
+<div class="indicator w-5 h-5 rounded-full bg-primary flex items-center justify-center text-on-primary"><span class="material-symbols-outlined text-[13px] font-bold">check</span></div>
+</button>
+</div>
+</div>
+<!-- Insight Note -->
+<div class="flex items-center gap-space-xs text-label-sm text-secondary pt-space-xs">
+<span class="material-symbols-outlined text-[16px] text-outline">verified</span>
+<span class="">Không có câu trả lời đúng hay sai. Mọi phản hồi đều giúp tinh chỉnh độ chính xác của bản đồ nguyện vọng.</span>
+</div>
+</div>
+<!-- Bottom Stage Navigation Controls -->
+<div class="flex flex-col sm:flex-row items-center justify-between gap-space-md pt-space-xs">
+<button class="w-full sm:w-auto px-7 py-3 rounded-full bg-surface-container-high hover:bg-surface-container-highest font-label-lg text-on-surface transition-all flex items-center justify-center gap-space-xs shadow-sm" onclick="navigatePrevious()" type="button">
+<span class="material-symbols-outlined text-[18px]">arrow_back</span>
+<span class="">Câu trước</span>
+</button>
+<div class="flex items-center gap-space-sm w-full sm:w-auto">
+<button class="px-5 py-3 rounded-full bg-transparent hover:bg-surface-container font-label-md text-secondary transition-colors items-center gap-1.5" onclick="saveProgressDraft()" type="button">
+<span class="material-symbols-outlined text-[16px]">bookmark_border</span>
+<span class="">Lưu nháp</span>
+</button>
+<button class="w-full sm:w-auto px-8 py-3.5 rounded-full bg-primary hover:bg-primary-container text-on-primary font-label-lg transition-all duration-200 flex items-center justify-center gap-space-xs shadow-md group" id="next-btn" onclick="navigateNext()" type="button">
+<span class="">Tiếp tục câu 05</span>
+<span class="material-symbols-outlined text-[18px] group-hover:translate-x-1 transition-transform">arrow_forward</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Right Column: Interactive Mascot Companion System (5 cols) -->
+<div class="lg:col-span-5 flex flex-col gap-space-md">
+<div class="bg-surface-container-lowest rounded-2xl p-space-lg shadow-sm flex flex-col gap-space-md relative overflow-hidden">
+<!-- Mascot Header (No Dev Toolbar) -->
+<div class="flex items-center justify-between relative z-10">
+<div class="flex items-center gap-2">
+<span class="w-2.5 h-2.5 rounded-full bg-primary animate-pulse"></span>
+<span class="font-label-md uppercase tracking-wider text-on-surface font-bold">BẠN ĐỒNG HÀNH UNIVIEW</span>
+</div>
+<span class="px-3 py-1 rounded-full font-label-sm transition-all duration-200 bg-amber-100 text-tertiary-container border border-amber-300 font-bold" id="mascot-mood-pill">Rất hứng thú!</span>
+</div>
+<!-- FIXED STAGE: Exactly 180px x 180px with clean center alignment and baseline -->
+<div class="relative w-full py-5 bg-surface-container-low rounded-2xl flex flex-col items-center justify-center overflow-hidden">
+<!-- Stage subtle backplate -->
+<div class="relative flex items-center justify-center" style="width: 180px; height: 180px;"><!-- 0. IDLE POSE (Top row, col 1: x:0%, y:0%) -->
+<div class="mascot-pose opacity-0" id="pose-0">
+  <div class="w-[160px] h-[160px] overflow-hidden rounded-2xl relative">
+    <img alt="UniView Mascot Idle" class="absolute max-w-none pointer-events-none" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCmADffMgqB3GA9LcT9kcdZvotSJNvyCC-qGMcrO_pCOZEXKPn2IN3k-ROEb9HSeCKoRsD-jqJrp_2hKSy09v-yTkUqFSDD6VlCowS5EJFTTEagNnd64hnIXbKJhCacvoN3qPE-z0ieF6mGDLK1poYuyGeV7wfsOuO2GVHDTXq1ukk78AfX3ZJmGbK9THSljX68mnzanAbd0p2L3OK3O-lQUtXvShjCUeVi4Akbu91yKDmXqU6eCmL2" style="width: 688px; height: 384px; left: -8px; top: -14px; object-fit: cover;">
+  </div>
+</div>
+<!-- 1. RATING 1: LOW INTEREST (Top row, col 2: x:25%, y:0%) -->
+<div class="mascot-pose opacity-0" id="pose-1">
+  <div class="w-[160px] h-[160px] overflow-hidden rounded-2xl relative">
+    <img alt="UniView Mascot Low Interest" class="absolute max-w-none pointer-events-none" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDKFiEkJljaQk4vDYWTn7eyG78xeqJQb-DvPoGiOVJDgC9kGiyIzF2PZ1P2H_UZj_Ln-eF1OO4oa5kgtGkv3AW92ykoti3tx4iaJao8FQu3OzKbg8V0c3PlkIRHZsRl-ds4I_NtlTmUs4pl0BbCstFVXnMCofA1bez_dHTbUxxBPXhUefozOOsORj3uxfeKKdyKs6ahz1A8UbOns_tfFxQXbI8BqmM9TvwZFP4prILEm8Hc8FTDDXtm" style="width: 688px; height: 384px; left: -176px; top: -14px; object-fit: cover;">
+  </div>
+</div>
+<!-- 2. RATING 2: CALM HELPER / REVIEW (Bottom row, col 4: x:75%, y:50%) -->
+<div class="mascot-pose opacity-0" id="pose-2">
+  <div class="w-[160px] h-[160px] overflow-hidden rounded-2xl relative">
+    <img alt="UniView Mascot Calm Helper" class="absolute max-w-none pointer-events-none" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB80f4X-DGiD1AG3nSOlAwvNRQvyeymDjjoyKq8EEPiqiCwmjqOdzFHaSLj_-5PcNdrmob0FdqmF8H7UgH0IatTVrtzO9HvwhMfvnMyrEyYmo3BtuK2s3Aae7zl9nGCLpHsf0HMOgo07lxgujEj1cbWubTjOIqoSxKkC58Ma0_bVB4Gh6L1DZl9TXtIaM0rVIgfPrPaeVUpcam1PV8cP-0FmnszYtGE3sbB4StnKNx5BJjMBPetiW_9" style="width: 688px; height: 384px; left: -520px; top: -188px; object-fit: cover;">
+  </div>
+</div>
+<!-- 3. RATING 3: NEUTRAL / CURIOUS (Top row, col 3: x:50%, y:0%) -->
+<div class="mascot-pose opacity-0" id="pose-3">
+  <div class="w-[160px] h-[160px] overflow-hidden rounded-2xl relative">
+    <img alt="UniView Mascot Neutral Curious" class="absolute max-w-none pointer-events-none" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDvmi-oRGkObUCXSDWzaiNbNWfIb9N7buB78iaH9QvSmyuobqiue5bBM-EbQrGyMPpZU_4m8_mggqFTnY3ow7pf-OeQjrQTE4Imxyowzae8BpScJkdG2xAgHl83lw-9ECUAcGKy4aYopok8uT6-nbyfjOXhSO-jPmffrsjdV9yVzkVywMHWLvqFykxqwg2Vl-bEdSu7MaGvwwWQUXx9HD15WJ4nAmCVASwTlSA1QjsUi9LVNX0qHSIq" style="width: 688px; height: 384px; left: -348px; top: -14px; object-fit: cover;">
+  </div>
+</div>
+<!-- 4. RATING 4: INTERESTED (DEFAULT ACTIVE) (Top row, col 4: x:75%, y:0%) -->
+<div class="mascot-pose opacity-100" id="pose-4">
+  <div class="w-[160px] h-[160px] overflow-hidden rounded-2xl relative">
+    <img alt="UniView Mascot Interested" class="absolute max-w-none pointer-events-none" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAmqIIsmgx-rro-dM9STIro79EJDCGQR8vpQUvXD3SlmxYaowKxlWb_6XxUp7QFRl0Kur4EYiLukT9cIEW1hnOV0SKVGOwii__rdLQZJZkJqMn_krjJw-vrx9SwEuO5mAs_cWMz4FD7sjkVOzEWJJGvT8RytLs7eFCpHjDgh8uh-28BQCtq-VFJjuU2zrvqw2lDygyrklFFR4cdCduK2pke7F48-K04kXFfLJ57lYUebqQv5b5_2Vio" style="width: 688px; height: 384px; left: -520px; top: -14px; object-fit: cover;">
+  </div>
+</div>
+<!-- 5. RATING 5: EXCITED (Bottom row, col 1: x:0%, y:50%) -->
+<div class="mascot-pose opacity-0" id="pose-5">
+  <div class="w-[160px] h-[160px] overflow-hidden rounded-2xl relative">
+    <img alt="UniView Mascot Excited" class="absolute max-w-none pointer-events-none" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAso3DNx69O8-tQ-AYUHdsan8UlEMskcNBiYja-E-9_NYQwd2OLhbOIR8rr-iBEOf5qe10dXZlCFkesgVX29Q81s7tenPq-pzBDNgi-gdyWiOD1oWHvpalacYUxPrOaPs9ifDP6SEzQACSRjjkh8X4rWps8ucxT4DReG0Ka5cn_8FeiJRF8EcNjmchD3uiLH7NIAOmva-V3uuAWBruczQoivuR-6lYhT8qSE3J1yzfb6wxgjtehkYYM" style="width: 688px; height: 384px; left: -8px; top: -188px; object-fit: cover;">
+  </div>
+</div></div>
+<!-- Live Mascot Speech Bubble with aria-live="polite" -->
+<div aria-live="polite" class="mt-2 px-space-md w-full max-w-[340px] text-center z-10">
+<div class="bg-surface-container-lowest rounded-xl p-space-sm shadow-sm border border-slate-100">
+<p class="font-body-sm text-on-surface font-medium leading-snug" id="mascot-dialogue" style="opacity: 1;">“Bạn thể hiện mức hứng thú cao với hoạt động này.”</p>
+</div>
+</div>
+</div>
+<!-- Supporting Content 1: MẸO TRẢ LỜI -->
+<div class="flex flex-col gap-space-xs pt-space-xs">
+<span class="font-label-sm uppercase tracking-wider text-secondary font-bold">MẸO TRẢ LỜI</span>
+<div class="flex flex-col gap-1.5">
+<div class="bg-surface-container-low p-2.5 rounded-lg flex items-start gap-2">
+<span class="material-symbols-outlined text-[18px] text-primary shrink-0 mt-0.5">check_small</span>
+<span class="font-label-sm text-on-surface">Chọn theo mức độ bạn muốn thực hiện hoạt động.</span>
+</div>
+<div class="bg-surface-container-low p-2.5 rounded-lg flex items-start gap-2">
+<span class="material-symbols-outlined text-[18px] text-primary shrink-0 mt-0.5">check_small</span>
+<span class="font-label-sm text-on-surface">Không cần chọn dựa trên việc bạn đang giỏi hay chưa.</span>
+</div>
+<div class="bg-surface-container-low p-2.5 rounded-lg flex items-start gap-2">
+<span class="material-symbols-outlined text-[18px] text-primary shrink-0 mt-0.5">check_small</span>
+<span class="font-label-sm text-on-surface">Không có đáp án đúng hoặc sai.</span>
+</div>
+<div class="bg-surface-container-low p-2.5 rounded-lg flex items-start gap-2">
+<span class="material-symbols-outlined text-[18px] text-primary shrink-0 mt-0.5">check_small</span>
+<span class="font-label-sm text-on-surface">Hãy chọn phản ứng đầu tiên gần với bạn nhất.</span>
+</div>
+</div>
+</div>
+<!-- Supporting Content 2: CÁCH KẾT QUẢ ĐƯỢC SỬ DỤNG -->
+<div class="bg-sand-subtle rounded-xl p-space-md flex flex-col gap-space-xs border border-amber-100">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-secondary uppercase tracking-wider font-bold">CÁCH KẾT QUẢ ĐƯỢC SỬ DỤNG</span>
+<span class="material-symbols-outlined text-primary text-[18px]">verified_user</span>
+</div>
+<p class="font-body-sm text-on-surface leading-relaxed">
+              UniView sẽ tổng hợp toàn bộ 30 câu trước khi phân tích sáu nhóm RIASEC. Một câu trả lời riêng lẻ không quyết định ngành được đề xuất.
+            </p>
+</div>
+</div>
+<!-- Helper Popover / Clarification Box -->
+<div class="bg-surface-container-low rounded-xl p-space-md flex items-center justify-between border border-slate-200/60 shadow-sm">
+<div class="flex items-center gap-space-sm">
+<span class="material-symbols-outlined text-primary text-[20px]">help_outline</span>
+<span class="font-label-md text-on-surface">Bạn phân vân về khái niệm "dữ liệu phức tạp"?</span>
+</div>
+<button class="font-label-sm text-primary hover:underline font-bold flex items-center gap-1 shrink-0" onclick="showHelperModal()" type="button">
+              Xem giải nghĩa <span class="material-symbols-outlined text-[14px]">arrow_forward</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Micro Feedback Toast Notification -->
+<div class="fixed bottom-6 right-6 z-50 transform translate-y-20 opacity-0 transition-all duration-300 pointer-events-none" id="toast-feedback">
+<div class="bg-inverse-surface text-inverse-on-surface px-space-md py-space-sm rounded-full shadow-lg font-label-md flex items-center gap-2">
+<span class="material-symbols-outlined text-tertiary-fixed text-[18px]">check_circle</span>
+<span id="toast-text" class="">Đã ghi nhận lựa chọn</span>
+</div>
+</div>
+</div>
+<script>
+  const MASCOT_CONFIG = {
+    0: {
+      mood: "Chờ phản hồi",
+      pillClass: "bg-surface-container-high text-on-surface-variant border border-slate-200",
+      dialogue: "Chào bạn! Hãy chọn mức độ hứng thú thật nhất của bản thân để mình ghi nhận nhé.",
+      statusText: "Chọn mức điểm từ 1 đến 5"
+    },
+    1: {
+      mood: "Không hứng thú",
+      pillClass: "bg-surface-container-highest text-on-surface-variant border border-slate-300",
+      dialogue: "Hoạt động này có vẻ không thu hút bạn. Mình đã ghi nhận rồi nhé.",
+      statusText: "Đã chọn: Mức 1/5 (Không hứng thú)"
+    },
+    2: {
+      mood: "Hơi ít hứng thú",
+      pillClass: "bg-surface-container-high text-secondary border border-slate-200",
+      dialogue: "Bạn có một chút quan tâm, nhưng hoạt động này chưa thực sự hấp dẫn.",
+      statusText: "Đã chọn: Mức 2/5 (Hơi ít hứng thú)"
+    },
+    3: {
+      mood: "Cảm nhận trung tính",
+      pillClass: "bg-sky-subtle text-primary border border-blue-200",
+      dialogue: "Bạn chưa nghiêng rõ về thích hay không thích hoạt động này.",
+      statusText: "Đã chọn: Mức 3/5 (Bình thường)"
+    },
+    4: {
+      mood: "Khá hứng thú",
+      pillClass: "bg-tile-blue text-primary border border-blue-200",
+      dialogue: "Hoạt động này có vẻ khá hợp với sở thích của bạn.",
+      statusText: "Đã chọn: Mức 4/5 (Khá hứng thú)"
+    },
+    5: {
+      mood: "Rất hứng thú!",
+      pillClass: "bg-amber-100 text-tertiary-container border border-amber-300 font-bold",
+      dialogue: "Bạn thể hiện mức hứng thú cao với hoạt động này.",
+      statusText: "Đã chọn: Mức 5/5 (Rất hứng thú!)"
+    }
+  };
+
+  let currentSelection = 4; // Default selected as question 4 state
+
+  function selectRating(val) {
+    currentSelection = val;
+    const config = MASCOT_CONFIG[val] || MASCOT_CONFIG[0];
+
+    // 1. Update Rating Buttons
+    const buttons = document.querySelectorAll('.rating-btn');
+    buttons.forEach(btn => {
+      const btnVal = parseInt(btn.getAttribute('data-val'), 10);
+      const indicator = btn.querySelector('.indicator');
+      const numBadge = btn.querySelector('div:first-child');
+      const label = btn.querySelector('span');
+
+      if (btnVal === val) {
+        btn.setAttribute('aria-checked', 'true');
+        btn.className = 'rating-btn active group relative flex flex-col items-center justify-between p-space-sm py-4 rounded-xl bg-tile-blue ring-2 ring-primary border border-primary transition-all duration-200 text-center gap-2 cursor-pointer shadow-md -translate-y-0.5';
+        if (numBadge) {
+          numBadge.className = 'w-8 h-8 rounded-full bg-primary flex items-center justify-center font-headline-sm text-on-primary shadow-sm';
+        }
+        if (label) {
+          label.className = 'font-label-sm text-primary leading-tight font-bold';
+        }
+        if (indicator) {
+          indicator.className = 'indicator w-5 h-5 rounded-full bg-primary flex items-center justify-center text-on-primary';
+          indicator.innerHTML = '<span class="material-symbols-outlined text-[13px] font-bold">check</span>';
+        }
+      } else {
+        btn.setAttribute('aria-checked', 'false');
+        btn.className = 'rating-btn group relative flex flex-col items-center justify-between p-space-sm py-4 rounded-xl bg-surface-container-low hover:bg-surface-container transition-all duration-200 text-center gap-2 cursor-pointer shadow-sm border border-transparent';
+        if (numBadge) {
+          numBadge.className = 'w-8 h-8 rounded-full bg-surface-container-highest flex items-center justify-center font-headline-sm text-secondary group-hover:scale-105 transition-transform';
+        }
+        if (label) {
+          label.className = 'font-label-sm text-on-surface leading-tight font-medium';
+        }
+        if (indicator) {
+          indicator.className = 'indicator w-4 h-4 rounded-full border border-outline-variant flex items-center justify-center';
+          indicator.innerHTML = '';
+        }
+      }
+    });
+
+    // 2. Crossfade Mascot SVG layers (180ms ease, opacity only)
+    for (let i = 0; i <= 5; i++) {
+      const poseEl = document.getElementById(`pose-${i}`);
+      if (poseEl) {
+        if (i === val) {
+          poseEl.classList.remove('opacity-0');
+          poseEl.classList.add('opacity-100');
+        } else {
+          poseEl.classList.remove('opacity-100');
+          poseEl.classList.add('opacity-0');
+        }
+      }
+    }
+
+    // 3. Update Mood Pill & Dialogue with smooth text fade
+    const moodPill = document.getElementById('mascot-mood-pill');
+    if (moodPill) {
+      moodPill.className = `px-3 py-1 rounded-full font-label-sm transition-all duration-200 ${config.pillClass}`;
+      moodPill.innerText = config.mood;
+    }
+
+    const dialogue = document.getElementById('mascot-dialogue');
+    if (dialogue) {
+      dialogue.style.opacity = '0';
+      setTimeout(() => {
+        dialogue.innerText = `“${config.dialogue}”`;
+        dialogue.style.opacity = '1';
+      }, 90);
+    }
+
+    // 4. Update Status Hint
+    const statusHint = document.getElementById('rating-status-hint');
+    if (statusHint) {
+      statusHint.innerText = config.statusText;
+      if (val > 0) {
+        statusHint.className = 'font-label-sm text-primary font-semibold';
+      } else {
+        statusHint.className = 'font-label-sm text-secondary';
+      }
+    }
+  }
+
+  function navigateNext() {
+    if (currentSelection === 0) {
+      showToast("Vui lòng chọn 1 mức điểm để UniView ghi nhận nhé!");
+      return;
+    }
+
+    const questionCard = document.getElementById('question-card');
+    const nextBtn = document.getElementById('next-btn');
+
+    if (questionCard) questionCard.style.opacity = '0.3';
+    if (nextBtn) {
+      nextBtn.innerHTML = `<span class="material-symbols-outlined text-[18px] animate-spin">refresh</span><span>Đang tải câu 05...</span>`;
+    }
+
+    setTimeout(() => {
+      const headline = document.getElementById('question-headline');
+      const badgeNum = document.getElementById('question-badge-num');
+      const currentQ = document.getElementById('current-q-num');
+      const prog = document.getElementById('progress-fill');
+
+      if (headline) headline.innerText = "“Tham gia thiết kế các mô hình toán học hoặc thuật toán máy tính để giải quyết bài toán thực tế.”";
+      if (badgeNum) badgeNum.innerText = "5";
+      if (currentQ) currentQ.innerText = "05";
+      if (prog) prog.style.width = "16.66%"; // 5/30
+
+      selectRating(0); // reset to Idle for new question
+      if (questionCard) questionCard.style.opacity = '1';
+      if (nextBtn) {
+        nextBtn.innerHTML = `<span>Tiếp tục câu 06</span><span class="material-symbols-outlined text-[18px]">arrow_forward</span>`;
+      }
+      showToast("Đã chuyển sang câu hỏi 05 / 30");
+    }, 300);
+  }
+
+  function navigatePrevious() {
+    showToast("Quay lại câu 03 / 30");
+  }
+
+  function saveProgressDraft() {
+    showToast("Tiến độ khảo sát đã được tự động lưu.");
+  }
+
+  function showHelperModal() {
+    showToast("Dữ liệu phức tạp: Số liệu đòi hỏi bạn xâu chuỗi nhiều thông tin rời rạc để giải quyết.");
+  }
+
+  function showToast(msg) {
+    const toast = document.getElementById('toast-feedback');
+    const toastText = document.getElementById('toast-text');
+    if (!toast || !toastText) return;
+    toastText.innerText = msg;
+    toast.classList.remove('translate-y-20', 'opacity-0');
+    toast.classList.add('translate-y-0', 'opacity-100');
+    setTimeout(() => {
+      toast.classList.remove('translate-y-0', 'opacity-100');
+      toast.classList.add('translate-y-20', 'opacity-0');
+    }, 2400);
+  }
+
+  // Keyboard shortcut support (1-5)
+  window.addEventListener('keydown', (e) => {
+    const key = parseInt(e.key, 10);
+    if (key >= 1 && key <= 5) {
+      selectRating(key);
+    }
+  });
+
+  // Initialize with selected Rating 4 (default question 4 state)
+  document.addEventListener('DOMContentLoaded', () => {
+    selectRating(4);
+  });
+</script></main><footer class="w-full py-space-md bg-transparent"><div class="max-w-[1240px] mx-auto px-margin-mobile lg:px-margin flex flex-col sm:flex-row items-center justify-between gap-space-xs text-on-surface-variant font-label-sm"><span class="">© 2025 Uniview. Nền tảng định hướng học thuật &amp; tuyển sinh thông minh.</span><span class="">Cần trợ giúp? Liên hệ ban cố vấn: support@uniview.edu.vn</span></div></footer>
+
+</body></html>

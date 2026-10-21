@@ -6,12 +6,14 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
+    "test": "node --test src/utils/experienceAssessment.test.js src/utils/certificates.test.js src/utils/assessmentPayload.test.js && npm --prefix backend-assessment test -- --runInBand",
     "lint": "oxlint",
     "preview": "vite preview"
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.3.3",
     "daisyui": "^5.7.47",
+    "dotenv": "^18.0.5",
     "react": "^19.2.8",
     "react-dom": "^19.2.8",
     "react-router-dom": "^7.18.4",

@@ -1,7 +1,6 @@
 import { lazy, Suspense, useEffect } from 'react'
-import { Navigate, useNavigate } from 'react-router-dom'
+import { Navigate, useLocation, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
-import { PREMIUM_FEATURE_PATHS } from '../data/premiumFeatures'
 
 const pageModules = import.meta.glob([
   '../pages/*Page.jsx',
@@ -22,7 +21,8 @@ const routeByDataPath = {
   'assessment-result': '/assessment/result',
   'assessment-so-thich': '/assessment',
   'assessment-step-1': '/assessment/riasec',
-  'assessment-step3': '/assessment/quick-profile',
+  'assessment-step3': '/assessment/experience',
+  'assessment-step4': '/assessment/quick-profile',
   'ban-do-dinh-huong': '/admission-roadmap',
   'bang-gia-va-goi-dich-vu': '/pricing',
   'bang-quyet-dinh': '/decision-board',
@@ -53,6 +53,8 @@ const routeByDataPath = {
   'so-sanh-hoc-phi': '/scenario-comparison',
   'step-1-interests': '/assessment/riasec',
   'step-2-question-4': '/assessment/preferences',
+  'step-3-experience': '/assessment/experience',
+  'step-4-profile': '/assessment/quick-profile',
   'strengths-evaluation': '/assessment/preferences',
   'trac-nghiem': '/assessment/riasec',
   'trang-chu': '/',
@@ -110,7 +112,14 @@ function MissingPage({ title }) {
 
 function PageRenderer({ page }) {
   const navigate = useNavigate()
-  const { hasEntitlement } = useAuth()
+  const location = useLocation()
+  const {
+    hasEntitlement,
+    hasEntitlementHistory,
+    isAuthenticated,
+    loading,
+    user,
+  } = useAuth()
   const PageComponent = pageComponents[page.component]
 
   useEffect(() => {
@@ -151,12 +160,23 @@ function PageRenderer({ page }) {
 
   if (!PageComponent) return <MissingPage title={page.title} />
 
-  const isLockedPremiumPage =
-    PREMIUM_FEATURE_PATHS.includes(page.path) &&
-    !hasEntitlement('ADMISSION_PASS')
+  if (loading) return <LoadingPage />
 
-  if (isLockedPremiumPage) {
-    const feature = page.path.slice(1)
+  if (page.requiresAuth && !isAuthenticated) {
+    const next = encodeURIComponent(`${location.pathname}${location.search}`)
+    return <Navigate to={`/login?next=${next}`} replace />
+  }
+
+  const roleAllowed = !page.allowedRoles?.length || page.allowedRoles.includes(user?.role)
+  if (!roleAllowed) return <Navigate to="/" replace />
+
+  const entitlementActive = !page.requiredEntitlement || hasEntitlement(page.requiredEntitlement)
+  const historicalAccess = page.allowExpiredReadOnly && page.requiredEntitlement
+    ? hasEntitlementHistory(page.requiredEntitlement)
+    : false
+
+  if (!entitlementActive && !historicalAccess) {
+    const feature = page.featureKey ?? page.path.split('/').filter(Boolean)[0]
 
     return (
       <Navigate
@@ -166,10 +186,31 @@ function PageRenderer({ page }) {
     )
   }
 
+  const readOnly = !entitlementActive && historicalAccess
+
+  const preventReadOnlyMutation = (event) => {
+    if (!readOnly) return
+    const control = event.target.closest('button, input, select, textarea')
+    if (!control || control.dataset.readonlyAllow !== undefined) return
+    event.preventDefault()
+    event.stopPropagation()
+  }
+
   return (
-    <div className="stitch-page" onClick={handleClick} onSubmit={(event) => event.preventDefault()}>
+    <div
+      className={`stitch-page ${readOnly ? '[&_button]:cursor-not-allowed [&_button]:opacity-60 [&_input]:cursor-not-allowed [&_select]:cursor-not-allowed [&_textarea]:cursor-not-allowed' : ''}`}
+      onClick={handleClick}
+      onClickCapture={preventReadOnlyMutation}
+      onKeyDownCapture={preventReadOnlyMutation}
+      onSubmit={(event) => event.preventDefault()}
+    >
+      {readOnly && (
+        <div className="sticky top-16 z-40 border-b border-amber-200 bg-amber-50 px-4 py-3 text-center text-sm font-semibold text-amber-900">
+          Gói của bạn đã hết hiệu lực. Dữ liệu cũ vẫn được giữ ở chế độ chỉ xem; hãy kích hoạt gói cho mùa mới để cập nhật.
+        </div>
+      )}
       <Suspense fallback={<LoadingPage />}>
-        <PageComponent />
+        <PageComponent readOnly={readOnly} />
       </Suspense>
     </div>
   )

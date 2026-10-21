@@ -1,7 +1,6 @@
-export const ENTITLEMENTS = {
-  DIRECTION_SNAPSHOT: 'DIRECTION_SNAPSHOT',
-  ADMISSION_PASS: 'ADMISSION_PASS',
-}
+export { ENTITLEMENTS } from '../../data/user'
+
+import { ENTITLEMENTS } from '../../data/user'
 
 export const mainNavigation = [
   {

@@ -28,6 +28,7 @@ import {
 } from './HeaderMenus'
 
 import { useAuth } from '../../context/AuthContext'
+import { getActivePlanSummary } from '../../data/plans'
 
 // ======================================================
 // NAV LINK STYLE
@@ -93,8 +94,10 @@ export default function AppHeader() {
   const {
     user,
     admissionSeason,
+    activePlans,
     isAuthenticated,
     hasEntitlement,
+    hasEntitlementHistory,
     logout,
   } = useAuth()
 
@@ -106,10 +109,19 @@ export default function AppHeader() {
       ENTITLEMENTS.ADMISSION_PASS,
     )
 
-  const hasDirectionSnapshot =
+  const canViewAdmissionTools =
+    hasAdmissionPass || hasEntitlementHistory(ENTITLEMENTS.ADMISSION_PASS)
+
+  const hasPersonalWorkspace =
     hasEntitlement(
-      ENTITLEMENTS.DIRECTION_SNAPSHOT,
+      ENTITLEMENTS.PERSONAL_WORKSPACE,
     ) || hasAdmissionPass
+
+  const navbarPlanLabel = getActivePlanSummary(
+    activePlans,
+    admissionSeason,
+    { compact: true },
+  )
 
   // ====================================================
   // CHECK ACTIVE ADMISSION TOOL
@@ -265,6 +277,7 @@ export default function AppHeader() {
             hasAdmissionPass={
               hasAdmissionPass
             }
+            canViewAdmissionTools={canViewAdmissionTools}
             onToggle={() => {
               setToolsOpen(
                 (current) => !current,
@@ -329,7 +342,7 @@ export default function AppHeader() {
               </NavLink>
 
               <NavLink
-                to="/assessment-preview"
+                to="/assessment"
                 className="
                   group
 
@@ -384,10 +397,12 @@ export default function AppHeader() {
 
           {isLoggedIn && (
             <>
-              {/* ADMISSION PASS BADGE */}
+              {/* ACTIVE SUBSCRIPTION */}
 
-              {hasAdmissionPass && (
-                <span
+              {activePlans.length > 0 && (
+                <NavLink
+                  to="/account/plan"
+                  title="Xem gói và quyền lợi"
                   className="
                     hidden
                     rounded-full
@@ -404,11 +419,15 @@ export default function AppHeader() {
                     font-semibold
                     text-[#1D4ED8]
 
+                    transition-colors
+                    hover:border-blue-200
+                    hover:bg-blue-100
+
                     xl:block
                   "
                 >
-                  Admission Pass
-                </span>
+                  {navbarPlanLabel}
+                </NavLink>
               )}
 
               {/* WISHLIST */}
@@ -449,13 +468,15 @@ export default function AppHeader() {
                 admissionSeason={
                   admissionSeason
                 }
+                activePlans={activePlans}
                 open={userOpen}
-                hasDirectionSnapshot={
-                  hasDirectionSnapshot
+                hasPersonalWorkspace={
+                  hasPersonalWorkspace
                 }
                 hasAdmissionPass={
                   hasAdmissionPass
                 }
+                canViewAdmissionTools={canViewAdmissionTools}
                 onToggle={() => {
                   setUserOpen(
                     (current) => !current,
@@ -529,6 +550,9 @@ export default function AppHeader() {
           hasAdmissionPass={
             hasAdmissionPass
           }
+          canViewAdmissionTools={canViewAdmissionTools}
+          activePlans={activePlans}
+          admissionSeason={admissionSeason}
         />
       )}
     </header>
@@ -542,6 +566,9 @@ export default function AppHeader() {
 function MobileNavigation({
   isLoggedIn,
   hasAdmissionPass,
+  canViewAdmissionTools = hasAdmissionPass,
+  activePlans,
+  admissionSeason,
 }) {
   return (
     <nav
@@ -610,7 +637,7 @@ function MobileNavigation({
           {admissionTools.map((tool) => {
             const locked =
               tool.requiredEntitlement &&
-              !hasAdmissionPass
+              !canViewAdmissionTools
 
             return (
               <NavLink
@@ -657,7 +684,7 @@ function MobileNavigation({
                       text-[#FB7185]
                     "
                   >
-                    89k
+                    Pass
                   </span>
                 )}
               </NavLink>
@@ -712,7 +739,7 @@ function MobileNavigation({
             </NavLink>
 
             <NavLink
-              to="/assessment-preview"
+              to="/assessment"
               className="
                 rounded-xl
 
@@ -737,18 +764,25 @@ function MobileNavigation({
         {isLoggedIn && (
           <>
             <NavLink
+              to="/account/plan"
+              className={mobileNavClass}
+            >
+              Gói đang dùng · {getActivePlanSummary(activePlans, admissionSeason, { compact: true })}
+            </NavLink>
+
+            <NavLink
               to={
-                hasAdmissionPass
+                canViewAdmissionTools
                   ? '/decision-board'
                   : '/feature-preview/decision-board'
               }
               className={mobileNavClass}
             >
               Bảng quyết định
-              {!hasAdmissionPass && (
+              {!canViewAdmissionTools && (
                 <span className="ml-2 inline-flex items-center gap-1 rounded-full bg-[#FFF1F2] px-2 py-1 text-[10px] font-semibold text-[#FB7185]">
                   <LockIcon />
-                  89k
+                  Pass
                 </span>
               )}
             </NavLink>

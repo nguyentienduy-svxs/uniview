@@ -1,4 +1,22 @@
+import { Link } from 'react-router-dom';
+
+import { useAuth } from '../context/AuthContext';
+import {
+  formatPlanDate,
+  getActivePlanSummary,
+  getPlan,
+  PLAN_IDS,
+} from '../data/plans';
+
+const planTone = {
+  [PLAN_IDS.MONTHLY]: 'border-blue-200 bg-blue-50 text-blue-800',
+  [PLAN_IDS.ANNUAL]: 'border-rose-200 bg-rose-50 text-rose-800',
+  [PLAN_IDS.ADMISSION_PASS]: 'border-amber-200 bg-amber-50 text-amber-900',
+};
+
 function ProfilePage() {
+  const { activePlans, admissionSeason, reportHistory, subscriptions, user } = useAuth();
+  const activePlanSummary = getActivePlanSummary(activePlans, admissionSeason);
   return (
 <main className="w-full pt-6 bg-[#FFFDFB] min-h-[calc(100vh-80px)] pb-24"><div className="flex flex-col w-full">
 <div className="w-full max-w-[1260px] mx-auto px-4 md:px-6 lg:px-8 py-4 font-['Be_Vietnam_Pro'] antialiased">
@@ -67,14 +85,17 @@ function ProfilePage() {
 <div className="flex items-center justify-between pb-4 border-b border-slate-100">
 <div className="flex items-center gap-2">
 <span className="w-8 h-8 rounded-full bg-[#1D4ED8] text-white flex items-center justify-center text-xs font-bold">
-                  NA
+                  {user?.initials ?? 'CD'}
                 </span>
 <div>
-<h3 className="text-sm font-bold text-[#172033]">Nguyễn Minh Anh</h3>
-<p className="text-[11px] text-[#667085]">Lớp 12 · THPT Chuyên Lê Hồng Phong</p>
+<h3 className="text-sm font-bold text-[#172033]">{user?.fullName ?? 'Học sinh UniView'}</h3>
+<p className="text-[11px] text-[#667085]">{user?.grade ?? 'Lớp 12'} · {user?.school ?? 'Chưa cập nhật trường'}</p>
 </div>
 </div>
-<span className="text-[11px] font-semibold bg-[#FFF1F2] text-[#FB7185] px-2 py-0.5 rounded-full border border-rose-200">K2026</span>
+<div className="flex flex-col items-end gap-1">
+<span className="text-[10px] font-bold bg-[#EFF6FF] text-[#1D4ED8] px-2 py-0.5 rounded-full border border-blue-200">{activePlanSummary}</span>
+<span className="text-[10px] font-semibold text-slate-500">K{user?.targetAdmissionYear ?? '—'}</span>
+</div>
 </div>
 
 <div className="py-5 flex flex-col items-center justify-center relative">
@@ -107,10 +128,88 @@ function ProfilePage() {
                   Chỉ mình bạn
                 </span>
 </div>
+<div className="flex items-center justify-between gap-3 border-t border-slate-100 pt-2 text-slate-500 text-[11px]">
+<span>Gói đang dùng:</span>
+<Link className="truncate font-bold text-[#1D4ED8] hover:underline" to="/account/plan">{activePlanSummary}</Link>
 </div>
 </div>
 </div>
 </div>
+</div>
+</section>
+
+<section className="mb-8 rounded-[24px] border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
+<div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
+<div>
+<span className="text-[11px] font-extrabold uppercase tracking-widest text-[#1D4ED8]">Subscription &amp; quyền truy cập</span>
+<h2 className="mt-1 text-xl font-extrabold text-[#172033]">Gói đang hoạt động</h2>
+<p className="mt-1 text-sm text-[#667085]">Gói Tháng phục vụ nhu cầu ngắn hạn; Gói Năm đã gồm Admission Pass; Pass cũng được bán riêng theo mùa tuyển sinh.</p>
+</div>
+<Link className="inline-flex shrink-0 items-center justify-center rounded-full border border-blue-200 bg-blue-50 px-4 py-2 text-xs font-bold text-[#1D4ED8] hover:bg-blue-100" to="/account/plan">Quản lý gói</Link>
+</div>
+
+{activePlans.length ? (
+<div className="mt-5 grid gap-3 md:grid-cols-2">
+{activePlans.map((planId) => {
+  const plan = getPlan(planId);
+  const subscription = subscriptions.find((item) => item.planId === planId);
+  if (!plan) return null;
+  const isAdmissionPass = planId === PLAN_IDS.ADMISSION_PASS;
+  return (
+    <article className={`rounded-2xl border p-4 ${planTone[planId] ?? 'border-slate-200 bg-slate-50 text-slate-800'}`} key={planId}>
+      <div className="flex items-start justify-between gap-3">
+        <div>
+          <h3 className="font-extrabold">{plan.name}{isAdmissionPass && admissionSeason ? ` ${admissionSeason}` : ''}</h3>
+          <p className="mt-1 text-xs leading-5 opacity-80">{isAdmissionPass ? 'Admission Mode, phương thức, deadline, kịch bản và checklist nhập học.' : planId === PLAN_IDS.ANNUAL ? 'Toàn bộ hành trình khám phá và Admission Pass trong thời gian gói còn hiệu lực.' : 'Personal Workspace, assessment, task, roadmap và so sánh cơ bản.'}</p>
+        </div>
+        <span className="inline-flex shrink-0 items-center gap-1 rounded-full bg-white/80 px-2 py-1 text-[10px] font-bold"><span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />Đang hoạt động</span>
+      </div>
+      <div className="mt-3 flex flex-wrap gap-x-4 gap-y-1 border-t border-current/10 pt-3 text-[11px] font-semibold">
+        <span>Đến {subscription?.endsAt ? formatPlanDate(subscription.endsAt) : plan.durationLabel}</span>
+        <span>{isAdmissionPass ? 'Không tự gia hạn' : subscription?.autoRenew ? 'Tự động gia hạn đang bật' : 'Tự động gia hạn đã tắt'}</span>
+      </div>
+    </article>
+  );
+})}
+</div>
+) : (
+<div className="mt-5 rounded-2xl border border-dashed border-slate-300 bg-slate-50 p-5 text-sm text-slate-600">Tài khoản chưa kích hoạt gói. Bạn vẫn có thể làm assessment và xem kết quả tổng quan.</div>
+)}
+</section>
+
+<section className="mb-8 rounded-[24px] border border-blue-200 bg-white p-5 shadow-sm sm:p-6">
+<div className="flex flex-col justify-between gap-3 sm:flex-row sm:items-center">
+<div>
+<span className="text-[11px] font-extrabold uppercase tracking-widest text-[#1D4ED8]">Lịch sử báo cáo</span>
+<h2 className="mt-1 text-xl font-extrabold text-[#172033]">Báo cáo định hướng đã mở khóa</h2>
+<p className="mt-1 text-sm text-[#667085]">Báo cáo đã mua được lưu trong tài khoản để bạn và phụ huynh xem lại.</p>
+</div>
+<span className="w-fit rounded-full bg-slate-100 px-3 py-1 text-xs font-bold text-slate-600">{reportHistory.length} báo cáo</span>
+</div>
+
+{reportHistory.length ? (
+<div className="mt-5 space-y-3">
+{reportHistory.map((entry) => (
+<article className="flex flex-col justify-between gap-4 rounded-2xl border border-slate-200 bg-slate-50 p-4 sm:flex-row sm:items-center" key={entry.id}>
+<div className="flex items-start gap-3">
+<span className="material-symbols-outlined rounded-xl bg-blue-100 p-2 text-[#1D4ED8]">description</span>
+<div>
+<h3 className="font-bold text-[#172033]">{entry.title}</h3>
+<p className="mt-1 text-xs text-[#667085]">Mở khóa lúc {new Date(entry.unlockedAt).toLocaleString('vi-VN')} · Truy cập vĩnh viễn</p>
+</div>
+</div>
+<div className="flex flex-wrap gap-2">
+<Link className="rounded-full bg-[#1D4ED8] px-4 py-2 text-xs font-bold text-white hover:bg-blue-700" to={`/assessment/result?report=${entry.id}`}>Xem báo cáo</Link>
+<button className="cursor-not-allowed rounded-full border border-slate-300 bg-white px-4 py-2 text-xs font-bold text-slate-400" disabled title="Đang chờ sườn PDF từ đội sản phẩm" type="button">PDF cho phụ huynh · Chờ mẫu</button>
+</div>
+</article>
+))}
+</div>
+) : (
+<div className="mt-5 rounded-2xl border border-dashed border-slate-300 bg-slate-50 p-5 text-sm text-slate-600">
+Chưa có báo cáo đã lưu. Báo cáo sẽ xuất hiện tại đây sau khi bạn kích hoạt một trong ba gói và hoàn thành assessment.
+</div>
+)}
 </section>
 
 <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
@@ -266,7 +365,7 @@ function ProfilePage() {
 
 <div>
 <span className="text-xs text-[#667085] font-medium block">Họ và tên</span>
-<span className="text-sm sm:text-base font-bold text-[#172033] mt-0.5 block">Nguyễn Minh Anh</span>
+<span className="text-sm sm:text-base font-bold text-[#172033] mt-0.5 block">{user?.fullName ?? 'Học sinh UniView'}</span>
 </div>
 
 <div>
@@ -281,7 +380,7 @@ function ProfilePage() {
 
 <div>
 <span className="text-xs text-[#667085] font-medium block">Trường THPT hiện tại</span>
-<span className="text-sm sm:text-base font-bold text-[#172033] mt-0.5 block">THPT Chuyên Lê Hồng Phong</span>
+<span className="text-sm sm:text-base font-bold text-[#172033] mt-0.5 block">{user?.school ?? 'Chưa cập nhật trường'}</span>
 </div>
 </div>
 
