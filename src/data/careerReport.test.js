@@ -2,7 +2,14 @@ import assert from 'node:assert/strict'
 import test from 'node:test'
 
 import { ANNUAL_DEMO_MAJORS, ANNUAL_DEMO_TASKS } from './annualDemo.js'
-import { CAREER_REPORT_GROUPS, CAREER_REPORT_MAJORS, getProfileCompleteness, getRecommendedUniversities } from './careerReport.js'
+import {
+  CAREER_REPORT_GROUPS,
+  CAREER_REPORT_MAJORS,
+  getMajorUniversityMatches,
+  getPersonalizedReportGroups,
+  getProfileCompleteness,
+  getRecommendedUniversities,
+} from './careerReport.js'
 
 test('catalog báo cáo có đúng 6 nhóm, mỗi nhóm 3 ngành và không trùng ID', () => {
   assert.equal(CAREER_REPORT_GROUPS.length, 6)
@@ -60,4 +67,31 @@ test('độ đầy đủ hồ sơ chỉ ghi nhận nhóm điểm khi thật sự
   const withScore = getProfileCompleteness({ regions: ['TP.HCM'], tuition: '25-45', strengths: ['Toán'], gpa: '8.5' }, 30)
   assert.ok(emptyScores.missing.includes('Ít nhất một loại điểm'))
   assert.ok(withScore.percent > emptyScores.percent)
+})
+
+test('report cá nhân hóa chỉ lấy 3 nhóm, mỗi nhóm đủ 3 ngành và có link chi tiết', () => {
+  const groups = getPersonalizedReportGroups({
+    scores: { R: 40, I: 88, A: 68, S: 35, E: 55, C: 76 },
+  }, {
+    strengths: ['Toán', 'Tiếng Anh', 'Tin học'],
+  }, {}, 3)
+
+  assert.equal(groups.length, 3)
+  assert.ok(groups.every(({ majors }) => majors.length === 3))
+  assert.ok(groups.flatMap(({ majors }) => majors).every(({ detailId }) => detailId))
+  assert.ok(groups.every(({ matchScore }) => matchScore > 0 && matchScore <= 100))
+  assert.ok(groups.some(({ id }) => id === 'technology-software'))
+})
+
+test('phần trường tạo đúng 18 cặp ngành – trường và không lặp trường', () => {
+  const matches = getMajorUniversityMatches({
+    regions: ['TP.HCM & lân cận'],
+    tuition: '25-45',
+    thptScore: '25',
+  })
+
+  assert.equal(matches.length, 18)
+  assert.equal(new Set(matches.map(({ major }) => major.id)).size, 18)
+  assert.equal(new Set(matches.map(({ school }) => school.id)).size, 18)
+  assert.ok(matches.every(({ fitReason, tuitionLabel, admissionLabel }) => fitReason && tuitionLabel && admissionLabel))
 })

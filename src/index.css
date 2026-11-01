@@ -196,18 +196,18 @@
 
   .uv-report-title {
     color: var(--report-ink);
-    font-size: clamp(30px, 3vw, 36px);
+    font-size: 36px;
     font-weight: 800;
     line-height: 1.25;
-    letter-spacing: -0.025em;
+    letter-spacing: 0;
   }
 
   .uv-report-section-title {
     color: var(--report-ink);
-    font-size: clamp(23px, 2.3vw, 27px);
+    font-size: 27px;
     font-weight: 700;
     line-height: 1.35;
-    letter-spacing: -0.018em;
+    letter-spacing: 0;
   }
 
   .uv-report-body {
@@ -277,15 +277,225 @@
     color: #8f3347;
   }
 
+  .uv-report-major-card {
+    border: 1px solid var(--report-border);
+    border-radius: 12px;
+    background: #fff;
+    padding: 18px;
+  }
+
+  .uv-report-comparison-table {
+    width: 100%;
+    min-width: 760px;
+    border-collapse: collapse;
+    table-layout: fixed;
+    font-size: 13px;
+    line-height: 1.55;
+  }
+
+  .uv-report-comparison-table th,
+  .uv-report-comparison-table td {
+    border-bottom: 1px solid var(--report-border);
+    padding: 14px 16px;
+    text-align: left;
+    vertical-align: top;
+  }
+
+  .uv-report-comparison-table thead th {
+    background: var(--report-neutral);
+    color: var(--report-ink);
+    font-weight: 700;
+  }
+
+  .uv-report-comparison-table tbody th {
+    width: 150px;
+    background: #fbfcfe;
+    color: var(--report-ink);
+    font-weight: 700;
+  }
+
+  .uv-report-comparison-table td {
+    color: var(--report-text);
+  }
+
+  .uv-report-comparison-table tbody tr:last-child th,
+  .uv-report-comparison-table tbody tr:last-child td {
+    border-bottom: 0;
+  }
+
+  .uv-report-journey-step {
+    display: grid;
+    min-height: 150px;
+    grid-template-columns: 40px 1fr;
+    align-content: start;
+    gap: 8px 12px;
+    border: 1px solid var(--report-border);
+    border-radius: 12px;
+    background: #fff;
+    padding: 18px;
+  }
+
+  .uv-report-journey-step > span {
+    display: flex;
+    height: 36px;
+    width: 36px;
+    align-items: center;
+    justify-content: center;
+    border-radius: 9px;
+    background: #edf1f7;
+    color: var(--report-text);
+    font-size: 12px;
+    font-weight: 800;
+  }
+
+  .uv-report-journey-step > strong {
+    align-self: center;
+    color: var(--report-ink);
+  }
+
+  .uv-report-journey-step > p {
+    grid-column: 1 / -1;
+    color: var(--report-text);
+    font-size: 13px;
+    line-height: 1.6;
+  }
+
+  .uv-report-journey-step-active {
+    border: 2px solid var(--report-blue);
+    background: var(--report-blue-subtle);
+  }
+
+  .uv-report-journey-step-active > span {
+    background: var(--report-blue);
+    color: #fff;
+  }
+
   @media (max-width: 767px) {
     .uv-report-section {
       padding: 22px 18px;
+    }
+
+    .uv-report-title {
+      font-size: 30px;
+    }
+
+    .uv-report-section-title {
+      font-size: 23px;
     }
 
     .uv-report-body {
       font-size: 14px;
       line-height: 1.7;
     }
+  }
+}
+
+@media print {
+  @page {
+    size: A4 portrait;
+    margin: 12mm;
+  }
+
+  html,
+  body {
+    background: #fff !important;
+  }
+
+  #root > div > header,
+  #root > div > footer,
+  #root > div > aside,
+  .report-no-print {
+    display: none !important;
+  }
+
+  .uv-report-page {
+    min-height: auto;
+    padding: 0 !important;
+    background: #fff !important;
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+  }
+
+  .uv-report-page > div {
+    max-width: none !important;
+    padding: 0 !important;
+  }
+
+  .uv-report-page > div > div {
+    display: block !important;
+  }
+
+  .uv-report-page .uv-report-surface {
+    border-color: #d9e1ee;
+    box-shadow: none !important;
+  }
+
+  .uv-report-page .uv-report-section {
+    padding: 18px;
+  }
+
+  .uv-report-page .uv-report-title {
+    font-size: 30px;
+  }
+
+  .uv-report-page .uv-report-section-title {
+    font-size: 21px;
+  }
+
+  .uv-report-page .uv-report-body {
+    font-size: 13px;
+    line-height: 1.55;
+  }
+
+  .uv-report-page .report-cover {
+    min-height: 245mm;
+    break-after: page;
+  }
+
+  .uv-report-page .uv-report-major-card,
+  .uv-report-page .uv-report-note,
+  .uv-report-page .uv-report-journey-step,
+  .uv-report-page .report-avoid-break,
+  .uv-report-page table,
+  .uv-report-page tr {
+    break-inside: avoid;
+  }
+
+  .uv-report-page .uv-report-comparison-table {
+    min-width: 0;
+    font-size: 10px;
+  }
+
+  .uv-report-page .uv-report-comparison-table th,
+  .uv-report-page .uv-report-comparison-table td {
+    padding: 8px;
+  }
+
+  .uv-report-page a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .pdf-viewer-toolbar,
+  .pdf-page-wrap > div {
+    display: none !important;
+  }
+
+  .pdf-viewer-shell,
+  .pdf-viewer-shell > div {
+    margin: 0 !important;
+    max-width: none !important;
+    gap: 0 !important;
+    padding: 0 !important;
+    background: #fff !important;
+  }
+
+  .pdf-page-wrap,
+  .pdf-page-frame {
+    width: 210mm !important;
+    height: 297mm !important;
+    break-after: page;
+    box-shadow: none !important;
   }
 }
 
