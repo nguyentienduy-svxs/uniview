@@ -1,3 +1,5 @@
+import universityData from './universities.json' with { type: 'json' }
+
 export const RIASEC_DIMENSIONS = {
   R: { name: 'Realistic', label: 'Thực tế', description: 'Ưa thao tác, công cụ và kết quả có thể quan sát.' },
   I: { name: 'Investigative', label: 'Nghiên cứu', description: 'Ưa phân tích, đặt câu hỏi và giải quyết vấn đề.' },
@@ -73,6 +75,197 @@ export const CAREER_REPORT_GROUPS = [
 export const CAREER_REPORT_MAJORS = CAREER_REPORT_GROUPS.flatMap((group) => (
   group.majors.map((major) => ({ ...major, groupId: group.id, groupName: group.name }))
 ))
+
+const GROUP_SIGNALS = {
+  'technology-software': { riasec: ['I', 'R', 'C'], strengths: ['Toán', 'Tin học', 'Công nghệ'], experience: ['TECHNOLOGY', 'RESEARCH_DATA'] },
+  'marketing-business': { riasec: ['E', 'A', 'S'], strengths: ['Tiếng Anh', 'Ngữ văn', 'Tin học'], experience: ['COMMUNICATION_LEADERSHIP', 'BUSINESS_ORGANIZATION', 'VISUAL_DESIGN'] },
+  'economics-finance': { riasec: ['C', 'I', 'E'], strengths: ['Toán', 'Tin học'], experience: ['BUSINESS_ORGANIZATION', 'RESEARCH_DATA'] },
+  'digital-design': { riasec: ['A', 'S', 'I'], strengths: ['Mỹ thuật', 'Tin học', 'Ngữ văn'], experience: ['VISUAL_DESIGN', 'TECHNOLOGY', 'COMMUNICATION_LEADERSHIP'] },
+  'analysis-management': { riasec: ['I', 'C', 'E'], strengths: ['Toán', 'Tin học', 'Tiếng Anh'], experience: ['RESEARCH_DATA', 'BUSINESS_ORGANIZATION', 'TECHNOLOGY'] },
+  'communications-people': { riasec: ['S', 'E', 'A'], strengths: ['Ngữ văn', 'Tiếng Anh'], experience: ['COMMUNICATION_LEADERSHIP', 'CARE_TEACHING', 'VISUAL_DESIGN'] },
+}
+
+const MAJOR_SIGNALS = {
+  'information-technology': ['I', 'R'], 'data-science': ['I', 'C'], 'information-security': ['I', 'R'],
+  marketing: ['E', 'A'], 'international-business': ['E', 'S'], 'e-commerce': ['E', 'C'],
+  finance: ['I', 'C'], banking: ['C', 'E'], accounting: ['C', 'I'],
+  'ui-ux': ['A', 'S'], 'communication-design': ['A', 'R'], 'digital-media': ['A', 'E'],
+  'business-analysis': ['I', 'E'], 'management-information-systems': ['C', 'I'], 'operations-management': ['C', 'E'],
+  communications: ['A', 'S'], 'public-relations': ['E', 'S'], 'human-resources': ['S', 'C'],
+}
+
+export const MAJOR_DETAIL_IDS = {
+  'information-technology': '7480103',
+  'data-science': '7480109',
+  'information-security': '7480202',
+  marketing: '7340115',
+  'international-business': '7340120',
+  'e-commerce': '7340122',
+  finance: '7340201',
+  banking: '7340201',
+  accounting: '7340301',
+  'ui-ux': '7210403',
+  'communication-design': '7210403',
+  'digital-media': '7320104',
+  'business-analysis': '7340405',
+  'management-information-systems': '7340405',
+  'operations-management': '7340101',
+  communications: '7320104',
+  'public-relations': '7320104',
+  'human-resources': '7340101',
+}
+
+const MAJOR_SCHOOL_CANDIDATES = {
+  'information-technology': ['uit-vnuhcm', 'uet-vnu', 'dut-udn'],
+  'data-science': ['hcmus-vnuhcm', 'hus-vnu', 'hust'],
+  'information-security': ['hcmut-vnuhcm', 'uet-vnu', 'uit-vnuhcm'],
+  marketing: ['ufm', 'due-udn', 'hoa-sen-university'],
+  'international-business': ['uel-vnuhcm', 'ftu', 'neu'],
+  'e-commerce': ['ueh', 'hcmcou', 'due-udn'],
+  finance: ['ftu', 'hub', 'ueb-vnu'],
+  banking: ['hub', 'neu', 'uel-vnuhcm'],
+  accounting: ['ueb-vnu', 'hcmcou', 'ueh'],
+  'ui-ux': ['rmit-vietnam-hcm', 'fpt-university-hcm', 'hau-architecture'],
+  'communication-design': ['tdtu', 'hau-architecture', 'hoa-sen-university'],
+  'digital-media': ['van-lang-university', 'ussh-vnuhcm', 'rmit-vietnam-hcm'],
+  'business-analysis': ['iu-vnuhcm', 'ueh', 'neu'],
+  'management-information-systems': ['hcmute', 'hub', 'hust'],
+  'operations-management': ['utc', 'nha-trang-university', 'can-tho-university'],
+  communications: ['ussh-vnuhcm', 'ussh-vnu', 'rmit-vietnam-hcm'],
+  'public-relations': ['ussh-vnu', 'van-lang-university', 'ussh-vnuhcm'],
+  'human-resources': ['due-udn', 'neu', 'dong-thap-university'],
+}
+
+function normalizedText(value) {
+  return String(value ?? '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase()
+}
+
+function scoreAverage(codes, scores = {}) {
+  if (!codes.length) return 0
+  return codes.reduce((sum, code) => sum + Number(scores[code] ?? 0), 0) / codes.length
+}
+
+function matchingStrengths(expected, strengths = []) {
+  return strengths.filter((strength) => expected.some((item) => normalizedText(strength).includes(normalizedText(item))))
+}
+
+function completedExperienceScore(experience, codes) {
+  const matches = codes.flatMap((code) => {
+    const state = experience?.domainStates?.[code]
+    return state?.status === 'COMPLETED' ? [Number(state.finalEvidenceScore ?? 50)] : []
+  })
+  return matches.length ? Math.max(...matches) : 0
+}
+
+export function getPersonalizedReportGroups(riasec = {}, profile = {}, experience = {}, limit = 3) {
+  const scores = riasec.scores ?? {}
+  const hasRiasec = Object.values(scores).some((score) => Number(score) > 0)
+
+  return CAREER_REPORT_GROUPS.map((group) => {
+    const signals = GROUP_SIGNALS[group.id]
+    const strengths = matchingStrengths(signals.strengths, profile.strengths)
+    const experienceScore = completedExperienceScore(experience, signals.experience)
+    const riasecScore = hasRiasec ? scoreAverage(signals.riasec, scores) : 45
+    const matchScore = Math.round(Math.min(96, riasecScore * 0.7 + Math.min(15, strengths.length * 7.5) + experienceScore * 0.15))
+    const strongestCode = [...signals.riasec].sort((left, right) => Number(scores[right] ?? 0) - Number(scores[left] ?? 0))[0]
+    const evidenceParts = [
+      hasRiasec ? `${RIASEC_DIMENSIONS[strongestCode].label} (${Math.round(scores[strongestCode] ?? 0)}%)` : 'RIASEC chưa hoàn tất',
+      strengths.length ? `thế mạnh ${strengths.join(', ')}` : 'môn thế mạnh chưa đủ dữ liệu',
+      experienceScore ? `trải nghiệm liên quan ${Math.round(experienceScore)}/100` : 'chưa có trải nghiệm liên quan được ghi nhận',
+    ]
+    const majors = group.majors.map((major) => {
+      const majorRiasec = scoreAverage(MAJOR_SIGNALS[major.id] ?? signals.riasec, scores)
+      const majorScore = Math.round(Math.min(97, majorRiasec * 0.75 + Math.min(15, strengths.length * 7.5) + experienceScore * 0.1))
+      return {
+        ...major,
+        detailId: MAJOR_DETAIL_IDS[major.id],
+        matchScore: majorScore,
+        personalizedReason: `${major.fit} Trong hồ sơ hiện tại, tín hiệu đáng chú ý là ${evidenceParts.slice(0, 2).join(' và ')}.`,
+      }
+    }).sort((left, right) => right.matchScore - left.matchScore || left.name.localeCompare(right.name, 'vi'))
+
+    return {
+      ...group,
+      matchScore,
+      evidenceParts,
+      personalizedReason: `Nhóm này được ưu tiên nhờ ${evidenceParts.join('; ')}.`,
+      majors,
+    }
+  }).sort((left, right) => right.matchScore - left.matchScore || left.name.localeCompare(right.name, 'vi')).slice(0, limit)
+}
+
+function parseTuitionCeiling(value) {
+  const numbers = String(value ?? '').match(/\d+/g)?.map(Number) ?? []
+  return numbers.length ? Math.max(...numbers) : null
+}
+
+function matchesPreferredRegion(profile, school) {
+  const regionText = normalizedText(profile.regions?.join(' '))
+  const cityText = normalizedText(school.city)
+  if (!regionText) return false
+  if (regionText.includes('toan quoc')) return true
+  if ((regionText.includes('tp.hcm') || regionText.includes('ho chi minh')) && cityText.includes('ho chi minh')) return true
+  if (regionText.includes('ha noi') && cityText.includes('ha noi')) return true
+  if ((regionText.includes('da nang') || regionText.includes('mien trung')) && ['da nang', 'hue', 'khanh hoa', 'quy nhon'].some((place) => cityText.includes(place))) return true
+  if ((regionText.includes('can tho') || regionText.includes('dbscl')) && ['can tho', 'dong thap', 'an giang', 'tra vinh', 'vinh long'].some((place) => cityText.includes(place))) return true
+  return regionText.split(/\s+/).some((part) => part.length > 4 && cityText.includes(part))
+}
+
+function universityProfileScore(school, profile) {
+  const preferredRegion = matchesPreferredRegion(profile, school)
+  const ceiling = parseTuitionCeiling(profile.tuition)
+  const tuitionFits = ceiling && school.tuition?.minMillionVnd <= ceiling
+  const publicPriority = (profile.priorities ?? []).some((item) => normalizedText(item).includes('cong lap')) && school.ownership === 'public'
+  const thptScore = Number(profile.thptScore)
+  const admissionMinimum = Number(school.admission?.scoreRange?.min)
+  const academicFit = thptScore > 0 && admissionMinimum > 0
+    ? thptScore >= admissionMinimum ? 8 : thptScore >= admissionMinimum - 2 ? 4 : 0
+    : 0
+  return (preferredRegion ? 24 : 0) + (tuitionFits ? 16 : 0) + (publicPriority ? 6 : 0) + academicFit
+}
+
+export function getMajorUniversityMatches(profile = {}) {
+  const schools = universityData.universities ?? []
+  const byId = new Map(schools.map((school) => [school.id, school]))
+  const used = new Set()
+
+  return CAREER_REPORT_MAJORS.map((major) => {
+    const candidates = (MAJOR_SCHOOL_CANDIDATES[major.id] ?? []).map((id, preferenceIndex) => ({
+      school: byId.get(id),
+      preferenceIndex,
+    })).filter(({ school }) => school)
+    const selected = [...candidates].sort((left, right) => {
+      const leftScore = universityProfileScore(left.school, profile) - left.preferenceIndex * 4 - (used.has(left.school.id) ? 80 : 0)
+      const rightScore = universityProfileScore(right.school, profile) - right.preferenceIndex * 4 - (used.has(right.school.id) ? 80 : 0)
+      return rightScore - leftScore
+    })[0]
+    const school = selected?.school ?? schools.find(({ id }) => !used.has(id)) ?? schools[0]
+    used.add(school.id)
+    const tuition = school.tuition
+    const scoreRange = school.admission?.scoreRange?.label
+
+    return {
+      major,
+      school: {
+        ...school,
+        path: school.id === 'uit-vnuhcm' ? '/universities/uit' : `/universities?school=${school.id}`,
+      },
+      fitReason: `${school.shortName} có hướng đào tạo gần với ${major.name}; ${matchesPreferredRegion(profile, school) ? 'đồng thời nằm trong khu vực bạn ưu tiên' : `cần cân nhắc việc học tại ${school.city}`}.`,
+      tuitionLabel: tuition ? `${tuition.minMillionVnd}–${tuition.maxMillionVnd} triệu đồng/năm (tham chiếu ${tuition.academicYear})` : 'Chưa có dữ liệu học phí',
+      admissionLabel: scoreRange ? `Mốc tham chiếu toàn trường: ${scoreRange}` : 'Cần đối chiếu đề án tuyển sinh',
+    }
+  })
+}
+
+export function getUniversityComparisonCandidates(majorId, profile = {}) {
+  const schools = universityData.universities ?? []
+  const byId = new Map(schools.map((school) => [school.id, school]))
+  return (MAJOR_SCHOOL_CANDIDATES[majorId] ?? [])
+    .map((id) => byId.get(id))
+    .filter(Boolean)
+    .sort((left, right) => universityProfileScore(right, profile) - universityProfileScore(left, profile))
+    .slice(0, 3)
+}
 
 const UNIVERSITY_CATALOG = [
   { id: 'uit', name: 'Trường Đại học Công nghệ Thông tin – ĐHQG TP.HCM', region: 'TP.HCM', environment: 'Môi trường chuyên sâu công nghệ; cần tự đối chiếu chương trình cụ thể.', tuition: 'Chưa đối chiếu bảng phí tuyển sinh 2027', majors: ['information-technology', 'data-science', 'information-security'], programs: ['Kỹ thuật phần mềm', 'Khoa học dữ liệu', 'An toàn thông tin'], path: '/universities/uit' },

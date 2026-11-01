@@ -174,6 +174,7 @@ export default function AppHeader() {
 
   return (
     <header
+      id="uniview-app-header"
       className="
         sticky
         left-0
