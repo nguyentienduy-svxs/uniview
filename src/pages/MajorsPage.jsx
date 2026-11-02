@@ -1,9 +1,20 @@
 import majors from "../data/majors.json";
 import majorsFilter from "../data/majorsfilter.json";
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 
 const PAGE_SIZE = 6;
+const CAROUSEL_INTERVAL = 5000;
+const HERO_SLIDES = [
+  {
+    src: "/stitch-assets/debe8864-7bc2-4762-ac28-187f65b61c62.png",
+    alt: "Linh vật UniView học tập bên máy tính",
+  },
+  {
+    src: "/anhnganh/bannerCarousel.jpg",
+    alt: "Linh vật UniView khám phá các nhóm ngành học",
+  },
+];
 const EXTRA_CATEGORY_IDS = ["health", "social-sciences"];
 const CATEGORY_IMAGES = {
   "computer-it": {
@@ -135,6 +146,7 @@ const normalizeText = (value) =>
     .toLowerCase();
 
 function MajorsPage() {
+  const [activeSlide, setActiveSlide] = useState(0);
   const [filterSelected, setFilterSelected] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [sortBy, setSortBy] = useState("relevance");
@@ -142,6 +154,18 @@ function MajorsPage() {
   const [firstNewResultIndex, setFirstNewResultIndex] = useState(0);
   const progressBarRef = useRef(null);
   const filterData = majorsFilter;
+
+  useEffect(() => {
+    const intervalId = window.setInterval(() => {
+      setActiveSlide((currentSlide) => (currentSlide + 1) % HERO_SLIDES.length);
+    }, CAROUSEL_INTERVAL);
+
+    return () => window.clearInterval(intervalId);
+  }, []);
+
+  const showSlide = (slideIndex) => {
+    setActiveSlide((slideIndex + HERO_SLIDES.length) % HERO_SLIDES.length);
+  };
 
   const categoryIds = useMemo(
     () => new Set([
@@ -265,14 +289,30 @@ function MajorsPage() {
     <main className="w-full pt-6 bg-surface min-h-[calc(100vh-80px)]">
       <div className="flex flex-col w-full">
         <div className="w-full max-w-[1240px] mx-auto px-margin md:px-margin-md lg:px-margin-lg pb-space-lg">
-          <div className="relative overflow-hidden rounded-xl bg-surface-container-low p-space-lg md:min-h-[360px] md:p-space-xl transition-all shadow-sm">
-            <img
-              className="absolute inset-0 h-full w-full object-cover object-[center_65%]"
-              src="/stitch-assets/debe8864-7bc2-4762-ac28-187f65b61c62.png"
-              alt=""
-              aria-hidden="true"
-            />
-            <div className="relative z-10 flex flex-col items-start justify-between gap-space-lg md:min-h-[296px] md:justify-start lg:flex-row lg:items-start lg:justify-between">
+          <section
+            className="group relative h-[520px] overflow-hidden rounded-xl bg-surface-container-low p-space-lg pb-14 shadow-sm sm:h-[440px] md:h-[440px] md:p-space-xl md:pb-14 lg:h-[380px]"
+            aria-roledescription="carousel"
+            aria-label="Banner khám phá ngành học"
+            tabIndex={0}
+            onKeyDown={(event) => {
+              if (event.key === "ArrowLeft") showSlide(activeSlide - 1);
+              if (event.key === "ArrowRight") showSlide(activeSlide + 1);
+            }}
+          >
+            {HERO_SLIDES.map((slide, index) => (
+              <img
+                key={slide.src}
+                className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-700 motion-reduce:transition-none ${
+                  index === activeSlide ? "opacity-100" : "opacity-0"
+                }`}
+                src={slide.src}
+                alt={index === activeSlide ? slide.alt : ""}
+                aria-hidden={index !== activeSlide}
+              />
+            ))}
+
+            {activeSlide === 0 && (
+              <div className="relative z-10 flex flex-col items-start justify-between gap-space-lg md:min-h-[282px] md:justify-start lg:flex-row lg:items-start lg:justify-between">
               <div className="max-w-[490px] space-y-space-sm">
                 <div className="inline-flex items-center gap-space-xs px-space-md py-space-xs rounded-full bg-primary-fixed text-primary font-label-md text-label-md">
                   <span className="material-symbols-outlined text-[16px]">
@@ -318,8 +358,46 @@ function MajorsPage() {
                   </a>
                 </div>
               </div>
+              </div>
+            )}
+
+            <button
+              type="button"
+              className="absolute left-3 top-1/2 z-20 flex size-10 -translate-y-1/2 items-center justify-center rounded-full bg-white/90 text-on-surface shadow-md transition hover:bg-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary md:left-4"
+              aria-label="Xem banner trước"
+              title="Banner trước"
+              onClick={() => showSlide(activeSlide - 1)}
+            >
+              <span className="material-symbols-outlined" aria-hidden="true">chevron_left</span>
+            </button>
+            <button
+              type="button"
+              className="absolute right-3 top-1/2 z-20 flex size-10 -translate-y-1/2 items-center justify-center rounded-full bg-white/90 text-on-surface shadow-md transition hover:bg-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary md:right-4"
+              aria-label="Xem banner tiếp theo"
+              title="Banner tiếp theo"
+              onClick={() => showSlide(activeSlide + 1)}
+            >
+              <span className="material-symbols-outlined" aria-hidden="true">chevron_right</span>
+            </button>
+
+            <div className="absolute bottom-4 left-1/2 z-20 flex -translate-x-1/2 items-center gap-2 rounded-full bg-black/25 px-3 py-2 backdrop-blur-sm">
+              {HERO_SLIDES.map((slide, index) => (
+                <button
+                  key={slide.src}
+                  type="button"
+                  className={`h-2.5 rounded-full transition-all focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white ${
+                    index === activeSlide ? "w-7 bg-white" : "w-2.5 bg-white/60 hover:bg-white/90"
+                  }`}
+                  aria-label={`Chuyển đến banner ${index + 1}`}
+                  aria-current={index === activeSlide ? "true" : undefined}
+                  onClick={() => showSlide(index)}
+                />
+              ))}
             </div>
-          </div>
+            <span className="sr-only" aria-live="polite">
+              Banner {activeSlide + 1} trên {HERO_SLIDES.length}
+            </span>
+          </section>
 
           <div className="mt-space-lg space-y-space-md">
             <form
