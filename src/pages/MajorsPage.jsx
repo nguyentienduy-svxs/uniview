@@ -5,6 +5,126 @@ import { Link } from "react-router-dom";
 
 const PAGE_SIZE = 6;
 const EXTRA_CATEGORY_IDS = ["health", "social-sciences"];
+const CATEGORY_IMAGES = {
+  "computer-it": {
+    src: "/stitch-assets/fpt-software-campus.jpg",
+    alt: "Sinh viên tại khu đào tạo công nghệ phần mềm",
+  },
+  business: {
+    src: "/stitch-assets/modern-university-campus.jpg",
+    alt: "Sinh viên trao đổi tại khuôn viên trường kinh doanh",
+  },
+  engineering: {
+    src: "/stitch-assets/hcmus-research-lab.jpg",
+    alt: "Sinh viên thực hành trong phòng thí nghiệm",
+  },
+  "art-design": {
+    src: "/stitch-assets/uniview-mascot-rating-guide.jpg",
+    alt: "Minh họa linh vật UniView với nhiều trạng thái biểu cảm",
+  },
+  "language-humanities": {
+    src: "/stitch-assets/student-admission-planning.jpg",
+    alt: "Sinh viên học tập và lập kế hoạch tại thư viện",
+  },
+};
+const MAJOR_IMAGES = {
+  "7480103": {
+    src: "/anhnganh/KTPM.png",
+    alt: "Minh họa ngành Kỹ thuật Phần mềm",
+  },
+  "7480201": {
+    src: "/anhnganh/CNTT.png",
+    alt: "Minh họa ngành Công nghệ Thông tin",
+  },
+  "7480109": {
+    src: "/anhnganh/Khoahocdulieu.png",
+    alt: "Minh họa ngành Khoa học Dữ liệu",
+  },
+  "7480101": {
+    src: "/anhnganh/Khoahocmaytinh.png",
+    alt: "Minh họa ngành Khoa học Máy tính",
+  },
+  "7480202": {
+    src: "/anhnganh/Antoanthongtin.png",
+    alt: "Minh họa ngành An toàn Thông tin",
+  },
+  "7480107": {
+    src: "/anhnganh/Ai.png",
+    alt: "Minh họa ngành Trí tuệ Nhân tạo",
+  },
+  "7480203": {
+    src: "/anhnganh/KyThuatMayTinh.png",
+    alt: "Minh họa ngành Kỹ thuật Máy tính",
+  },
+  "7480102": {
+    src: "/anhnganh/MangMayTinh.png",
+    alt: "Minh họa ngành Mạng Máy tính và Truyền thông Dữ liệu",
+  },
+  "7480104": {
+    src: "/anhnganh/HeThongThongTin.png",
+    alt: "Minh họa ngành Hệ thống Thông tin",
+  },
+  "7340101": {
+    src: "/anhnganh/QuanTriKinhDoanh.png",
+    alt: "Minh họa ngành Quản trị Kinh doanh",
+  },
+  "7340115": {
+    src: "/anhnganh/Marketing.png",
+    alt: "Minh họa ngành Marketing",
+  },
+  "7340120": {
+    src: "/anhnganh/KinhDoanhQuocTe.png",
+    alt: "Minh họa ngành Kinh doanh Quốc tế",
+  },
+  "7340121": {
+    src: "/anhnganh/KinhDoanhThuongMai.png",
+    alt: "Minh họa ngành Kinh doanh Thương mại",
+  },
+  "7340201": {
+    src: "/anhnganh/TaiChinhNganHang.png",
+    alt: "Minh họa ngành Tài chính - Ngân hàng",
+  },
+  "7340301": {
+    src: "/anhnganh/KeToan.png",
+    alt: "Minh họa ngành Kế toán",
+  },
+  "7340302": {
+    src: "/anhnganh/KiemToan.png",
+    alt: "Minh họa ngành Kiểm toán",
+  },
+  "7340122": {
+    src: "/anhnganh/ThuongMaiDienTu.png",
+    alt: "Minh họa ngành Thương mại Điện tử",
+  },
+  "7340405": {
+    src: "/anhnganh/HeThongThongTinQuanLy.png",
+    alt: "Minh họa ngành Hệ thống Thông tin Quản lý",
+  },
+  "7520201": {
+    src: "/anhnganh/KyThuatDien.png",
+    alt: "Minh họa ngành Kỹ thuật Điện",
+  },
+  "7520207": {
+    src: "/anhnganh/KyThuatDienTuVienThong.png",
+    alt: "Minh họa ngành Kỹ thuật Điện tử - Viễn thông",
+  },
+  "7520216": {
+    src: "/anhnganh/KyThuatDieuKhienVaTuDongHoa.png",
+    alt: "Minh họa ngành Kỹ thuật Điều khiển và Tự động hóa",
+  },
+  "7520114": {
+    src: "/anhnganh/KyThuatCoDienTu.png",
+    alt: "Minh họa ngành Kỹ thuật Cơ - Điện tử",
+  },
+  "7520103": {
+    src: "/anhnganh/KyThuatCoKhi.png",
+    alt: "Minh họa ngành Kỹ thuật Cơ khí",
+  },
+  "7580201": {
+    src: "/anhnganh/KyThuatXayDung.png",
+    alt: "Minh họa ngành Kỹ thuật Xây dựng",
+  },
+};
 
 const normalizeText = (value) =>
   String(value ?? "")
@@ -145,10 +265,15 @@ function MajorsPage() {
     <main className="w-full pt-6 bg-surface min-h-[calc(100vh-80px)]">
       <div className="flex flex-col w-full">
         <div className="w-full max-w-[1240px] mx-auto px-margin md:px-margin-md lg:px-margin-lg pb-space-lg">
-          <div className="relative overflow-hidden rounded-xl bg-surface-container-low p-space-lg md:p-space-xl transition-all shadow-sm">
-            <div className="absolute -right-16 -top-16 w-80 h-80 rounded-full bg-gradient-to-br from-primary-fixed to-secondary-fixed opacity-40 blur-3xl pointer-events-none"></div>
-            <div className="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-space-lg">
-              <div className="max-w-2xl space-y-space-sm">
+          <div className="relative overflow-hidden rounded-xl bg-surface-container-low p-space-lg md:min-h-[360px] md:p-space-xl transition-all shadow-sm">
+            <img
+              className="absolute inset-0 h-full w-full object-cover object-[center_65%]"
+              src="/stitch-assets/debe8864-7bc2-4762-ac28-187f65b61c62.png"
+              alt=""
+              aria-hidden="true"
+            />
+            <div className="relative z-10 flex flex-col items-start justify-between gap-space-lg md:min-h-[296px] md:justify-start lg:flex-row lg:items-start lg:justify-between">
+              <div className="max-w-[490px] space-y-space-sm">
                 <div className="inline-flex items-center gap-space-xs px-space-md py-space-xs rounded-full bg-primary-fixed text-primary font-label-md text-label-md">
                   <span className="material-symbols-outlined text-[16px]">
                     explore
@@ -168,7 +293,7 @@ function MajorsPage() {
                 </p>
               </div>
 
-              <div className="w-full lg:max-w-sm rounded-lg bg-surface-container-lowest p-space-md shadow-sm space-y-space-xs">
+              <div className="w-full space-y-space-xs rounded-lg border border-white/80 bg-surface-container-lowest p-space-md shadow-[0_10px_30px_rgba(15,23,42,0.14)] lg:max-w-sm lg:self-center">
                 <div className="flex items-center gap-space-xs">
                   <span className="material-symbols-outlined text-secondary text-[22px]">
                     psychology
@@ -183,11 +308,11 @@ function MajorsPage() {
                 </p>
                 <div className="pt-space-xs">
                   <a
-                    className="inline-flex items-center gap-space-xs text-primary font-label-lg text-label-lg hover:text-primary-container transition-all group"
+                    className="group/link inline-flex items-center gap-space-xs text-primary font-label-lg text-label-lg hover:text-primary-container transition-all"
                     href="#"
                   >
                     <span>Khám phá bản thân ngay</span>
-                    <span className="material-symbols-outlined text-[18px] group-hover:translate-x-1 transition-transform">
+                    <span className="material-symbols-outlined text-[18px] transition-transform group-hover/link:translate-x-1">
                       arrow_forward
                     </span>
                   </a>
@@ -483,144 +608,85 @@ function MajorsPage() {
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-space-md">
-                {visibleMajors.map((major, index) => (
-                  <div
-                    ref={index === firstNewResultIndex ? progressBarRef : null}
-                    key={major.id}
-                    className="scroll-mt-4 group relative rounded-xl bg-surface-container-lowest p-space-md flex flex-col justify-between shadow-sm hover:shadow-md hover:-translate-y-1 transition-all"
-                  >
-                    {/* Nội dung */}
-                    <div className="space-y-space-sm">
-                      {/* Badge */}
-                      <div className="inline-flex items-center gap-1 px-space-sm py-0.5 rounded-full bg-primary-fixed text-primary font-label-sm text-label-sm">
-                        <span className="material-symbols-outlined text-[14px]">
-                          auto_awesome
-                        </span>
+                {visibleMajors.map((major, index) => {
+                  const majorImage = MAJOR_IMAGES[major.id];
+                  const cardImage = majorImage
+                    ?? CATEGORY_IMAGES[major.category.id]
+                    ?? CATEGORY_IMAGES["computer-it"];
 
-                        <span>Phù hợp với kỹ năng của bạn</span>
+                  return (
+                    <article
+                      ref={index === firstNewResultIndex ? progressBarRef : null}
+                      key={major.id}
+                      className="group scroll-mt-4 flex min-h-0 flex-col overflow-hidden rounded-xl bg-surface-container-lowest shadow-sm transition-shadow hover:shadow-md"
+                    >
+                      <div className="relative aspect-[3/2] w-full overflow-hidden bg-surface-container-high">
+                        <img
+                          className="h-full w-full object-cover"
+                          src={cardImage.src}
+                          alt={cardImage.alt}
+                        />
+                        {!majorImage && (
+                          <>
+                            <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent"></div>
+                            <span className="absolute bottom-space-sm left-space-sm inline-flex items-center gap-1 rounded-full bg-surface-container-lowest/95 px-space-sm py-1 font-label-sm text-label-sm font-semibold text-primary shadow-sm backdrop-blur-sm">
+                              <span className="material-symbols-outlined text-[15px]">
+                                {major.icon}
+                              </span>
+                              {major.category.name}
+                            </span>
+                          </>
+                        )}
                       </div>
 
-                      {/* Header */}
-                      <div className="flex items-start justify-between gap-space-sm pt-1">
-                        <div className="flex items-center gap-space-sm">
-                          {/* Icon */}
-                          <div className="w-12 h-12 rounded-xl bg-surface-container-high flex items-center justify-center text-primary shrink-0 shadow-inner">
-                            <span className="material-symbols-outlined text-[28px]">
-                              {major.icon}
+                      <div className="flex flex-1 flex-col p-space-md">
+                        <p className="font-label-sm text-label-sm font-semibold text-outline">
+                          Mã ngành {major.code}
+                        </p>
+                        <h3 className="mt-1 font-headline-sm text-[20px] leading-tight text-on-surface transition-colors group-hover:text-primary">
+                          {major.name}
+                        </h3>
+                        <p className="mt-space-xs line-clamp-2 font-body-sm text-body-sm text-on-surface-variant">
+                          {major.description}
+                        </p>
+
+                        <div className="mt-space-md grid grid-cols-2 gap-space-md border-y border-surface-container py-space-sm">
+                          <div className="min-w-0">
+                            <span className="block font-label-sm text-label-sm text-outline">
+                              Trường đào tạo
+                            </span>
+                            <span className="mt-0.5 flex items-center gap-1 font-label-md text-label-md font-semibold text-on-surface">
+                              <span className="material-symbols-outlined text-[17px] text-primary">
+                                apartment
+                              </span>
+                              {major.universityCount} trường
                             </span>
                           </div>
-
-                          {/* Name + code */}
-                          <div>
-                            <h3 className="font-headline-sm text-headline-sm text-on-surface group-hover:text-primary transition-colors text-[19px] leading-tight">
-                              {major.name}
-                            </h3>
-
-                            <p className="font-label-sm text-label-sm text-outline">
-                              Mã: {major.code} • Nhóm {major.category.name}
-                            </p>
-                          </div>
-                        </div>
-
-                        {/* Favorite */}
-                        <button
-                          className="p-1.5 rounded-full hover:bg-secondary-fixed text-outline hover:text-secondary transition-colors"
-                          title="Lưu vào danh sách quan tâm"
-                        >
-                          <span className="material-symbols-outlined text-[20px]">
-                            favorite
-                          </span>
-                        </button>
-                      </div>
-
-                      {/* Description */}
-                      <p className="font-body-sm text-body-sm text-on-surface-variant line-clamp-3">
-                        {major.description}
-                      </p>
-
-                      {/* Skills */}
-                      <div className="flex flex-wrap gap-1">
-                        {major.skills.map((skill) => (
-                          <span
-                            key={skill}
-                            className="px-space-xs py-0.5 rounded bg-surface-container-low text-on-surface-variant font-label-sm text-[11px]"
-                          >
-                            {skill}
-                          </span>
-                        ))}
-                      </div>
-
-                      {/* Information */}
-                      <div className="pt-space-xs space-y-1 text-on-surface-variant font-body-sm text-body-sm">
-                        {/* University count */}
-                        <div className="flex items-center gap-space-xs">
-                          <span className="material-symbols-outlined text-[18px] text-primary">
-                            apartment
-                          </span>
-
-                          <span>
-                            <strong>{major.universityCount}</strong> trường đại
-                            học tại Việt Nam đào tạo
-                          </span>
-                        </div>
-
-                        {/* Career */}
-                        <div className="flex items-start gap-space-xs">
-                          <span className="material-symbols-outlined text-[18px] text-tertiary shrink-0 mt-0.5">
-                            work_outline
-                          </span>
-
-                          <span className="truncate">
-                            {major.careerPaths.join(", ")}
-                          </span>
-                        </div>
-
-                        {/* Admission combinations */}
-                        <div className="flex items-center gap-space-xs">
-                          <span className="material-symbols-outlined text-[18px] text-outline">
-                            school
-                          </span>
-
-                          <span>
-                            Tổ hợp xét tuyển:{" "}
-                            <strong className="text-on-surface">
+                          <div className="min-w-0">
+                            <span className="block font-label-sm text-label-sm text-outline">
+                              Tổ hợp phổ biến
+                            </span>
+                            <span className="mt-0.5 block truncate font-label-md text-label-md font-semibold text-on-surface">
                               {major.admissionCombinations
                                 .map((combination) => combination.code)
                                 .join(", ")}
-                            </strong>
-                          </span>
+                            </span>
+                          </div>
                         </div>
+
+                        <Link
+                          className="mt-space-md inline-flex w-full items-center justify-between rounded-lg bg-primary-container px-space-md py-space-sm font-label-md text-label-md font-semibold text-on-primary transition-colors hover:bg-primary"
+                          to={`/majors/software-engineering?majorId=${major.id}`}
+                        >
+                          <span>Xem chi tiết ngành</span>
+                          <span className="material-symbols-outlined text-[18px]">
+                            arrow_forward
+                          </span>
+                        </Link>
                       </div>
-                    </div>
-
-                    {/* Footer */}
-                    <div className="pt-space-md mt-space-md border-t border-surface-container flex items-center justify-between gap-space-xs">
-                      {/* Find universities */}
-                      <a
-                        className="font-label-md text-label-md text-outline hover:text-primary transition-colors flex items-center gap-1"
-                        href="#"
-                      >
-                        <span className="material-symbols-outlined text-[16px]">
-                          domain
-                        </span>
-
-                        <span>Tìm trường đào tạo</span>
-                      </a>
-
-                      {/* Explore */}
-                      <Link
-                        className="inline-flex items-center gap-1 px-space-md py-space-xs rounded-full bg-primary-container hover:bg-primary text-on-primary font-label-md text-label-md shadow-sm transition-all group-hover:px-space-lg"
-                        to={`/majors/software-engineering?majorId=${major.id}`}
-                      >
-                        <span>Khám phá ngành</span>
-
-                        <span className="material-symbols-outlined text-[16px]">
-                          arrow_forward
-                        </span>
-                      </Link>
-                    </div>
-                  </div>
-                ))}
+                    </article>
+                  );
+                })}
                 {filteredMajors.length === 0 && (
                   <div className="md:col-span-2 rounded-xl bg-surface-container-lowest p-space-lg text-center shadow-sm">
                     <span className="material-symbols-outlined text-[32px] text-outline">
