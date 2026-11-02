@@ -1,11 +1,10 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 
+import { useAuth } from '../context/AuthContext'
 import majorDetails from '../data/majorDetails.json'
 import majors from '../data/majors.json'
 import universitiesData from '../data/universities.json'
-
-const DEFAULT_UNIVERSITY_IDS = ['uit-vnuhcm', 'hcmut-vnuhcm', 'fpt-university-hcm']
 
 const DEFAULT_PROFILE = {
   budget: 35,
@@ -30,9 +29,17 @@ const comparisonTabs = [
   ['section-scholarships', 'workspace_premium', '6. Học bổng'],
   ['section-fit', 'tune', '7. Độ tương thích'],
   ['section-tradeoffs', 'balance', '8. Trade-offs'],
-  ['section-missing-info', 'fact_check', '9. Checklist'],
+  ['section-missing-info', 'fact_check', '9. Nguồn & kiểm chứng'],
   ['section-notes', 'edit_note', '10. Ghi chú'],
 ]
+
+const readStoredJson = (key, fallback) => {
+  try {
+    return JSON.parse(localStorage.getItem(key) ?? 'null') ?? fallback
+  } catch {
+    return fallback
+  }
+}
 
 const normalizeText = (value = '') => value
   .normalize('NFD')
@@ -60,7 +67,32 @@ const getTuitionAverage = (university) => university.tuition
   ? (university.tuition.minMillionVnd + university.tuition.maxMillionVnd) / 2
   : null
 
-const calculateFitScore = ({ university, major }, profile) => {
+const isSpecificSource = (sourceUrl, officialWebsite) => {
+  if (!sourceUrl) return false
+  try {
+    const source = new URL(sourceUrl)
+    const official = new URL(officialWebsite ?? sourceUrl)
+    const sourceHost = source.hostname.replace(/^www\./, '')
+    const officialHost = official.hostname.replace(/^www\./, '')
+    const sameOfficialDomain = sourceHost === officialHost
+      || sourceHost.endsWith(`.${officialHost}`)
+      || officialHost.endsWith(`.${sourceHost}`)
+    return sameOfficialDomain && (
+      sourceHost !== officialHost
+      || source.pathname.replace(/\/+$/, '') !== official.pathname.replace(/\/+$/, '')
+    )
+  } catch {
+    return false
+  }
+}
+
+const formatVerifiedDate = (value) => {
+  if (!value) return 'Chưa ghi nhận'
+  const [year, month, day] = value.split('-')
+  return `${day}/${month}/${year}`
+}
+
+const getFitBreakdown = ({ university, major }, profile) => {
   const tuitionAverage = getTuitionAverage(university) ?? profile.budget * 1.25
   const budgetScore = tuitionAverage <= profile.budget
     ? 30
@@ -77,7 +109,153 @@ const calculateFitScore = ({ university, major }, profile) => {
       : profile.thptScore >= scoreRange.max - 2 ? 19
         : profile.thptScore >= scoreRange.min ? 13 : 6
 
-  return Math.round((budgetScore + locationScore + majorScore + admissionScore)) / 10
+  return {
+    total: Math.round((budgetScore + locationScore + majorScore + admissionScore)) / 10,
+    metrics: [
+      { label: 'Ngành học', value: Math.round((majorScore / 25) * 100), color: '#1D4ED8' },
+      { label: 'Ngân sách', value: Math.round((budgetScore / 30) * 100), color: '#059669' },
+      { label: 'Khu vực', value: Math.round((locationScore / 20) * 100), color: '#D97706' },
+      { label: 'Tuyển sinh', value: Math.round((admissionScore / 25) * 100), color: '#A93349' },
+    ],
+  }
+}
+
+function DonutChart({ value, label, color = '#1D4ED8' }) {
+  const percentage = Math.max(0, Math.min(100, value * 10))
+  const radius = 42
+  const circumference = 2 * Math.PI * radius
+  const offset = circumference * (1 - percentage / 100)
+
+  return (
+    <div className="relative size-28 shrink-0" role="img" aria-label={`${label}: ${value} trên 10`}>
+      <svg className="size-full -rotate-90" viewBox="0 0 100 100" aria-hidden="true">
+        <circle cx="50" cy="50" r={radius} fill="none" stroke="#E2E8F0" strokeWidth="10" />
+        <circle
+          cx="50"
+          cy="50"
+          r={radius}
+          fill="none"
+          stroke={color}
+          strokeWidth="10"
+          strokeLinecap="round"
+          strokeDasharray={circumference}
+          strokeDashoffset={offset}
+        />
+      </svg>
+      <div className="absolute inset-0 flex flex-col items-center justify-center">
+        <strong className="text-xl font-black text-slate-900">{value}</strong>
+        <span className="text-[10px] font-semibold text-slate-500">/ 10</span>
+      </div>
+    </div>
+  )
+}
+
+function MetricProgress({ label, value, color }) {
+  return (
+    <div className="space-y-1.5">
+      <div className="flex items-center justify-between gap-3 text-[11px]">
+        <span className="font-semibold text-slate-600">{label}</span>
+        <span className="font-black text-slate-900">{value}%</span>
+      </div>
+      <div
+        className="h-2 overflow-hidden rounded-full bg-slate-200"
+        role="progressbar"
+        aria-label={`${label}: ${value}%`}
+        aria-valuemin="0"
+        aria-valuemax="100"
+        aria-valuenow={value}
+      >
+        <div className="h-full rounded-full transition-[width] duration-500" style={{ backgroundColor: color, width: `${value}%` }} />
+      </div>
+    </div>
+  )
+}
+
+function TuitionBarChart({ choices, budget }) {
+  const values = choices.map(({ university }) => getTuitionAverage(university))
+  const maxValue = Math.max(budget, ...values.filter((value) => value !== null), 1) * 1.18
+  const budgetBottom = Math.min(100, (budget / maxValue) * 100)
+
+  return (
+    <div className="rounded-2xl border border-slate-200 bg-slate-50/80 p-4 sm:p-5">
+      <div className="mb-4 flex flex-wrap items-start justify-between gap-3 text-xs">
+        <span className="font-bold text-slate-800">Học phí trung bình tham chiếu</span>
+        <div className="flex flex-wrap items-center justify-end gap-x-4 gap-y-2 text-[11px] font-semibold">
+          <span className="inline-flex items-center gap-1.5 text-slate-600"><span className="size-2.5 rounded-sm bg-blue-600" />Trong ngân sách</span>
+          <span className="inline-flex items-center gap-1.5 text-slate-600"><span className="size-2.5 rounded-sm bg-amber-600" />Vượt ngân sách</span>
+          <span className="inline-flex items-center gap-1.5 text-rose-700"><span className="h-0.5 w-5 bg-rose-500" />Ngân sách {budget} triệu/năm</span>
+        </div>
+      </div>
+      <div className="overflow-x-auto pb-1">
+        <div className="min-w-[520px] px-2 pt-5">
+          <div className="mb-2 grid gap-4" style={{ gridTemplateColumns: `repeat(${choices.length}, minmax(100px, 1fr))` }}>
+            {choices.map(({ university }, index) => {
+              const value = values[index]
+              const withinBudget = value !== null && value <= budget
+              return <div className="text-center" key={university.id}>
+                <p className={`text-xs font-black ${withinBudget ? 'text-blue-700' : 'text-amber-800'}`}>{value === null ? 'N/A' : `${Math.round(value)}tr`}</p>
+                <p className="mt-1 text-[10px] font-semibold text-slate-500">{university.tuition ? `${university.tuition.minMillionVnd}–${university.tuition.maxMillionVnd}tr` : 'Chưa có khoảng'}</p>
+              </div>
+            })}
+          </div>
+          <div className="relative h-44">
+            <div className="absolute inset-x-0 z-10 border-t-2 border-dashed border-rose-400" style={{ bottom: `${budgetBottom}%` }}>
+              <span className="absolute -top-5 right-0 rounded bg-rose-50 px-1.5 py-0.5 text-[10px] font-bold text-rose-700">{budget}tr</span>
+            </div>
+            <div className="grid h-full items-end gap-4" style={{ gridTemplateColumns: `repeat(${choices.length}, minmax(100px, 1fr))` }}>
+              {choices.map(({ university }, index) => {
+                const value = values[index]
+                const height = value === null ? 0 : Math.max(5, (value / maxValue) * 100)
+                const withinBudget = value !== null && value <= budget
+                return <div className="flex h-full items-end justify-center" key={university.id}>
+                  <div
+                    className="w-12 rounded-t-lg shadow-sm transition-[height] duration-500 sm:w-16"
+                    style={{ backgroundColor: withinBudget ? '#2563EB' : '#D97706', height: `${height}%` }}
+                    title={`${university.name}: ${value ?? 'chưa có dữ liệu'} triệu đồng/năm`}
+                  />
+                </div>
+              })}
+            </div>
+          </div>
+          <div className="mt-2 grid gap-4" style={{ gridTemplateColumns: `repeat(${choices.length}, minmax(100px, 1fr))` }}>
+            {choices.map(({ university }) => <div className="flex min-w-0 justify-center" key={university.id}>
+              <UniversityLabel university={university}>
+                <span className="block max-w-24 truncate text-center text-[11px] font-bold text-slate-700">{university.shortName ?? university.code}</span>
+              </UniversityLabel>
+            </div>)}
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+function AdmissionRangeTrack({ university, score }) {
+  const range = university.admission?.scoreRange
+  if (!range?.max || !range?.scale) {
+    return <div className="rounded-lg bg-slate-100 px-3 py-4 text-center text-[11px] font-semibold text-slate-500">Chưa có khoảng điểm có cấu trúc</div>
+  }
+
+  const minPosition = Math.max(0, Math.min(100, (range.min / range.scale) * 100))
+  const maxPosition = Math.max(minPosition, Math.min(100, (range.max / range.scale) * 100))
+  const scorePosition = Math.max(0, Math.min(100, (score / range.scale) * 100))
+
+  return (
+    <div className="space-y-2" role="img" aria-label={`${university.shortName ?? university.name}: khoảng tham chiếu ${range.min} đến ${range.max}, điểm hồ sơ ${score}`}>
+      <div className="relative pt-6">
+        <div className="h-2 rounded-full bg-slate-200">
+          <div className="absolute top-6 h-2 rounded-full bg-blue-200" style={{ left: `${minPosition}%`, width: `${maxPosition - minPosition}%` }} />
+        </div>
+        <span className="absolute top-4 h-6 w-0.5 -translate-x-1/2 bg-[#1D4ED8]" style={{ left: `${scorePosition}%` }} />
+        <span className="absolute top-0 -translate-x-1/2 rounded bg-blue-600 px-1.5 py-0.5 text-[9px] font-black text-white" style={{ left: `${scorePosition}%` }}>{score}</span>
+      </div>
+      <div className="flex items-center justify-between text-[10px] font-semibold text-slate-500">
+        <span>{range.min}đ</span>
+        <span>Khoảng tham chiếu</span>
+        <span>{range.max}đ</span>
+      </div>
+    </div>
+  )
 }
 
 function Tooltip({ label, children }) {
@@ -105,13 +283,15 @@ function UniversityLabel({ university, children }) {
 
 function UniversityComparisonPage() {
   const navigate = useNavigate()
+  const { isAuthenticated, loading: authLoading } = useAuth()
   const [selectedIds, setSelectedIds] = useState(() => {
-    const saved = localStorage.getItem('uniview:comparison:universities')
-    return saved ? JSON.parse(saved) : DEFAULT_UNIVERSITY_IDS
+    if (!isAuthenticated) return []
+    const saved = readStoredJson('uniview:comparison:universities', [])
+    return Array.isArray(saved) ? saved.slice(0, 4) : []
   })
   const [profile, setProfile] = useState(() => {
-    const saved = localStorage.getItem('uniview:comparison:profile')
-    return saved ? { ...DEFAULT_PROFILE, ...JSON.parse(saved) } : DEFAULT_PROFILE
+    const saved = isAuthenticated ? readStoredJson('uniview:comparison:profile', {}) : {}
+    return { ...DEFAULT_PROFILE, ...saved }
   })
   const [profileDraft, setProfileDraft] = useState(profile)
   const [pickerSlot, setPickerSlot] = useState(null)
@@ -124,12 +304,11 @@ function UniversityComparisonPage() {
   const pendingTabTimerRef = useRef(0)
   const scrollFrameRef = useRef(0)
   const [notes, setNotes] = useState(() => {
-    const saved = localStorage.getItem('uniview:comparison:notes')
-    return saved ? JSON.parse(saved) : {}
+    return isAuthenticated ? readStoredJson('uniview:comparison:notes', {}) : {}
   })
   const [selectedMajorIds, setSelectedMajorIds] = useState(() => {
-    const saved = localStorage.getItem('uniview:comparison:majors')
-    return saved ? { ...DEFAULT_MAJOR_IDS, ...JSON.parse(saved) } : DEFAULT_MAJOR_IDS
+    const saved = isAuthenticated ? readStoredJson('uniview:comparison:majors', {}) : {}
+    return { ...DEFAULT_MAJOR_IDS, ...saved }
   })
 
   const selectedUniversities = useMemo(() => selectedIds
@@ -141,12 +320,15 @@ function UniversityComparisonPage() {
       ?? availableMajors[0]
     const detail = majorDetails.find((item) => item.id === major?.id)
 
+    const fitBreakdown = getFitBreakdown({ university, major }, profile)
+
     return {
       university,
       major,
       detail,
       availableMajors,
-      fitScore: calculateFitScore({ university, major }, profile),
+      fitScore: fitBreakdown.total,
+      fitBreakdown,
     }
   }), [profile, selectedMajorIds, selectedUniversities])
 
@@ -232,6 +414,7 @@ function UniversityComparisonPage() {
   }
 
   const saveComparison = () => {
+    if (!isAuthenticated) return
     localStorage.setItem('uniview:comparison:universities', JSON.stringify(selectedIds))
     localStorage.setItem('uniview:comparison:profile', JSON.stringify(profile))
     localStorage.setItem('uniview:comparison:majors', JSON.stringify(selectedMajorIds))
@@ -253,6 +436,7 @@ function UniversityComparisonPage() {
   }
 
   const saveProfile = () => {
+    if (!isAuthenticated) return
     setProfile(profileDraft)
     localStorage.setItem('uniview:comparison:profile', JSON.stringify(profileDraft))
     setProfileOpen(false)
@@ -260,6 +444,7 @@ function UniversityComparisonPage() {
   }
 
   const addToDecisionBoard = () => {
+    if (!isAuthenticated) return
     localStorage.setItem('uniview:decision-board:universities', JSON.stringify(selectedChoices.map(({ university, major }) => ({ universityId: university.id, majorId: major?.id }))))
     localStorage.setItem('uniview:comparison:notes', JSON.stringify(notes))
     navigate('/decision-board')
@@ -299,6 +484,36 @@ function UniversityComparisonPage() {
       if (error?.name !== 'AbortError') showToast('Chưa thể chia sẻ bảng so sánh')
     }
   }
+
+  if (authLoading) {
+    return <main className="flex min-h-[calc(100vh-74px)] items-center justify-center bg-[#F8FAFC] px-4"><p className="text-sm font-semibold text-slate-500">Đang kiểm tra phiên đăng nhập...</p></main>
+  }
+
+  if (!isAuthenticated) {
+    return <main className="flex min-h-[calc(100vh-74px)] items-center justify-center bg-[#F8FAFC] px-4 py-12">
+      <section className="w-full max-w-lg rounded-2xl border border-slate-200 bg-white p-7 text-center shadow-sm sm:p-9">
+        <span className="material-symbols-outlined text-[40px] text-blue-600">lock_person</span>
+        <h1 className="mt-3 text-2xl font-black text-slate-900">Đăng nhập để so sánh trường</h1>
+        <p className="mt-2 text-sm leading-6 text-slate-600">Phiên khách không lưu trường, ngành, tiêu chí hay ghi chú so sánh.</p>
+        <div className="mt-6 flex flex-col justify-center gap-2 sm:flex-row">
+          <Link className="rounded-xl bg-[#1D4ED8] px-5 py-3 text-sm font-bold text-white hover:bg-blue-700" to="/login">Đăng nhập</Link>
+          <Link className="rounded-xl border border-slate-200 px-5 py-3 text-sm font-bold text-slate-700 hover:bg-slate-50" to="/universities">Xem danh sách trường</Link>
+        </div>
+      </section>
+    </main>
+  }
+
+  if (selectedUniversities.length < 2) {
+    return <main className="flex min-h-[calc(100vh-74px)] items-center justify-center bg-[#F8FAFC] px-4 py-12">
+      <section className="w-full max-w-lg rounded-2xl border border-slate-200 bg-white p-7 text-center shadow-sm sm:p-9">
+        <span className="material-symbols-outlined text-[40px] text-blue-600">compare_arrows</span>
+        <h1 className="mt-3 text-2xl font-black text-slate-900">Chưa đủ trường để so sánh</h1>
+        <p className="mt-2 text-sm leading-6 text-slate-600">Chọn ít nhất hai trường từ danh sách để tạo bảng so sánh của riêng bạn.</p>
+        <Link className="mt-6 inline-flex rounded-xl bg-[#1D4ED8] px-5 py-3 text-sm font-bold text-white hover:bg-blue-700" to="/universities">Chọn trường</Link>
+      </section>
+    </main>
+  }
+
   return (
 <main className="w-full bg-[#F8FAFC] min-h-[calc(100vh-80px)] pb-20 font-['Be_Vietnam_Pro'] text-slate-800"><div className="max-w-[1360px] mx-auto px-4 md:px-6 lg:px-8 pt-5 space-y-6">
 
@@ -401,23 +616,17 @@ function UniversityComparisonPage() {
     </div>
     <button className="text-xs font-semibold text-[#1D4ED8] hover:text-blue-700 flex items-center gap-1 hover:underline" onClick={() => { setProfileDraft(profile); setProfileOpen(true) }} type="button"><span>Cập nhật thông tin hồ sơ</span><span className="material-symbols-outlined text-[16px]">arrow_forward</span></button>
   </div>
-  <div className="grid grid-cols-1 md:grid-cols-4 gap-3.5 pt-1 text-xs">
-    <div className="bg-white rounded-xl p-3.5 border border-slate-200/80 shadow-xs space-y-2">
-      <span className="font-bold text-slate-700 flex items-center gap-1.5"><span className="material-symbols-outlined text-[16px] text-emerald-600">payments</span>Ngân sách (≤ {profile.budget} tr/năm)</span>
-      <div className="space-y-1.5 pt-1">{selectedChoices.map(({ university }) => { const average = getTuitionAverage(university); const within = average !== null && average <= profile.budget; return <div className="flex items-center justify-between gap-2 text-[11px]" key={university.id}><span className="font-semibold text-slate-600"><UniversityLabel university={university} />:</span><span className={`font-bold px-2 py-0.5 rounded ${within ? 'text-emerald-700 bg-emerald-50' : 'text-rose-700 bg-rose-50'}`}>{within ? 'Thỏa mãn' : average === null ? 'Chưa có dữ liệu' : 'Vượt trần'}</span></div> })}</div>
-    </div>
-    <div className="bg-white rounded-xl p-3.5 border border-slate-200/80 shadow-xs space-y-2">
-      <span className="font-bold text-slate-700 flex items-center gap-1.5"><span className="material-symbols-outlined text-[16px] text-blue-600">award_star</span>Tuyển sinh (ĐGNL {profile.competencyScore}, THPT {profile.thptScore})</span>
-      <div className="space-y-1.5 pt-1">{selectedChoices.map(({ university }) => <div className="flex items-center justify-between gap-2 text-[11px]" key={university.id}><span className="font-semibold text-slate-600"><UniversityLabel university={university} />:</span><span className="text-blue-700 font-bold bg-blue-50 px-2 py-0.5 rounded">{university.admission?.scoreRange?.max && profile.thptScore >= university.admission.scoreRange.max - 2 ? 'Có lợi thế' : 'Cần đối chiếu'}</span></div>)}</div>
-    </div>
-    <div className="bg-white rounded-xl p-3.5 border border-slate-200/80 shadow-xs space-y-2">
-      <span className="font-bold text-slate-700 flex items-center gap-1.5"><span className="material-symbols-outlined text-[16px] text-indigo-600">school</span>Định hướng đào tạo</span>
-      <div className="space-y-1.5 pt-1">{selectedChoices.map(({ university, major }) => <div className="text-[11px] text-slate-700" key={university.id}><strong className="text-slate-900"><UniversityLabel university={university} />:</strong> {major?.name ?? 'Chưa chọn ngành'}</div>)}</div>
-    </div>
-    <div className="bg-white rounded-xl p-3.5 border border-slate-200/80 shadow-xs space-y-2">
-      <span className="font-bold text-slate-700 flex items-center gap-1.5"><span className="material-symbols-outlined text-[16px] text-amber-600">lightbulb</span>Lưu tâm & Hành động</span>
-      <div className="space-y-1 pt-1 text-[11px] text-slate-600 leading-snug"><p>• Ưu tiên trường cân bằng tốt giữa đúng ngành, khả năng trúng tuyển và tài chính.</p><p>• Với lựa chọn vượt ngân sách, hãy xác minh học bổng trước khi xếp nguyện vọng.</p></div>
-    </div>
+  <div className={`grid overflow-hidden rounded-xl border border-blue-100 bg-white/80 ${selectedChoices.length === 4 ? 'sm:grid-cols-2 lg:grid-cols-4' : 'sm:grid-cols-3'}`}>
+    {selectedChoices.map(({ university, major, fitScore }, index) => {
+      const colors = ['#1D4ED8', '#0F766E', '#D97706', '#A93349']
+      return <div className="flex items-center gap-3 border-b border-blue-100 p-3.5 last:border-b-0 sm:flex-col sm:justify-center sm:border-b-0 sm:border-r sm:text-center sm:last:border-r-0" key={university.id}>
+        <DonutChart value={fitScore} label={`Điểm phù hợp ${university.shortName ?? university.name}`} color={colors[index]} />
+        <div className="min-w-0 space-y-1">
+          <UniversityLabel university={university}><strong className="block truncate text-sm text-slate-900">{university.shortName ?? university.code}</strong></UniversityLabel>
+          <p className="truncate text-[11px] font-medium text-slate-500">{major?.name ?? 'Chưa chọn ngành'}</p>
+        </div>
+      </div>
+    })}
   </div>
 </section>
 
@@ -459,14 +668,6 @@ function UniversityComparisonPage() {
 <td className="py-3.5 px-4 font-semibold text-slate-700">Ngành đang đối chiếu</td>
 {selectedChoices.map(({ university, major }) => <td className="py-3.5 px-4 text-slate-900 font-bold" key={university.id}>{major?.name ?? profile.major} {major?.code ? `(${major.code})` : ''}</td>)}
 </tr>
-<tr className="hover:bg-slate-50/60 transition-colors">
-<td className="py-3.5 px-4 font-semibold text-slate-700">Học phí tham chiếu 2025</td>
-{selectedChoices.map(({ university }) => { const average = getTuitionAverage(university); return <td className={`py-3.5 px-4 font-bold ${average !== null && average <= profile.budget ? 'text-emerald-700' : 'text-rose-700'}`} key={university.id}>{university.tuition ? `${university.tuition.minMillionVnd} – ${university.tuition.maxMillionVnd} triệu/năm` : 'Đang cập nhật'}</td> })}
-</tr>
-<tr className="hover:bg-slate-50/60 transition-colors">
-<td className="py-3.5 px-4 font-semibold text-slate-700">Tuyển sinh tham chiếu</td>
-{selectedChoices.map(({ university }) => <td className="py-3.5 px-4 text-slate-800" key={university.id}>{university.admission?.scoreRange?.label ?? university.admission?.methods?.[0]?.label ?? 'Xem đề án chính thức'}</td>)}
-</tr>
 </tbody>
 </table>
 </div>
@@ -482,29 +683,12 @@ function UniversityComparisonPage() {
   <span tabIndex="0" className="px-3 py-1 rounded-full bg-emerald-50 text-emerald-800 text-xs font-bold border border-emerald-200">Trần ngân sách: ≤ {profile.budget}.000.000 đ / năm</span>
 </Tooltip>
 </div>
-<div className="bg-slate-50/80 rounded-2xl p-5 border border-slate-200/80 space-y-4">
-  <div className="flex flex-col sm:flex-row sm:items-center justify-between text-xs font-semibold text-slate-700 gap-1"><span>So sánh mức học phí năm thứ nhất (ước tính):</span><span className="text-rose-600 font-bold">Vạch đỏ: ngưỡng {profile.budget} triệu/năm</span></div>
-  <div className="space-y-4">
-    {selectedChoices.map(({ university, major }, index) => {
-      const tuition = university.tuition ? (university.tuition.minMillionVnd + university.tuition.maxMillionVnd) / 2 : 0
-      const within = tuition <= profile.budget
-      return (
-        <div className="space-y-1.5" key={university.id}>
-          <div className="flex flex-col gap-1 text-xs sm:flex-row sm:justify-between"><span className="font-bold text-slate-900">{index + 1}. {university.shortName ?? university.name} — {major?.name}</span><span className={within ? 'font-extrabold text-emerald-700' : 'font-extrabold text-rose-700'}>{tuition || '—'} triệu/năm · {within ? 'Trong ngân sách' : `Vượt ${Math.max(0, Math.round(tuition - profile.budget))}tr`}</span></div>
-          <div className="w-full bg-slate-200 h-5 rounded-full overflow-hidden relative shadow-xs">
-            <div className="absolute top-0 bottom-0 w-0.5 bg-rose-500 z-10" style={{ left: `${Math.min(profile.budget, 100)}%` }} />
-            <div className={`h-full rounded-full transition-all duration-500 ${index === 0 ? 'bg-blue-600' : index === 2 ? 'bg-amber-500' : 'bg-slate-700'}`} style={{ width: `${Math.min(tuition, 100)}%` }} />
-          </div>
-        </div>
-      )
-    })}
-  </div>
-</div>
-<div className={`grid grid-cols-1 gap-4 ${selectedChoices.length === 4 ? 'md:grid-cols-2 lg:grid-cols-4' : 'md:grid-cols-3'}`}>
+<TuitionBarChart choices={selectedChoices} budget={profile.budget} />
+<div className={`grid grid-cols-1 gap-2 ${selectedChoices.length === 4 ? 'sm:grid-cols-2 lg:grid-cols-4' : 'sm:grid-cols-3'}`}>
 {selectedChoices.map(({ university }) => {
-  const average = university.tuition ? (university.tuition.minMillionVnd + university.tuition.maxMillionVnd) / 2 : null
+  const average = getTuitionAverage(university)
   const within = average !== null && average <= profile.budget
-  return <div className={`p-4 rounded-2xl border space-y-3 ${within ? 'bg-blue-50/40 border-blue-200/80' : 'bg-amber-50/60 border-amber-200'}`} key={university.id}><div className="flex items-center justify-between gap-2"><h3 className="font-bold text-slate-900 text-sm">{university.shortName ?? university.name}</h3><span className={`text-xs font-extrabold ${within ? 'text-[#1D4ED8]' : 'text-amber-900'}`}>{university.tuition ? `${university.tuition.minMillionVnd} – ${university.tuition.maxMillionVnd} tr/năm` : 'Đang cập nhật'}</span></div><p className="text-xs text-slate-600 leading-relaxed">{university.tuition?.note ?? 'Mức học phí thực tế phụ thuộc chương trình và năm học.'}</p><div className={`p-2 rounded-lg text-[11px] font-semibold border ${within ? 'bg-emerald-50 text-emerald-800 border-emerald-200' : 'bg-rose-50 text-rose-800 border-rose-200'}`}>{within ? 'Nằm trong phạm vi ngân sách hiện tại.' : average === null ? 'Cần xác minh mức học phí.' : `Cần phương án tài chính cho phần vượt khoảng ${Math.round(average - profile.budget)} triệu/năm.`}</div></div>
+  return <div className={`flex items-center justify-between gap-3 rounded-xl border px-3 py-2 text-xs ${within ? 'border-emerald-200 bg-emerald-50 text-emerald-800' : 'border-amber-200 bg-amber-50 text-amber-900'}`} key={university.id}><UniversityLabel university={university}><strong>{university.shortName ?? university.code}</strong></UniversityLabel><span className="font-bold">{average === null ? 'Cần xác minh' : within ? `Còn ${Math.round(profile.budget - average)}tr` : `Vượt ${Math.round(average - profile.budget)}tr`}</span></div>
 })}
 </div>
 </section>
@@ -555,7 +739,11 @@ function UniversityComparisonPage() {
   const range = university.admission?.scoreRange
   const aboveMax = range?.max ? profile.thptScore - range.max : null
   const assessment = aboveMax === null ? 'Cần xem điều kiện từng phương thức' : aboveMax >= 0 ? 'Hồ sơ đang cao hơn mức tham chiếu' : aboveMax >= -2 ? 'Nằm trong vùng cần cạnh tranh' : 'Nên chuẩn bị thêm phương thức dự phòng'
-  return <div className="p-4 rounded-2xl bg-blue-50/40 border border-blue-100 space-y-2.5" key={university.id}><div className="flex items-start justify-between gap-2"><h3 className="font-bold text-slate-900 text-sm">{university.shortName ?? university.name}</h3><span className="rounded-md bg-white px-2 py-0.5 text-[10px] font-bold text-blue-700 border border-blue-200">{major?.name}</span></div><div className="space-y-1 text-xs text-slate-600"><p><span className="font-semibold">Điểm tham chiếu:</span> {range?.label ?? 'Đang cập nhật'}</p><p><span className="font-semibold">Phương thức:</span> {university.admission?.methods?.slice(0, 2).map((method) => method.label).join(' · ') || 'Xem đề án chính thức'}</p></div><div className="p-2.5 bg-white rounded-xl border border-blue-200 text-xs text-slate-700 space-y-1"><span className="font-bold text-[#1D4ED8] block">Dựa trên hồ sơ của bạn:</span><p className="text-[11px] leading-relaxed">{assessment}. Điểm THPT hiện tại: {profile.thptScore}; ĐGNL: {profile.competencyScore}.</p></div></div>
+  return <div className="rounded-2xl border border-blue-100 bg-blue-50/40 p-4" key={university.id}>
+    <div className="flex items-start justify-between gap-2"><div><h3 className="font-bold text-slate-900 text-sm">{university.shortName ?? university.name}</h3><p className="mt-1 text-[11px] font-semibold text-slate-500">THPT {university.admission?.academicYear ?? universitiesData.metadata.admissionReferenceYear}</p></div><span className="max-w-28 truncate rounded-md bg-white px-2 py-0.5 text-[10px] font-bold text-blue-700 border border-blue-200">{major?.name}</span></div>
+    <div className="mt-3 rounded-xl border border-blue-100 bg-white p-3"><AdmissionRangeTrack university={university} score={profile.thptScore} /></div>
+    <div className={`mt-3 rounded-lg px-2.5 py-2 text-[11px] font-bold ${aboveMax !== null && aboveMax >= 0 ? 'bg-emerald-50 text-emerald-700' : 'bg-amber-50 text-amber-900'}`}>{assessment}</div>
+  </div>
 })}
 </div>
 </section>
@@ -569,7 +757,7 @@ function UniversityComparisonPage() {
 <span className="text-xs text-slate-500 font-medium">Cơ hội giảm nhẹ học phí</span>
 </div>
 <div className={`grid grid-cols-1 gap-4 text-xs md:text-sm ${selectedChoices.length === 4 ? 'md:grid-cols-2 lg:grid-cols-4' : 'md:grid-cols-3'}`}>
-{selectedChoices.map(({ university }) => <div className="p-4 rounded-2xl bg-slate-50 border border-slate-100 space-y-2" key={university.id}><div className="flex items-center justify-between gap-2"><h3 className="font-bold text-slate-900">{university.shortName ?? university.name}</h3><Tooltip label="UniView chưa có dữ liệu học bổng có cấu trúc; hãy kiểm tra nguồn chính thức"><span tabIndex="0" className="rounded bg-amber-50 px-2 py-0.5 text-[10px] font-bold text-amber-800 border border-amber-200">Cần xác minh</span></Tooltip></div><p className="text-slate-600 leading-relaxed text-xs">Danh mục hiện chưa có dữ liệu học bổng có cấu trúc cho trường này. Hãy kiểm tra chính sách theo ngành và năm tuyển sinh trên nguồn chính thức.</p><a className="inline-flex items-center gap-1 text-xs font-bold text-[#1D4ED8] hover:underline" href={university.website} target="_blank" rel="noreferrer">Xem website trường<span className="material-symbols-outlined text-[14px]">open_in_new</span></a></div>)}
+{selectedChoices.map(({ university }) => <div className="flex items-center justify-between gap-3 rounded-xl border border-slate-200 bg-slate-50 p-3" key={university.id}><div className="min-w-0"><UniversityLabel university={university}><h3 className="truncate font-bold text-slate-900">{university.shortName ?? university.name}</h3></UniversityLabel><Tooltip label="UniView chưa có dữ liệu học bổng có cấu trúc; hãy kiểm tra nguồn chính thức"><span tabIndex="0" className="mt-1 inline-flex rounded bg-amber-50 px-2 py-0.5 text-[10px] font-bold text-amber-800 border border-amber-200">Cần xác minh</span></Tooltip></div><a aria-label={`Xem học bổng tại ${university.name}`} className="inline-flex size-9 shrink-0 items-center justify-center rounded-lg bg-white text-[#1D4ED8] shadow-xs hover:bg-blue-50" href={university.website} target="_blank" rel="noreferrer"><span className="material-symbols-outlined text-[18px]">open_in_new</span></a></div>)}
 </div>
 </section>
 
@@ -577,7 +765,7 @@ function UniversityComparisonPage() {
 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-blue-200/60 pb-3">
 <div className="flex items-center gap-2.5">
 <span className="text-base">🎯</span>
-<h2 className="text-base md:text-lg font-bold text-slate-900">7. Đặt trong hoàn cảnh của bạn</h2>
+<h2 className="text-base md:text-lg font-bold text-slate-900">7. Cấu trúc điểm phù hợp</h2>
 </div>
 <div className="flex flex-wrap items-center gap-2 text-xs">
 <span className="px-2 py-0.5 rounded-full bg-white text-slate-700 border border-slate-200 font-medium">Ngành: {profile.major}</span>
@@ -587,14 +775,16 @@ function UniversityComparisonPage() {
 </div>
 </div>
 <div className={`grid grid-cols-1 gap-4 ${selectedChoices.length === 4 ? 'md:grid-cols-2 lg:grid-cols-4' : 'md:grid-cols-3'}`}>
-{selectedChoices.map(({ university, major, fitScore }) => {
-  const tuitionAverage = university.tuition ? (university.tuition.minMillionVnd + university.tuition.maxMillionVnd) / 2 : null
-  const budgetFit = tuitionAverage !== null && tuitionAverage <= profile.budget
-  const locationFit = university.regionId === profile.regionId
-  const majorFit = normalizeText(major?.name) === normalizeText(profile.major)
-  const range = university.admission?.scoreRange
-  const admissionFit = range?.max ? profile.thptScore >= range.max - 2 : null
-  return <div className={`bg-white rounded-2xl p-4 shadow-sm space-y-3 text-xs ${fitScore >= 8 ? 'border border-blue-200' : fitScore >= 6.5 ? 'border border-slate-200' : 'border border-amber-200'}`} key={university.id}><div className="flex items-center justify-between gap-2 pb-2 border-b border-slate-100"><h3 className="font-bold text-slate-900 text-sm">{university.shortName ?? university.name} ({major?.name})</h3><Tooltip label="Điểm phù hợp được tính lại mỗi khi bạn đổi trường, ngành hoặc hồ sơ"><span tabIndex="0" className={`text-[11px] font-bold px-2.5 py-0.5 rounded-full ${fitScore >= 8 ? 'text-blue-700 bg-blue-50' : fitScore >= 6.5 ? 'text-slate-700 bg-slate-100' : 'text-amber-800 bg-amber-50'}`}>Phù hợp {fitScore}/10</span></Tooltip></div><ul className="space-y-2 text-slate-600"><li className="flex items-start gap-2"><span className={majorFit ? 'text-emerald-600 font-bold' : 'text-amber-600 font-bold'}>{majorFit ? '✓' : '~'}</span><span><strong>Mục tiêu ngành:</strong> {majorFit ? 'Khớp đúng ngành mục tiêu.' : `Đang đối chiếu ${major?.name}.`}</span></li><li className="flex items-start gap-2"><span className={budgetFit ? 'text-emerald-600 font-bold' : 'text-rose-600 font-bold'}>{budgetFit ? '✓' : '✕'}</span><span><strong>Tài chính:</strong> {tuitionAverage === null ? 'Chưa đủ dữ liệu.' : budgetFit ? `Khoảng ${tuitionAverage}tr/năm nằm trong ngân sách.` : `Khoảng ${tuitionAverage}tr/năm vượt trần ${profile.budget}tr.`}</span></li><li className="flex items-start gap-2"><span className={locationFit ? 'text-emerald-600 font-bold' : 'text-amber-600 font-bold'}>{locationFit ? '✓' : '~'}</span><span><strong>Vị trí:</strong> {locationFit ? 'Đúng khu vực ưu tiên.' : `Trường ở ${university.city}, khác khu vực ưu tiên.`}</span></li><li className="flex items-start gap-2"><span className={admissionFit ? 'text-emerald-600 font-bold' : 'text-amber-600 font-bold'}>{admissionFit ? '✓' : '~'}</span><span><strong>Tuyển sinh:</strong> {admissionFit === null ? 'Cần xem đề án chính thức.' : admissionFit ? 'Điểm hiện tại nằm trong vùng có lợi thế.' : 'Cần thêm phương thức dự phòng.'}</span></li></ul></div>
+{selectedChoices.map(({ university, major, fitScore, fitBreakdown }) => {
+  return <div className={`rounded-2xl bg-white p-4 shadow-sm ${fitScore >= 8 ? 'border border-blue-200' : fitScore >= 6.5 ? 'border border-slate-200' : 'border border-amber-200'}`} key={university.id}>
+    <div className="mb-4 flex items-start justify-between gap-2 border-b border-slate-100 pb-3">
+      <div className="min-w-0"><UniversityLabel university={university}><h3 className="truncate text-sm font-bold text-slate-900">{university.shortName ?? university.name}</h3></UniversityLabel><p className="mt-0.5 truncate text-[11px] text-slate-500">{major?.name}</p></div>
+      <Tooltip label="Điểm tổng hợp từ bốn tiêu chí bên dưới"><span tabIndex="0" className="shrink-0 rounded-full bg-blue-50 px-2.5 py-1 text-[11px] font-black text-blue-700">{fitScore}/10</span></Tooltip>
+    </div>
+    <div className="space-y-3">
+      {fitBreakdown.metrics.map((metric) => <MetricProgress key={metric.label} {...metric} />)}
+    </div>
+  </div>
 })}
 </div>
 </section>
@@ -608,7 +798,7 @@ function UniversityComparisonPage() {
 <span className="text-xs text-slate-500 font-medium">Không có lựa chọn hoàn hảo, chỉ có lựa chọn phù hợp nhất</span>
 </div>
 <div className={`grid grid-cols-1 gap-4 text-xs md:text-sm ${selectedChoices.length === 4 ? 'md:grid-cols-2 lg:grid-cols-4' : 'md:grid-cols-3'}`}>
-{selectedChoices.map(({ university, major, detail, fitScore }) => {
+{selectedChoices.map(({ university, major, fitScore }) => {
   const tuitionAverage = university.tuition ? (university.tuition.minMillionVnd + university.tuition.maxMillionVnd) / 2 : null
   const advantage = fitScore >= 8 ? 'Cân bằng tốt giữa mục tiêu ngành, khu vực, tài chính và khả năng tuyển sinh.' : `Có thế mạnh đào tạo trong nhóm ${major?.category?.name ?? 'ngành đã chọn'}.`
   const tradeoff = tuitionAverage !== null && tuitionAverage > profile.budget
@@ -618,7 +808,7 @@ function UniversityComparisonPage() {
       : normalizeText(major?.name) !== normalizeText(profile.major)
         ? `Ngành ${major?.name} chưa trùng hoàn toàn mục tiêu ${profile.major}.`
         : 'Mức cạnh tranh tuyển sinh cần được theo dõi theo đề án năm hiện tại.'
-  return <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200/80 space-y-3" key={university.id}><div className="flex items-center justify-between gap-2"><h3 className="font-bold text-slate-900">{university.shortName ?? university.name} ({major?.name})</h3><span className="rounded bg-white border border-slate-200 px-2 py-0.5 text-[10px] font-bold text-slate-600">{fitScore}/10</span></div><div className="rounded-xl border border-emerald-200 bg-emerald-50 p-2.5 text-xs text-emerald-900"><strong>Điểm được:</strong> {advantage}</div><div className="rounded-xl border border-amber-200 bg-amber-50 p-2.5 text-xs text-amber-950"><strong>Điểm đánh đổi:</strong> {tradeoff}</div>{detail?.summary && <p className="text-[11px] leading-relaxed text-slate-500">{detail.summary}</p>}</div>
+  return <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200/80 space-y-3" key={university.id}><div className="flex items-center justify-between gap-2"><h3 className="font-bold text-slate-900">{university.shortName ?? university.name} ({major?.name})</h3><span className="rounded bg-white border border-slate-200 px-2 py-0.5 text-[10px] font-bold text-slate-600">{fitScore}/10</span></div><div className="rounded-xl border-l-4 border-emerald-500 bg-emerald-50 p-2.5 text-xs text-emerald-900"><strong>Điểm được:</strong> {advantage}</div><div className="rounded-xl border-l-4 border-amber-500 bg-amber-50 p-2.5 text-xs text-amber-950"><strong>Đánh đổi:</strong> {tradeoff}</div></div>
 })}
 </div>
 </section>
@@ -626,13 +816,32 @@ function UniversityComparisonPage() {
 <section className="scroll-mt-36 bg-white rounded-2xl border border-slate-200 p-5 md:p-6 shadow-sm space-y-4" id="section-missing-info">
 <div className="flex items-center justify-between border-b border-slate-100 pb-3">
 <div className="flex items-center gap-2.5">
-<span className="w-3 h-3 rounded-full bg-slate-400"></span>
-<h2 className="text-base md:text-lg font-bold text-slate-900">9. Điều gì bạn vẫn cần tìm hiểu thêm?</h2>
+<span className="flex size-7 items-center justify-center rounded-lg bg-slate-100 text-slate-600"><span className="material-symbols-outlined text-[17px]">verified_user</span></span>
+<div><h2 className="text-base md:text-lg font-bold text-slate-900">9. Nguồn &amp; mức bằng chứng</h2><p className="text-xs text-slate-500">Phân biệt dữ liệu tham chiếu với thông tin đã có nguồn chi tiết</p></div>
 </div>
-<span className="text-xs text-slate-500 font-medium">Checklist xác minh trước ngày đăng ký</span>
+<span className="hidden text-xs text-slate-500 font-medium sm:inline">Danh tính cập nhật {formatVerifiedDate(universitiesData.metadata.verifiedAt)}</span>
+</div>
+<div className="flex flex-col gap-3 rounded-xl border border-amber-200 bg-amber-50/70 p-3.5 text-xs text-amber-950 sm:flex-row sm:items-center sm:justify-between">
+  <p className="leading-relaxed"><strong>Phạm vi:</strong> {universitiesData.metadata.annualDataPolicy}</p>
+  <div className="flex shrink-0 flex-wrap gap-2"><span className="rounded-full bg-white px-2.5 py-1 font-bold">Học phí {universitiesData.metadata.tuitionAcademicYear}</span><span className="rounded-full bg-white px-2.5 py-1 font-bold">Tuyển sinh {universitiesData.metadata.admissionReferenceYear}</span></div>
 </div>
 <div className={`grid grid-cols-1 gap-4 text-xs ${selectedChoices.length === 4 ? 'md:grid-cols-2 lg:grid-cols-4' : 'md:grid-cols-3'}`}>
-{selectedChoices.map(({ university, major }) => <div className="p-3.5 rounded-2xl bg-slate-50 border border-slate-200/70 space-y-2" key={university.id}><p className="font-bold text-slate-900 text-xs">{university.shortName ?? university.code} Checklist</p><div className="space-y-1.5"><p className="text-emerald-700 flex items-center gap-1.5"><span>✓</span><span>Học phí tham chiếu {university.tuition?.academicYear ?? 'hiện tại'}</span></p><p className="text-emerald-700 flex items-center gap-1.5"><span>✓</span><span>Phương thức tuyển sinh đã ghi nhận</span></p><p className="text-amber-900 font-semibold flex items-center gap-1.5 bg-amber-50 p-1.5 rounded"><span>?</span><span>Xác minh chỉ tiêu và điểm riêng ngành {major?.name}</span></p><p className="text-amber-900 font-semibold flex items-center gap-1.5 bg-amber-50 p-1.5 rounded"><span>?</span><span>Xác minh học bổng trên website trường</span></p></div></div>)}
+{selectedChoices.map(({ university, major }) => {
+  const tuitionSpecific = isSpecificSource(university.tuition?.sourceUrl, university.source?.officialWebsite)
+  const admissionSpecific = isSpecificSource(university.admission?.sourceUrl, university.source?.officialWebsite)
+  const detailedSources = Number(tuitionSpecific) + Number(admissionSpecific)
+  return <article className="rounded-2xl border border-slate-200 bg-slate-50 p-3.5" key={university.id}>
+    <div className="flex items-start justify-between gap-2 border-b border-slate-200 pb-3">
+      <div className="min-w-0"><UniversityLabel university={university}><h3 className="truncate text-sm font-bold text-slate-900">{university.shortName ?? university.code}</h3></UniversityLabel><p className="mt-0.5 text-[10px] text-slate-500">Xác minh danh tính {formatVerifiedDate(university.source?.identityVerifiedAt)}</p></div>
+      <span className={`shrink-0 rounded-full px-2 py-1 text-[9px] font-black ${detailedSources === 2 ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-800'}`}>{detailedSources}/2 nguồn chi tiết</span>
+    </div>
+    <div className="mt-3 space-y-2.5">
+      <div className="rounded-xl bg-white p-2.5"><div className="flex items-center justify-between gap-2"><span className="font-bold text-slate-700">Học phí {university.tuition?.academicYear}</span><a aria-label={`Mở nguồn học phí ${university.name}`} className="text-blue-700 hover:underline" href={university.tuition?.sourceUrl ?? university.website} target="_blank" rel="noreferrer">Nguồn ↗</a></div><p className="mt-1 font-black text-slate-900">{university.tuition ? `${university.tuition.minMillionVnd}–${university.tuition.maxMillionVnd} triệu/năm` : 'Chưa có dữ liệu'}</p><p className={`mt-1 text-[10px] font-semibold ${tuitionSpecific ? 'text-emerald-700' : 'text-amber-800'}`}>{tuitionSpecific ? 'Có trang nguồn chi tiết' : 'Nguồn hiện là website chính thức tổng quát'}</p></div>
+      <div className="rounded-xl bg-white p-2.5"><div className="flex items-center justify-between gap-2"><span className="font-bold text-slate-700">Tuyển sinh {university.admission?.academicYear}</span><a aria-label={`Mở nguồn tuyển sinh ${university.name}`} className="text-blue-700 hover:underline" href={university.admission?.sourceUrl ?? university.website} target="_blank" rel="noreferrer">Nguồn ↗</a></div><p className="mt-1 font-black text-slate-900">{university.admission?.scoreRange?.label ?? 'Chưa có khoảng điểm'}</p><p className={`mt-1 text-[10px] font-semibold ${admissionSpecific ? 'text-emerald-700' : 'text-amber-800'}`}>{admissionSpecific ? 'Có trang nguồn chi tiết' : 'Nguồn hiện là website chính thức tổng quát'}</p></div>
+    </div>
+    <div className="mt-3 rounded-lg border border-amber-200 bg-amber-50 p-2 text-[10px] font-semibold leading-relaxed text-amber-900">Cần xác minh thêm: chỉ tiêu và điểm riêng ngành {major?.name}; học bổng; học phí đúng chương trình.</div>
+  </article>
+})}
 </div>
 </section>
 

@@ -9,6 +9,7 @@ import {
   GUEST_SESSION,
 } from '../data/user'
 import { getActivePlanIds, PLAN_IDS } from '../data/plans'
+import { clearUserWorkspaceStorage } from '../utils/userWorkspaceStorage'
 
 const AuthContext = createContext(null)
 
@@ -406,6 +407,7 @@ export function AuthProvider({ children }) {
         console.warn('Không thể đăng xuất khỏi máy chủ:', requestError)
       }
     }
+    clearUserWorkspaceStorage()
     persistLocalSession(GUEST_SESSION)
     setReportHistory([])
   }

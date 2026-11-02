@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 
+import { useAuth } from '../context/AuthContext'
 import universitiesData from '../data/universities.json'
 
 const PAGE_SIZE = 6
@@ -40,6 +41,7 @@ const TUITION_RANGE_VISUALS = {
 }
 
 function UniversitiesPage() {
+  const { isAuthenticated } = useAuth()
   const [searchTerm, setSearchTerm] = useState('')
   const [selectedRegions, setSelectedRegions] = useState([])
   const [selectedOwnerships, setSelectedOwnerships] = useState([])
@@ -51,8 +53,12 @@ function UniversitiesPage() {
   const [selectedScoreBands, setSelectedScoreBands] = useState([])
   const [sortBy, setSortBy] = useState('relevance')
   const [visibleCount, setVisibleCount] = useState(PAGE_SIZE)
-  const [savedUniversityIds, setSavedUniversityIds] = useState(() => readStoredIds('uniview:saved:universities'))
-  const [comparisonIds, setComparisonIds] = useState(() => readStoredIds('uniview:comparison:universities', 4))
+  const [savedUniversityIds, setSavedUniversityIds] = useState(() => (
+    isAuthenticated ? readStoredIds('uniview:saved:universities') : []
+  ))
+  const [comparisonIds, setComparisonIds] = useState(() => (
+    isAuthenticated ? readStoredIds('uniview:comparison:universities', 4) : []
+  ))
   const [comparisonMessage, setComparisonMessage] = useState('')
   const searchInputRef = useRef(null)
 
@@ -224,6 +230,11 @@ function UniversitiesPage() {
 
   const toggleSaved = (event, universityId) => {
     event.stopPropagation()
+    if (!isAuthenticated) {
+      setComparisonMessage('Đăng nhập để lưu trường vào hồ sơ của bạn')
+      window.setTimeout(() => setComparisonMessage(''), 2200)
+      return
+    }
     const next = toggleItem(savedUniversityIds, universityId)
     setSavedUniversityIds(next)
     localStorage.setItem('uniview:saved:universities', JSON.stringify(next))
@@ -231,6 +242,11 @@ function UniversitiesPage() {
 
   const toggleComparison = (event, universityId) => {
     event.stopPropagation()
+    if (!isAuthenticated) {
+      setComparisonMessage('Đăng nhập để chọn và so sánh trường')
+      window.setTimeout(() => setComparisonMessage(''), 2200)
+      return
+    }
     const alreadySelected = comparisonIds.includes(universityId)
     if (!alreadySelected && comparisonIds.length >= 4) {
       setComparisonMessage('Bạn chỉ có thể so sánh tối đa 4 trường')
@@ -278,10 +294,10 @@ function UniversitiesPage() {
   }
 
   return (
-    <main className="min-h-[calc(100vh-20rem)] w-full bg-surface pt-20">
+    <main className="min-h-[calc(100vh-20rem)] w-full bg-surface ">
       <div className="flex w-full flex-col">
         <section className="w-full bg-gradient-to-b from-surface-container-high/40 via-surface to-surface pb-10 pt-8">
-          <div className="mx-auto flex max-w-7xl flex-col gap-6 px-6 lg:px-12">
+          <div className="mx-auto flex max-w-7xl flex-col gap-6 px-3 sm:px-4 lg:px-5">
             <div className="mx-auto flex max-w-3xl flex-col items-center gap-3 text-center">
               <div className="inline-flex items-center gap-2 rounded-full bg-surface-container-lowest px-3.5 py-1 shadow-sm">
                 <span className="h-2 w-2 animate-pulse rounded-full bg-secondary-container" />
@@ -364,9 +380,9 @@ function UniversitiesPage() {
         </section>
 
         <section className="w-full pb-32">
-          <div className="mx-auto max-w-7xl px-6 lg:px-12">
+          <div className="mx-auto max-w-7xl px-3 sm:px-4 lg:px-5">
             <div className="grid grid-cols-1 items-start gap-8 lg:grid-cols-12">
-              <aside className="flex flex-col gap-5 lg:sticky lg:top-24 lg:col-span-4 xl:col-span-3">
+              <aside className="flex flex-col gap-5 lg:sticky lg:top-24 lg:col-span-4">
                 <div className="flex flex-col gap-6 rounded-2xl bg-surface-container-lowest p-6 shadow-[0_4px_24px_rgba(23,32,51,0.03)]">
                   <div className="flex items-center justify-between border-b border-surface-container-high pb-4">
                     <div className="flex items-center gap-2">
@@ -475,7 +491,7 @@ function UniversitiesPage() {
                 </div>
               </aside>
 
-              <section className="flex flex-col gap-6 lg:col-span-8 xl:col-span-9">
+              <section className="flex flex-col gap-6 lg:col-span-8">
                 <div className="flex flex-col justify-between gap-4 pb-2 sm:flex-row sm:items-center">
                   <div className="flex items-center gap-3">
                     <h2 className="font-headline-md text-headline-md font-bold text-on-surface">Danh sách trường đại học</h2>
@@ -539,8 +555,9 @@ function UniversitiesPage() {
                       university={university}
                       image={getUniversityImage(university)}
                       isIllustrativeImage={!university.image}
-                      isSaved={savedUniversityIds.includes(university.id)}
-                      isCompared={comparisonIds.includes(university.id)}
+                      canPersonalize={isAuthenticated}
+                      isSaved={isAuthenticated && savedUniversityIds.includes(university.id)}
+                      isCompared={isAuthenticated && comparisonIds.includes(university.id)}
                       tuitionLabel={formatTuition(university)}
                       admissionScoreLabel={formatAdmissionScore(university)}
                       onToggleSaved={(event) => toggleSaved(event, university.id)}
@@ -589,7 +606,7 @@ function UniversitiesPage() {
           </div>
         </section>
       </div>
-      {comparisonIds.length > 0 && (
+      {isAuthenticated && comparisonIds.length > 0 && (
         <div className="fixed bottom-5 left-1/2 z-50 flex w-[min(920px,calc(100%-2rem))] -translate-x-1/2 flex-col gap-3 rounded-2xl border border-blue-200 bg-white/95 p-3 shadow-[0_18px_45px_rgba(15,23,42,0.18)] backdrop-blur-md sm:flex-row sm:items-center sm:justify-between">
           <div className="flex min-w-0 items-center gap-3">
             <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-blue-50 text-primary">
@@ -662,6 +679,7 @@ function UniversityCard({
   university,
   image,
   isIllustrativeImage,
+  canPersonalize,
   isSaved,
   isCompared,
   tuitionLabel,
@@ -686,7 +704,7 @@ function UniversityCard({
           {university.parentSystem && <span className="rounded-full bg-surface-container-lowest/95 px-2.5 py-1 font-label-sm text-label-sm font-medium text-on-surface-variant backdrop-blur-md">{university.parentSystem}</span>}
           {isIllustrativeImage && <span className="rounded-full bg-black/55 px-2.5 py-1 text-[10px] font-semibold text-white backdrop-blur-md">Ảnh minh họa</span>}
         </div>
-        <button className="absolute right-3 top-3 flex h-8 w-8 items-center justify-center rounded-full bg-surface-container-lowest/90 text-outline shadow-sm backdrop-blur-md transition-colors hover:bg-surface-container-lowest hover:text-secondary" onClick={onToggleSaved} title={isSaved ? 'Bỏ lưu trường' : 'Lưu trường'} type="button">
+        <button className={`absolute right-3 top-3 flex h-8 w-8 items-center justify-center rounded-full bg-surface-container-lowest/90 text-outline shadow-sm backdrop-blur-md transition-colors ${canPersonalize ? 'hover:bg-surface-container-lowest hover:text-secondary' : 'cursor-not-allowed opacity-70'}`} onClick={onToggleSaved} title={canPersonalize ? (isSaved ? 'Bỏ lưu trường' : 'Lưu trường') : 'Đăng nhập để lưu trường'} type="button">
           <span className="material-symbols-outlined text-lg" style={isSaved ? { fontVariationSettings: "'FILL' 1" } : undefined}>favorite</span>
         </button>
         <div className="absolute bottom-3 left-4 right-4 flex items-end justify-between gap-3 text-surface-container-lowest">
@@ -734,10 +752,10 @@ function UniversityCard({
         <div className="flex items-center justify-between gap-2 border-t border-surface-container pt-3">
           <button
             aria-pressed={isCompared}
-            className={`inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-xl transition-all ${isCompared ? 'bg-secondary-fixed text-on-secondary-fixed ring-2 ring-secondary/20' : 'bg-surface-container text-on-surface hover:bg-secondary-fixed hover:text-on-secondary-fixed'}`}
+            className={`inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-xl transition-all ${isCompared ? 'bg-secondary-fixed text-on-secondary-fixed ring-2 ring-secondary/20' : canPersonalize ? 'bg-surface-container text-on-surface hover:bg-secondary-fixed hover:text-on-secondary-fixed' : 'cursor-not-allowed bg-surface-container text-outline opacity-70'}`}
             onClick={onToggleComparison}
-            title={isCompared ? 'Bỏ khỏi danh sách so sánh' : 'Thêm vào danh sách so sánh'}
-            aria-label={isCompared ? 'Bỏ khỏi danh sách so sánh' : 'Thêm vào danh sách so sánh'}
+            title={canPersonalize ? (isCompared ? 'Bỏ khỏi danh sách so sánh' : 'Thêm vào danh sách so sánh') : 'Đăng nhập để so sánh trường'}
+            aria-label={canPersonalize ? (isCompared ? 'Bỏ khỏi danh sách so sánh' : 'Thêm vào danh sách so sánh') : 'Đăng nhập để so sánh trường'}
             type="button"
           >
             <span className="material-symbols-outlined text-[18px]">compare_arrows</span>

@@ -153,7 +153,7 @@
         "unit": "triệu đồng/năm",
         "isReference": true,
         "note": "Khoảng tham chiếu tổng hợp; mức thực tế phụ thuộc ngành và chương trình đào tạo.",
-        "sourceUrl": "https://www.uit.edu.vn"
+        "sourceUrl": "https://tuyensinh.uit.edu.vn/hoc-phi-hoc-bong"
       },
       "admission": {
         "academicYear": 2025,
@@ -180,7 +180,7 @@
           "label": "22 - 28.3 điểm"
         },
         "note": "Khoảng tham chiếu giữa các ngành; không thay thế thông báo trúng tuyển chính thức.",
-        "sourceUrl": "https://www.uit.edu.vn"
+        "sourceUrl": "https://tuyensinh.uit.edu.vn/diem-chuan-cua-truong-dh-cong-nghe-thong-tin-qua-cac-nam"
       },
       "source": {
         "officialWebsite": "https://www.uit.edu.vn",
