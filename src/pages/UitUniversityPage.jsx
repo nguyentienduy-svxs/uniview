@@ -1,6 +1,8 @@
 import { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 
+import { useAuth } from '../context/AuthContext'
+
 const UIT_ID = 'uit-vnuhcm'
 const UIT_DEFAULT_MAJOR_ID = '7480103'
 
@@ -55,19 +57,20 @@ const readStoredArray = (key) => {
 }
 
 function UitUniversityPage() {
+  const { isAuthenticated } = useAuth()
   const [activeTab, setActiveTab] = useState('tong-quan')
   const [majorSearch, setMajorSearch] = useState('')
   const [majorFilter, setMajorFilter] = useState('all')
   const [selectedYear, setSelectedYear] = useState(2025)
   const [scoreScale, setScoreScale] = useState('thpt')
-  const [savedUniversityIds, setSavedUniversityIds] = useState(() => readStoredArray('uniview:saved:universities'))
-  const [comparisonIds, setComparisonIds] = useState(() => readStoredArray('uniview:comparison:universities').slice(0, 4))
+  const [savedUniversityIds, setSavedUniversityIds] = useState(() => isAuthenticated ? readStoredArray('uniview:saved:universities') : [])
+  const [comparisonIds, setComparisonIds] = useState(() => isAuthenticated ? readStoredArray('uniview:comparison:universities').slice(0, 4) : [])
   const [toast, setToast] = useState('')
   const tabsRef = useRef(null)
   const majorsListRef = useRef(null)
 
-  const isSaved = savedUniversityIds.includes(UIT_ID)
-  const isCompared = comparisonIds.includes(UIT_ID)
+  const isSaved = isAuthenticated && savedUniversityIds.includes(UIT_ID)
+  const isCompared = isAuthenticated && comparisonIds.includes(UIT_ID)
   const visibleMajorCount = uitMajorIndex.filter((item) =>
     (majorFilter === 'all' || item.group === majorFilter)
     && (!normalizeText(majorSearch).trim() || normalizeText(item.name).includes(normalizeText(majorSearch).trim())),
@@ -131,6 +134,10 @@ function UitUniversityPage() {
   }, [majorFilter, majorSearch])
 
   const toggleSavedUniversity = () => {
+    if (!isAuthenticated) {
+      showToast('Đăng nhập để lưu trường vào hồ sơ của bạn')
+      return
+    }
     const next = isSaved
       ? savedUniversityIds.filter((id) => id !== UIT_ID)
       : [...savedUniversityIds, UIT_ID]
@@ -140,6 +147,10 @@ function UitUniversityPage() {
   }
 
   const toggleUniversityComparison = () => {
+    if (!isAuthenticated) {
+      showToast('Đăng nhập để chọn và so sánh trường')
+      return
+    }
     if (!isCompared && comparisonIds.length >= 4) {
       showToast('Bạn chỉ có thể so sánh tối đa 4 trường')
       return
@@ -1099,7 +1110,7 @@ function UitUniversityPage() {
 </div>
 </section>
 
-{comparisonIds.length > 0 && <div className="fixed bottom-5 left-1/2 -translate-x-1/2 z-50 w-[min(760px,calc(100%-2rem))] transition-all duration-300" id="sticky-compare-tray"><div className="flex flex-col gap-3 rounded-2xl border border-blue-200 bg-white/95 p-3 shadow-[0_18px_45px_rgba(15,23,42,0.18)] backdrop-blur-md sm:flex-row sm:items-center sm:justify-between"><div className="flex items-center gap-3"><div className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-50 text-primary"><span className="material-symbols-outlined">compare_arrows</span></div><div><p className="text-sm font-bold text-on-surface">Đang chọn {comparisonIds.length}/4 trường</p><p className="text-xs text-on-surface-variant">{isCompared ? `UIT${comparisonIds.length > 1 ? ` và ${comparisonIds.length - 1} trường khác` : ''}` : `${comparisonIds.length} trường đã chọn`}</p></div></div>{comparisonIds.length >= 2 ? <Link className="inline-flex items-center justify-center gap-2 rounded-xl bg-primary px-5 py-2.5 text-sm font-bold text-on-primary hover:bg-primary-container" to="/compare">So sánh ngay<span className="material-symbols-outlined text-[18px]">arrow_forward</span></Link> : <span className="text-center text-xs font-semibold text-outline">Chọn thêm ít nhất 1 trường</span>}</div></div>}
+{isAuthenticated && comparisonIds.length > 0 && <div className="fixed bottom-5 left-1/2 -translate-x-1/2 z-50 w-[min(760px,calc(100%-2rem))] transition-all duration-300" id="sticky-compare-tray"><div className="flex flex-col gap-3 rounded-2xl border border-blue-200 bg-white/95 p-3 shadow-[0_18px_45px_rgba(15,23,42,0.18)] backdrop-blur-md sm:flex-row sm:items-center sm:justify-between"><div className="flex items-center gap-3"><div className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-50 text-primary"><span className="material-symbols-outlined">compare_arrows</span></div><div><p className="text-sm font-bold text-on-surface">Đang chọn {comparisonIds.length}/4 trường</p><p className="text-xs text-on-surface-variant">{isCompared ? `UIT${comparisonIds.length > 1 ? ` và ${comparisonIds.length - 1} trường khác` : ''}` : `${comparisonIds.length} trường đã chọn`}</p></div></div>{comparisonIds.length >= 2 ? <Link className="inline-flex items-center justify-center gap-2 rounded-xl bg-primary px-5 py-2.5 text-sm font-bold text-on-primary hover:bg-primary-container" to="/compare">So sánh ngay<span className="material-symbols-outlined text-[18px]">arrow_forward</span></Link> : <span className="text-center text-xs font-semibold text-outline">Chọn thêm ít nhất 1 trường</span>}</div></div>}
 {toast && <div className="fixed bottom-28 left-1/2 z-[70] -translate-x-1/2 rounded-full bg-inverse-surface px-4 py-2 text-xs font-semibold text-inverse-on-surface shadow-lg">{toast}</div>}
 </div>
 

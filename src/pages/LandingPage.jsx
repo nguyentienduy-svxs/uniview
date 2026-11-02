@@ -1,8 +1,10 @@
+import { Link } from 'react-router-dom'
+
 function LandingPage() {
   return (
-    <main className="w-full pt-6 bg-surface min-h-[calc(100vh-80px)]"><div className="flex flex-col w-full overflow-hidden bg-surface text-on-surface selection:bg-secondary-fixed selection:text-on-secondary-fixed">
+    <main className="w-full bg-surface min-h-[calc(100vh-80px)]"><div className="flex flex-col w-full overflow-hidden bg-surface text-on-surface selection:bg-secondary-fixed selection:text-on-secondary-fixed">
 
-      <section className="relative w-full max-w-[1440px] mx-auto px-margin md:px-margin-md lg:px-margin-lg pt-space-xl pb-space-2xl">
+      <section className="relative w-full max-w-[1440px] mx-auto px-margin md:px-margin-md lg:px-margin-lg pt-[20px] pb-space-2xl">
 
         <div className="absolute top-10 left-1/4 w-[480px] h-[480px] bg-secondary-container/10 rounded-full blur-[100px] pointer-events-none -z-10"></div>
         <div className="absolute top-28 right-10 w-[540px] h-[540px] bg-primary-fixed/30 rounded-full blur-[120px] pointer-events-none -z-10"></div>
@@ -26,10 +28,10 @@ function LandingPage() {
             </p>
 
             <div className="flex flex-wrap items-center gap-space-md mb-space-md w-full sm:w-auto">
-              <a className="inline-flex items-center justify-center px-space-xl py-space-md rounded-full bg-primary-container text-on-primary font-label-lg text-label-lg shadow-lg hover:shadow-xl hover:bg-primary transition-all duration-200 group" href="#">
+              <Link className="landing-cta-float-neon inline-flex items-center justify-center px-space-xl py-space-md rounded-full bg-primary-container text-on-primary font-label-lg text-label-lg shadow-lg hover:shadow-xl hover:bg-primary transition-all duration-200 group" to="/assessment">
                 Bắt đầu khám phá
                 <span className="material-symbols-outlined ml-space-xs text-[18px] group-hover:translate-x-1 transition-transform">arrow_forward</span>
-              </a>
+              </Link>
               <a className="inline-flex items-center justify-center px-space-lg py-space-md rounded-full bg-surface-container-lowest text-on-surface font-label-lg text-label-lg shadow-sm hover:shadow-md transition-all duration-200" href="#kham-pha-truong">
                 Xem các trường
               </a>
@@ -37,9 +39,9 @@ function LandingPage() {
 
             <div className="flex items-center gap-space-xs text-on-surface-variant font-body-sm text-body-sm">
               <span className="text-tertiary-fixed-dim text-base">✨</span>
-              <span className="font-medium text-tertiary">Miễn phí để bắt đầu</span>
-              <span className="mx-space-xs opacity-40">•</span>
-              <span className="">Không cần tạo tài khoản ngay</span>
+              <span className="font-medium text-tertiary">Hãy tạo tài khoản ngây để trải nghiệm tính năng</span>
+
+
             </div>
           </div>
 

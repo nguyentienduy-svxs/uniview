@@ -184,9 +184,9 @@ export default function AppHeader() {
         w-full
 
         border-b
-        border-slate-200/70
+        border-[#D9E2FC]
 
-        bg-[#FFFDFB]/[0.88]
+        bg-[#F1F3FF]/[0.96]
 
         font-['Be_Vietnam_Pro']
 
@@ -350,36 +350,46 @@ export default function AppHeader() {
 
               <NavLink
                 to="/assessment"
-                className="
+                className={`
                   group
 
                   hidden
                   items-center
                   justify-center
-                  gap-1.5
+                  gap-2.5
 
-                  rounded-[11px]
+                  rounded-full
 
-                  bg-[#1D4ED8]
+                  bg-[#2554E6]
 
-                  px-5
-                  py-[9px]
+                  px-6
+                  py-3
 
-                  text-[14px]
-                  font-semibold
+                  text-[15px]
+                  font-bold
                   text-white
 
-                  shadow-sm
+                  shadow-[0_8px_20px_rgba(37,84,230,0.32)]
+                  ring-4
+                  ring-blue-200/60
 
                   transition-all
                   duration-200
 
-                  hover:-translate-y-0.5
+                  hover:-translate-y-1
                   hover:bg-[#1e40af]
-                  hover:shadow-md
+                  hover:shadow-[0_12px_26px_rgba(37,84,230,0.42)]
+                  hover:ring-blue-200
+
+                  focus-visible:outline-none
+                  focus-visible:ring-4
+                  focus-visible:ring-blue-300
+
+                  active:translate-y-0
+                  active:shadow-[0_5px_14px_rgba(37,84,230,0.3)]
 
                   md:inline-flex
-                "
+                `}
               >
                 <span>
                   Bắt đầu khám phá
@@ -387,6 +397,8 @@ export default function AppHeader() {
 
                 <span
                   className="
+                    [&>svg]:h-5
+                    [&>svg]:w-5
                     transition-transform
                     duration-200
                     group-hover:translate-x-1

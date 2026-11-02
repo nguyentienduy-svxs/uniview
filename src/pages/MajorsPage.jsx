@@ -14,6 +14,18 @@ const HERO_SLIDES = [
     src: "/anhnganh/bannerCarousel.jpg",
     alt: "Linh vật UniView khám phá các nhóm ngành học",
   },
+  {
+    src: "/anhnganh/ITBanner.png",
+    alt: "Linh vật UniView khám phá nhóm ngành Công nghệ thông tin",
+  },
+  {
+    src: "/anhnganh/lawyerBanner.png",
+    alt: "Linh vật UniView khám phá nhóm ngành Luật",
+  },
+  {
+    src: "/anhnganh/truyenthongbanner.png",
+    alt: "Linh vật UniView khám phá nhóm ngành Truyền thông và Giải trí",
+  },
 ];
 const EXTRA_CATEGORY_IDS = ["health", "social-sciences"];
 const CATEGORY_IMAGES = {
@@ -147,6 +159,7 @@ const normalizeText = (value) =>
 
 function MajorsPage() {
   const [activeSlide, setActiveSlide] = useState(0);
+  const [isCarouselPaused, setIsCarouselPaused] = useState(false);
   const [filterSelected, setFilterSelected] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [sortBy, setSortBy] = useState("relevance");
@@ -156,12 +169,14 @@ function MajorsPage() {
   const filterData = majorsFilter;
 
   useEffect(() => {
-    const intervalId = window.setInterval(() => {
+    if (isCarouselPaused) return undefined;
+
+    const timeoutId = window.setTimeout(() => {
       setActiveSlide((currentSlide) => (currentSlide + 1) % HERO_SLIDES.length);
     }, CAROUSEL_INTERVAL);
 
-    return () => window.clearInterval(intervalId);
-  }, []);
+    return () => window.clearTimeout(timeoutId);
+  }, [activeSlide, isCarouselPaused]);
 
   const showSlide = (slideIndex) => {
     setActiveSlide((slideIndex + HERO_SLIDES.length) % HERO_SLIDES.length);
@@ -288,12 +303,14 @@ function MajorsPage() {
   return (
     <main className="w-full pt-6 bg-surface min-h-[calc(100vh-80px)]">
       <div className="flex flex-col w-full">
-        <div className="w-full max-w-[1240px] mx-auto px-margin md:px-margin-md lg:px-margin-lg pb-space-lg">
+        <div className="w-full max-w-[1240px] mx-auto px-3 sm:px-4 lg:px-5 pb-space-lg">
           <section
             className="group relative h-[520px] overflow-hidden rounded-xl bg-surface-container-low p-space-lg pb-14 shadow-sm sm:h-[440px] md:h-[440px] md:p-space-xl md:pb-14 lg:h-[380px]"
             aria-roledescription="carousel"
             aria-label="Banner khám phá ngành học"
             tabIndex={0}
+            onMouseEnter={() => setIsCarouselPaused(true)}
+            onMouseLeave={() => setIsCarouselPaused(false)}
             onKeyDown={(event) => {
               if (event.key === "ArrowLeft") showSlide(activeSlide - 1);
               if (event.key === "ArrowRight") showSlide(activeSlide + 1);
@@ -363,7 +380,7 @@ function MajorsPage() {
 
             <button
               type="button"
-              className="absolute left-3 top-1/2 z-20 flex size-10 -translate-y-1/2 items-center justify-center rounded-full bg-white/90 text-on-surface shadow-md transition hover:bg-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary md:left-4"
+              className="absolute left-0 top-1/2 z-20 flex size-10 -translate-y-1/2 items-center justify-center rounded-full bg-white/90 text-on-surface shadow-md transition hover:bg-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
               aria-label="Xem banner trước"
               title="Banner trước"
               onClick={() => showSlide(activeSlide - 1)}
@@ -372,7 +389,7 @@ function MajorsPage() {
             </button>
             <button
               type="button"
-              className="absolute right-3 top-1/2 z-20 flex size-10 -translate-y-1/2 items-center justify-center rounded-full bg-white/90 text-on-surface shadow-md transition hover:bg-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary md:right-4"
+              className="absolute right-0 top-1/2 z-20 flex size-10 -translate-y-1/2 items-center justify-center rounded-full bg-white/90 text-on-surface shadow-md transition hover:bg-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
               aria-label="Xem banner tiếp theo"
               title="Banner tiếp theo"
               onClick={() => showSlide(activeSlide + 1)}
@@ -503,7 +520,7 @@ function MajorsPage() {
           </div>
         </div>
 
-        <div className="w-full max-w-[1240px] mx-auto px-margin md:px-margin-md lg:px-margin-lg pb-space-2xl">
+        <div className="w-full max-w-[1240px] mx-auto px-3 sm:px-4 lg:px-5 pb-space-2xl">
           <div className="grid grid-cols-1 lg:grid-cols-12 xl:grid-cols-10 gap-space-lg">
             <aside className="lg:col-span-4 xl:col-span-3 space-y-space-md">
               <div className="sticky top-24 bg-surface-container-lowest rounded-xl p-space-md shadow-sm space-y-space-md ">
@@ -700,7 +717,7 @@ function MajorsPage() {
                     >
                       <div className="relative aspect-[3/2] w-full overflow-hidden bg-surface-container-high">
                         <img
-                          className="h-full w-full object-cover"
+                          className="h-full w-full object-cover transition-transform duration-500 ease-out group-hover:scale-[1.04] group-focus-within:scale-[1.04] motion-reduce:transition-none motion-reduce:transform-none"
                           src={cardImage.src}
                           alt={cardImage.alt}
                         />
@@ -844,7 +861,7 @@ function MajorsPage() {
         </div>
 
         <section className="w-full bg-surface-container-low py-space-2xl">
-          <div className="max-w-[1240px] mx-auto px-margin md:px-margin-md lg:px-margin-lg space-y-space-lg">
+          <div className="max-w-[1240px] mx-auto px-3 sm:px-4 lg:px-5 space-y-space-lg">
             <div className="flex flex-col md:flex-row md:items-end justify-between gap-space-sm">
               <div className="space-y-space-xs">
                 <div className="inline-flex items-center gap-1 text-primary font-label-md text-label-md">

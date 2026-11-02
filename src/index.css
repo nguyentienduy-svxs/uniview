@@ -1352,6 +1352,22 @@
   transform-origin: 50% 80%;
 }
 
+@keyframes landingCtaFloatNeon {
+  0%, 100% {
+    filter: drop-shadow(0 0 4px rgba(37, 84, 230, 0.28));
+    transform: translateY(0);
+  }
+  50% {
+    filter: drop-shadow(0 0 12px rgba(70, 112, 255, 0.5));
+    transform: translateY(-2px) scale(1.005);
+  }
+}
+
+.landing-cta-float-neon {
+  animation: landingCtaFloatNeon 2.4s ease-in-out infinite;
+  will-change: filter, transform;
+}
+
 .stitch-screen {
   min-height: 60vh;
   isolation: isolate;

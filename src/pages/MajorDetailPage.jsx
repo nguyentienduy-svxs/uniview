@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 
+import { useAuth } from '../context/AuthContext'
 import majorDetails from '../data/majorDetails.json'
 import majors from '../data/majors.json'
 import universitiesData from '../data/universities.json'
@@ -80,6 +81,7 @@ function SectionHeading({ eyebrow, title, description, accent = 'text-[#1D4ED8]'
 }
 
 function MajorDetailPage() {
+  const { isAuthenticated } = useAuth()
   const [searchParams] = useSearchParams()
   const [savedMajorIds, setSavedMajorIds] = useState([])
   const [selectedAnswers, setSelectedAnswers] = useState({})
@@ -88,8 +90,8 @@ function MajorDetailPage() {
   const [universityFilters, setUniversityFilters] = useState({})
   const [readProgress, setReadProgress] = useState(16.667)
   const [activeSection, setActiveSection] = useState('section-overview')
-  const [savedUniversityIds, setSavedUniversityIds] = useState(() => readStoredUniversityIds('uniview:saved:universities'))
-  const [comparisonIds, setComparisonIds] = useState(() => readStoredUniversityIds('uniview:comparison:universities', 4))
+  const [savedUniversityIds, setSavedUniversityIds] = useState(() => isAuthenticated ? readStoredUniversityIds('uniview:saved:universities') : [])
+  const [comparisonIds, setComparisonIds] = useState(() => isAuthenticated ? readStoredUniversityIds('uniview:comparison:universities', 4) : [])
   const [comparisonMessage, setComparisonMessage] = useState('')
   const tabsScrollerRef = useRef(null)
   const sectionNavRef = useRef(null)
@@ -326,6 +328,11 @@ function MajorDetailPage() {
 
   const toggleUniversitySaved = (event, university) => {
     event.stopPropagation()
+    if (!isAuthenticated) {
+      setComparisonMessage('Đăng nhập để lưu trường vào hồ sơ của bạn')
+      window.setTimeout(() => setComparisonMessage(''), 2200)
+      return
+    }
     const universityId = university.catalogId
     const alreadySaved = savedUniversityIds.includes(universityId)
     const next = alreadySaved
@@ -339,6 +346,11 @@ function MajorDetailPage() {
 
   const toggleUniversityComparison = (event, university) => {
     event.stopPropagation()
+    if (!isAuthenticated) {
+      setComparisonMessage('Đăng nhập để chọn và so sánh trường')
+      window.setTimeout(() => setComparisonMessage(''), 2200)
+      return
+    }
     const universityId = university.catalogId
     const alreadySelected = comparisonIds.includes(universityId)
 
@@ -877,19 +889,19 @@ function MajorDetailPage() {
                   <a className="inline-flex items-center gap-1.5 text-xs font-bold text-[#1D4ED8] hover:underline" href={`/universities/uit?universityId=${university.catalogId}`}><span>Chi tiết trường</span><MaterialIcon className="text-[16px]">arrow_forward</MaterialIcon></a>
                   <div className="flex items-center gap-1.5">
                     <button
-                      aria-label={savedUniversityIds.includes(university.catalogId) ? 'Bỏ lưu trường' : 'Lưu trường yêu thích'}
-                      aria-pressed={savedUniversityIds.includes(university.catalogId)}
-                      className={`flex h-8 w-8 items-center justify-center rounded-full transition-colors ${savedUniversityIds.includes(university.catalogId) ? 'bg-rose-100 text-[#E11D48]' : 'bg-slate-100 text-slate-500 hover:bg-rose-50 hover:text-[#E11D48]'}`}
+                      aria-label={isAuthenticated && savedUniversityIds.includes(university.catalogId) ? 'Bỏ lưu trường' : isAuthenticated ? 'Lưu trường yêu thích' : 'Đăng nhập để lưu trường'}
+                      aria-pressed={isAuthenticated && savedUniversityIds.includes(university.catalogId)}
+                      className={`flex h-8 w-8 items-center justify-center rounded-full transition-colors ${isAuthenticated && savedUniversityIds.includes(university.catalogId) ? 'bg-rose-100 text-[#E11D48]' : isAuthenticated ? 'bg-slate-100 text-slate-500 hover:bg-rose-50 hover:text-[#E11D48]' : 'cursor-not-allowed bg-slate-100 text-slate-400'}`}
                       onClick={(event) => toggleUniversitySaved(event, university)}
-                      title={savedUniversityIds.includes(university.catalogId) ? 'Bỏ lưu trường' : 'Lưu trường yêu thích'}
+                      title={isAuthenticated && savedUniversityIds.includes(university.catalogId) ? 'Bỏ lưu trường' : isAuthenticated ? 'Lưu trường yêu thích' : 'Đăng nhập để lưu trường'}
                       type="button"
-                    ><MaterialIcon className="text-[18px]">{savedUniversityIds.includes(university.catalogId) ? 'favorite' : 'favorite_border'}</MaterialIcon></button>
+                    ><MaterialIcon className="text-[18px]">{isAuthenticated && savedUniversityIds.includes(university.catalogId) ? 'favorite' : 'favorite_border'}</MaterialIcon></button>
                     <button
-                      aria-label={comparisonIds.includes(university.catalogId) ? 'Bỏ khỏi danh sách so sánh' : 'Thêm vào danh sách so sánh'}
-                      aria-pressed={comparisonIds.includes(university.catalogId)}
-                      className={`flex h-8 w-8 items-center justify-center rounded-full transition-all ${comparisonIds.includes(university.catalogId) ? 'bg-blue-100 text-[#1D4ED8] ring-2 ring-blue-200' : 'bg-slate-100 text-slate-500 hover:bg-blue-50 hover:text-[#1D4ED8]'}`}
+                      aria-label={isAuthenticated && comparisonIds.includes(university.catalogId) ? 'Bỏ khỏi danh sách so sánh' : isAuthenticated ? 'Thêm vào danh sách so sánh' : 'Đăng nhập để so sánh trường'}
+                      aria-pressed={isAuthenticated && comparisonIds.includes(university.catalogId)}
+                      className={`flex h-8 w-8 items-center justify-center rounded-full transition-all ${isAuthenticated && comparisonIds.includes(university.catalogId) ? 'bg-blue-100 text-[#1D4ED8] ring-2 ring-blue-200' : isAuthenticated ? 'bg-slate-100 text-slate-500 hover:bg-blue-50 hover:text-[#1D4ED8]' : 'cursor-not-allowed bg-slate-100 text-slate-400'}`}
                       onClick={(event) => toggleUniversityComparison(event, university)}
-                      title={comparisonIds.includes(university.catalogId) ? 'Bỏ khỏi danh sách so sánh' : 'Thêm vào danh sách so sánh'}
+                      title={isAuthenticated && comparisonIds.includes(university.catalogId) ? 'Bỏ khỏi danh sách so sánh' : isAuthenticated ? 'Thêm vào danh sách so sánh' : 'Đăng nhập để so sánh trường'}
                       type="button"
                     >
                       <MaterialIcon className="text-[18px]">compare_arrows</MaterialIcon>
@@ -929,7 +941,7 @@ function MajorDetailPage() {
           </div>
         </section>
       </div>
-      {comparisonIds.length > 0 && (
+      {isAuthenticated && comparisonIds.length > 0 && (
         <div className="fixed bottom-5 left-1/2 z-50 flex w-[min(920px,calc(100%-2rem))] -translate-x-1/2 flex-col gap-3 rounded-2xl border border-blue-200 bg-white/95 p-3 shadow-[0_18px_45px_rgba(15,23,42,0.18)] backdrop-blur-md sm:flex-row sm:items-center sm:justify-between">
           <div className="flex min-w-0 items-center gap-3">
             <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-blue-50 text-[#1D4ED8]"><MaterialIcon>compare_arrows</MaterialIcon></div>
