@@ -276,9 +276,42 @@ export function evaluateAssessment(input: AssessmentInput, generatedAt = new Dat
 
   const selected = majors.find(({ majorId }) => majorId === snapshot.selectedMajorId) ?? majors[0]
   const regions = snapshot.profile?.regions ?? []
+  const matchesRegion = (schoolRegion: string) => {
+    if (!regions.length || regions.includes('Không giới hạn') || regions.includes('Toàn quốc')) return true
+    return regions.some((r) => {
+      if (r === schoolRegion) return true
+      const normR = r.toLowerCase()
+      const normSchool = schoolRegion.toLowerCase()
+      if (
+        (normR.includes('hồ chí minh') || normR.includes('tp.hcm') || normR.includes('hcm') || normR.includes('miền nam')) &&
+        (normSchool.includes('hồ chí minh') || normSchool.includes('tp.hcm') || normSchool.includes('hcm') || normSchool.includes('miền nam'))
+      ) {
+        return true
+      }
+      if (
+        (normR.includes('hà nội') || normR.includes('miền bắc')) &&
+        (normSchool.includes('hà nội') || normSchool.includes('miền bắc'))
+      ) {
+        return true
+      }
+      if (
+        (normR.includes('đà nẵng') || normR.includes('miền trung')) &&
+        (normSchool.includes('đà nẵng') || normSchool.includes('miền trung'))
+      ) {
+        return true
+      }
+      if (
+        (normR.includes('cần thơ') || normR.includes('dbscl') || normR.includes('đồng bằng sông cửu long')) &&
+        (normSchool.includes('cần thơ') || normSchool.includes('dbscl') || normSchool.includes('đồng bằng sông cửu long'))
+      ) {
+        return true
+      }
+      return false
+    })
+  }
   const schoolMatch = UNIVERSITIES
     .filter(({ majorIds }) => majorIds.includes(selected.majorId))
-    .filter(({ region }) => !regions.length || regions.includes(region))
+    .filter(({ region }) => matchesRegion(region))
     .map((school) => ({ ...school, dataStatus: 'DEMO', note: 'Dữ liệu minh họa; cần đối chiếu đề án tuyển sinh chính thức.' }))
   const canonical = stableStringify(snapshot)
   const reportId = `uv-${createHash('sha256').update(canonical).digest('hex').slice(0, 12)}`

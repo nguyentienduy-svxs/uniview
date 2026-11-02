@@ -1,4 +1,4 @@
-import { PLAN_IDS } from './plans'
+import { PLAN_IDS } from './plans.js'
 
 export const ROLES = {
   STUDENT: 'STUDENT',
@@ -58,6 +58,7 @@ export const DEMO_ACCOUNTS = [
         fullName: 'Nguyễn Minh Anh',
         email: 'minhanh@uniview.vn',
         initials: 'MA',
+        isDemo: true,
         grade: 'Lớp 11',
         school: 'THPT Nguyễn Thị Minh Khai',
         preferredRegion: 'TP. Hồ Chí Minh',
@@ -79,91 +80,6 @@ export const DEMO_ACCOUNTS = [
         },
       ],
       admissionSeason: null,
-    },
-  },
-  {
-    id: 'chi-duy',
-    username: 'chiduy',
-    password: 'ChiDuy@2026',
-    planDescription: 'Gói Tháng',
-    session: {
-      user: createStudent({
-        id: 'demo-chi-duy',
-        username: 'chiduy',
-        fullName: 'Chí Duy',
-        email: 'chiduy@uniview.vn',
-        initials: 'CD',
-      }),
-      entitlements: [ENTITLEMENTS.PERSONAL_WORKSPACE],
-      activePlans: [PLAN_IDS.MONTHLY],
-      subscriptions: [
-        {
-          planId: PLAN_IDS.MONTHLY,
-          status: 'ACTIVE',
-          startedAt: '2026-10-01',
-          endsAt: '2026-10-31',
-          autoRenew: true,
-        },
-      ],
-      admissionSeason: null,
-    },
-  },
-  {
-    id: 'chi-man',
-    username: 'chiman',
-    password: 'ChiMan@2026',
-    planDescription: 'Gói Năm',
-    session: {
-      user: createStudent({
-        id: 'demo-chi-man',
-        username: 'chiman',
-        fullName: 'Chí Mẫn',
-        email: 'chiman@uniview.vn',
-        initials: 'CM',
-      }),
-      entitlements: [ENTITLEMENTS.PERSONAL_WORKSPACE],
-      activePlans: [PLAN_IDS.ANNUAL],
-      subscriptions: [
-        {
-          planId: PLAN_IDS.ANNUAL,
-          status: 'ACTIVE',
-          startedAt: '2026-09-01',
-          endsAt: '2027-08-31',
-          autoRenew: true,
-        },
-      ],
-      admissionSeason: null,
-    },
-  },
-  {
-    id: 'chi-an',
-    username: 'chian',
-    password: 'ChiAn@2026',
-    planDescription: 'Admission Pass mùa 2027',
-    session: {
-      user: createStudent({
-        id: 'demo-chi-an',
-        username: 'chian',
-        fullName: 'Chí An',
-        email: 'chian@uniview.vn',
-        initials: 'CA',
-      }),
-      entitlements: [
-        ENTITLEMENTS.PERSONAL_WORKSPACE,
-        ENTITLEMENTS.ADMISSION_PASS,
-      ],
-      activePlans: [PLAN_IDS.ADMISSION_PASS],
-      subscriptions: [
-        {
-          planId: PLAN_IDS.ADMISSION_PASS,
-          status: 'ACTIVE',
-          startedAt: '2026-09-01',
-          endsAt: '2027-09-30',
-          autoRenew: false,
-          admissionSeason: '2027',
-        },
-      ],
-      admissionSeason: '2027',
     },
   },
 ]

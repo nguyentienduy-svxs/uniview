@@ -124,6 +124,7 @@ function PageRenderer({ page }) {
     user,
   } = useAuth()
   const PageComponent = pageComponents[page.component]
+  const usesDemoDataset = /^\/(roadmap|tasks|decision-board|admission(?:\/|$)|admission-roadmap|admission-route-mapping|scenario-comparison)/.test(location.pathname)
 
   useEffect(() => {
     document.title = `${page.shortTitle} | UniView`
@@ -132,6 +133,11 @@ function PageRenderer({ page }) {
   const handleClick = (event) => {
     const target = event.target.closest('a, button, [data-path]')
     if (!target) return
+
+    // Không can thiệp vào button bên trong form hoặc button hành động
+    if (target.tagName === 'BUTTON' && (target.getAttribute('type') === 'button' || target.closest?.('form'))) {
+      return
+    }
 
     const dataPath = target.dataset.path
     if (dataPath && routeByDataPath[dataPath]) {
@@ -210,6 +216,11 @@ function PageRenderer({ page }) {
       {readOnly && (
         <div className="sticky top-16 z-40 border-b border-amber-200 bg-amber-50 px-4 py-3 text-center text-sm font-semibold text-amber-900">
           Gói của bạn đã hết hiệu lực. Dữ liệu cũ vẫn được giữ ở chế độ chỉ xem; hãy kích hoạt gói cho mùa mới để cập nhật.
+        </div>
+      )}
+      {usesDemoDataset && (
+        <div className="border-b border-blue-200 bg-blue-50 px-4 py-2.5 text-center text-xs font-semibold leading-5 text-blue-900">
+          Dữ liệu minh họa: khu vực này dùng Roadmap và dữ liệu tuyển sinh mẫu của UniView để bạn trải nghiệm đầy đủ luồng. Kết quả Assessment và PDF của tài khoản vẫn dùng dữ liệu thật bạn cung cấp.
         </div>
       )}
       <Suspense fallback={<LoadingPage />}>

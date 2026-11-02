@@ -203,8 +203,8 @@ function matchesPreferredRegion(profile, school) {
   const regionText = normalizedText(profile.regions?.join(' '))
   const cityText = normalizedText(school.city)
   if (!regionText) return false
-  if (regionText.includes('toan quoc')) return true
-  if ((regionText.includes('tp.hcm') || regionText.includes('ho chi minh')) && cityText.includes('ho chi minh')) return true
+  if (regionText.includes('toan quoc') || regionText.includes('khong gioi han')) return true
+  if ((regionText.includes('tp.hcm') || regionText.includes('ho chi minh') || regionText.includes('mien nam')) && (cityText.includes('ho chi minh') || cityText.includes('tp.hcm') || cityText.includes('binh duong') || cityText.includes('thu duc'))) return true
   if (regionText.includes('ha noi') && cityText.includes('ha noi')) return true
   if ((regionText.includes('da nang') || regionText.includes('mien trung')) && ['da nang', 'hue', 'khanh hoa', 'quy nhon'].some((place) => cityText.includes(place))) return true
   if ((regionText.includes('can tho') || regionText.includes('dbscl')) && ['can tho', 'dong thap', 'an giang', 'tra vinh', 'vinh long'].some((place) => cityText.includes(place))) return true

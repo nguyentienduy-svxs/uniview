@@ -2,6 +2,7 @@ import {
   createContext,
   useContext,
   useEffect,
+  useRef,
   useState,
 } from 'react'
 
@@ -13,19 +14,20 @@ import { buildAssessmentPayload } from '../utils/assessmentPayload'
 import { createLocalAssessmentReport } from '../utils/assessmentScoring'
 import { normalizeExperience } from '../utils/experienceAssessment'
 import { normalizeCertificates } from '../utils/certificates'
+import { riasecAssessment } from '../data/assessment'
 import { useAuth } from './AuthContext'
 
-const STORAGE_KEY = 'uniview-assessment-v3'
+const STORAGE_PREFIX = 'uniview-assessment-v4'
 
 const initialAssessment = {
   riasecAnswers: {},
   experience: normalizeExperience(),
   profile: {
     admissionYear: '2027',
-    regions: ['TP.HCM & lân cận'],
-    tuition: '25-45',
-    scholarship: true,
-    strengths: ['Toán', 'Tiếng Anh', 'Tin học'],
+    regions: [],
+    tuition: '',
+    scholarship: false,
+    strengths: [],
     gpa: '',
     gpaStatus: 'EXPECTED',
     thptScore: '',
@@ -33,11 +35,7 @@ const initialAssessment = {
     dgnlScore: '',
     dgnlScoreStatus: 'EXPECTED',
     certificates: [],
-    priorities: [
-      'Học phí hợp lý',
-      'Cơ hội việc làm & OJT',
-      'Cơ sở vật chất hiện đại',
-    ],
+    priorities: [],
     syncProfile: true,
   },
   report: null,
@@ -91,7 +89,54 @@ function academicProfileDefaults(academicProfile = {}) {
   }
 }
 
-function readStoredAssessment(academicProfile = {}, keepStoredReport = false) {
+const assessmentStorageKey = (userId) => `${STORAGE_PREFIX}:${userId ?? 'guest'}`
+
+function createMinhAnhAssessment(defaults) {
+  const values = { R: 4, I: 5, A: 4, S: 3, E: 4, C: 4 }
+  const riasecAnswers = Object.fromEntries(riasecAssessment.questions.map((question) => [question.id, values[question.domain]]))
+  const experience = {
+    selectedDomains: ['TECHNOLOGY', 'RESEARCH_DATA', 'VISUAL_DESIGN'],
+    domainStates: Object.fromEntries([
+      ['TECHNOLOGY', 88],
+      ['RESEARCH_DATA', 84],
+      ['VISUAL_DESIGN', 78],
+    ].map(([domain, score]) => [domain, {
+      domain,
+      status: 'COMPLETED',
+      baseAnswers: {},
+      adaptiveAnswers: [],
+      adaptiveBranch: 'DEEP_DIVE',
+      baseEvidenceScore: score,
+      realityAlignment: score,
+      finalEvidenceScore: score,
+      evidenceLevel: 'STRONG',
+      artifactUrl: '',
+      verificationStatus: 'SELF_REPORTED',
+    }])),
+    activeDomain: 'TECHNOLOGY',
+    noExperience: false,
+    attemptSeed: 'minh-anh-demo-2026',
+  }
+  const snapshot = {
+    ...defaults,
+    riasecAnswers,
+    experience,
+    profile: {
+      ...defaults.profile,
+      admissionYear: '2027',
+      regions: ['TP.HCM & lân cận'],
+      tuition: '25-45',
+      scholarship: true,
+      strengths: ['Toán', 'Tiếng Anh', 'Tin học'],
+      priorities: ['Học phí hợp lý', 'Cơ hội việc làm & OJT', 'Cơ sở vật chất hiện đại'],
+    },
+  }
+  const payload = buildAssessmentPayload(snapshot, 'demo-nguyen-minh-anh')
+  return { ...snapshot, report: createLocalAssessmentReport(snapshot, payload) }
+}
+
+function readStoredAssessment(user, keepStoredReport = false) {
+  const academicProfile = user?.academicProfile ?? {}
   const defaults = {
     ...initialAssessment,
     profile: {
@@ -105,11 +150,9 @@ function readStoredAssessment(academicProfile = {}, keepStoredReport = false) {
   }
 
   try {
-    const stored = window.localStorage.getItem(
-      STORAGE_KEY,
-    )
+    const stored = window.localStorage.getItem(assessmentStorageKey(user?.id))
 
-    if (!stored) return defaults
+    if (!stored) return user?.isDemo ? createMinhAnhAssessment(defaults) : defaults
 
     const parsed = JSON.parse(stored)
 
@@ -137,31 +180,20 @@ function readStoredAssessment(academicProfile = {}, keepStoredReport = false) {
 export function AssessmentProvider({ children }) {
   const { user } = useAuth()
   const [assessment, setAssessment] =
-    useState(() => readStoredAssessment(user?.academicProfile, Boolean(user)))
+    useState(() => readStoredAssessment(user, Boolean(user)))
+  const loadedUserIdRef = useRef(user?.id ?? null)
   const [submitState, setSubmitState] = useState({
     loading: false,
     error: null,
   })
 
   useEffect(() => {
-    if (!user?.academicProfile) return
-    const defaults = academicProfileDefaults(user.academicProfile)
-    setAssessment((current) => ({
-      ...current,
-      profile: {
-        ...current.profile,
-        gpa: current.profile.gpa || defaults.gpa,
-        gpaStatus: current.profile.gpa ? current.profile.gpaStatus : defaults.gpaStatus,
-        thptScore: current.profile.thptScore || defaults.thptScore,
-        thptScoreStatus: current.profile.thptScore ? current.profile.thptScoreStatus : defaults.thptScoreStatus,
-        dgnlScore: current.profile.dgnlScore || defaults.dgnlScore,
-        dgnlScoreStatus: current.profile.dgnlScore ? current.profile.dgnlScoreStatus : defaults.dgnlScoreStatus,
-        certificates: current.profile.certificates.length
-          ? current.profile.certificates
-          : defaults.certificates,
-      },
-    }))
-  }, [user?.id])
+    const nextUserId = user?.id ?? null
+    if (loadedUserIdRef.current === nextUserId) return
+    loadedUserIdRef.current = nextUserId
+    setAssessment(readStoredAssessment(user, Boolean(user)))
+    setSubmitState({ loading: false, error: null })
+  }, [user])
 
   useEffect(() => {
     try {
@@ -169,7 +201,7 @@ export function AssessmentProvider({ children }) {
         ? assessment
         : { ...assessment, report: null }
       window.localStorage.setItem(
-        STORAGE_KEY,
+        assessmentStorageKey(user?.id),
         JSON.stringify(assessmentToStore),
       )
     } catch {

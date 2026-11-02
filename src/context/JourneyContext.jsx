@@ -40,7 +40,7 @@ function readState(userId) {
   if (!userId || typeof window === 'undefined') return createInitialState()
   try {
     const parsed = JSON.parse(window.localStorage.getItem(storageKey(userId)))
-    if (!parsed) return createInitialState()
+    if (!parsed) return seedScenario('ANNUAL_ROADMAP')
     const merged = { ...createInitialState(), ...parsed, version: 2 }
     const migratedMajors = [...new Set((merged.selectedMajorIds ?? []).map((id) => LEGACY_MAJOR_IDS[id] ?? id))]
       .filter((id) => findDemoMajor(id))

@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 
 import AssessmentStepShell from '../components/assessment/AssessmentStepShell'
 import { useAssessment } from '../context/AssessmentContext'
+import { useAuth } from '../context/AuthContext'
 import {
   CERTIFICATE_OPTIONS,
   CERTIFICATE_STATUS,
@@ -29,6 +30,7 @@ const priorityOptions = [
 
 function QuickProfilePage() {
   const navigate = useNavigate()
+  const { user, updateUserProfile } = useAuth()
   const {
     assessment,
     updateProfile,
@@ -178,6 +180,18 @@ function QuickProfilePage() {
           className="flex flex-col gap-space-md"
           onSubmit={(event) => {
             event.preventDefault()
+            if (profile.syncProfile !== false && updateUserProfile) {
+              const selectedRegion = profile.regions?.[0] || user?.preferredRegion || 'TP. Hồ Chí Minh'
+              updateUserProfile({
+                preferredRegion: selectedRegion,
+                academicProfile: {
+                  gpa: { value: profile.gpa || '', status: profile.gpaStatus || 'EXPECTED' },
+                  thptScore: { value: profile.thptScore || '', status: profile.thptScoreStatus || 'EXPECTED' },
+                  dgnlScore: { value: profile.dgnlScore || '', status: profile.dgnlScoreStatus || 'EXPECTED' },
+                  certificates: certificates || [],
+                },
+              })
+            }
             navigate('/assessment/review')
           }}
         >
@@ -238,11 +252,17 @@ function QuickProfilePage() {
                   <option value="">
                     + Thêm khu vực...
                   </option>
+                  <option value="TP. Hồ Chí Minh & miền Nam">
+                    TP. Hồ Chí Minh & miền Nam
+                  </option>
                   <option value="Hà Nội & miền Bắc">
                     Hà Nội & miền Bắc
                   </option>
                   <option value="Đà Nẵng & miền Trung">
                     Đà Nẵng & miền Trung
+                  </option>
+                  <option value="Cần Thơ & ĐBSCL">
+                    Cần Thơ & ĐBSCL
                   </option>
                   <option value="Không giới hạn">
                     Không giới hạn
@@ -334,8 +354,14 @@ function QuickProfilePage() {
                   <option value="">
                     + Thêm môn
                   </option>
+                  <option value="Toán">
+                    Toán
+                  </option>
                   <option value="Ngữ văn">
                     Ngữ văn
+                  </option>
+                  <option value="Tiếng Anh">
+                    Tiếng Anh
                   </option>
                   <option value="Vật lý">
                     Vật lý
@@ -345,6 +371,21 @@ function QuickProfilePage() {
                   </option>
                   <option value="Sinh học">
                     Sinh học
+                  </option>
+                  <option value="Tin học">
+                    Tin học
+                  </option>
+                  <option value="Lịch sử">
+                    Lịch sử
+                  </option>
+                  <option value="Địa lý">
+                    Địa lý
+                  </option>
+                  <option value="Kinh tế & Pháp luật">
+                    Kinh tế & Pháp luật
+                  </option>
+                  <option value="Công nghệ">
+                    Công nghệ
                   </option>
                 </select>
               </div>

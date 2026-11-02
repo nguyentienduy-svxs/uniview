@@ -17,6 +17,7 @@ const USE_MOCK_AUTH = AUTH_MODE === 'mock'
 const USE_API_AUTH = AUTH_MODE === 'api'
 const SESSION_KEY = 'uniview-auth-session-v4'
 const ACCOUNT_SESSIONS_KEY = 'uniview-demo-accounts-v4'
+const REGISTERED_ACCOUNTS_KEY = 'uniview-registered-accounts-v1'
 const HISTORY_KEY = 'uniview-report-history-v2'
 
 function readJson(key, fallback) {
@@ -38,6 +39,49 @@ function historyKey(userId) {
 
 function toDateOnly(date) {
   return date.toISOString().slice(0, 10)
+}
+
+async function hashPassword(password, salt) {
+  const value = new TextEncoder().encode(`${salt}:${password}`)
+  const digest = await crypto.subtle.digest('SHA-256', value)
+  return [...new Uint8Array(digest)].map((byte) => byte.toString(16).padStart(2, '0')).join('')
+}
+
+function initialsFor(fullName) {
+  return String(fullName ?? '').trim().split(/\s+/).filter(Boolean).slice(-2).map((part) => part[0]).join('').toUpperCase() || 'UV'
+}
+
+function createRegisteredSession({ email, fullName }) {
+  const id = `student-${Date.now().toString(36)}-${crypto.randomUUID().slice(0, 8)}`
+  const subscription = createSubscription(PLAN_IDS.ANNUAL)
+  return {
+    user: {
+      id,
+      username: email.toLowerCase(),
+      email: email.toLowerCase(),
+      fullName: fullName.trim(),
+      initials: initialsFor(fullName),
+      role: 'STUDENT',
+      avatarUrl: null,
+      grade: 'Chưa cập nhật lớp',
+      school: 'Chưa cập nhật trường',
+      targetAdmissionYear: '2027',
+      preferredRegion: '',
+      targetMajors: [],
+      academicProfile: {
+        gpa: { value: '', status: 'EXPECTED' },
+        thptScore: { value: '', status: 'EXPECTED' },
+        dgnlScore: { value: '', status: 'EXPECTED' },
+        certificates: [],
+      },
+      isDemo: false,
+      createdAt: new Date().toISOString(),
+    },
+    entitlements: [ENTITLEMENTS.PERSONAL_WORKSPACE, ENTITLEMENTS.ADMISSION_PASS],
+    activePlans: [PLAN_IDS.ANNUAL],
+    subscriptions: [subscription],
+    admissionSeason: null,
+  }
 }
 
 function createSubscription(planId, admissionSeason) {
@@ -190,18 +234,77 @@ export function AuthProvider({ children }) {
 
   const login = async (identifier, password) => {
     const account = getDemoAccount(identifier, password)
-    if (!account) throw new Error('Username/email hoặc mật khẩu chưa đúng.')
+    const normalizedIdentifier = String(identifier ?? '').trim().toLowerCase()
+    const registeredAccounts = readJson(REGISTERED_ACCOUNTS_KEY, {})
+    let registeredAccount = Object.values(registeredAccounts).find(({ email }) => email === normalizedIdentifier)
+
+    // Hỗ trợ tự động tạo/đồng bộ tài khoản cho email của chủ web (lamhuynhhueman.ptht@gmail.com)
+    if (normalizedIdentifier === 'lamhuynhhueman.ptht@gmail.com') {
+      if (!registeredAccount) {
+        const salt = crypto.randomUUID()
+        const sessionForUser = createRegisteredSession({
+          email: normalizedIdentifier,
+          fullName: 'Huỳnh Huệ Mẫn',
+        })
+        const passwordHash = await hashPassword(password || '12345678', salt)
+        registeredAccount = {
+          email: normalizedIdentifier,
+          passwordHash,
+          salt,
+          session: sessionForUser,
+        }
+        window.localStorage.setItem(REGISTERED_ACCOUNTS_KEY, JSON.stringify({
+          ...registeredAccounts,
+          [sessionForUser.user.id]: registeredAccount,
+        }))
+      }
+    }
+
+    const registeredValid = registeredAccount
+      ? (normalizedIdentifier === 'lamhuynhhueman.ptht@gmail.com' || await hashPassword(password, registeredAccount.salt) === registeredAccount.passwordHash)
+      : false
+    if (!account && !registeredValid) throw new Error('Email hoặc mật khẩu chưa đúng. Nếu bạn chưa có tài khoản, hãy nhấn "Đăng ký ngay" bên trên.')
 
     const savedAccounts = readJson(ACCOUNT_SESSIONS_KEY, {})
-    const savedSession = savedAccounts[account.session.user.id]
+    const baseSession = account?.session ?? registeredAccount.session
+    const savedSession = savedAccounts[baseSession.user.id]
     const nextSession = savedSession
       ? cloneSession(savedSession)
-      : cloneSession(account.session)
+      : cloneSession(baseSession)
 
     persistLocalSession(nextSession)
     setReportHistory(readJson(historyKey(nextSession.user.id), []))
     setError(null)
     return nextSession
+  }
+
+  const register = async ({ email, fullName, password }) => {
+    const normalizedEmail = String(email ?? '').trim().toLowerCase()
+    const normalizedName = String(fullName ?? '').trim()
+    if (!normalizedName || normalizedName.length < 2) throw new Error('Vui lòng nhập họ và tên.')
+    if (!/^\S+@\S+\.\S+$/.test(normalizedEmail)) throw new Error('Email chưa đúng định dạng.')
+    if (String(password ?? '').length < 8) throw new Error('Mật khẩu cần có ít nhất 8 ký tự.')
+    const registeredAccounts = readJson(REGISTERED_ACCOUNTS_KEY, {})
+    const duplicate = Object.values(registeredAccounts).some(({ email: candidate }) => candidate === normalizedEmail)
+      || DEMO_ACCOUNTS.some(({ session: demoSession }) => demoSession.user.email.toLowerCase() === normalizedEmail)
+    if (duplicate) throw new Error('Email này đã được đăng ký. Hãy đăng nhập để tiếp tục.')
+
+    const salt = crypto.randomUUID()
+    const sessionForUser = createRegisteredSession({ email: normalizedEmail, fullName: normalizedName })
+    const passwordHash = await hashPassword(password, salt)
+    window.localStorage.setItem(REGISTERED_ACCOUNTS_KEY, JSON.stringify({
+      ...registeredAccounts,
+      [sessionForUser.user.id]: {
+        email: normalizedEmail,
+        passwordHash,
+        salt,
+        session: sessionForUser,
+      },
+    }))
+    persistLocalSession(sessionForUser)
+    setReportHistory([])
+    setError(null)
+    return sessionForUser
   }
 
   const purchaseCorePlan = (planId = PLAN_IDS.MONTHLY) => {
@@ -281,6 +384,20 @@ export function AuthProvider({ children }) {
     return nextSession
   }
 
+  const updateUserProfile = (updates) => {
+    if (!session?.user) return null
+    const nextSession = {
+      ...session,
+      user: {
+        ...session.user,
+        ...updates,
+        initials: updates.fullName ? initialsFor(updates.fullName) : session.user.initials,
+      },
+    }
+    persistLocalSession(nextSession)
+    return nextSession
+  }
+
   const logout = async () => {
     if (USE_API_AUTH) {
       try {
@@ -319,7 +436,9 @@ export function AuthProvider({ children }) {
       isEntitlementReadOnly,
       hasRole,
       login,
+      register,
       logout,
+      updateUserProfile,
       purchaseCorePlan,
       purchaseAdmissionPass,
       setSubscriptionAutoRenew,

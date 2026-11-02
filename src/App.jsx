@@ -30,7 +30,7 @@ function AppContent() {
   return (
     <div className="min-h-screen bg-[#f9f9ff] text-[#121b2e]">
       {!isPdfReport && <AppHeader />}
-      {!isReportWorkspace && <FloatingMascot />}
+      <FloatingMascot />
 
       <Routes>
         {pages.map((page) => (
