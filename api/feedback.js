@@ -35,6 +35,29 @@ async function saveToSupabase(entry) {
 }
 
 async function sendEmail(entry) {
+  if (process.env.SEND_FEEDBACK_EMAILS === 'false') {
+    return { disabled: true }
+  }
+
+  const excelLink = process.env.VITE_APP_URL
+    ? `${process.env.VITE_APP_URL}/feedbacks-export.xlsx`
+    : 'https://uniview.vn/feedbacks-export.xlsx'
+
+  const senderType = entry.userId ? 'Đã đăng nhập' : 'Chưa đăng nhập (Khách)'
+  const emailContent = `Có phản hồi mới từ người dùng trên UniView:
+- Người gửi: ${entry.userName || 'Khách vãng lai'} (${senderType})
+- Email liên hệ: ${entry.email || 'Không cung cấp'}
+- Đánh giá: ${entry.rating}/5 sao
+- Nhóm góp ý: ${entry.category || 'Trải nghiệm chung'}
+- Trang gửi: ${entry.page || 'Trang chủ'}
+- Nội dung góp ý:
+${entry.message}
+
+---------------------------------------------------
+📊 File Excel (.xlsx) tổng hợp toàn bộ phản hồi:
+${excelLink}
+(Dữ liệu cũng được ghi tự động vào file feedbacks-export.xlsx trong thư mục dự án)`
+
   const resendKey = process.env.RESEND_API_KEY
   if (resendKey) {
     const response = await fetch('https://api.resend.com/emails', {
@@ -43,8 +66,8 @@ async function sendEmail(entry) {
       body: JSON.stringify({
         from: process.env.FEEDBACK_FROM_EMAIL || 'UniView Feedback <onboarding@resend.dev>',
         to: [FEEDBACK_EMAIL],
-        subject: `[UniView Feedback] ${entry.category} · ${entry.rating}/5`,
-        text: `Người gửi: ${entry.userName}\nEmail: ${entry.email || 'Không cung cấp'}\nĐánh giá: ${entry.rating}/5\nTrang: ${entry.page}\n\n${entry.message}`,
+        subject: `[UniView Feedback] ${entry.category} · ${entry.rating}/5 sao`,
+        text: emailContent,
       }),
     })
     if (!response.ok) throw new Error(`RESEND_${response.status}`)
@@ -58,13 +81,14 @@ async function sendEmail(entry) {
       _subject: `[UniView Feedback] ${entry.category} · ${entry.rating}/5`,
       _template: 'table',
       _captcha: 'false',
-      userName: entry.userName,
-      email: entry.email || 'Không cung cấp',
-      rating: `${entry.rating}/5`,
-      category: entry.category,
-      message: entry.message,
-      page: entry.page,
-      createdAt: entry.createdAt,
+      'Người gửi': `${entry.userName || 'Khách vãng lai'} (${senderType})`,
+      Email: entry.email || 'Không cung cấp',
+      'Đánh giá': `${entry.rating}/5 sao`,
+      'Nhóm góp ý': entry.category,
+      'Nội dung': entry.message,
+      'Trang gửi': entry.page,
+      'Thời gian': entry.createdAt,
+      'File Excel tổng hợp': excelLink,
     }),
   })
   if (!response.ok) throw new Error(`FORMSUBMIT_${response.status}`)
@@ -74,7 +98,7 @@ async function sendEmail(entry) {
 export default async function handler(request, response) {
   if (request.method !== 'POST') return json(response, 405, { error: 'METHOD_NOT_ALLOWED' })
   const entry = request.body
-  if (!entry?.message || String(entry.message).trim().length < 5) return json(response, 400, { error: 'MESSAGE_TOO_SHORT' })
+  if (!entry?.message || String(entry.message).trim().length < 3) return json(response, 400, { error: 'MESSAGE_TOO_SHORT' })
   if (!Number.isInteger(entry.rating) || entry.rating < 1 || entry.rating > 5) return json(response, 400, { error: 'INVALID_RATING' })
 
   const results = await Promise.allSettled([saveToSupabase(entry), sendEmail(entry)])

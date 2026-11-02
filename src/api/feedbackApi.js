@@ -100,6 +100,64 @@ async function formSubmitFallback(entry) {
   }
 }
 
+export function generateFeedbacksCsv(entries = getStoredFeedbacks()) {
+  const BOM = '\uFEFF'
+  const headers = [
+    'Mã ID',
+    'Thời gian gửi',
+    'Người gửi',
+    'Email liên hệ',
+    'Trạng thái đăng nhập',
+    'Đánh giá (Sao)',
+    'Nhóm góp ý',
+    'Trang gửi',
+    'Nội dung góp ý',
+  ]
+  const rows = (entries || []).map((item) => {
+    const rawDate = item.createdAt || item.receivedAt
+    const formattedDate = rawDate
+      ? new Date(rawDate).toLocaleString('vi-VN')
+      : ''
+    const isLogged = item.userId ? 'Đã đăng nhập' : 'Chưa đăng nhập (Khách)'
+    const cleanMsg = (item.message || '').replace(/"/g, '""').replace(/\r?\n/g, ' ')
+    return [
+      item.id || '',
+      formattedDate,
+      item.userName || 'Khách vãng lai',
+      item.email || 'Không để lại email',
+      isLogged,
+      item.rating ? `${item.rating}/5 sao` : '',
+      item.category || 'Trải nghiệm chung',
+      item.page || '',
+      cleanMsg,
+    ].map((val) => `"${val}"`).join(',')
+  })
+
+  return 'sep=,\r\n\uFEFF' + [headers.map((h) => `"${h}"`).join(','), ...rows].join('\r\n')
+}
+
+export function downloadFeedbacksExcel(filename) {
+  if (typeof window === 'undefined') return
+  try {
+    const link = document.createElement('a')
+    link.href = '/feedbacks-export.xlsx'
+    link.download = filename || 'feedbacks-export.xlsx'
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
+  } catch {
+    const defaultFilename = `uniview-feedbacks-${new Date().toISOString().slice(0, 10)}.csv`
+    const csvContent = generateFeedbacksCsv(getStoredFeedbacks())
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' })
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = filename || defaultFilename
+    a.click()
+    URL.revokeObjectURL(url)
+  }
+}
+
 if (typeof window !== 'undefined') {
   window.getUniViewFeedback = () => {
     const data = getStoredFeedbacks()
@@ -116,10 +174,13 @@ if (typeof window !== 'undefined') {
     a.click()
     URL.revokeObjectURL(url)
   }
+  window.downloadUniViewFeedbackExcel = downloadFeedbacksExcel
 }
 
 export const feedbackApi = {
   getStored: getStoredFeedbacks,
+  downloadExcel: downloadFeedbacksExcel,
+  generateCsv: generateFeedbacksCsv,
   async submit(payload) {
     const entry = {
       ...payload,

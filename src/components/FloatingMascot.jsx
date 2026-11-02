@@ -96,13 +96,17 @@ function FloatingMascot() {
     if (form.message.trim().length < 3 || status === 'SENDING') return
     setStatus('SENDING')
 
+    const displayName = user?.fullName
+      || (form.email.trim() ? form.email.trim() : 'Khách vãng lai (Chưa đăng nhập)')
+
     await feedbackApi.submit({
       ...form,
       email: form.email.trim(),
       message: form.message.trim(),
       page: `${location.pathname}${location.search}`,
       userId: user?.id ?? null,
-      userName: user?.fullName ?? 'Người dùng trải nghiệm',
+      userName: displayName,
+      isGuest: !user,
     })
 
     // Đã gửi thành công -> ghi nhớ để không spam bubble nữa
