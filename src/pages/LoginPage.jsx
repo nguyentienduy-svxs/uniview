@@ -7,13 +7,9 @@ import { PLAN_IDS } from '../data/plans'
 function LoginPage() {
   const navigate = useNavigate()
   const location = useLocation()
-  const { login, demoAccounts } = useAuth()
-  const configuredDemo = import.meta.env.VITE_DEMO_SCENARIO
-  const defaultDemoAccount = configuredDemo === 'ANNUAL_DEMO'
-    ? demoAccounts.find(({ username }) => username === 'minhanh') ?? demoAccounts[0]
-    : demoAccounts[0]
-  const [identifier, setIdentifier] = useState(defaultDemoAccount?.username ?? '')
-  const [password, setPassword] = useState(defaultDemoAccount?.password ?? '')
+  const { login } = useAuth()
+  const [identifier, setIdentifier] = useState('')
+  const [password, setPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
   const [error, setError] = useState('')
   const [submitting, setSubmitting] = useState(false)
@@ -97,7 +93,7 @@ function LoginPage() {
 
             {/* Cột phải: Form Đăng nhập trực tiếp (Gọn gàng, vừa vặn khung hình) */}
             <div className="lg:col-span-7 px-2 sm:px-4 md:px-6 py-2 flex flex-col justify-center">
-              <div className="mb-4">
+              <div className="mb-3">
                 <div className="flex items-center gap-2 mb-1">
                   <span className="text-[11px] text-blue-700 tracking-wider uppercase bg-blue-50 px-2 py-0.5 rounded font-bold">
                     UniView Authentication
@@ -111,40 +107,26 @@ function LoginPage() {
                 </p>
               </div>
 
-              <form className="space-y-3.5" id="loginForm" onSubmit={handleSubmit}>
-                {/* Khối demo account gọn nhẹ */}
-                <div className="rounded-2xl border border-blue-200 bg-blue-50/70 p-3">
-                  <div className="flex items-center justify-between">
-                    <p className="text-[11px] font-bold uppercase tracking-wider text-blue-900">Xem nhanh bằng tài khoản Demo:</p>
-                    <span className="text-[10px] text-blue-700 bg-white px-2 py-0.5 rounded-full font-semibold border border-blue-200">Bấm để tự điền</span>
-                  </div>
-                  <div className="mt-2">
-                    {demoAccounts.map((account) => {
-                      const selected = identifier === account.username
-                      return (
-                        <button
-                          className={`w-full rounded-xl border p-2.5 text-left transition flex items-center justify-between cursor-pointer ${
-                            selected ? 'border-[#1D4ED8] bg-white shadow-xs' : 'border-blue-100 bg-white/70 hover:bg-white'
-                          }`}
-                          key={account.id}
-                          onClick={() => {
-                            setIdentifier(account.username)
-                            setPassword(account.password)
-                            setError('')
-                          }}
-                          type="button"
-                        >
-                          <div>
-                            <span className="block text-xs font-bold text-[#172033]">{account.fullName} ({account.username})</span>
-                            <span className="text-[11px] text-slate-500">{account.planDescription}</span>
-                          </div>
-                          <span className="text-xs font-bold text-[#1D4ED8] bg-blue-50 px-2.5 py-1 rounded-lg">Chọn acc này →</span>
-                        </button>
-                      )
-                    })}
-                  </div>
+              {/* Box đăng ký tài khoản nhanh cho người dùng mới */}
+              <div className="mb-4 rounded-2xl border border-blue-200 bg-gradient-to-r from-blue-50/90 to-indigo-50/80 p-3 sm:p-3.5 flex items-center justify-between gap-3 shadow-2xs">
+                <div className="min-w-0">
+                  <p className="text-xs font-bold text-[#172033] flex items-center gap-1.5">
+                    <span>✨</span> Bạn chưa có tài khoản?
+                  </p>
+                  <p className="text-[11px] text-[#56657a] truncate sm:whitespace-normal">
+                    Đăng ký miễn phí chỉ 30 giây để bắt đầu làm bài khảo sát ngay.
+                  </p>
                 </div>
+                <Link
+                  to={location.search ? `/register${location.search}` : '/register'}
+                  className="shrink-0 rounded-xl bg-[#1D4ED8] hover:bg-[#1e40af] text-white px-3.5 py-2 text-xs font-bold transition shadow-xs flex items-center gap-1"
+                >
+                  <span>Đăng ký ngay</span>
+                  <span>→</span>
+                </Link>
+              </div>
 
+              <form className="space-y-3.5" id="loginForm" onSubmit={handleSubmit}>
                 <div>
                   <label className="block text-xs font-bold text-slate-700 mb-1" htmlFor="emailInput">
                     Username hoặc Email
@@ -195,17 +177,19 @@ function LoginPage() {
                 <button
                   className="w-full py-2.5 px-5 rounded-xl bg-[#1d4ed8] hover:bg-[#1e40af] text-white font-bold text-xs sm:text-sm transition-all shadow-md active:scale-[0.99] flex items-center justify-center gap-2 cursor-pointer disabled:opacity-60"
                   disabled={submitting}
-                  onClick={() => void performLogin()}
-                  type="button"
+                  type="submit"
                 >
                   <span>{submitting ? 'Đang đăng nhập…' : 'Đăng nhập vào UniView →'}</span>
                 </button>
               </form>
 
-              <div className="text-center mt-4 pt-3 border-t border-slate-100">
+              <div className="text-center mt-3 pt-3 border-t border-slate-100">
                 <p className="text-xs text-slate-600">
                   Chưa có tài khoản UniView?{' '}
-                  <Link className="font-bold text-[#1D4ED8] hover:underline" to="/register">
+                  <Link
+                    className="font-bold text-[#1D4ED8] hover:underline"
+                    to={location.search ? `/register${location.search}` : '/register'}
+                  >
                     Đăng ký tài khoản miễn phí →
                   </Link>
                 </p>

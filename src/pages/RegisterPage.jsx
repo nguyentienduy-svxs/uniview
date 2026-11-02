@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 
 import mascotImage from '../assets/UniView_DUNG_MEO_TRONG_ANH_chop_mat_cuoi.webp'
 import { useAuth } from '../context/AuthContext'
@@ -23,6 +23,7 @@ function Field({ autoComplete, label, onChange, placeholder, type = 'text', valu
 
 function RegisterPage() {
   const navigate = useNavigate()
+  const location = useLocation()
   const { register } = useAuth()
   const [form, setForm] = useState({ fullName: '', email: '', password: '' })
   const [error, setError] = useState('')
@@ -36,7 +37,9 @@ function RegisterPage() {
     setError('')
     try {
       await register(form)
-      navigate('/assessment', { replace: true })
+      const params = new URLSearchParams(location.search)
+      const next = params.get('next') || '/assessment'
+      navigate(next, { replace: true })
     } catch (requestError) {
       setError(requestError.message)
     } finally {
@@ -79,7 +82,7 @@ function RegisterPage() {
           </p>
 
           <form className="mt-4 space-y-3" onSubmit={submit}>
-            <Field autoComplete="name" label="Họ và tên" onChange={update('fullName')} placeholder="Nguyễn Minh Anh" value={form.fullName} />
+            <Field autoComplete="name" label="Họ và tên" onChange={update('fullName')} placeholder="VD: Nguyễn Văn A" value={form.fullName} />
             <Field autoComplete="email" label="Email" onChange={update('email')} placeholder="name@example.com" type="email" value={form.email} />
             <Field autoComplete="new-password" label="Mật khẩu" onChange={update('password')} placeholder="Ít nhất 8 ký tự" type="password" value={form.password} />
             
@@ -104,7 +107,7 @@ function RegisterPage() {
 
           <p className="mt-4 text-center text-xs text-[#56657a]">
             Đã có tài khoản?{' '}
-            <Link className="font-black text-blue-700 hover:underline" to="/login">
+            <Link className="font-black text-blue-700 hover:underline" to={location.search ? `/login${location.search}` : '/login'}>
               Đăng nhập ngay
             </Link>
           </p>
