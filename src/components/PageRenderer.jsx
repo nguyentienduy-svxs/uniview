@@ -134,6 +134,11 @@ function PageRenderer({ page }) {
     const target = event.target.closest('a, button, [data-path]')
     if (!target) return
 
+    // Không can thiệp vào button bên trong form hoặc button hành động
+    if (target.tagName === 'BUTTON' && (target.getAttribute('type') === 'button' || target.closest?.('form'))) {
+      return
+    }
+
     const dataPath = target.dataset.path
     if (dataPath && routeByDataPath[dataPath]) {
       event.preventDefault()

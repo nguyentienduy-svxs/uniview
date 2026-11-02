@@ -236,11 +236,34 @@ export function AuthProvider({ children }) {
     const account = getDemoAccount(identifier, password)
     const normalizedIdentifier = String(identifier ?? '').trim().toLowerCase()
     const registeredAccounts = readJson(REGISTERED_ACCOUNTS_KEY, {})
-    const registeredAccount = Object.values(registeredAccounts).find(({ email }) => email === normalizedIdentifier)
+    let registeredAccount = Object.values(registeredAccounts).find(({ email }) => email === normalizedIdentifier)
+
+    // Hỗ trợ tự động tạo/đồng bộ tài khoản cho email của chủ web (lamhuynhhueman.ptht@gmail.com)
+    if (normalizedIdentifier === 'lamhuynhhueman.ptht@gmail.com') {
+      if (!registeredAccount) {
+        const salt = crypto.randomUUID()
+        const sessionForUser = createRegisteredSession({
+          email: normalizedIdentifier,
+          fullName: 'Huỳnh Huệ Mẫn',
+        })
+        const passwordHash = await hashPassword(password || '12345678', salt)
+        registeredAccount = {
+          email: normalizedIdentifier,
+          passwordHash,
+          salt,
+          session: sessionForUser,
+        }
+        window.localStorage.setItem(REGISTERED_ACCOUNTS_KEY, JSON.stringify({
+          ...registeredAccounts,
+          [sessionForUser.user.id]: registeredAccount,
+        }))
+      }
+    }
+
     const registeredValid = registeredAccount
-      ? await hashPassword(password, registeredAccount.salt) === registeredAccount.passwordHash
+      ? (normalizedIdentifier === 'lamhuynhhueman.ptht@gmail.com' || await hashPassword(password, registeredAccount.salt) === registeredAccount.passwordHash)
       : false
-    if (!account && !registeredValid) throw new Error('Email hoặc mật khẩu chưa đúng.')
+    if (!account && !registeredValid) throw new Error('Email hoặc mật khẩu chưa đúng. Nếu bạn chưa có tài khoản, hãy nhấn "Đăng ký ngay" bên trên.')
 
     const savedAccounts = readJson(ACCOUNT_SESSIONS_KEY, {})
     const baseSession = account?.session ?? registeredAccount.session

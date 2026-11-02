@@ -119,7 +119,7 @@ function LoginPage() {
                 </div>
                 <Link
                   to={location.search ? `/register${location.search}` : '/register'}
-                  className="shrink-0 rounded-xl bg-[#1D4ED8] hover:bg-[#1e40af] text-white px-3.5 py-2 text-xs font-bold transition shadow-xs flex items-center gap-1"
+                  className="shrink-0 rounded-xl bg-[#1D4ED8] hover:bg-[#1e40af] text-white px-3.5 py-2 text-xs font-bold transition shadow-xs flex items-center gap-1 cursor-pointer"
                 >
                   <span>Đăng ký ngay</span>
                   <span>→</span>
@@ -139,6 +139,12 @@ function LoginPage() {
                     type="text"
                     value={identifier}
                     onChange={(event) => setIdentifier(event.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter') {
+                        e.preventDefault()
+                        void performLogin()
+                      }
+                    }}
                   />
                 </div>
 
@@ -160,6 +166,12 @@ function LoginPage() {
                       type={showPassword ? 'text' : 'password'}
                       value={password}
                       onChange={(event) => setPassword(event.target.value)}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter') {
+                          e.preventDefault()
+                          void performLogin()
+                        }
+                      }}
                     />
                     <button
                       aria-label="Ẩn hiện mật khẩu"
@@ -175,9 +187,11 @@ function LoginPage() {
                 {error && <p className="rounded-xl bg-rose-50 p-2.5 text-xs font-semibold text-rose-700">{error}</p>}
 
                 <button
+                  id="loginSubmitBtn"
                   className="w-full py-2.5 px-5 rounded-xl bg-[#1d4ed8] hover:bg-[#1e40af] text-white font-bold text-xs sm:text-sm transition-all shadow-md active:scale-[0.99] flex items-center justify-center gap-2 cursor-pointer disabled:opacity-60"
                   disabled={submitting}
-                  type="submit"
+                  onClick={() => void performLogin()}
+                  type="button"
                 >
                   <span>{submitting ? 'Đang đăng nhập…' : 'Đăng nhập vào UniView →'}</span>
                 </button>
