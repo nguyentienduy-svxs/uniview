@@ -390,10 +390,598 @@
   }
 }
 
+.pdf-viewer-shell {
+  color: #172033;
+  font-family: "Be Vietnam Pro", sans-serif;
+}
+
+.pdf-a4-page {
+  display: grid;
+  width: 794px;
+  height: 1123px;
+  grid-template-rows: 66px minmax(0, 1fr) 42px;
+  overflow: hidden;
+  background: #fff;
+  box-shadow: 0 14px 36px rgba(23, 32, 51, 0.14);
+  print-color-adjust: exact;
+  -webkit-print-color-adjust: exact;
+}
+
+.pdf-a4-header,
+.pdf-a4-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 0 48px;
+  color: #75839a;
+  font-size: 10px;
+}
+
+.pdf-a4-header {
+  border-bottom: 1px solid #e3eaf4;
+}
+
+.pdf-a4-header > div {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.pdf-a4-header > div:last-child {
+  align-items: flex-end;
+}
+
+.pdf-a4-header strong {
+  color: #1d4ed8;
+  font-size: 12px;
+}
+
+.pdf-a4-footer {
+  border-top: 1px solid #e3eaf4;
+}
+
+.pdf-a4-footer strong {
+  color: #1d4ed8;
+}
+
+.pdf-a4-content {
+  min-height: 0;
+  overflow: hidden;
+  padding: 36px 48px 28px;
+}
+
+.pdf-cover {
+  display: flex;
+  height: 100%;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.pdf-cover-badge,
+.pdf-eyebrow,
+.pdf-section-title > p {
+  color: #1d4ed8;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+}
+
+.pdf-cover h1 {
+  margin-top: 24px;
+  color: #172033;
+  font-family: "Epilogue", sans-serif;
+  font-size: 58px;
+  font-weight: 800;
+  line-height: 1.08;
+}
+
+.pdf-cover h1 span {
+  color: #1d4ed8;
+}
+
+.pdf-cover > p {
+  margin-top: 20px;
+  color: #56657a;
+  font-size: 18px;
+}
+
+.pdf-cover-summary {
+  display: grid;
+  margin-top: 64px;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+
+.pdf-cover-summary > div {
+  min-height: 112px;
+  border: 1px solid #d9e2fc;
+  border-radius: 12px;
+  background: #f1f3ff;
+  padding: 18px;
+}
+
+.pdf-cover-summary span,
+.pdf-cover-summary strong {
+  display: block;
+}
+
+.pdf-cover-summary span {
+  color: #75839a;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.pdf-cover-summary strong {
+  margin-top: 10px;
+  color: #172033;
+  font-size: 18px;
+  line-height: 1.35;
+}
+
+.pdf-cover-note {
+  margin-top: 18px;
+  border-left: 4px solid #1d4ed8;
+  border-radius: 0 10px 10px 0;
+  background: #eaf1ff;
+  padding: 16px 18px;
+  color: #56657a;
+  font-size: 12px;
+  line-height: 1.65;
+}
+
+.pdf-section-title {
+  margin-bottom: 24px;
+}
+
+.pdf-section-title h2,
+.pdf-conclusion h2 {
+  margin-top: 6px;
+  color: #172033;
+  font-family: "Epilogue", sans-serif;
+  font-size: 28px;
+  font-weight: 800;
+  line-height: 1.2;
+}
+
+.pdf-section-title > span {
+  display: block;
+  margin-top: 8px;
+  color: #56657a;
+  font-size: 11px;
+}
+
+.pdf-riasec-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px 18px;
+}
+
+.pdf-riasec-grid > div {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 7px;
+  border: 1px solid #e3eaf4;
+  border-radius: 10px;
+  padding: 13px 15px;
+  color: #56657a;
+  font-size: 11px;
+  font-style: normal;
+  font-weight: 700;
+}
+
+.pdf-riasec-grid > div.is-top {
+  border-color: #b7c4ff;
+  background: #f1f3ff;
+  color: #1d4ed8;
+}
+
+.pdf-riasec-grid i {
+  grid-column: 1 / -1;
+  height: 5px;
+  overflow: hidden;
+  border-radius: 99px;
+  background: #e3eaf4;
+}
+
+.pdf-riasec-grid i b {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: #1d4ed8;
+}
+
+.pdf-info-grid {
+  display: grid;
+  margin-top: 24px;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.pdf-info-grid article {
+  border-radius: 12px;
+  background: #f7f9fc;
+  padding: 20px;
+}
+
+.pdf-info-grid h3 {
+  margin-bottom: 13px;
+  color: #172033;
+  font-size: 14px;
+  font-weight: 800;
+}
+
+.pdf-info-grid dl {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.pdf-info-grid dl > div {
+  border-bottom: 1px solid #e3eaf4;
+  padding-bottom: 8px;
+}
+
+.pdf-info-grid dt {
+  color: #75839a;
+  font-size: 9px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.pdf-info-grid dd {
+  margin-top: 3px;
+  color: #172033;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.pdf-info-grid .pdf-insight {
+  background: #172033;
+  color: #edf0ff;
+}
+
+.pdf-info-grid .pdf-insight h3 {
+  color: #fff;
+}
+
+.pdf-insight p {
+  margin-top: 12px;
+  font-size: 11px;
+  line-height: 1.65;
+}
+
+.pdf-group-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.pdf-group-card {
+  border: 1px solid #d9e2fc;
+  border-radius: 14px;
+  padding: 18px;
+}
+
+.pdf-group-card > header {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 12px;
+}
+
+.pdf-group-card > header span {
+  border-radius: 99px;
+  background: #eaf1ff;
+  padding: 5px 9px;
+  color: #1d4ed8;
+  font-size: 9px;
+  font-weight: 800;
+}
+
+.pdf-group-card > header h3 {
+  color: #172033;
+  font-size: 17px;
+  font-weight: 800;
+}
+
+.pdf-group-card > header strong {
+  color: #1d4ed8;
+  font-size: 14px;
+}
+
+.pdf-group-card > p {
+  margin-top: 9px;
+  color: #56657a;
+  font-size: 9.5px;
+  line-height: 1.55;
+}
+
+.pdf-major-three {
+  display: grid;
+  margin-top: 14px;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+
+.pdf-major-three > div {
+  position: relative;
+  min-height: 188px;
+  border-radius: 10px;
+  background: #f7f9fc;
+  padding: 12px;
+}
+
+.pdf-major-three > div > span {
+  color: #1d4ed8;
+  font-size: 10px;
+  font-weight: 800;
+}
+
+.pdf-major-three h4 {
+  margin-top: 4px;
+  padding-right: 42px;
+  color: #172033;
+  font-size: 12px;
+  font-weight: 800;
+  line-height: 1.3;
+}
+
+.pdf-major-three > div > strong {
+  position: absolute;
+  right: 10px;
+  top: 12px;
+  color: #1d4ed8;
+  font-size: 10px;
+}
+
+.pdf-major-three p,
+.pdf-major-three small {
+  display: block;
+  margin-top: 8px;
+  color: #56657a;
+  font-size: 8.5px;
+  line-height: 1.5;
+}
+
+.pdf-major-three small {
+  border-top: 1px solid #e3eaf4;
+  padding-top: 7px;
+  color: #765100;
+}
+
+.pdf-validation-plan {
+  margin-top: 20px;
+  border-radius: 14px;
+  background: #172033;
+  padding: 20px;
+  color: #edf0ff;
+}
+
+.pdf-validation-plan h3 {
+  color: #fff;
+  font-size: 15px;
+  font-weight: 800;
+}
+
+.pdf-validation-plan > p {
+  margin-top: 6px;
+  color: #cad3ff;
+  font-size: 9px;
+  line-height: 1.5;
+}
+
+.pdf-validation-plan > div {
+  display: grid;
+  margin-top: 12px;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+
+.pdf-validation-plan span {
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.08);
+  padding: 10px;
+  font-size: 8px;
+  line-height: 1.45;
+}
+
+.pdf-validation-plan b {
+  display: block;
+  margin-bottom: 5px;
+  color: #fff;
+  font-size: 9px;
+}
+
+.pdf-school-list {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.pdf-school-list article {
+  display: grid;
+  min-height: 82px;
+  grid-template-columns: 34px 1fr 190px;
+  align-items: center;
+  gap: 12px;
+  border: 1px solid #e3eaf4;
+  border-radius: 10px;
+  padding: 9px 12px;
+}
+
+.pdf-school-list article > span {
+  display: flex;
+  height: 30px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  background: #eaf1ff;
+  color: #1d4ed8;
+  font-size: 10px;
+  font-weight: 800;
+}
+
+.pdf-school-list h3 {
+  color: #172033;
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.pdf-school-list article > div > strong {
+  display: block;
+  margin-top: 2px;
+  color: #1d4ed8;
+  font-size: 9px;
+}
+
+.pdf-school-list p,
+.pdf-school-list aside {
+  margin-top: 3px;
+  color: #56657a;
+  font-size: 8px;
+  line-height: 1.4;
+}
+
+.pdf-school-list aside {
+  margin: 0;
+  border-left: 1px solid #e3eaf4;
+  padding-left: 12px;
+}
+
+.pdf-school-list aside b,
+.pdf-school-list aside small {
+  display: block;
+}
+
+.pdf-school-list aside b {
+  color: #172033;
+  font-size: 8px;
+}
+
+.pdf-school-list aside small {
+  margin-top: 4px;
+  color: #75839a;
+  font-size: 7.5px;
+}
+
+.pdf-data-note {
+  margin-top: 12px;
+  border-radius: 9px;
+  background: #fff5db;
+  padding: 10px 12px;
+  color: #765100;
+  font-size: 8.5px;
+  line-height: 1.5;
+}
+
+.pdf-comparison {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  table-layout: fixed;
+  overflow: hidden;
+  border: 1px solid #d9e2fc;
+  border-radius: 10px;
+  font-size: 8.5px;
+  line-height: 1.45;
+}
+
+.pdf-comparison th,
+.pdf-comparison td {
+  border-bottom: 1px solid #e3eaf4;
+  border-right: 1px solid #e3eaf4;
+  padding: 8px;
+  text-align: left;
+  vertical-align: top;
+}
+
+.pdf-comparison th:last-child,
+.pdf-comparison td:last-child {
+  border-right: 0;
+}
+
+.pdf-comparison tr:last-child th,
+.pdf-comparison tr:last-child td {
+  border-bottom: 0;
+}
+
+.pdf-comparison thead th,
+.pdf-comparison tbody th {
+  background: #f1f3ff;
+  color: #172033;
+  font-weight: 800;
+}
+
+.pdf-comparison thead th:first-child,
+.pdf-comparison tbody th {
+  width: 92px;
+}
+
+.pdf-comparison td {
+  color: #56657a;
+}
+
+.pdf-conclusion {
+  margin-top: 24px;
+  border-radius: 14px;
+  background: #172033;
+  padding: 22px;
+  color: #edf0ff;
+}
+
+.pdf-conclusion h2 {
+  color: #fff;
+  font-size: 23px;
+}
+
+.pdf-conclusion > p:not(.pdf-eyebrow) {
+  margin-top: 10px;
+  font-size: 10px;
+  line-height: 1.6;
+}
+
+.pdf-roadmap-steps {
+  display: grid;
+  margin-top: 15px;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+
+.pdf-roadmap-steps span {
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.09);
+  padding: 9px;
+  font-size: 9px;
+  font-weight: 700;
+  text-align: center;
+}
+
+.pdf-roadmap-link {
+  display: block;
+  margin-top: 16px;
+  border-radius: 10px;
+  background: #1d4ed8;
+  padding: 12px 16px;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 800;
+  text-align: center;
+  text-decoration: none;
+}
+
+.pdf-roadmap-link small {
+  display: block;
+  margin-top: 3px;
+  color: #cad3ff;
+  font-size: 8px;
+  font-weight: 500;
+}
+
 @media print {
   @page {
     size: A4 portrait;
-    margin: 12mm;
+    margin: 0;
   }
 
   html,
@@ -490,12 +1078,15 @@
     background: #fff !important;
   }
 
-  .pdf-page-wrap,
-  .pdf-page-frame {
+  .pdf-a4-page {
     width: 210mm !important;
     height: 297mm !important;
     break-after: page;
     box-shadow: none !important;
+  }
+
+  .pdf-a4-page:last-child {
+    break-after: auto;
   }
 }
 
