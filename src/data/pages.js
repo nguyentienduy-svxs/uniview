@@ -64,6 +64,7 @@ export const pages = [
     title: 'UniView — Giới thiệu đánh giá định hướng cá nhân',
     shortTitle: 'Bắt đầu đánh giá',
     group: 'Đánh giá',
+    requiresAuth: true,
   },
   {
     id: 'assessment-intro-alias',
@@ -72,6 +73,7 @@ export const pages = [
     title: 'UniView — Bắt đầu assessment',
     shortTitle: 'Giới thiệu assessment',
     group: 'Đánh giá',
+    requiresAuth: true,
   },
   {
     id: '16918042470435401055',
@@ -80,6 +82,7 @@ export const pages = [
     title: 'Uniview — Trắc nghiệm RIASEC',
     shortTitle: 'Trắc nghiệm RIASEC',
     group: 'Đánh giá',
+    requiresAuth: true,
   },
   {
     id: '3b71fafb08a645b2a34dbfd5aae7e9a9',
@@ -88,6 +91,7 @@ export const pages = [
     title: 'UniView — Phong cách tư duy và làm việc',
     shortTitle: 'Phong cách tư duy',
     group: 'Đánh giá',
+    requiresAuth: true,
   },
   {
     id: 'assessment-experience-step',
@@ -96,6 +100,7 @@ export const pages = [
     title: 'UniView — Hoạt động và trải nghiệm thực tế',
     shortTitle: 'Hoạt động thực tế',
     group: 'Đánh giá',
+    requiresAuth: true,
   },
   {
     id: 'assessment-context',
@@ -104,6 +109,7 @@ export const pages = [
     title: 'UniView — Bối cảnh, trải nghiệm và điều kiện',
     shortTitle: 'Bối cảnh assessment',
     group: 'Đánh giá',
+    requiresAuth: true,
   },
   {
     id: 'ecf2ad6f9bed49acb7d97d156f41c50b',
@@ -112,6 +118,7 @@ export const pages = [
     title: 'UniView — Điều kiện và mục tiêu thực tế',
     shortTitle: 'Hồ sơ nhanh',
     group: 'Đánh giá',
+    requiresAuth: true,
   },
   {
     id: 'assessment-review',
@@ -120,6 +127,7 @@ export const pages = [
     title: 'UniView — Rà soát assessment',
     shortTitle: 'Rà soát assessment',
     group: 'Đánh giá',
+    requiresAuth: true,
   },
   {
     id: 'assessment-processing',
@@ -128,6 +136,7 @@ export const pages = [
     title: 'UniView — Đang tạo report',
     shortTitle: 'Tạo report',
     group: 'Đánh giá',
+    requiresAuth: true,
   },
   {
     id: '1579d077f1a9468ab6899ab7e1d02228',
@@ -136,6 +145,7 @@ export const pages = [
     title: 'UniView — Hoàn thành đánh giá định hướng',
     shortTitle: 'Hoàn thành đánh giá',
     group: 'Đánh giá',
+    requiresAuth: true,
   },
   {
     id: '39df3fae8a244d6da2af2aaae4c30402',
@@ -144,6 +154,7 @@ export const pages = [
     title: 'UniView — Kết quả đánh giá định hướng đa chiều',
     shortTitle: 'Kết quả định hướng',
     group: 'Báo cáo',
+    requiresAuth: true,
   },
   {
     id: 'annual-demo-report',
@@ -152,6 +163,7 @@ export const pages = [
     title: 'UniView — Báo cáo định hướng và giả thuyết ngành',
     shortTitle: 'Báo cáo định hướng',
     group: 'Báo cáo',
+    requiresAuth: true,
   },
   {
     id: 'assessment-report-major-detail',
@@ -160,6 +172,7 @@ export const pages = [
     title: 'UniView — Báo cáo chi tiết ngành',
     shortTitle: 'Chi tiết ngành trong báo cáo',
     group: 'Báo cáo',
+    requiresAuth: true,
   },
   {
     id: 'assessment-report-major-group',
@@ -168,6 +181,7 @@ export const pages = [
     title: 'UniView — Các ngành trong nhóm đề xuất',
     shortTitle: 'Nhóm ngành đề xuất',
     group: 'Báo cáo',
+    requiresAuth: true,
   },
   {
     id: 'assessment-report-pdf',
@@ -176,6 +190,7 @@ export const pages = [
     title: 'UniView — Bản PDF báo cáo định hướng',
     shortTitle: 'Xuất PDF báo cáo',
     group: 'Báo cáo',
+    requiresAuth: true,
   },
   {
     id: 'roadmap-setup-directions',

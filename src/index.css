@@ -1220,6 +1220,10 @@
     display: none !important;
   }
 
+  .feedback-widget {
+    display: none !important;
+  }
+
   .uv-report-page {
     min-height: auto;
     padding: 0 !important;
