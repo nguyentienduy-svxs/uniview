@@ -11,6 +11,22 @@ import {
 import { buildReportSnapshot } from '../utils/reportTemplatePersonalization'
 
 const TOTAL_PAGES = 7
+const RIASEC_CODES = ['R', 'I', 'A', 'S', 'E', 'C']
+
+function polarPoint(index, radius, center = 130) {
+  const angle = (-90 + index * 60) * (Math.PI / 180)
+  return [center + Math.cos(angle) * radius, center + Math.sin(angle) * radius]
+}
+
+function RadarChart({ scores }) {
+  const result = RIASEC_CODES.map((code, index) => polarPoint(index, 82 * (Math.max(0, scores?.[code] ?? 0) / 100)).join(',')).join(' ')
+  return <svg className="pdf-radar" viewBox="0 0 260 260" role="img" aria-label="Biểu đồ radar RIASEC">{[25, 50, 75, 100].map((level) => <polygon key={level} points={RIASEC_CODES.map((_, index) => polarPoint(index, 82 * level / 100).join(',')).join(' ')} fill={level === 100 ? '#f7f9fc' : 'none'} stroke="#d9e2fc" strokeWidth="1" />)}{RIASEC_CODES.map((code, index) => { const [x, y] = polarPoint(index, 82); const [lx, ly] = polarPoint(index, 105); return <g key={code}><line x1="130" y1="130" x2={x} y2={y} stroke="#d9e2fc" /><text x={lx} y={ly + 4} textAnchor="middle" fill="#56657a" fontSize="11" fontWeight="800">{code}</text></g> })}<polygon points={result} fill="rgba(29,78,216,.18)" stroke="#1d4ed8" strokeWidth="3" strokeLinejoin="round" />{RIASEC_CODES.map((code, index) => { const [x, y] = polarPoint(index, 82 * (Math.max(0, scores?.[code] ?? 0) / 100)); return <circle key={code} cx={x} cy={y} r="3.5" fill="#fff" stroke="#1d4ed8" strokeWidth="2.5" /> })}</svg>
+}
+
+function DirectionMap({ groups }) {
+  const positions = ['pdf-direction-one', 'pdf-direction-two', 'pdf-direction-three']
+  return <div className="pdf-direction-map"><svg viewBox="0 0 620 310" aria-hidden="true"><ellipse cx="310" cy="155" rx="220" ry="125" fill="none" stroke="#d9e2fc" strokeWidth="1" strokeDasharray="5 5" /><ellipse cx="310" cy="155" rx="150" ry="84" fill="none" stroke="#e3eaf4" strokeWidth="1" /><circle cx="310" cy="155" r="45" fill="#eaf1ff" /><path d="M310 155 L105 70 M310 155 L515 70 M310 155 L310 278" fill="none" stroke="#1d4ed8" strokeWidth="2.5" strokeDasharray="7 5" /><path d="M310 126 L329 155 L310 184 L291 155 Z" fill="#1d4ed8" /><circle cx="310" cy="155" r="8" fill="#172033" /></svg><div className="pdf-map-center"><strong>{groups[0]?.matchScore ?? 0}</strong><span>tín hiệu<br />ưu tiên</span></div>{groups.map((group, index) => <div key={group.id} className={`pdf-direction-node ${positions[index]}`}><span>0{index + 1}</span><div><strong>{group.name}</strong><small>{group.matchScore}/100 · {group.majors[0]?.name}</small></div></div>)}</div>
+}
 
 function Page({ children, number, snapshot, title }) {
   return <section className="pdf-a4-page"><header className="pdf-a4-header"><div><strong>UNIVIEW</strong><span>PERSONALIZED CAREER GUIDANCE</span></div><div><strong>{title}</strong><span>{snapshot.reportCode} · {snapshot.reportDate}</span></div></header><div className="pdf-a4-content">{children}</div><footer className="pdf-a4-footer"><span>Tài liệu định hướng cá nhân · Cần kiểm chứng bằng trải nghiệm thực tế</span><strong>Trang {number} / {TOTAL_PAGES}</strong></footer></section>
@@ -36,12 +52,13 @@ function ReportPdfPage() {
 
     <div className="pdf-pages mx-auto flex max-w-[840px] flex-col items-center gap-8 px-4 py-8">
       <Page number={1} snapshot={snapshot} title="Báo cáo định hướng cá nhân">
-        <div className="pdf-cover"><div className="pdf-cover-badge">BÁO CÁO ĐỊNH HƯỚNG · MÙA TUYỂN SINH {snapshot.admissionYear}</div><h1>Hiểu mình để<br /><span>lựa chọn tốt hơn</span></h1><p>Báo cáo cá nhân hóa dành cho <strong>{snapshot.fullName}</strong></p><div className="pdf-cover-summary"><div><span>Mã RIASEC</span><strong>{snapshot.top3}</strong></div><div><span>Nhóm ngành ưu tiên</span><strong>{groups[0]?.name}</strong></div><div><span>Hồ sơ hoàn thiện</span><strong>{snapshot.completeness}%</strong></div></div><div className="pdf-cover-note">Báo cáo là bản đồ khám phá, không phải phán quyết về một “ngành hoàn hảo”. Mỗi đề xuất cần được kiểm chứng bằng trải nghiệm thực tế.</div></div>
+        <div className="pdf-cover"><div className="pdf-cover-badge">BÁO CÁO ĐỊNH HƯỚNG · MÙA TUYỂN SINH {snapshot.admissionYear}</div><h1>Bản đồ định hướng<br /><span>của {snapshot.shortName}</span></h1><p>Khám phá bản thân · Hiểu ngành học · Kiểm chứng lựa chọn</p><DirectionMap groups={groups} /><div className="pdf-cover-summary"><div><span>Mã RIASEC</span><strong>{snapshot.top3}</strong></div><div><span>Nhóm ngành ưu tiên</span><strong>{groups[0]?.name}</strong></div><div><span>Hồ sơ hoàn thiện</span><strong>{snapshot.completeness}%</strong></div></div><div className="pdf-cover-note"><strong>{snapshot.fullName}</strong> có tín hiệu ưu tiên ở {groups.map((group) => group.name).join(', ')}. Đây là ba giả thuyết để khám phá, chưa phải kết luận nghề nghiệp cố định.</div></div>
       </Page>
 
       <Page number={2} snapshot={snapshot} title="Phần 1 · Chân dung cá nhân">
         <SectionTitle eyebrow="PHẦN 1 · CHÂN DUNG CÁ NHÂN" intro="Các tín hiệu đang ủng hộ và những dữ liệu còn thiếu.">Bạn đang quan tâm đến kiểu hoạt động nào?</SectionTitle>
-        <div className="pdf-riasec-grid">{Object.keys(RIASEC_DIMENSIONS).map((code) => <div key={code} className={topCodes.some((item) => item.code === code) ? 'is-top' : ''}><span>{code} · {RIASEC_DIMENSIONS[code].label}</span><strong>{Math.round(riasec.scores?.[code] ?? 0)}%</strong><i><b style={{ width: `${riasec.scores?.[code] ?? 0}%` }} /></i></div>)}</div>
+        <div className="pdf-profile-visual"><div><RadarChart scores={riasec.scores} /><span className="pdf-holland-code">Mã Holland · {snapshot.top3}</span></div><div className="pdf-top-signals">{topCodes.length ? topCodes.map(({ code, score }, index) => <article key={code}><span>0{index + 1}</span><div><h3>{code} · {RIASEC_DIMENSIONS[code].label} <b>{Math.round(score)}%</b></h3><p>{RIASEC_DIMENSIONS[code].description} {index === 0 ? 'Đây là tín hiệu nổi bật nhất ở thời điểm hiện tại.' : 'Nên đọc kết hợp với hai chiều còn lại thay vì tách riêng.'}</p></div></article>) : <article className="is-missing"><span>!</span><div><h3>Chưa hoàn thành RIASEC</h3><p>Các đề xuất hiện ưu tiên môn mạnh, trải nghiệm và điều kiện cá nhân; độ sâu phân tích sẽ tăng khi hoàn tất assessment.</p></div></article>}</div></div>
+        <div className="pdf-riasec-grid pdf-riasec-compact">{Object.keys(RIASEC_DIMENSIONS).map((code) => <div key={code} className={topCodes.some((item) => item.code === code) ? 'is-top' : ''}><span>{code} · {RIASEC_DIMENSIONS[code].label}</span><strong>{Math.round(riasec.scores?.[code] ?? 0)}%</strong><i><b style={{ width: `${riasec.scores?.[code] ?? 0}%` }} /></i></div>)}</div>
         <div className="pdf-info-grid"><article><h3>Học tập & điều kiện</h3><dl><div><dt>GPA</dt><dd>{snapshot.gpa}</dd></div><div><dt>Điểm THPT</dt><dd>{snapshot.thptScore}</dd></div><div><dt>Điểm ĐGNL</dt><dd>{snapshot.dgnlScore}</dd></div><div><dt>Thế mạnh</dt><dd>{snapshot.profile.strengths?.join(', ') || 'Chưa cập nhật'}</dd></div><div><dt>Khu vực</dt><dd>{snapshot.profile.regions?.join(', ') || 'Chưa cập nhật'}</dd></div><div><dt>Ngân sách</dt><dd>{snapshot.profile.tuition ? `${snapshot.profile.tuition} triệu/năm` : 'Chưa cập nhật'}</dd></div></dl></article><article className="pdf-insight"><h3>Cách đọc hồ sơ</h3><p>Tổ hợp <strong>{snapshot.top3}</strong> cho thấy nhiều hơn một hướng phát triển. Điểm cao chỉ là tín hiệu hứng thú hiện tại; chưa phản ánh đầy đủ năng lực chuyên môn, sức bền với deadline và mức phù hợp với công việc hằng ngày.</p><p><strong>Điểm nên kiểm chứng:</strong> phản ứng khi phải sửa nhiều vòng, thực hiện phần việc lặp lại và phối hợp với người khác dưới áp lực thời gian.</p></article></div>
       </Page>
 

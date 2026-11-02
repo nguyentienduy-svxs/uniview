@@ -530,6 +530,118 @@
   line-height: 1.65;
 }
 
+.pdf-direction-map {
+  position: relative;
+  height: 300px;
+  margin-top: 14px;
+}
+
+.pdf-direction-map > svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.pdf-map-center {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  display: flex;
+  height: 68px;
+  width: 68px;
+  transform: translate(-50%, -50%);
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  border: 1px solid #b7c4ff;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.92);
+  box-shadow: 0 5px 16px rgba(29, 78, 216, 0.14);
+  color: #172033;
+  text-align: center;
+}
+
+.pdf-map-center strong {
+  color: #1d4ed8;
+  font-size: 20px;
+  line-height: 1;
+}
+
+.pdf-map-center span {
+  color: #75839a;
+  margin-top: 3px;
+  font-size: 6.5px;
+  font-weight: 700;
+  line-height: 1.3;
+  text-transform: uppercase;
+}
+
+.pdf-direction-node {
+  position: absolute;
+  display: flex;
+  max-width: 205px;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid #d9e2fc;
+  border-radius: 10px;
+  background: #fff;
+  padding: 8px 10px;
+  box-shadow: 0 5px 14px rgba(29, 78, 216, 0.08);
+}
+
+.pdf-direction-node > span {
+  display: flex;
+  height: 27px;
+  width: 27px;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  border-radius: 7px;
+  background: #1d4ed8;
+  color: #fff;
+  font-size: 9px;
+  font-weight: 800;
+}
+
+.pdf-direction-node strong,
+.pdf-direction-node small {
+  display: block;
+}
+
+.pdf-direction-node strong {
+  color: #172033;
+  font-size: 9.5px;
+  line-height: 1.3;
+}
+
+.pdf-direction-node small {
+  margin-top: 2px;
+  color: #1d4ed8;
+  font-size: 7px;
+  font-weight: 700;
+}
+
+.pdf-direction-one {
+  left: 0;
+  top: 20px;
+}
+
+.pdf-direction-two {
+  right: 0;
+  top: 20px;
+}
+
+.pdf-direction-three {
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.pdf-cover .pdf-cover-summary {
+  margin-top: 15px;
+}
+
 .pdf-section-title {
   margin-bottom: 24px;
 }
@@ -555,6 +667,118 @@
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 10px 18px;
+}
+
+.pdf-profile-visual {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  align-items: center;
+  gap: 20px;
+  border: 1px solid #e3eaf4;
+  border-radius: 14px;
+  background: #f7f9fc;
+  padding: 14px 18px;
+}
+
+.pdf-profile-visual > div:first-child {
+  text-align: center;
+}
+
+.pdf-radar {
+  display: block;
+  width: 235px;
+  height: 235px;
+  margin: 0 auto;
+}
+
+.pdf-holland-code {
+  display: inline-block;
+  margin-top: -8px;
+  border-radius: 99px;
+  background: #eaf1ff;
+  padding: 5px 11px;
+  color: #1d4ed8;
+  font-size: 9px;
+  font-weight: 800;
+}
+
+.pdf-top-signals {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.pdf-top-signals article {
+  display: grid;
+  grid-template-columns: 27px 1fr;
+  gap: 9px;
+  border: 1px solid #d9e2fc;
+  border-radius: 9px;
+  background: #fff;
+  padding: 9px;
+}
+
+.pdf-top-signals article > span {
+  display: flex;
+  height: 27px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 7px;
+  background: #eaf1ff;
+  color: #1d4ed8;
+  font-size: 9px;
+  font-weight: 800;
+}
+
+.pdf-top-signals h3 {
+  color: #172033;
+  font-size: 10px;
+  font-weight: 800;
+}
+
+.pdf-top-signals h3 b {
+  float: right;
+  color: #1d4ed8;
+}
+
+.pdf-top-signals p {
+  margin-top: 3px;
+  color: #56657a;
+  font-size: 7.5px;
+  line-height: 1.45;
+}
+
+.pdf-top-signals article.is-missing {
+  grid-template-columns: 32px 1fr;
+  background: #fff5db;
+}
+
+.pdf-riasec-compact {
+  margin-top: 12px;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 7px;
+}
+
+.pdf-riasec-compact > div {
+  padding: 8px 10px;
+  font-size: 8px;
+}
+
+.pdf-riasec-compact i {
+  height: 4px;
+}
+
+.pdf-profile-visual + .pdf-riasec-grid + .pdf-info-grid {
+  margin-top: 14px;
+}
+
+.pdf-profile-visual + .pdf-riasec-grid + .pdf-info-grid article {
+  padding: 14px;
+}
+
+.pdf-profile-visual + .pdf-riasec-grid + .pdf-info-grid h3 {
+  margin-bottom: 8px;
+  font-size: 12px;
 }
 
 .pdf-riasec-grid > div {
