@@ -15,7 +15,6 @@ import {
 } from './headerConfig'
 
 import {
-  ArrowIcon,
   CloseIcon,
   HeartIcon,
   LockIcon,
@@ -348,65 +347,6 @@ export default function AppHeader() {
                 Đăng nhập
               </NavLink>
 
-              <NavLink
-                to="/assessment"
-                className={`
-                  group
-
-                  hidden
-                  items-center
-                  justify-center
-                  gap-2.5
-
-                  rounded-full
-
-                  bg-[#2554E6]
-
-                  px-6
-                  py-3
-
-                  text-[15px]
-                  font-bold
-                  text-white
-
-                  shadow-[0_8px_20px_rgba(37,84,230,0.32)]
-                  ring-4
-                  ring-blue-200/60
-
-                  transition-all
-                  duration-200
-
-                  hover:-translate-y-1
-                  hover:bg-[#1e40af]
-                  hover:shadow-[0_12px_26px_rgba(37,84,230,0.42)]
-                  hover:ring-blue-200
-
-                  focus-visible:outline-none
-                  focus-visible:ring-4
-                  focus-visible:ring-blue-300
-
-                  active:translate-y-0
-                  active:shadow-[0_5px_14px_rgba(37,84,230,0.3)]
-
-                  md:inline-flex
-                `}
-              >
-                <span>
-                  Bắt đầu khám phá
-                </span>
-
-                <span
-                  className="
-                    [&>svg]:h-5
-                    [&>svg]:w-5
-                    transition-transform
-                    duration-200
-                    group-hover:translate-x-1
-                  "
-                >
-                  <ArrowIcon />
-                </span>
-              </NavLink>
             </>
           )}
 
