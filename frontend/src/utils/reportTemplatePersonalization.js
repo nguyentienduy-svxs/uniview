@@ -3,8 +3,8 @@ import {
   getProfileCompleteness,
   getUniversityComparisonCandidates,
   RIASEC_DIMENSIONS,
-} from '../data/careerReport'
-import { scoreRiasec } from './assessmentScoring'
+} from '../data/careerReport.js'
+import { scoreRiasec } from './assessmentScoring.js'
 
 function shortVietnameseName(fullName) {
   const parts = String(fullName ?? '').trim().split(/\s+/).filter(Boolean)

@@ -2,6 +2,8 @@ import { useMemo, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 
 import { useAuth } from '../context/AuthContext'
+import { useJourney } from '../context/JourneyContext'
+import { getUnifiedStudentProfile } from '../data/pitchDemo'
 import majors from '../data/majors.json'
 import universitiesData from '../data/universities.json'
 
@@ -84,12 +86,15 @@ function evaluateUniversity(university, criteria) {
 function PersonalizedShortlistPage() {
   const navigate = useNavigate()
   const { user } = useAuth()
+  const { state, toggleShortlist, addDecisionChoice } = useJourney()
+  const sharedProfile = getUnifiedStudentProfile(user)
   const [criteria, setCriteria] = useState(() => ({
     ...DEFAULT_CRITERIA,
-    major: user?.targetMajors?.[0] ?? DEFAULT_CRITERIA.major,
-    regionId: user?.preferredRegion === 'Hà Nội' ? 'ha-noi' : DEFAULT_CRITERIA.regionId,
-    thptScore: Number(user?.academicProfile?.thptScore?.value ?? DEFAULT_CRITERIA.thptScore),
-    competencyScore: Number(user?.academicProfile?.dgnlScore?.value ?? DEFAULT_CRITERIA.competencyScore),
+    major: sharedProfile.targetMajors[0] ?? DEFAULT_CRITERIA.major,
+    regionId: sharedProfile.preferredRegion === 'Hà Nội' ? 'ha-noi' : DEFAULT_CRITERIA.regionId,
+    budget: sharedProfile.tuitionBudgetMaxMillion || DEFAULT_CRITERIA.budget,
+    thptScore: sharedProfile.thptScoreNumber || DEFAULT_CRITERIA.thptScore,
+    competencyScore: sharedProfile.dgnlScoreNumber || DEFAULT_CRITERIA.competencyScore,
     ...readJson('uniview:shortlist:criteria', {}),
   }))
   const [criteriaDraft, setCriteriaDraft] = useState(criteria)
@@ -97,7 +102,7 @@ function PersonalizedShortlistPage() {
   const [activeGroup, setActiveGroup] = useState('all')
   const [savedIds, setSavedIds] = useState(() => {
     const saved = readJson('uniview:saved:universities', [])
-    return Array.isArray(saved) ? saved : []
+    return [...new Set([...(state.shortlist ?? []), ...(Array.isArray(saved) ? saved : [])])]
   })
   const [comparisonIds, setComparisonIds] = useState(() => {
     const saved = readJson('uniview:comparison:universities', [])
@@ -129,9 +134,14 @@ function PersonalizedShortlistPage() {
 
   const toggleSaved = (event, universityId) => {
     event.stopPropagation()
-    const next = savedIds.includes(universityId) ? savedIds.filter((id) => id !== universityId) : [...savedIds, universityId]
+    const university = universitiesData.universities.find((item) => item.id === universityId)
+    const shouldSave = !savedIds.includes(universityId)
+    const next = shouldSave ? [...savedIds, universityId] : savedIds.filter((id) => id !== universityId)
     setSavedIds(next)
     localStorage.setItem('uniview:saved:universities', JSON.stringify(next))
+    if (state.shortlist.includes(universityId) !== shouldSave) {
+      toggleShortlist(universityId, university ? { name: university.name, city: university.city, shortName: university.shortName } : null)
+    }
   }
 
   const toggleComparison = (event, item) => {
@@ -159,6 +169,16 @@ function PersonalizedShortlistPage() {
       : savedIds.length ? savedIds : shortlist.slice(0, 3).map(({ university }) => university.id)
     const selected = shortlist.filter(({ university }) => preferredIds.includes(university.id))
     localStorage.setItem('uniview:decision-board:universities', JSON.stringify(selected.map(({ university, matchedMajor }) => ({ universityId: university.id, majorName: matchedMajor }))))
+    selected.forEach(({ university, matchedMajor }) => addDecisionChoice({
+      universityId: university.id,
+      university: university.name,
+      major: matchedMajor,
+      program: matchedMajor,
+      campus: university.city,
+      year: sharedProfile.targetAdmissionYear || '2027',
+      method: '',
+      priority: 'MEDIUM',
+    }))
     navigate('/decision-board')
   }
 

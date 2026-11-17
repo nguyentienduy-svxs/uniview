@@ -220,6 +220,7 @@ function ProfilePage() {
       grade: personalDraft.grade,
       school: personalDraft.school.trim(),
       preferredRegion: selectedRegion,
+      preferredRegions: [selectedRegion],
       targetAdmissionYear: personalDraft.targetAdmissionYear.trim(),
       targetMajors,
     })
@@ -255,6 +256,7 @@ function ProfilePage() {
         dgnlScore: { value: updates.dgnlScore, status: updates.dgnlScoreStatus },
         certificates,
       },
+      strengths: updates.strengths,
     })
 
     setActiveModal(null)
@@ -271,9 +273,15 @@ function ProfilePage() {
     }
 
     updateProfile(updates)
-    if (prefDraft.regions.length > 0) {
-      updateUserProfile({ preferredRegion: prefDraft.regions[0] })
-    }
+    const tuitionBudgetByBand = { 'under-25': 25, '25-45': 35, '45-70': 70, 'over-70': 120 }
+    updateUserProfile({
+      preferredRegion: prefDraft.regions[0] ?? '',
+      preferredRegions: prefDraft.regions,
+      tuitionBand: prefDraft.tuition,
+      tuitionBudgetMaxMillion: tuitionBudgetByBand[prefDraft.tuition] ?? 35,
+      scholarship: prefDraft.scholarship,
+      priorities: prefDraft.priorities,
+    })
 
     setActiveModal(null)
     showToast('✓ Đã lưu khu vực và điều kiện tuyển sinh thành công!')
@@ -520,6 +528,7 @@ function ProfilePage() {
                 </div>
                 <button
                   onClick={openAcademicModal}
+                  data-testid="edit-academic-profile"
                   type="button"
                   className="inline-flex items-center gap-2 px-4 py-2 rounded-xl border border-blue-200 bg-blue-50 hover:bg-blue-100 text-[#1D4ED8] text-xs sm:text-sm font-bold transition shadow-xs cursor-pointer shrink-0"
                 >
@@ -855,6 +864,7 @@ function ProfilePage() {
                 <label className="block">
                   <span className="mb-1 block text-xs font-bold text-slate-700">Điểm thi THPT (Thang 30)</span>
                   <input
+                    data-testid="academic-thpt"
                     className="w-full rounded-xl border border-slate-200 px-3.5 py-2 text-sm outline-none focus:border-blue-500"
                     placeholder="VD: 25.50"
                     value={academicDraft.thptScore}
@@ -880,6 +890,7 @@ function ProfilePage() {
                 <label className="block">
                   <span className="mb-1 block text-xs font-bold text-slate-700">Điểm ĐGNL ĐHQG-HCM (Thang 1200)</span>
                   <input
+                    data-testid="academic-dgnl"
                     className="w-full rounded-xl border border-slate-200 px-3.5 py-2 text-sm outline-none focus:border-blue-500"
                     placeholder="VD: 875"
                     value={academicDraft.dgnlScore}
@@ -1019,6 +1030,7 @@ function ProfilePage() {
                 </button>
                 <button
                   type="submit"
+                  data-testid="save-academic-profile"
                   className="rounded-xl bg-[#1d4ed8] px-5 py-2 text-xs font-bold text-white hover:bg-[#1e40af]"
                 >
                   Lưu thay đổi

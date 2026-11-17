@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 
 import { useJourney } from '../context/JourneyContext'
 import { DEMO_SCHOOLS } from '../data/annualDemo'
+import { getMajorProfile } from '../data/careerReport'
 
 const ROADMAP_SCHOOL_GROUPS = [
   { id: 'fit', title: 'NHÓM 1: Đáp ứng nhiều tiêu chí hiện tại', badge: 'Phù hợp', description: 'Trường có dữ liệu đủ rõ để đối chiếu ngành, khu vực và ngân sách hiện tại.' },
@@ -116,7 +117,8 @@ function RoadmapShortlistCard({ school, group, state, toggleShortlist }) {
 }
 
 function ShortlistPage() {
-  const { state, toggleShortlist } = useJourney()
+  const { state, toggleShortlist, toggleMajorShortlist } = useJourney()
+  const savedMajors = (state.majorShortlist ?? []).map(getMajorProfile).filter(Boolean)
   const savedSchools = DEMO_SCHOOLS.filter(({ id }) => state.shortlist.includes(id))
   const groupedSavedSchools = ROADMAP_SCHOOL_GROUPS.map((group) => ({
     ...group,
@@ -131,6 +133,11 @@ function ShortlistPage() {
   return (
 <main className="w-full pt-6 bg-[#f9f9ff] min-h-[calc(100vh-80px)] font-['Be_Vietnam_Pro'] text-[#172033]">
 <div className="max-w-[1280px] mx-auto px-4 md:px-6 lg:px-8 pb-16 space-y-8">
+
+{savedMajors.length > 0 && <section className="rounded-3xl border border-blue-100 bg-white p-5 shadow-sm md:p-6">
+  <div className="flex flex-wrap items-end justify-between gap-3"><div><p className="text-xs font-extrabold uppercase tracking-widest text-[#1D4ED8]">Ngành đã lưu từ Assessment Report</p><h2 className="mt-1 text-xl font-extrabold text-slate-900">{savedMajors.length} ngành đang chờ bạn kiểm chứng</h2></div><Link to="/report?tab=majors" className="text-sm font-bold text-[#1D4ED8]">Mở báo cáo →</Link></div>
+  <div className="mt-4 flex flex-wrap gap-2">{savedMajors.map((major) => <div key={major.id} className="inline-flex items-center gap-2 rounded-full border border-blue-200 bg-blue-50 px-4 py-2 text-sm font-bold text-blue-900"><Link to={`/report/major/${major.id}?returnTab=majors`}>{major.name}</Link><button type="button" onClick={() => toggleMajorShortlist(major.id)} className="text-slate-400 hover:text-rose-600" aria-label={`Xóa ${major.name} khỏi Shortlist`}>×</button></div>)}</div>
+</section>}
 
 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-sm pb-5 border-b border-slate-200/80">
 <div className="flex items-center flex-wrap gap-2 text-slate-500 text-xs md:text-sm">

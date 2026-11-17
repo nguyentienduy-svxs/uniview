@@ -8,7 +8,7 @@ import { findBrowser, startStaticServer, waitHttp, CdpClient } from './smokeBrow
 const { server, port } = await startStaticServer()
 const debugPort = 10000 + Math.floor(Math.random() * 2000)
 const profile = fs.mkdtempSync(path.join(os.tmpdir(), 'uniview-data-mode-'))
-const browser = spawn(findBrowser(), ['--headless=new', '--disable-gpu', '--no-first-run', '--no-default-browser-check', `--remote-debugging-port=${debugPort}`, `--user-data-dir=${profile}`, 'about:blank'], { stdio: 'ignore', windowsHide: true })
+const browser = spawn(findBrowser(), ['--headless=new', '--disable-gpu', '--no-sandbox', '--disable-dev-shm-usage', '--no-first-run', '--no-default-browser-check', `--remote-debugging-port=${debugPort}`, `--user-data-dir=${profile}`, 'about:blank'], { stdio: 'ignore', windowsHide: true })
 let client
 try {
   await waitHttp(`http://127.0.0.1:${debugPort}/json/version`, 40, 150)
@@ -161,16 +161,92 @@ try {
   await until('localStorage.getItem("uniview-jwt-token-v1") === "verified-api-session" && location.pathname !== "/login"')
   await open('/profile', 'mock')
   await until('document.body.innerText.includes("API student")')
+  await until('!!document.querySelector("[data-testid=edit-academic-profile]")')
+  await evaluate('document.querySelector("[data-testid=edit-academic-profile]").click()')
+  await until('!!document.querySelector("[data-testid=academic-thpt]")')
+  await evaluate(`
+    const input = document.querySelector('[data-testid=academic-thpt]');
+    Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value').set.call(input, '26.25');
+    input.dispatchEvent(new Event('input', {bubbles:true}));
+    document.querySelector('[data-testid=save-academic-profile]').click();
+  `)
+  await until('!document.querySelector("[data-testid=academic-thpt]")')
+  await open('/admission-checker', 'mock')
+  await until('document.querySelector("[data-testid=checker-thpt-score]")?.value === "26.25"')
+  await open('/admission-roadmap', 'mock')
+  await until('document.body.innerText.includes("26.25") && document.body.innerText.includes("875")')
+  await open('/scenario-comparison', 'mock')
+  await until('document.body.innerText.includes("THPT 26.25") && document.body.innerText.includes("ĐGNL 875")')
+  console.log('PASS profile edit persists and synchronizes Checker, Route Mapping and Scenario A')
+  await open('/profile', 'mock')
+  await until('document.body.innerText.includes("API student")')
   await evaluate('if (!Array.from(document.querySelectorAll("button")).some(b => b.textContent.includes("Real API"))) window.toggleUniViewDevTools()')
   await until('!!Array.from(document.querySelectorAll("button")).find(b => b.textContent.includes("Real API"))')
   await evaluate('Array.from(document.querySelectorAll("button")).find(b => b.textContent.includes("Real API")).click()')
   await until('localStorage.getItem("uniview-data-mode-v1") === "real" && document.body.innerText.includes("API student")')
   await evaluate('Array.from(document.querySelectorAll("button")).find(b => b.textContent.includes("Mock")).click()')
   await until('localStorage.getItem("uniview-data-mode-v1") === "mock" && document.body.innerText.includes("API student")')
-  assert.equal(await evaluate('localStorage.getItem("uniview-auth-session-v4")'), null)
+  assert.equal(await evaluate('JSON.parse(localStorage.getItem("uniview-auth-session-v4")).mockWorkspace'), true)
+  assert.equal(await evaluate('JSON.parse(localStorage.getItem("uniview-auth-session-v4")).user.academicProfile.thptScore.value'), '26.25')
   await open('/profile', 'mock')
   await until('document.body.innerText.includes("API student")')
-  console.log('PASS database account logs in from Mock, rejects wrong password, survives Mock/API switches and reload')
+  await evaluate('if (!document.querySelector("[data-testid=reset-pitch-demo]")) window.toggleUniViewDevTools()')
+  await until('!!document.querySelector("[data-testid=reset-pitch-demo]")')
+  await evaluate('document.querySelector("[data-testid=reset-pitch-demo]").click()')
+  await until('document.readyState === "complete" && !!document.querySelector("main")')
+  await open('/admission-checker', 'mock')
+  await until('document.querySelector("[data-testid=checker-thpt-score]")?.value === "25.50"')
+  console.log('PASS database account logs in from Mock, survives mode switches/reload, and reset restores canonical demo data')
+  await open('/report?tab=overview', 'mock')
+  await until('document.body.innerText.includes("Bản đồ định hướng") && document.body.innerText.includes("3 nhóm ngành · 18 ngành")')
+  for (const tab of ['Tổng quan', 'Chân dung cá nhân', 'Nhóm ngành & ngành', 'Học tập & tuyển sinh', 'Bước tiếp theo']) {
+    await evaluate(`Array.from(document.querySelectorAll('nav button')).find(button => button.textContent.includes(${JSON.stringify(tab)})).click()`)
+    await until(`new URLSearchParams(location.search).get('tab') === ${JSON.stringify(tab === 'Tổng quan' ? 'overview' : tab === 'Chân dung cá nhân' ? 'portrait' : tab === 'Nhóm ngành & ngành' ? 'majors' : tab === 'Học tập & tuyển sinh' ? 'academic' : 'next')}`)
+  }
+  await open('/report?tab=majors', 'mock')
+  await until('document.querySelectorAll("article").length >= 6 && document.body.innerText.includes("Lưu Shortlist")')
+  assert.equal(await evaluate('Array.from(document.querySelectorAll("article")).filter(article => article.querySelector("a[href^=\'/report/major/\']")).length'), 6)
+  const selectedMajorId = await evaluate('document.querySelector("a[href^=\'/report/major/\']").getAttribute("href").split("/")[3].split("?")[0]')
+  await evaluate('Array.from(document.querySelectorAll("button")).find(button => button.textContent.includes("Lưu Shortlist")).click()')
+  await until('document.body.innerText.includes("Đã lưu")')
+  assert.equal(await evaluate(`JSON.parse(localStorage.getItem('uniview-journey-v1:api-student')).majorShortlist.includes(${JSON.stringify(selectedMajorId)})`), true)
+  await evaluate('Array.from(document.querySelectorAll("button")).find(button => button.textContent.includes("Bắt đầu Roadmap")).click()')
+  await until(`location.pathname === '/roadmap/major/' + ${JSON.stringify(selectedMajorId)}`)
+  assert.equal(await evaluate(`Boolean(JSON.parse(localStorage.getItem('uniview-journey-v1:api-student')).majorRoadmaps[${JSON.stringify(selectedMajorId)}])`), true)
+  await open('/report?tab=majors', 'mock')
+  await until('document.body.innerText.includes("Tiếp tục Roadmap")')
+  await open('/report/pdf', 'mock')
+  await until('document.querySelectorAll(".pdf-a4-page").length === 7')
+  assert.equal(await evaluate('document.querySelectorAll(".pdf-major-six article").length'), 18)
+  assert.equal(await evaluate('document.body.innerText.toLowerCase().includes("localhost")'), false)
+  const printedPdf = await client.send('Page.printToPDF', { printBackground: true, preferCSSPageSize: true })
+  const pdfArtifactDir = path.resolve('artifacts')
+  fs.mkdirSync(pdfArtifactDir, { recursive: true })
+  const pdfArtifactPath = path.join(pdfArtifactDir, 'UniView_Assessment_Mock_Sample.pdf')
+  fs.writeFileSync(pdfArtifactPath, Buffer.from(printedPdf.data, 'base64'))
+  assert.equal(fs.statSync(pdfArtifactPath).size > 10000, true)
+  console.log('PASS Assessment Report tabs, 3x6 majors, Shortlist/Roadmap persistence and synchronized 7-page PDF')
+  await open('/decision-board', 'mock')
+  await until('document.body.innerText.includes("Decision Board")')
+  await until('!!Array.from(document.querySelectorAll("button")).find(button => button.querySelector(".material-symbols-outlined")?.textContent === "add")')
+  await evaluate('Array.from(document.querySelectorAll("button")).find(button => button.querySelector(".material-symbols-outlined")?.textContent === "add").click()')
+  await until('!!document.querySelector("[role=dialog] input[name=university]")')
+  await evaluate(`
+    const setNamedInput = (name, value) => {
+      const input = document.querySelector('[role=dialog] input[name=' + name + ']');
+      Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value').set.call(input, value);
+      input.dispatchEvent(new Event('input', {bubbles:true}));
+    };
+    setNamedInput('university', 'Trường kiểm thử pitching');
+    setNamedInput('major', 'Kỹ thuật phần mềm');
+    setNamedInput('campus', 'TP.HCM');
+    document.querySelector('[role=dialog] form').dispatchEvent(new Event('submit', {bubbles:true,cancelable:true}));
+  `)
+  await until('document.body.innerText.includes("Trường kiểm thử pitching") && !document.querySelector("[role=dialog]")')
+  assert.equal(await evaluate('JSON.parse(localStorage.getItem("uniview-journey-v1:api-student")).decisionChoices.length'), 1)
+  await open('/decision-board', 'mock')
+  await until('document.body.innerText.includes("Trường kiểm thử pitching")')
+  console.log('PASS Decision Board selection uses shared Mock state and survives refresh')
   await evaluate('sessionStorage.setItem("test-api-plans", "[]")')
   await open('/profile', 'real')
   await until('!!document.querySelector("#profile-nav") && document.body.innerText.includes("API student")')
@@ -203,8 +279,10 @@ try {
   assert.deepEqual(errors, [])
 } finally {
   client?.close()
-  browser.kill()
-  await new Promise((resolve) => browser.once('exit', resolve))
+  if (browser.exitCode === null) {
+    browser.kill()
+    await new Promise((resolve) => browser.once('exit', resolve))
+  }
   server.close()
   const resolved = path.resolve(profile)
   if (resolved.startsWith(path.resolve(os.tmpdir()) + path.sep) && path.basename(resolved).startsWith('uniview-data-mode-')) fs.rmSync(resolved, { recursive: true, force: true, maxRetries: 5, retryDelay: 100 })

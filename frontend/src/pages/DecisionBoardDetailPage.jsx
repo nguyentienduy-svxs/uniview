@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 
 import { getDecisionChoice } from '../data/decisionBoard'
+import { useJourney } from '../context/JourneyContext'
 
 const statusOptions = [
   ['considering', 'Đang cân nhắc'],
@@ -24,7 +25,8 @@ function Icon({ children, className = '' }) {
 
 function DecisionBoardDetailPage() {
   const { choiceId } = useParams()
-  const choice = getDecisionChoice(choiceId)
+  const { state } = useJourney()
+  const choice = (state.decisionChoices ?? []).find(({ id }) => id === choiceId) ?? getDecisionChoice(choiceId)
   const [status, setStatus] = useState(choice?.status ?? 'considering')
   const [round, setRound] = useState(0)
   const [remindersEnabled, setRemindersEnabled] = useState(true)

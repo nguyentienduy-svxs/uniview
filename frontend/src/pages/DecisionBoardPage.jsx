@@ -2,11 +2,17 @@ import { useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 
 import { DECISION_BOARD } from '../data/decisionBoard'
+import { useJourney } from '../context/JourneyContext'
+import { useAuth } from '../context/AuthContext'
+import { getUnifiedStudentProfile } from '../data/pitchDemo'
+import { useDataMode } from '../context/DataModeContext'
+import DataUnavailable from '../components/DataUnavailable'
 
 const milestoneTone = {
   rose: 'border-rose-200 bg-rose-50 text-rose-800',
   amber: 'border-amber-200 bg-amber-50 text-amber-900',
   blue: 'border-blue-200 bg-blue-50 text-blue-800',
+  slate: 'border-slate-200 bg-slate-50 text-slate-700',
 }
 
 const statusTone = {
@@ -20,17 +26,27 @@ function Icon({ children, className = '' }) {
 }
 
 function DecisionBoardPage() {
+  const { isRealMode } = useDataMode()
+  const { state, addDecisionChoice } = useJourney()
+  const { user } = useAuth()
+  const profile = getUnifiedStudentProfile(user)
+  const season = String(profile.targetAdmissionYear || DECISION_BOARD.season)
   const [query, setQuery] = useState('')
   const [modal, setModal] = useState(null)
+  const allChoices = useMemo(() => [...DECISION_BOARD.choices, ...(state.decisionChoices ?? [])], [state.decisionChoices])
   const choices = useMemo(() => {
     const normalized = query.trim().toLocaleLowerCase('vi')
-    if (!normalized) return DECISION_BOARD.choices
-    return DECISION_BOARD.choices.filter((choice) => (
+    if (!normalized) return allChoices
+    return allChoices.filter((choice) => (
       `${choice.university} ${choice.major} ${choice.acronym}`
         .toLocaleLowerCase('vi')
         .includes(normalized)
     ))
-  }, [query])
+  }, [allChoices, query])
+
+  if (isRealMode) {
+    return <DataUnavailable description="Decision Board chưa có dữ liệu thật từ máy chủ cho tài khoản này." />
+  }
 
   return (
     <main className="min-h-[calc(100vh-80px)] bg-[#f9f9ff] pb-24 pt-6 font-['Be_Vietnam_Pro'] text-[#121b2e]">
@@ -55,8 +71,8 @@ function DecisionBoardPage() {
             <label className="flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm font-semibold shadow-sm">
               <Icon className="text-[18px] text-[#1D4ED8]">calendar_month</Icon>
               <span>Năm tuyển sinh</span>
-              <select className="border-0 bg-transparent p-0 pr-7 font-bold text-[#1D4ED8] focus:ring-0" defaultValue={DECISION_BOARD.season}>
-                <option>{DECISION_BOARD.season}</option>
+              <select className="border-0 bg-transparent p-0 pr-7 font-bold text-[#1D4ED8] focus:ring-0" value={season} onChange={() => {}}>
+                <option>{season}</option>
               </select>
             </label>
             <button className="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold shadow-sm hover:bg-slate-50" onClick={() => setModal('history')} type="button">
@@ -99,7 +115,7 @@ function DecisionBoardPage() {
           <div className="mb-5 flex flex-col justify-between gap-4 md:flex-row md:items-center">
             <div>
               <h2 className="text-lg font-bold">Danh sách đang theo dõi</h2>
-              <p className="mt-1 text-xs text-slate-500">{DECISION_BOARD.choices.length} lựa chọn trong mùa tuyển sinh {DECISION_BOARD.season}</p>
+              <p className="mt-1 text-xs text-slate-500">{allChoices.length} lựa chọn trong mùa tuyển sinh {season}</p>
             </div>
             <label className="relative w-full md:max-w-sm">
               <Icon className="absolute left-3 top-1/2 -translate-y-1/2 text-[19px] text-slate-400">search</Icon>
@@ -158,12 +174,12 @@ function DecisionBoardPage() {
         </div>
       </div>
 
-      {modal && <BoardModal mode={modal} onClose={() => setModal(null)} />}
+      {modal && <BoardModal mode={modal} onAdd={addDecisionChoice} onClose={() => setModal(null)} season={season} />}
     </main>
   )
 }
 
-function BoardModal({ mode, onClose }) {
+function BoardModal({ mode, onClose, onAdd, season }) {
   const historyMode = mode === 'history'
   return (
     <div aria-modal="true" className="fixed inset-0 z-[70] flex items-center justify-center bg-slate-950/45 p-4 backdrop-blur-sm" onMouseDown={(event) => event.target === event.currentTarget && onClose()} role="dialog">
@@ -187,14 +203,31 @@ function BoardModal({ mode, onClose }) {
             ))}
           </div>
         ) : (
-          <form className="mt-5 space-y-4" onSubmit={(event) => { event.preventDefault(); onClose() }}>
-            <label className="block text-sm font-bold">Trường đại học<input className="mt-1.5 w-full rounded-xl border border-slate-200 px-3 py-2.5 font-normal" placeholder="Tìm và chọn trường" /></label>
-            <label className="block text-sm font-bold">Ngành / chương trình<input className="mt-1.5 w-full rounded-xl border border-slate-200 px-3 py-2.5 font-normal" placeholder="Nhập ngành muốn theo dõi" /></label>
+          <form className="mt-5 space-y-4" onSubmit={(event) => {
+            event.preventDefault()
+            const values = Object.fromEntries(new FormData(event.currentTarget))
+            const university = String(values.university || '').trim()
+            const major = String(values.major || '').trim()
+            if (!university || !major) return
+            const added = onAdd?.({
+              universityId: university.toLocaleLowerCase('vi').replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '') || `school-${Date.now()}`,
+              university,
+              major,
+              program: major,
+              campus: String(values.campus || '').trim(),
+              year: String(values.year || season),
+              method: '',
+              priority: 'MEDIUM',
+            })
+            if (added !== false) onClose()
+          }}>
+            <label className="block text-sm font-bold">Trường đại học<input className="mt-1.5 w-full rounded-xl border border-slate-200 px-3 py-2.5 font-normal" name="university" placeholder="Tìm và chọn trường" required /></label>
+            <label className="block text-sm font-bold">Ngành / chương trình<input className="mt-1.5 w-full rounded-xl border border-slate-200 px-3 py-2.5 font-normal" name="major" placeholder="Nhập ngành muốn theo dõi" required /></label>
             <div className="grid gap-3 sm:grid-cols-2">
-              <label className="block text-sm font-bold">Cơ sở<input className="mt-1.5 w-full rounded-xl border border-slate-200 px-3 py-2.5 font-normal" placeholder="Ví dụ: Thủ Đức" /></label>
-              <label className="block text-sm font-bold">Năm tuyển sinh<input className="mt-1.5 w-full rounded-xl border border-slate-200 px-3 py-2.5 font-normal" defaultValue={DECISION_BOARD.season} /></label>
+              <label className="block text-sm font-bold">Cơ sở<input className="mt-1.5 w-full rounded-xl border border-slate-200 px-3 py-2.5 font-normal" name="campus" placeholder="Ví dụ: Thủ Đức" /></label>
+              <label className="block text-sm font-bold">Năm tuyển sinh<input className="mt-1.5 w-full rounded-xl border border-slate-200 px-3 py-2.5 font-normal" name="year" defaultValue={season} /></label>
             </div>
-            <p className="rounded-xl bg-blue-50 p-3 text-xs leading-5 text-blue-900">Bản demo chưa ghi dữ liệu lên máy chủ. Form này dùng để kiểm tra luồng giao diện.</p>
+            <p className="rounded-xl bg-blue-50 p-3 text-xs leading-5 text-blue-900">Lựa chọn được lưu trong workspace Mock của tài khoản demo và giữ nguyên sau khi tải lại trang.</p>
             <div className="flex justify-end gap-2 pt-2"><button className="rounded-xl border border-slate-200 px-4 py-2 text-sm font-bold" onClick={onClose} type="button">Hủy</button><button className="rounded-xl bg-[#1D4ED8] px-4 py-2 text-sm font-bold text-white" type="submit">Thêm lựa chọn</button></div>
           </form>
         )}

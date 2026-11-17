@@ -14,6 +14,7 @@ import { createLocalAssessmentReport } from '../utils/assessmentScoring'
 import { normalizeExperience } from '../utils/experienceAssessment'
 import { normalizeCertificates } from '../utils/certificates'
 import { riasecAssessment } from '../data/assessment'
+import { getAssessmentProfileFromUser, isPitchDemoAccount } from '../data/pitchDemo'
 import { useAuth } from './AuthContext'
 import { useDataMode } from './DataModeContext'
 
@@ -91,7 +92,7 @@ function academicProfileDefaults(academicProfile = {}) {
 
 const assessmentStorageKey = (userId) => `${STORAGE_PREFIX}:${userId ?? 'guest'}`
 
-function createMinhAnhAssessment(defaults) {
+function createPitchDemoAssessment(defaults, userId) {
   const values = { R: 4, I: 5, A: 4, S: 3, E: 4, C: 4 }
   const riasecAnswers = Object.fromEntries(riasecAssessment.questions.map((question) => [question.id, values[question.domain]]))
   const experience = {
@@ -115,33 +116,29 @@ function createMinhAnhAssessment(defaults) {
     }])),
     activeDomain: 'TECHNOLOGY',
     noExperience: false,
-    attemptSeed: 'minh-anh-demo-2026',
+    attemptSeed: 'uniview-pitch-demo-2027',
   }
   const snapshot = {
     ...defaults,
     riasecAnswers,
     experience,
-    profile: {
-      ...defaults.profile,
-      admissionYear: '2027',
-      regions: ['TP.HCM & lân cận'],
-      tuition: '25-45',
-      scholarship: true,
-      strengths: ['Toán', 'Tiếng Anh', 'Tin học'],
-      priorities: ['Học phí hợp lý', 'Cơ hội việc làm & OJT', 'Cơ sở vật chất hiện đại'],
-    },
+    profile: { ...defaults.profile },
   }
-  const payload = buildAssessmentPayload(snapshot, 'demo-nguyen-minh-anh')
+  const payload = buildAssessmentPayload(snapshot, userId)
   return { ...snapshot, report: createLocalAssessmentReport(snapshot, payload) }
 }
 
+function profileDefaultsForUser(user) {
+  if (isPitchDemoAccount(user) && user?.isDemo) return getAssessmentProfileFromUser(user)
+  return academicProfileDefaults(user?.academicProfile)
+}
+
 function readStoredAssessment(user, keepStoredReport = false, mode = 'mock') {
-  const academicProfile = user?.academicProfile ?? {}
   const defaults = {
     ...initialAssessment,
     profile: {
       ...initialAssessment.profile,
-      ...academicProfileDefaults(academicProfile),
+      ...profileDefaultsForUser(user),
     },
   }
 
@@ -153,7 +150,9 @@ function readStoredAssessment(user, keepStoredReport = false, mode = 'mock') {
     const stored = window.localStorage.getItem(`${assessmentStorageKey(user?.id)}:${mode}`)
       ?? (mode === 'mock' ? window.localStorage.getItem(assessmentStorageKey(user?.id)) : null)
 
-    if (!stored) return mode === 'mock' && user?.isDemo ? createMinhAnhAssessment(defaults) : defaults
+    if (!stored) return mode === 'mock' && user?.isDemo
+      ? createPitchDemoAssessment(defaults, user.id)
+      : defaults
 
     const parsed = JSON.parse(stored)
 
@@ -291,7 +290,7 @@ export function AssessmentProvider({ children }) {
       ...structuredClone(initialAssessment),
       profile: {
         ...structuredClone(initialAssessment.profile),
-        ...academicProfileDefaults(user?.academicProfile),
+        ...profileDefaultsForUser(user),
       },
     })
     setSubmitState({ loading: false, error: null })

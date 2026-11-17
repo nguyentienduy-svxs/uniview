@@ -1,13 +1,13 @@
 import { useDataMode } from '../context/DataModeContext'
 import { useCatalog } from '../hooks/useCatalog'
 import DataUnavailable from '../components/DataUnavailable'
-import { useState, useMemo } from 'react'
+import { useEffect, useState, useMemo } from 'react'
 import { Link } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { useAssessment } from '../context/AssessmentContext'
-import { ENTITLEMENTS } from '../components/header/headerConfig'
 import universityData from '../data/universities.json'
 import rawMajors from '../data/majors.json'
+import { getUnifiedStudentProfile } from '../data/pitchDemo'
 
 // Chuẩn hóa toàn bộ danh sách ngành học từ majors.json kết hợp điểm chuẩn mẫu
 const BENCHMARK_MAP = {
@@ -39,10 +39,9 @@ const ALL_MAJORS = rawMajors.map((m) => {
 })
 
 function AdmissionCheckerPage() {
-  const { user, hasEntitlement } = useAuth()
+  const { user } = useAuth()
   const { assessment } = useAssessment()
-  const hasAdmissionPass = hasEntitlement(ENTITLEMENTS.ADMISSION_PASS)
-
+  const sharedProfile = useMemo(() => getUnifiedStudentProfile(user), [user])
   const { isRealMode } = useDataMode()
   const catalog = useCatalog('universities')
   const majorCatalog = useCatalog('majors')
@@ -68,12 +67,17 @@ function AdmissionCheckerPage() {
   const [isSelectingMajor, setIsSelectingMajor] = useState(false)
 
   // Method & Scores
-  const defaultThpt = assessment?.profile?.thptScore || user?.academicProfile?.thptScore?.value || (isRealMode ? '' : '25.50')
-  const defaultDgnl = assessment?.profile?.dgnlScore || user?.academicProfile?.dgnlScore?.value || (isRealMode ? '' : '875')
+  const defaultThpt = isRealMode ? (assessment?.profile?.thptScore || user?.academicProfile?.thptScore?.value || '') : sharedProfile.thptScore
+  const defaultDgnl = isRealMode ? (assessment?.profile?.dgnlScore || user?.academicProfile?.dgnlScore?.value || '') : sharedProfile.dgnlScore
 
   const [method, setMethod] = useState('thpt') // 'thpt' | 'dgnl_hcm'
   const [userThptScore, setUserThptScore] = useState(defaultThpt)
   const [userDgnlScore, setUserDgnlScore] = useState(defaultDgnl)
+
+  useEffect(() => {
+    setUserThptScore(defaultThpt)
+    setUserDgnlScore(defaultDgnl)
+  }, [defaultDgnl, defaultThpt])
 
   const isDgnl = method === 'dgnl_hcm'
 
@@ -538,6 +542,7 @@ function AdmissionCheckerPage() {
                         step="0.05"
                         min="0"
                         max="30"
+                        data-testid="checker-thpt-score"
                         type="number"
                         value={userThptScore}
                         onChange={(e) => setUserThptScore(e.target.value)}
@@ -569,6 +574,7 @@ function AdmissionCheckerPage() {
                       step="1"
                       min="0"
                       max="1200"
+                      data-testid="checker-dgnl-score"
                       type="number"
                       value={userDgnlScore}
                       onChange={(e) => setUserDgnlScore(e.target.value)}
