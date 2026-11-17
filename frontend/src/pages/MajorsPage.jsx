@@ -149,6 +149,82 @@ const MAJOR_IMAGES = {
     src: "/anhnganh/KyThuatXayDung.png",
     alt: "Minh họa ngành Kỹ thuật Xây dựng",
   },
+  "7520320": {
+    src: "/anhnganh/KyThuatMoiTruong.png",
+    alt: "Minh họa ngành Kỹ thuật Môi trường",
+  },
+  "7540101": {
+    src: "/anhnganh/CongNgheThucPham.png",
+    alt: "Minh họa ngành Công nghệ Thực phẩm",
+  },
+  "7520503": {
+    src: "/anhnganh/KyThuatHoaHoc.png",
+    alt: "Minh họa ngành Kỹ thuật Hóa học",
+  },
+  "7520301": {
+    src: "/anhnganh/KyThuatHatNhan.png",
+    alt: "Minh họa ngành Kỹ thuật Hạt nhân",
+  },
+  "7210403": {
+    src: "/anhnganh/ThietKeDoHoa.png",
+    alt: "Minh họa ngành Thiết kế Đồ họa",
+  },
+  "7210404": {
+    src: "/anhnganh/ThietKeThoiTrang.png",
+    alt: "Minh họa ngành Thiết kế Thời trang",
+  },
+  "7210405": {
+    src: "/anhnganh/ThietKeNoiThat.png",
+    alt: "Minh họa ngành Thiết kế Nội thất",
+  },
+  "7210402": {
+    src: "/anhnganh/ThietKeCongNghiep.png",
+    alt: "Minh họa ngành Thiết kế Công nghiệp",
+  },
+  "7210401": {
+    src: "/anhnganh/LyLuanLichSu.png",
+    alt: "Minh họa ngành Lý luận, Lịch sử và Phê bình Mỹ thuật",
+  },
+  "7220201": {
+    src: "/anhnganh/NgonNguAnh.png",
+    alt: "Minh họa ngành Ngôn ngữ Anh",
+  },
+  "7220204": {
+    src: "/anhnganh/NgonNguTrung.png",
+    alt: "Minh họa ngành Ngôn ngữ Trung Quốc",
+  },
+  "7220209": {
+    src: "/anhnganh/NgonNguNhat.png",
+    alt: "Minh họa ngành Ngôn ngữ Nhật",
+  },
+  "7220210": {
+    src: "/anhnganh/NgonNguHan.png",
+    alt: "Minh họa ngành Ngôn ngữ Hàn Quốc",
+  },
+  "7229030": {
+    src: "/anhnganh/NganhVanHoc.png",
+    alt: "Minh họa ngành Văn học",
+  },
+  "7310206": {
+    src: "/anhnganh/QuanHeQuocTe.jpg",
+    alt: "Minh họa ngành Quan hệ Quốc tế",
+  },
+  "7320101": {
+    src: "/anhnganh/BaoChi.png",
+    alt: "Minh họa ngành Báo chí",
+  },
+  "7320104": {
+    src: "/anhnganh/TruyenThongDaPhuongTien.png",
+    alt: "Minh họa ngành Truyền thông Đa phương tiện",
+  },
+  "7310608": {
+    src: "/anhnganh/DongPhuongHoc.png",
+    alt: "Minh họa ngành Đông phương học",
+  },
+  "7140201": {
+    src: "/anhnganh/GiaoDucMamNon.png",
+    alt: "Minh họa ngành Giáo dục Mầm non",
+  },
 };
 
 const normalizeText = (value) =>
