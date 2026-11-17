@@ -408,7 +408,7 @@ function MajorsPage() {
   return (
     <main className="w-full pt-6 bg-surface min-h-[calc(100vh-80px)]">
       <div className="flex flex-col w-full">
-        <div className="w-full max-w-[1240px] mx-auto px-3 sm:px-4 lg:px-5 pb-space-lg">
+        <div className="mx-auto w-full max-w-[1440px] px-4 pb-space-lg sm:px-5 lg:px-6">
           <section
             className="group relative h-[520px] overflow-hidden rounded-xl bg-surface-container-low p-space-lg pb-14 shadow-sm sm:h-[440px] md:h-[440px] md:p-space-xl md:pb-14 lg:h-[380px]"
             aria-roledescription="carousel"
@@ -625,9 +625,9 @@ function MajorsPage() {
           </div>
         </div>
 
-        <div className="w-full max-w-[1240px] mx-auto px-3 sm:px-4 lg:px-5 pb-space-2xl">
-          <div className="grid grid-cols-1 lg:grid-cols-12 xl:grid-cols-10 gap-space-lg">
-            <aside className="lg:col-span-4 xl:col-span-3 space-y-space-md">
+        <div className="mx-auto w-full max-w-[1440px] px-4 pb-space-2xl sm:px-5 lg:px-6">
+          <div className="grid grid-cols-1 items-start gap-6 lg:grid-cols-[300px_minmax(0,1fr)] xl:grid-cols-[320px_minmax(0,1fr)]">
+            <aside className="space-y-space-md">
               <div className="sticky top-24 bg-surface-container-lowest rounded-xl p-space-md shadow-sm space-y-space-md ">
                 <div className="flex items-center justify-between pb-space-sm border-b border-surface-container">
                   <div className="flex items-center gap-space-xs">
@@ -776,7 +776,7 @@ function MajorsPage() {
               </div>
             </aside>
 
-            <section className="lg:col-span-8 xl:col-span-7 space-y-space-md">
+            <section className="min-w-0 space-y-space-md">
               {isRealMode && loadingReal && <p role="status">Đang tải danh sách ngành...</p>}
               {isRealMode && realError && <div role="alert"><p>Không thể tải danh sách ngành.</p><button onClick={retry} type="button">Thử lại</button></div>}
               {isRealMode && !loadingReal && !realError && realMajors.length === 0 && <p role="status">Chưa có dữ liệu ngành học.</p>}
@@ -1011,7 +1011,7 @@ function MajorsPage() {
         </div>
 
         <section className="w-full bg-surface-container-low py-space-2xl">
-          <div className="max-w-[1240px] mx-auto px-3 sm:px-4 lg:px-5 space-y-space-lg">
+          <div className="mx-auto max-w-[1440px] space-y-space-lg px-4 sm:px-5 lg:px-6">
             <div className="flex flex-col md:flex-row md:items-end justify-between gap-space-sm">
               <div className="space-y-space-xs">
                 <div className="inline-flex items-center gap-1 text-primary font-label-md text-label-md">
