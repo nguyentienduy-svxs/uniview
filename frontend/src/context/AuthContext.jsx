@@ -11,6 +11,7 @@ import {
   GUEST_SESSION,
 } from '../data/user'
 import { getActivePlanIds, PLAN_IDS } from '../data/plans'
+import { createPitchDemoSession, isPitchDemoAccount } from '../data/pitchDemo'
 import { clearUserWorkspaceStorage } from '../utils/userWorkspaceStorage'
 
 const AuthContext = createContext(null)
@@ -110,9 +111,26 @@ function createSubscription(planId, admissionSeason) {
   }
 }
 
-function serverSession(response) {
+function serverSession(response, { mockMode = false } = {}) {
   const user = response?.user ?? response
   if (!user?.id) throw new Error('Phản hồi tài khoản không hợp lệ.')
+  if (mockMode && isPitchDemoAccount(user)) {
+    const saved = readJson(ACCOUNT_SESSIONS_KEY, {})[user.id]
+    if (saved?.mockWorkspace) {
+      return cloneSession({
+        ...saved,
+        authSource: 'api',
+        mockWorkspace: true,
+        user: {
+          ...user,
+          ...saved.user,
+          id: user.id,
+          email: user.email,
+        },
+      })
+    }
+    return createPitchDemoSession(user)
+  }
   return {
     user,
     authSource: 'api',
@@ -159,7 +177,7 @@ export function AuthProvider({ children }) {
     authApi.getMe()
       .then((data) => {
         if (!active) return
-        setSession(serverSession(data))
+        setSession(serverSession(data, { mockMode: !isRealData }))
         setReportHistory([])
       })
       .catch((requestError) => {
@@ -185,7 +203,7 @@ export function AuthProvider({ children }) {
       setLoading(true)
       setError(null)
       const data = await authApi.getMe()
-      setSession(serverSession(data))
+      setSession(serverSession(data, { mockMode: !isRealData }))
       setReportHistory([])
       return data
     } catch (requestError) {
@@ -234,7 +252,7 @@ export function AuthProvider({ children }) {
 
   const persistLocalSession = (nextSession) => {
     setSession(nextSession)
-    if (isRealData || nextSession?.authSource === 'api') return
+    if (isRealData || (nextSession?.authSource === 'api' && !nextSession?.mockWorkspace)) return
     if (typeof window === 'undefined') return
 
     try {
@@ -256,9 +274,10 @@ export function AuthProvider({ children }) {
   const login = async (identifier, password) => {
     const loginWithApi = async () => {
       const response = await authApi.login(String(identifier ?? '').trim().toLowerCase(), password)
-      const nextSession = serverSession(response)
+      const nextSession = serverSession(response, { mockMode: !isRealData })
       if (!nextSession.user?.id) throw new Error('Phản hồi tài khoản không hợp lệ.')
-      setSession(nextSession)
+      if (nextSession.mockWorkspace) persistLocalSession(nextSession)
+      else setSession(nextSession)
       setReportHistory([])
       setError(null)
       return nextSession
@@ -293,9 +312,10 @@ export function AuthProvider({ children }) {
   const register = async ({ email, fullName, password }) => {
     if (isRealData) {
       const response = await authApi.register({ email, fullName, password })
-      const nextSession = serverSession(response)
+      const nextSession = serverSession(response, { mockMode: !isRealData })
       if (!nextSession.user?.id) throw new Error('Phản hồi tài khoản không hợp lệ.')
-      setSession(nextSession)
+      if (nextSession.mockWorkspace) persistLocalSession(nextSession)
+      else setSession(nextSession)
       setReportHistory([])
       setError(null)
       return nextSession
@@ -425,6 +445,26 @@ export function AuthProvider({ children }) {
     return nextSession
   }
 
+  const resetMockDemoData = () => {
+    if (isRealData || !session?.mockWorkspace || !isPitchDemoAccount(user)) return false
+    const nextSession = createPitchDemoSession({
+      id: user.id,
+      email: user.email,
+      username: user.username,
+      fullName: user.fullName,
+      initials: user.initials,
+      role: user.role,
+    })
+    clearUserWorkspaceStorage()
+    window.localStorage.removeItem(`uniview-assessment-v4:${user.id}:mock`)
+    window.localStorage.removeItem(`uniview-assessment-v4:${user.id}`)
+    window.localStorage.removeItem(`uniview-journey-v1:${user.id}`)
+    window.localStorage.removeItem(historyKey(user.id))
+    persistLocalSession(nextSession)
+    setReportHistory([])
+    return true
+  }
+
   const logout = async () => {
     if (isRealData || session?.authSource === 'api' || tokenStorage.get()) {
       try {
@@ -473,6 +513,8 @@ export function AuthProvider({ children }) {
       setSubscriptionAutoRenew,
       reportHistory,
       saveReportToHistory,
+      resetMockDemoData,
+      isPitchDemo: Boolean(session?.mockWorkspace && isPitchDemoAccount(user)),
       demoAccounts,
       refreshSession: loadCurrentSession,
     }}>

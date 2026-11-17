@@ -26,6 +26,8 @@ function createInitialState() {
     setupTaskIds: [],
     taskRecords: {},
     validationReports: {},
+    majorRoadmaps: {},
+    majorShortlist: [],
     shortlist: [],
     shortlistNotes: {},
     shortlistDetails: {},
@@ -37,11 +39,21 @@ function createInitialState() {
 
 const storageKey = (userId) => `${STORAGE_PREFIX}:${userId}`
 
+function readLegacyShortlist() {
+  if (typeof window === 'undefined') return []
+  try {
+    const ids = JSON.parse(window.localStorage.getItem('uniview:saved:universities'))
+    return Array.isArray(ids) ? ids : []
+  } catch {
+    return []
+  }
+}
+
 function readState(userId) {
   if (!userId || typeof window === 'undefined') return createInitialState()
   try {
     const parsed = JSON.parse(window.localStorage.getItem(storageKey(userId)))
-    if (!parsed) return seedScenario('ANNUAL_ROADMAP')
+    if (!parsed) return { ...seedScenario('ANNUAL_ROADMAP'), shortlist: readLegacyShortlist() }
     const merged = { ...createInitialState(), ...parsed, version: 2 }
     const migratedMajors = [...new Set((merged.selectedMajorIds ?? []).map((id) => LEGACY_MAJOR_IDS[id] ?? id))]
       .filter((id) => findDemoMajor(id))
@@ -49,6 +61,7 @@ function readState(userId) {
     const validSetupTasks = (merged.setupTaskIds ?? []).filter((taskId) => findDemoTask(taskId))
     return {
       ...merged,
+      shortlist: [...new Set([...(merged.shortlist ?? []), ...readLegacyShortlist()])],
       selectedMajorIds: migratedMajors.length ? migratedMajors : createInitialState().selectedMajorIds,
       setupTaskIds: validSetupTasks,
       taskRecords: validTaskRecords,
@@ -382,6 +395,44 @@ export function JourneyProvider({ children }) {
     setToast({ type: 'success', message: exists ? 'Đã xóa khỏi Shortlist.' : 'Đã lưu trường vào Shortlist.' })
   }
 
+  const toggleMajorShortlist = (majorId) => {
+    if (!findDemoMajor(majorId)) return false
+    const exists = state.majorShortlist.includes(majorId)
+    update((current) => ({
+      ...current,
+      majorShortlist: exists
+        ? current.majorShortlist.filter((id) => id !== majorId)
+        : [...current.majorShortlist, majorId],
+    }))
+    setToast({ type: 'success', message: exists ? 'Đã xóa ngành khỏi Shortlist.' : 'Đã lưu ngành vào Shortlist.' })
+    return true
+  }
+
+  const ensureMajorRoadmap = (majorId, assessmentResultId = null) => {
+    if (!findDemoMajor(majorId)) return false
+    update((current) => ({
+      ...current,
+      selectedMajorIds: current.selectedMajorIds.includes(majorId)
+        ? current.selectedMajorIds
+        : [...current.selectedMajorIds, majorId],
+      majorRoadmaps: {
+        ...(current.majorRoadmaps ?? {}),
+        [majorId]: current.majorRoadmaps?.[majorId] ?? {
+          id: `roadmap-${user?.id ?? 'guest'}-${majorId}`,
+          userId: user?.id ?? null,
+          assessmentResultId,
+          majorId,
+          status: 'NOT_STARTED',
+          progress: 0,
+          createdAt: now(),
+          updatedAt: now(),
+        },
+      },
+      roadmapCreatedAt: current.roadmapCreatedAt ?? now(),
+    }))
+    return true
+  }
+
   const updateShortlistNote = (schoolId, note) => update((current) => ({
     ...current,
     shortlistNotes: { ...current.shortlistNotes, [schoolId]: note },
@@ -441,7 +492,8 @@ export function JourneyProvider({ children }) {
     <JourneyContext.Provider value={{
       state, capabilities, toast, openTaskCount, availableSlots, openTasks, historyTasks,
       selectMajors, selectSetupTasks, confirmRoadmap, addTaskToRoadmap, startTask, saveDraft, saveEvidence,
-      saveReflection, completeTask, resetCompletedTasks, stopTask, removeSelectedTask, toggleShortlist, resetDemo,
+      saveReflection, completeTask, resetCompletedTasks, stopTask, removeSelectedTask, toggleShortlist,
+      toggleMajorShortlist, ensureMajorRoadmap, resetDemo,
       setToast, updateShortlistNote, addDecisionChoice, taskStatuses: TASK_STATUS,
       isAnnualDemo: capabilities.subscriptionPlan === PLAN_IDS.ANNUAL,
     }}>

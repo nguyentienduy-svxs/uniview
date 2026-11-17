@@ -1,5 +1,5 @@
-import { riasecAssessment } from '../data/assessment'
-import { certificateEvidenceWeight } from './certificates'
+import { riasecAssessment } from '../data/assessment.js'
+import { certificateEvidenceWeight } from './certificates.js'
 
 export function scoreRiasec(
   answers = {},

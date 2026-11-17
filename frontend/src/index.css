@@ -1202,6 +1202,129 @@
   font-weight: 500;
 }
 
+.pdf-group-intro {
+  margin: 0 0 14px;
+  color: #56657a;
+  font-size: 11px;
+  line-height: 1.55;
+}
+
+.pdf-major-six {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.pdf-major-six article {
+  min-height: 172px;
+  border: 1px solid #dce5f5;
+  border-radius: 14px;
+  padding: 12px;
+  background: #fff;
+  break-inside: avoid;
+}
+
+.pdf-major-six article > span,
+.pdf-major-six article > em {
+  display: block;
+  color: #1d4ed8;
+  font-size: 8px;
+  font-style: normal;
+  font-weight: 800;
+}
+
+.pdf-major-six h3 {
+  margin: 5px 0;
+  color: #172033;
+  font-size: 13px;
+}
+
+.pdf-major-six p,
+.pdf-major-six small {
+  display: block;
+  margin: 0 0 6px;
+  color: #56657a;
+  font-size: 8.5px;
+  line-height: 1.42;
+}
+
+.pdf-major-six small {
+  color: #7c4a03;
+}
+
+.pdf-school-compact {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 7px 12px;
+}
+
+.pdf-school-compact article {
+  display: grid;
+  grid-template-columns: 24px 1fr;
+  gap: 8px;
+  align-items: start;
+  border-bottom: 1px solid #e3eaf4;
+  padding: 6px 0;
+  break-inside: avoid;
+}
+
+.pdf-school-compact article > span {
+  display: grid;
+  width: 24px;
+  height: 24px;
+  place-items: center;
+  border-radius: 7px;
+  background: #eff6ff;
+  color: #1d4ed8;
+  font-size: 8px;
+  font-weight: 900;
+}
+
+.pdf-school-compact strong,
+.pdf-school-compact small {
+  display: block;
+  font-size: 9px;
+  line-height: 1.35;
+}
+
+.pdf-task-examples {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 9px;
+  margin: 14px 0;
+}
+
+.pdf-task-examples article {
+  border: 1px solid #dce5f5;
+  border-radius: 12px;
+  padding: 10px;
+  break-inside: avoid;
+}
+
+.pdf-task-examples strong,
+.pdf-task-examples span {
+  display: block;
+  font-size: 8.5px;
+  line-height: 1.4;
+}
+
+.pdf-task-examples strong {
+  margin-bottom: 5px;
+  color: #1d4ed8;
+  font-size: 10px;
+}
+
+.pdf-task-examples span {
+  margin-top: 3px;
+  color: #56657a;
+}
+
+.pdf-school-compact small {
+  margin-top: 2px;
+  color: #64748b;
+  font-size: 7.5px;
+}
+
 @media print {
   @page {
     size: A4 portrait;

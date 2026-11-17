@@ -5,6 +5,7 @@ import { useAuth } from '../context/AuthContext'
 import { ENTITLEMENTS } from '../components/header/headerConfig'
 import DemoDataBadge from '../components/premium/DemoDataBadge'
 import PremiumLockCard from '../components/premium/PremiumLockCard'
+import { getUnifiedStudentProfile } from '../data/pitchDemo'
 
 function AdmissionRoadmapPage() {
   const { hasEntitlement } = useAuth()
@@ -14,6 +15,11 @@ function AdmissionRoadmapPage() {
 
 function AdmissionRoadmapContent({ locked = true }) {
   const { isRealMode } = useDataMode()
+  const { user } = useAuth()
+  const profile = getUnifiedStudentProfile(user)
+  const thptScore = profile.thptScore || 'Chưa cập nhật'
+  const dgnlScore = profile.dgnlScore || 'Chưa cập nhật'
+  const ieltsScore = profile.ieltsScore || 'Chưa cập nhật'
   return (
     <>
       <main className="w-full pt-6 bg-[#FFFDFB] min-h-[calc(100vh-80px)] pb-16">
@@ -50,10 +56,10 @@ function AdmissionRoadmapContent({ locked = true }) {
                       </div>
                       <div>
                         <span className="text-[11px] font-bold text-[#667085] uppercase tracking-wider">LỘ TRÌNH HỌC TẬP CÁ NHÂN HÓA</span>
-                        <p className="text-sm font-bold text-[#172033]">Nguyễn Minh Tuấn</p>
+                        <p className="text-sm font-bold text-[#172033]">{profile.fullName || 'Học sinh UniView'}</p>
                       </div>
                     </div>
-                    <span className="px-2.5 py-1 rounded-full bg-[#EFF6FF] text-[#1D4ED8] text-xs font-semibold">Khóa 2025</span>
+                    <span className="px-2.5 py-1 rounded-full bg-[#EFF6FF] text-[#1D4ED8] text-xs font-semibold">Mùa tuyển sinh {profile.targetAdmissionYear}</span>
                   </div>
                   <div className="pt-3 flex items-center justify-between text-xs text-[#667085]">
                     <span>Mã hồ sơ: <strong className="text-[#172033] font-semibold">UV-84920</strong></span>
@@ -137,7 +143,7 @@ function AdmissionRoadmapContent({ locked = true }) {
                 <div className="p-4 rounded-xl bg-[#EFF6FF] border border-blue-100 flex flex-col justify-between">
                   <span className="text-xs font-medium text-[#667085]">Điểm THPT dự kiến</span>
                   <div className="mt-2">
-                    <div className="text-2xl font-extrabold text-[#172033]">25.50</div>
+                    <div className="text-2xl font-extrabold text-[#172033]">{thptScore}</div>
                     <p className="text-[11px] font-semibold text-[#1D4ED8] mt-0.5">Tổ hợp A00, A01</p>
                   </div>
                 </div>
@@ -145,7 +151,7 @@ function AdmissionRoadmapContent({ locked = true }) {
                 <div className="p-4 rounded-xl bg-[#EFF6FF] border border-blue-100 flex flex-col justify-between">
                   <span className="text-xs font-medium text-[#667085]">ĐGNL ĐHQG TP.HCM</span>
                   <div className="mt-2">
-                    <div className="text-2xl font-extrabold text-[#172033]">875 <span className="text-xs text-[#667085] font-normal">/ 1200</span></div>
+                    <div className="text-2xl font-extrabold text-[#172033]">{dgnlScore} <span className="text-xs text-[#667085] font-normal">/ 1200</span></div>
                     <p className="text-[11px] font-semibold text-[#1D4ED8] mt-0.5">Đợt 1 • Đã xác thực</p>
                   </div>
                 </div>
@@ -153,7 +159,7 @@ function AdmissionRoadmapContent({ locked = true }) {
                 <div className="p-4 rounded-xl bg-[#FFF1F2] border border-rose-100 flex flex-col justify-between">
                   <span className="text-xs font-medium text-[#667085]">IELTS Academic</span>
                   <div className="mt-2">
-                    <div className="text-2xl font-extrabold text-[#172033]">6.5</div>
+                    <div className="text-2xl font-extrabold text-[#172033]">{ieltsScore}</div>
                     <p className="text-[11px] font-semibold text-[#FB7185] mt-0.5">Còn hiệu lực tuyển sinh</p>
                   </div>
                 </div>
@@ -232,9 +238,9 @@ function AdmissionRoadmapContent({ locked = true }) {
                     <p className="text-xs text-[#667085] mt-1">Dữ liệu tổng hợp từ THPT, kỳ thi chuẩn hóa và học bạ.</p>
                   </div>
                   <div className="mt-4 pt-3 border-t border-blue-200/60 space-y-2 text-xs">
-                    <div className="flex justify-between"><span className="text-[#667085]">THPT dự kiến:</span><span className="font-bold text-[#172033]">25.50 (A00, A01)</span></div>
-                    <div className="flex justify-between"><span className="text-[#667085]">ĐGNL ĐHQG:</span><span className="font-bold text-[#1D4ED8]">875 / 1200</span></div>
-                    <div className="flex justify-between"><span className="text-[#667085]">IELTS:</span><span className="font-bold text-[#FB7185]">6.5 Academic</span></div>
+                    <div className="flex justify-between"><span className="text-[#667085]">THPT dự kiến:</span><span className="font-bold text-[#172033]">{thptScore} (A00, A01)</span></div>
+                    <div className="flex justify-between"><span className="text-[#667085]">ĐGNL ĐHQG:</span><span className="font-bold text-[#1D4ED8]">{dgnlScore} / 1200</span></div>
+                    <div className="flex justify-between"><span className="text-[#667085]">IELTS:</span><span className="font-bold text-[#FB7185]">{ieltsScore} Academic</span></div>
                   </div>
                 </div>
 
@@ -273,7 +279,7 @@ function AdmissionRoadmapContent({ locked = true }) {
                       <span className="w-6 h-6 rounded-md bg-[#FBBF24] text-white text-xs font-bold flex items-center justify-center">03</span>
                       <div>
                         <div className="text-xs sm:text-sm font-bold text-[#172033]">Xét tuyển kết hợp CCQT &amp; Học bạ (Mã 402)</div>
-                        <span className="text-[11px] text-[#667085]">IELTS 6.5 + Học bạ THPT</span>
+                        <span className="text-[11px] text-[#667085]">IELTS {ieltsScore} + Học bạ THPT</span>
                       </div>
                     </div>
                     <div className="flex items-center gap-2.5">
@@ -353,13 +359,13 @@ function AdmissionRoadmapContent({ locked = true }) {
                   </div>
                   <h4 className="text-lg font-bold text-[#172033]">Phương thức 1: Điểm thi tốt nghiệp THPT</h4>
                 </div>
-                <span className="text-xs font-semibold px-2.5 py-1 rounded bg-slate-100 text-[#667085] self-start sm:self-auto">Khóa 2025</span>
+                <span className="text-xs font-semibold px-2.5 py-1 rounded bg-slate-100 text-[#667085] self-start sm:self-auto">Tham chiếu 2025 · Demo</span>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="p-4 rounded-xl bg-[#EFF6FF] border border-blue-100">
                   <span className="text-[11px] font-bold text-[#1D4ED8] uppercase tracking-wider">DỮ LIỆU CỦA BẠN</span>
-                  <div className="text-3xl font-extrabold text-[#172033] mt-2">25.50 <span className="text-xs font-normal text-[#667085]">/ 30.00 điểm</span></div>
+                  <div className="text-3xl font-extrabold text-[#172033] mt-2">{thptScore} <span className="text-xs font-normal text-[#667085]">/ 30.00 điểm</span></div>
                   <p className="text-xs text-[#667085] mt-1">Điểm thi tổ hợp dự kiến trong hồ sơ</p>
                 </div>
                 <div className="p-4 rounded-xl bg-slate-50 border border-slate-200">
@@ -378,7 +384,7 @@ function AdmissionRoadmapContent({ locked = true }) {
                   <div className="bg-[#1D4ED8] h-2.5 rounded-full" style={{ "width": "85%" }}></div>
                 </div>
                 <div className="flex items-center justify-between text-[11px] text-[#667085]">
-                  <span>Điểm hồ sơ: 25.50</span>
+                  <span>Điểm hồ sơ: {thptScore}</span>
                   <span>Điểm tham khảo 2024: 26.50</span>
                 </div>
               </div>
@@ -410,12 +416,12 @@ function AdmissionRoadmapContent({ locked = true }) {
                   </div>
                   <h4 className="text-lg font-bold text-[#172033]">Phương thức 2: Điểm thi ĐGNL ĐHQG TP.HCM</h4>
                 </div>
-                <span className="text-xs font-semibold px-2.5 py-1 rounded bg-slate-100 text-[#667085] self-start sm:self-auto">Khóa 2025</span>
+                <span className="text-xs font-semibold px-2.5 py-1 rounded bg-slate-100 text-[#667085] self-start sm:self-auto">Tham chiếu 2025 · Demo</span>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="p-4 rounded-xl bg-[#EFF6FF] border border-blue-100">
                   <span className="text-[11px] font-bold text-[#1D4ED8] uppercase tracking-wider">DỮ LIỆU CỦA BẠN</span>
-                  <div className="text-3xl font-extrabold text-[#172033] mt-2">875 <span className="text-xs font-normal text-[#667085]">/ 1200 điểm</span></div>
+                  <div className="text-3xl font-extrabold text-[#172033] mt-2">{dgnlScore} <span className="text-xs font-normal text-[#667085]">/ 1200 điểm</span></div>
                   <p className="text-xs text-[#667085] mt-1">Đợt 1 • Kết quả đã xác thực</p>
                 </div>
                 <div className="p-4 rounded-xl bg-slate-50 border border-slate-200">
@@ -459,12 +465,12 @@ function AdmissionRoadmapContent({ locked = true }) {
                   </div>
                   <h4 className="text-lg font-bold text-[#172033]">Phương thức 3: Xét tuyển kết hợp (Chứng chỉ quốc tế + Học bạ)</h4>
                 </div>
-                <span className="text-xs font-semibold px-2.5 py-1 rounded bg-slate-100 text-[#667085] self-start sm:self-auto">Khóa 2025</span>
+                <span className="text-xs font-semibold px-2.5 py-1 rounded bg-slate-100 text-[#667085] self-start sm:self-auto">Tham chiếu 2025 · Demo</span>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="p-4 rounded-xl bg-slate-50 border border-slate-200">
                   <span className="text-[11px] font-bold text-[#1D4ED8] uppercase tracking-wider">ĐÃ CÓ TRONG HỒ SƠ</span>
-                  <div className="text-xl font-bold text-[#172033] mt-2">IELTS Academic 6.5</div>
+                  <div className="text-xl font-bold text-[#172033] mt-2">IELTS Academic {ieltsScore}</div>
                   <p className="text-xs text-[#667085] mt-1">Đạt ngưỡng quy định tối thiểu của trường (IELTS ≥ 6.0).</p>
                 </div>
                 <div className="p-4 rounded-xl bg-[#FFFBEB] border border-amber-200">
@@ -494,7 +500,7 @@ function AdmissionRoadmapContent({ locked = true }) {
                   </div>
                   <h4 className="text-lg font-bold text-[#172033]">Phương thức 4: Ưu tiên xét tuyển theo quy định ĐHQG-HCM (UTXT)</h4>
                 </div>
-                <span className="text-xs font-semibold px-2.5 py-1 rounded bg-slate-100 text-[#667085] self-start sm:self-auto">Khóa 2025</span>
+                <span className="text-xs font-semibold px-2.5 py-1 rounded bg-slate-100 text-[#667085] self-start sm:self-auto">Tham chiếu 2025 · Demo</span>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="p-4 rounded-xl bg-slate-50 border border-slate-200">
@@ -526,7 +532,7 @@ function AdmissionRoadmapContent({ locked = true }) {
                   </div>
                   <h4 className="text-lg font-bold text-[#667085]">Phương thức 5: Kỳ thi V-SAT / ĐGNL ĐHQG Hà Nội</h4>
                 </div>
-                <span className="text-xs font-semibold px-2.5 py-1 rounded bg-slate-100 text-[#667085] self-start sm:self-auto">Khóa 2025</span>
+                <span className="text-xs font-semibold px-2.5 py-1 rounded bg-slate-100 text-[#667085] self-start sm:self-auto">Tham chiếu 2025 · Demo</span>
               </div>
               <div className="p-4 rounded-xl bg-slate-50 border border-slate-200/70 text-xs text-[#667085] space-y-1">
                 <span className="font-bold text-[#667085] uppercase tracking-wider text-[11px]">GHI CHÚ KHÁCH QUAN TỪ ĐỀ ÁN</span>
@@ -535,7 +541,7 @@ function AdmissionRoadmapContent({ locked = true }) {
                 </p>
               </div>
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pt-1 border-t border-slate-100 text-xs text-[#667085]">
-                <span>Cập nhật theo thông báo tuyển sinh UIT năm 2025</span>
+                <span>Dữ liệu minh họa · tham chiếu thông báo tuyển sinh UIT năm 2025</span>
                 <a className="text-[#1D4ED8] font-semibold hover:underline flex items-center gap-1" href="#">
                   <span>Xem chi tiết đề án tuyển sinh</span>
                   <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" strokeLinecap="round" strokeLinejoin="round"></path></svg>
@@ -573,7 +579,7 @@ function AdmissionRoadmapContent({ locked = true }) {
                           Đã có thông tin
                         </span>
                       </td>
-                      <td className="py-3.5 px-3 text-[#667085]">Điểm 25.50 vs Tham khảo 26.50</td>
+                      <td className="py-3.5 px-3 text-[#667085]">Điểm {thptScore} vs Tham khảo 26.50</td>
                       <td className="py-3.5 px-3 text-right font-medium text-[#1D4ED8]">Đang rà soát</td>
                     </tr>
                     <tr className="hover:bg-slate-50/70 transition-colors">
@@ -584,7 +590,7 @@ function AdmissionRoadmapContent({ locked = true }) {
                           Đã có thông tin
                         </span>
                       </td>
-                      <td className="py-3.5 px-3 text-[#667085]">Điểm 875 vs Tham khảo 855</td>
+                      <td className="py-3.5 px-3 text-[#667085]">Điểm {dgnlScore} vs Tham khảo 855</td>
                       <td className="py-3.5 px-3 text-right font-medium text-[#1D4ED8]">Đang rà soát</td>
                     </tr>
                     <tr className="hover:bg-slate-50/70 transition-colors">
@@ -595,7 +601,7 @@ function AdmissionRoadmapContent({ locked = true }) {
                           Thiếu 1 yêu cầu
                         </span>
                       </td>
-                      <td className="py-3.5 px-3 text-[#667085]">Đã có IELTS 6.5, thiếu ĐTB học bạ</td>
+                      <td className="py-3.5 px-3 text-[#667085]">Đã có IELTS {ieltsScore}, thiếu ĐTB học bạ</td>
                       <td className="py-3.5 px-3 text-right font-medium text-[#B45309]">Cần bổ sung</td>
                     </tr>
                     <tr className="hover:bg-slate-50/70 transition-colors">
@@ -731,10 +737,10 @@ function AdmissionRoadmapContent({ locked = true }) {
                   <div className="p-4 rounded-xl bg-white/10 backdrop-blur-md border border-white/15 space-y-2">
                     <span className="text-[11px] font-bold text-blue-200 uppercase tracking-wider">HIỆN TẠI</span>
                     <div className="space-y-1 text-xs text-slate-100 font-medium">
-                      <div className="flex justify-between"><span>THPT:</span><strong className="text-white">25.5 điểm</strong></div>
-                      <div className="flex justify-between"><span>ĐGNL:</span><strong className="text-white">875 điểm</strong></div>
-                      <div className="flex justify-between"><span>Ngân sách:</span><strong className="text-white">≤ 35 triệu/năm</strong></div>
-                      <div className="flex justify-between"><span>Khu vực:</span><strong className="text-white">TP. Hồ Chí Minh</strong></div>
+                      <div className="flex justify-between"><span>THPT:</span><strong className="text-white">{thptScore} điểm</strong></div>
+                      <div className="flex justify-between"><span>ĐGNL:</span><strong className="text-white">{dgnlScore} điểm</strong></div>
+                      <div className="flex justify-between"><span>Ngân sách:</span><strong className="text-white">≤ {profile.tuitionBudgetMaxMillion} triệu/năm</strong></div>
+                      <div className="flex justify-between"><span>Khu vực:</span><strong className="text-white">{profile.preferredRegion || 'Chưa cập nhật'}</strong></div>
                     </div>
                   </div>
 

@@ -5,16 +5,25 @@ import { useAuth } from '../context/AuthContext'
 import { ENTITLEMENTS } from '../components/header/headerConfig'
 import DemoDataBadge from '../components/premium/DemoDataBadge'
 import PremiumLockCard from '../components/premium/PremiumLockCard'
+import { getUnifiedStudentProfile } from '../data/pitchDemo'
 
 function ScenarioComparisonPage() {
-  const { hasEntitlement } = useAuth()
+  const { hasEntitlement, user } = useAuth()
   const hasAdmissionPass = hasEntitlement(ENTITLEMENTS.ADMISSION_PASS)
 
-  return <ScenarioComparisonPreview locked={!hasAdmissionPass} />
+  return <ScenarioComparisonPreview locked={!hasAdmissionPass} user={user} />
 }
 
-function ScenarioComparisonPreview({ locked = true }) {
+function ScenarioComparisonPreview({ locked = true, user }) {
   const { isRealMode } = useDataMode()
+  const profile = getUnifiedStudentProfile(user)
+  const thptScore = profile.thptScoreNumber
+  const dgnlScore = profile.dgnlScoreNumber
+  const budget = Number(profile.tuitionBudgetMaxMillion || 0)
+  const preferredRegion = profile.preferredRegion || profile.preferredRegions?.[0] || 'Chưa cập nhật'
+  const thptDelta = (27 - thptScore).toFixed(2)
+  const dgnlDelta = 900 - dgnlScore
+  const budgetDelta = 50 - budget
   return (
 <>
 <main className="w-full pt-6 bg-[#FFFDFB] min-h-[calc(100vh-80px)] pb-16"><div className="flex flex-col w-full font-['Be_Vietnam_Pro'] text-[#172033]">
@@ -59,16 +68,16 @@ function ScenarioComparisonPreview({ locked = true }) {
 <rect fill="#F8FAFC" height="110" rx="14" stroke="#E2E8F0" strokeWidth="1.5" width="130" x="10" y="30"></rect>
 <circle cx="32" cy="52" fill="#667085" r="6"></circle>
 <text fill="#172033" fontSize="12" fontWeight="700" x="46" y="56">Scenario A</text>
-<text fill="#667085" fontSize="10" x="24" y="82">Điểm: 25.0 / 800</text>
-<text fill="#667085" fontSize="10" x="24" y="100">Học phí: ≤ 35M</text>
-<text fill="#667085" fontSize="10" x="24" y="118">TP.HCM • Công lập</text>
+<text fill="#667085" fontSize="10" x="24" y="82">Điểm: {thptScore.toFixed(2)} / {dgnlScore}</text>
+<text fill="#667085" fontSize="10" x="24" y="100">Học phí: ≤ {budget}M</text>
+<text fill="#667085" fontSize="10" x="24" y="118">{preferredRegion} • Công lập</text>
 <path d="M145 85 C 175 85, 175 85, 205 85" stroke="#1D4ED8" strokeDasharray="4 4" strokeWidth="2"></path>
 <polygon fill="#1D4ED8" points="212,85 204,80 204,90"></polygon>
 <rect fill="#EFF6FF" height="130" rx="14" stroke="#1D4ED8" strokeWidth="1.5" width="180" x="220" y="20"></rect>
 <circle cx="242" cy="44" fill="#1D4ED8" r="6"></circle>
 <text fill="#1D4ED8" fontSize="12" fontWeight="700" x="256" y="48">Scenario B (Giả định)</text>
-<text fill="#172033" fontSize="10" fontWeight="600" x="236" y="74">Điểm: 27.0 (+2.0) | 900 (+100)</text>
-<text fill="#172033" fontSize="10" fontWeight="600" x="236" y="94">Học phí: ≤ 50M (+15M)</text>
+<text fill="#172033" fontSize="10" fontWeight="600" x="236" y="74">Điểm: 27.0 (+{thptDelta}) | 900 (+{dgnlDelta})</text>
+<text fill="#172033" fontSize="10" fontWeight="600" x="236" y="94">Học phí: ≤ 50M (+{budgetDelta}M)</text>
 <text fill="#172033" fontSize="10" fontWeight="600" x="236" y="114">+ Bình Dương lân cận</text>
 <text fill="#FB7185" fontSize="10" fontWeight="700" x="236" y="132">⚡ Xuất hiện +7 phương án mới</text>
 </svg>
@@ -139,7 +148,7 @@ function ScenarioComparisonPreview({ locked = true }) {
 <span className="font-semibold text-slate-700">Tổ hợp A00, A01</span>
 </div>
 <div className="mt-1.5 flex items-baseline justify-between">
-<span className="text-xl font-extrabold text-[#172033]">25.00 <span className="text-xs font-normal text-[#667085]">/ 30.00</span></span>
+<span className="text-xl font-extrabold text-[#172033]">{thptScore.toFixed(2)} <span className="text-xs font-normal text-[#667085]">/ 30.00</span></span>
 <span className="text-xs text-[#667085] bg-white px-2.5 py-1 rounded-md">Toán: 8.4 • Lý: 8.2 • Hóa: 8.4</span>
 </div>
 </div>
@@ -150,7 +159,7 @@ function ScenarioComparisonPreview({ locked = true }) {
 <span className="font-semibold text-slate-700">Đợt 1 / 2024</span>
 </div>
 <div className="mt-1.5 flex items-baseline justify-between">
-<span className="text-xl font-extrabold text-[#172033]">800 <span className="text-xs font-normal text-[#667085]">/ 1200</span></span>
+<span className="text-xl font-extrabold text-[#172033]">{dgnlScore} <span className="text-xs font-normal text-[#667085]">/ 1200</span></span>
 <span className="text-xs text-[#667085] bg-white px-2.5 py-1 rounded-md">Phân vị ~82%</span>
 </div>
 </div>
@@ -161,8 +170,8 @@ function ScenarioComparisonPreview({ locked = true }) {
 <span className="font-semibold text-slate-700">Ngân sách gia đình</span>
 </div>
 <div className="mt-1.5 flex items-baseline justify-between">
-<span className="text-xl font-extrabold text-[#172033]">35 triệu <span className="text-xs font-normal text-[#667085]">/ năm học</span></span>
-<span className="text-xs text-[#667085] bg-white px-2.5 py-1 rounded-md">Tương đương ~17.5M / học kỳ</span>
+<span className="text-xl font-extrabold text-[#172033]">{budget} triệu <span className="text-xs font-normal text-[#667085]">/ năm học</span></span>
+<span className="text-xs text-[#667085] bg-white px-2.5 py-1 rounded-md">Tương đương ~{(budget / 2).toFixed(1)}M / học kỳ</span>
 </div>
 </div>
 
@@ -171,7 +180,7 @@ function ScenarioComparisonPreview({ locked = true }) {
 <div className="flex flex-wrap gap-2">
 <span className="px-3 py-1 rounded-lg bg-white text-xs font-semibold text-[#172033] shadow-sm flex items-center gap-1.5">
 <svg className="w-3.5 h-3.5 text-[#1D4ED8]" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" strokeLinecap="round" strokeLinejoin="round"></path><path d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" strokeLinecap="round" strokeLinejoin="round"></path></svg>
-                  TP. Hồ Chí Minh
+                  {preferredRegion}
                 </span>
 <span className="px-3 py-1 rounded-lg bg-slate-100 text-xs text-slate-400">Không mở rộng ngoại tỉnh</span>
 </div>
@@ -214,7 +223,7 @@ function ScenarioComparisonPreview({ locked = true }) {
 <div className="p-3.5 rounded-xl bg-white shadow-sm space-y-2">
 <div className="flex justify-between items-center text-xs">
 <span className="font-semibold text-[#172033]">Điểm thi THPT Quốc gia (Thang 30)</span>
-<span className="text-xs font-bold text-[#1D4ED8] bg-[#EFF6FF] px-2 py-0.5 rounded-md">Tăng +2.00 điểm</span>
+<span className="text-xs font-bold text-[#1D4ED8] bg-[#EFF6FF] px-2 py-0.5 rounded-md">Tăng +{thptDelta} điểm</span>
 </div>
 <div className="flex items-center gap-4">
 <input className="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-[#1D4ED8]" max="30" min="20" step="0.25" type="range" defaultValue="27" />
@@ -228,7 +237,7 @@ function ScenarioComparisonPreview({ locked = true }) {
 <div className="p-3.5 rounded-xl bg-white shadow-sm space-y-2">
 <div className="flex justify-between items-center text-xs">
 <span className="font-semibold text-[#172033]">Điểm ĐGNL ĐHQG TP.HCM (Thang 1200)</span>
-<span className="text-xs font-bold text-[#1D4ED8] bg-[#EFF6FF] px-2 py-0.5 rounded-md">Tăng +100 điểm</span>
+<span className="text-xs font-bold text-[#1D4ED8] bg-[#EFF6FF] px-2 py-0.5 rounded-md">Tăng +{dgnlDelta} điểm</span>
 </div>
 <div className="flex items-center gap-4">
 <input className="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-[#1D4ED8]" max="1100" min="600" step="10" type="range" defaultValue="900" />
@@ -242,10 +251,10 @@ function ScenarioComparisonPreview({ locked = true }) {
 <div className="p-3.5 rounded-xl bg-white shadow-sm space-y-2">
 <div className="flex justify-between items-center text-xs">
 <span className="font-semibold text-[#172033]">Ngân sách học phí trần tối đa</span>
-<span className="text-xs font-bold text-[#FB7185] bg-[#FFF1F2] px-2 py-0.5 rounded-md">Mở rộng +15 triệu</span>
+<span className="text-xs font-bold text-[#FB7185] bg-[#FFF1F2] px-2 py-0.5 rounded-md">Mở rộng +{budgetDelta} triệu</span>
 </div>
 <div className="grid grid-cols-3 gap-2">
-<button className="py-1.5 px-3 rounded-lg text-xs font-medium bg-slate-100 text-[#667085] hover:bg-slate-200" type="button">≤ 35M / năm</button>
+<button className="py-1.5 px-3 rounded-lg text-xs font-medium bg-slate-100 text-[#667085] hover:bg-slate-200" type="button">≤ {budget}M / năm</button>
 <button className="py-1.5 px-3 rounded-lg text-xs font-bold bg-[#1D4ED8] text-white shadow-sm" type="button">≤ 50M / năm</button>
 <button className="py-1.5 px-3 rounded-lg text-xs font-medium bg-slate-100 text-[#667085] hover:bg-slate-200" type="button">≤ 75M / năm</button>
 </div>
@@ -345,7 +354,7 @@ function ScenarioComparisonPreview({ locked = true }) {
 <div className="p-3.5 bg-white/80 backdrop-blur rounded-xl text-xs sm:text-sm font-medium text-[#172033] flex flex-col md:flex-row items-center justify-between gap-3 shadow-sm">
 <div className="flex items-center gap-2">
 <span className="px-2 py-0.5 rounded bg-slate-100 text-slate-700 text-xs font-bold">A</span>
-<span>THPT 25.0 • ĐGNL 800 • ≤ 35M • TP.HCM</span>
+<span>THPT {thptScore.toFixed(2)} • ĐGNL {dgnlScore} • ≤ {budget}M • {preferredRegion}</span>
 </div>
 <div className="flex items-center gap-2 text-[#1D4ED8] font-bold text-xs uppercase tracking-wider">
 <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path d="M17 8l4 4m0 0l-4 4m4-4H3" strokeLinecap="round" strokeLinejoin="round"></path></svg>
@@ -461,7 +470,7 @@ function ScenarioComparisonPreview({ locked = true }) {
 <span className="text-xs px-2.5 py-1 rounded-md bg-[#EFF6FF] text-[#1D4ED8] font-medium">+ Giả định THPT 27.00 (vượt mốc 26.50)</span>
 </div>
 <p className="text-xs text-[#667085] leading-relaxed pt-1">
-                Ở Scenario A (800 ĐGNL / 25.00 THPT) chưa tiệm cận mốc tham khảo 2024. Với mục tiêu B, chương trình này được đưa vào danh sách đối chiếu.
+                Ở Scenario A ({dgnlScore} ĐGNL / {thptScore.toFixed(2)} THPT) chưa tiệm cận mốc tham khảo. Với mục tiêu B, chương trình này được đưa vào danh sách đối chiếu.
               </p>
 </div>
 </div>
@@ -509,7 +518,7 @@ function ScenarioComparisonPreview({ locked = true }) {
 <span className="text-xs px-2.5 py-1 rounded-md bg-[#FFF1F2] text-[#FB7185] font-medium">+ Trần ngân sách nâng 50M (học phí 42M phù hợp)</span>
 </div>
 <p className="text-xs text-[#667085] leading-relaxed pt-1">
-                Trước đây bị loại trừ bởi ràng buộc ‘Chỉ học tại TP.HCM’ và trần tài chính 35 triệu/năm. Đã được mở khóa trong kịch bản B.
+                Trước đây bị loại trừ bởi ràng buộc khu vực “{preferredRegion}” và trần tài chính {budget} triệu/năm. Đã được mở khóa trong kịch bản B.
               </p>
 </div>
 </div>
@@ -605,7 +614,7 @@ function ScenarioComparisonPreview({ locked = true }) {
 <span className="text-xs px-2.5 py-1 rounded-md bg-[#EFF6FF] text-[#1D4ED8] font-medium">+ Điểm ĐGNL mục tiêu 900 (vượt mốc 815)</span>
 </div>
 <p className="text-xs text-[#667085] leading-relaxed pt-1">
-                Thuộc hệ công lập tự chủ tài chính toàn phần, đáp ứng hoàn toàn điều kiện khi ngân sách nâng từ 35M lên 50M.
+                Thuộc hệ công lập tự chủ tài chính toàn phần, đáp ứng điều kiện khi ngân sách nâng từ {budget}M lên 50M.
               </p>
 </div>
 </div>
@@ -639,7 +648,7 @@ function ScenarioComparisonPreview({ locked = true }) {
 </div>
 <div className="space-y-2 py-2">
 <div className="flex items-center justify-between text-xs">
-<span className="text-[#667085]">Scenario A: ≤ 35 triệu/năm</span>
+<span className="text-[#667085]">Scenario A: ≤ {budget} triệu/năm</span>
 <span className="font-extrabold text-[#FB7185]">Scenario B: ≤ 50 triệu/năm</span>
 </div>
 <div className="w-full h-2 bg-slate-100 rounded-full overflow-hidden">
@@ -663,7 +672,7 @@ function ScenarioComparisonPreview({ locked = true }) {
 </div>
 <div className="space-y-2 py-2">
 <div className="flex items-center justify-between text-xs">
-<span className="text-[#667085]">Scenario A: TP.HCM</span>
+<span className="text-[#667085]">Scenario A: {preferredRegion}</span>
 <span className="font-extrabold text-[#B45309]">Scenario B: TP.HCM + Bình Dương</span>
 </div>
 <div className="w-full h-2 bg-slate-100 rounded-full overflow-hidden">
@@ -687,7 +696,7 @@ function ScenarioComparisonPreview({ locked = true }) {
 </div>
 <div className="space-y-2 py-2">
 <div className="flex items-center justify-between text-xs">
-<span className="text-[#667085]">A: ĐGNL 800 / THPT 25.0</span>
+<span className="text-[#667085]">A: ĐGNL {dgnlScore} / THPT {thptScore.toFixed(2)}</span>
 <span className="font-extrabold text-[#1D4ED8]">B: ĐGNL 900 / THPT 27.0</span>
 </div>
 <div className="w-full h-2 bg-slate-100 rounded-full overflow-hidden">
@@ -730,7 +739,7 @@ function ScenarioComparisonPreview({ locked = true }) {
 </div>
 <div className="text-xs text-[#667085] flex items-center justify-between">
 <span>Học phí: ~38 triệu/năm</span>
-<span className="text-[#10B981] font-medium">Scenario A: Vượt trần 3M ──► Scenario B: Dư 12M</span>
+<span className="text-[#10B981] font-medium">Scenario A: theo trần {budget}M ──► Scenario B: theo trần 50M</span>
 </div>
 </div>
 
@@ -744,7 +753,7 @@ function ScenarioComparisonPreview({ locked = true }) {
 </div>
 <div className="text-xs text-[#667085] flex items-center justify-between">
 <span>Điểm tham khảo: 25.80 (THPT)</span>
-<span className="text-[#10B981] font-medium">Scenario A: 25.0 (-0.8) ──► Scenario B: 27.0 (+1.2)</span>
+<span className="text-[#10B981] font-medium">Scenario A: {thptScore.toFixed(2)} ──► Scenario B: 27.00</span>
 </div>
 </div>
 
@@ -758,7 +767,7 @@ function ScenarioComparisonPreview({ locked = true }) {
 </div>
 <div className="text-xs text-[#667085] flex items-center justify-between">
 <span>ĐGNL tham khảo: 760</span>
-<span className="text-[#10B981] font-medium">Scenario A: 800 (+40) ──► Scenario B: 900 (+140)</span>
+<span className="text-[#10B981] font-medium">Scenario A: {dgnlScore} ──► Scenario B: 900</span>
 </div>
 </div>
 </div>
@@ -786,7 +795,7 @@ function ScenarioComparisonPreview({ locked = true }) {
 <span className="text-[11px] font-medium text-[#667085]">Học phí: ~27M / năm</span>
 </div>
 <p className="text-[11px] text-[#667085]">
-                Đã nằm hoàn toàn trong ngân sách &lt; 35M và điểm số ban đầu đã đạt tiêu chuẩn đối chiếu, không thay đổi mức độ ưu tiên.
+                Đã nằm trong ngân sách &lt; {budget}M và điểm số hồ sơ hiện tại đã đạt tiêu chuẩn đối chiếu, không thay đổi mức độ ưu tiên.
               </p>
 </div>
 

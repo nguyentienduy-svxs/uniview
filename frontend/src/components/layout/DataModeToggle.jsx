@@ -11,13 +11,23 @@
 
 import { useState, useEffect } from 'react'
 import { useDataMode } from '../../context/DataModeContext'
+import { useAuth } from '../../context/AuthContext'
 
 const API_BASE_URL = import.meta.env.VITE_API_URL ?? 'http://localhost:8080/api/v1'
 
 export function DataModeToggle() {
   const { dataMode, isMockMode, toggleDataMode, isDevToolsOpen, closeDevTools } = useDataMode()
+  const { isPitchDemo, resetMockDemoData } = useAuth()
   const [serverStatus, setServerStatus] = useState(null)
   const [checking, setChecking] = useState(false)
+  const [resetting, setResetting] = useState(false)
+
+  const handleResetDemo = () => {
+    setResetting(true)
+    const reset = resetMockDemoData()
+    if (reset) window.location.reload()
+    else setResetting(false)
+  }
 
   const checkServer = async () => {
     setChecking(true)
@@ -134,6 +144,18 @@ export function DataModeToggle() {
           }
         </p>
       </div>
+
+      {isMockMode && isPitchDemo && (
+        <button
+          className="w-full rounded-xl border border-amber-200 bg-amber-50 px-3 py-2 text-[11px] font-bold text-amber-900 transition hover:bg-amber-100 disabled:opacity-60"
+          data-testid="reset-pitch-demo"
+          disabled={resetting}
+          onClick={handleResetDemo}
+          type="button"
+        >
+          {resetting ? 'Đang đặt lại…' : '↺ Đặt lại dữ liệu pitching demo'}
+        </button>
+      )}
 
       {/* Backend Status info */}
       <div className="rounded-xl border p-3 text-[11px] leading-relaxed bg-slate-50 border-slate-200">

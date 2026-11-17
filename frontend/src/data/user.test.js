@@ -4,16 +4,13 @@ import test from 'node:test'
 import { DEMO_ACCOUNTS, getDemoAccount } from './user.js'
 import { clearUserWorkspaceStorage, USER_WORKSPACE_STORAGE_KEYS } from '../utils/userWorkspaceStorage.js'
 
-test('chỉ công khai một tài khoản demo Minh Anh', () => {
-  assert.equal(DEMO_ACCOUNTS.length, 1)
-  assert.equal(DEMO_ACCOUNTS[0].username, 'minhanh')
-  assert.equal(DEMO_ACCOUNTS[0].session.user.fullName, 'Nguyễn Minh Anh')
-  assert.equal(DEMO_ACCOUNTS[0].session.user.isDemo, true)
+test('không nhúng tài khoản hoặc mật khẩu pitching vào frontend', () => {
+  assert.deepEqual(DEMO_ACCOUNTS, [])
 })
 
-test('không còn đăng nhập được các tài khoản demo cũ', () => {
+test('đăng nhập demo cũ không còn được xử lý cục bộ', () => {
   assert.equal(getDemoAccount('chiduy', 'ChiDuy@2026'), null)
-  assert.ok(getDemoAccount('minhanh', 'MinhAnh@2026'))
+  assert.equal(getDemoAccount('minhanh', 'MinhAnh@2026'), null)
 })
 
 test('đăng xuất xóa dữ liệu workspace nhưng giữ dữ liệu không liên quan', () => {
