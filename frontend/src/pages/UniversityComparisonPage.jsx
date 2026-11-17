@@ -4,6 +4,7 @@ import DataUnavailable from '../components/DataUnavailable'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 
+import mascotImage from '../assets/UniView_DUNG_MEO_TRONG_ANH_chop_mat_cuoi.webp'
 import { useAuth } from '../context/AuthContext'
 import majorDetails from '../data/majorDetails.json'
 import majors from '../data/majors.json'
@@ -23,17 +24,33 @@ const DEFAULT_MAJOR_IDS = {
   'fpt-university-hcm': '7480103',
 }
 
+const CHOICE_STYLES = [
+  { border: 'border-t-blue-500', badge: 'border-blue-100 bg-blue-50 text-blue-700' },
+  { border: 'border-t-teal-500', badge: 'border-teal-100 bg-teal-50 text-teal-700' },
+  { border: 'border-t-amber-500', badge: 'border-amber-100 bg-amber-50 text-amber-800' },
+  { border: 'border-t-rose-500', badge: 'border-rose-100 bg-rose-50 text-rose-700' },
+]
+
+const COMPARISON_BACKGROUND_STYLE = {
+  backgroundAttachment: 'fixed',
+  backgroundColor: '#eef6ff',
+  backgroundImage: "url('/anhnganh/backgroundTong.png')",
+  backgroundPosition: 'center top',
+  backgroundRepeat: 'no-repeat',
+  backgroundSize: 'cover',
+}
+
 const comparisonTabs = [
-  ['section-overview', 'dashboard', '1. Tổng quan'],
-  ['section-budget', 'payments', '2. Học phí & Ngân sách'],
-  ['section-location', 'location_on', '3. Vị trí & Cơ sở'],
-  ['section-major', 'code', '4. Ngành học & Đào tạo'],
-  ['section-admission', 'how_to_reg', '5. Tuyển sinh & Điểm'],
-  ['section-scholarships', 'workspace_premium', '6. Học bổng'],
-  ['section-fit', 'tune', '7. Độ tương thích'],
-  ['section-tradeoffs', 'balance', '8. Trade-offs'],
-  ['section-missing-info', 'fact_check', '9. Nguồn & kiểm chứng'],
-  ['section-notes', 'edit_note', '10. Ghi chú'],
+  ['section-overview', 'dashboard', 'Tổng quan'],
+  ['section-budget', 'payments', 'Học phí'],
+  ['section-location', 'location_on', 'Vị trí'],
+  ['section-major', 'code', 'Ngành học'],
+  ['section-admission', 'how_to_reg', 'Tuyển sinh'],
+  ['section-scholarships', 'workspace_premium', 'Học bổng'],
+  ['section-fit', 'tune', 'Điểm đối chiếu'],
+  ['section-tradeoffs', 'balance', 'Đánh đổi'],
+  ['section-missing-info', 'fact_check', 'Nguồn dữ liệu'],
+  ['section-notes', 'edit_note', 'Ghi chú'],
 ]
 
 const readStoredJson = (key, fallback) => {
@@ -96,7 +113,8 @@ const formatVerifiedDate = (value) => {
 }
 
 const getFitBreakdown = ({ university, major }, profile) => {
-  const tuitionAverage = getTuitionAverage(university) ?? profile.budget * 1.25
+  const recordedTuitionAverage = getTuitionAverage(university)
+  const tuitionAverage = recordedTuitionAverage ?? profile.budget * 1.25
   const budgetScore = tuitionAverage <= profile.budget
     ? 30
     : Math.max(0, 30 - ((tuitionAverage - profile.budget) / Math.max(profile.budget, 1)) * 30)
@@ -115,10 +133,44 @@ const getFitBreakdown = ({ university, major }, profile) => {
   return {
     total: Math.round((budgetScore + locationScore + majorScore + admissionScore)) / 10,
     metrics: [
-      { label: 'Ngành học', value: Math.round((majorScore / 25) * 100), color: '#1D4ED8' },
-      { label: 'Ngân sách', value: Math.round((budgetScore / 30) * 100), color: '#059669' },
-      { label: 'Khu vực', value: Math.round((locationScore / 20) * 100), color: '#D97706' },
-      { label: 'Tuyển sinh', value: Math.round((admissionScore / 25) * 100), color: '#A93349' },
+      {
+        label: 'Ngành học',
+        value: Math.round((majorScore / 25) * 100),
+        points: majorScore,
+        maxPoints: 25,
+        description: majorScore === 25 ? 'Trùng ngành mục tiêu' : majorScore === 16 ? 'Cùng nhóm với ngành mục tiêu' : 'Khác nhóm ngành mục tiêu',
+        color: '#1D4ED8',
+      },
+      {
+        label: 'Ngân sách',
+        value: Math.round((budgetScore / 30) * 100),
+        points: budgetScore,
+        maxPoints: 30,
+        description: recordedTuitionAverage === null
+          ? 'Chưa có học phí; dùng mức ước tính bằng 125% ngân sách'
+          : tuitionAverage <= profile.budget ? 'Học phí không vượt ngân sách' : `Học phí trung bình vượt ${Math.round(tuitionAverage - profile.budget)} triệu/năm`,
+        color: '#059669',
+      },
+      {
+        label: 'Khu vực',
+        value: Math.round((locationScore / 20) * 100),
+        points: locationScore,
+        maxPoints: 20,
+        description: locationScore === 20 ? 'Đúng khu vực ưu tiên' : 'Khác khu vực ưu tiên',
+        color: '#D97706',
+      },
+      {
+        label: 'Tuyển sinh',
+        value: Math.round((admissionScore / 25) * 100),
+        points: admissionScore,
+        maxPoints: 25,
+        description: !scoreRange?.max
+          ? 'Chưa có khoảng điểm cấu trúc'
+          : admissionScore === 25 ? 'Điểm hồ sơ từ mức trên của khoảng trở lên'
+            : admissionScore === 19 ? 'Thấp hơn mức trên không quá 2 điểm'
+              : admissionScore === 13 ? 'Nằm trong khoảng điểm tham chiếu' : 'Thấp hơn khoảng điểm tham chiếu',
+        color: '#A93349',
+      },
     ],
   }
 }
@@ -153,23 +205,25 @@ function DonutChart({ value, label, color = '#1D4ED8' }) {
   )
 }
 
-function MetricProgress({ label, value, color }) {
+function MetricProgress({ label, value, color, points, maxPoints, description }) {
+  const formattedPoints = Number.isInteger(points) ? points : points.toFixed(1)
   return (
     <div className="space-y-1.5">
       <div className="flex items-center justify-between gap-3 text-[11px]">
         <span className="font-semibold text-slate-600">{label}</span>
-        <span className="font-black text-slate-900">{value}%</span>
+        <span className="font-black text-slate-900">{formattedPoints}/{maxPoints} điểm</span>
       </div>
       <div
         className="h-2 overflow-hidden rounded-full bg-slate-200"
         role="progressbar"
-        aria-label={`${label}: ${value}%`}
+        aria-label={`${label}: ${formattedPoints} trên ${maxPoints} điểm`}
         aria-valuemin="0"
         aria-valuemax="100"
         aria-valuenow={value}
       >
         <div className="h-full rounded-full transition-[width] duration-500" style={{ backgroundColor: color, width: `${value}%` }} />
       </div>
+      <p className="text-[10px] leading-4 text-slate-500">{description}</p>
     </div>
   )
 }
@@ -284,6 +338,31 @@ function UniversityLabel({ university, children }) {
   )
 }
 
+function SectionHeader({ number, icon, title, description, aside }) {
+  return (
+    <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+      <div className="flex min-w-0 items-start gap-3">
+        <span className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-blue-50 text-blue-700">
+          <span className="material-symbols-outlined text-[19px]">{icon}</span>
+        </span>
+        <div className="min-w-0">
+          <p className="text-[11px] font-bold uppercase text-blue-700">Tiêu chí {number}</p>
+          <h2 className="mt-0.5 text-lg font-bold text-slate-950 md:text-xl">{title}</h2>
+          {description && <p className="mt-1 max-w-3xl text-xs leading-5 text-slate-500 md:text-sm">{description}</p>}
+        </div>
+      </div>
+      {aside && <div className="shrink-0 text-xs text-slate-600">{aside}</div>}
+    </div>
+  )
+}
+
+const regionLabel = (regionId) => ({
+  'ho-chi-minh-city': 'TP. Hồ Chí Minh',
+  'ha-noi': 'Hà Nội',
+  central: 'Miền Trung',
+  south: 'Miền Nam',
+}[regionId] ?? 'Chưa chọn')
+
 function UniversityComparisonPage() {
   const { isRealMode } = useDataMode()
   const catalog = useCatalog('universities')
@@ -312,6 +391,7 @@ function UniversityComparisonPage() {
   const pendingTabRef = useRef(null)
   const pendingTabTimerRef = useRef(0)
   const scrollFrameRef = useRef(0)
+  const initialHashHandledRef = useRef(false)
   const [notes, setNotes] = useState(() => {
     return isAuthenticated ? readStoredJson(storageKey('uniview:comparison:notes'), {}) : {}
   })
@@ -346,6 +426,26 @@ function UniversityComparisonPage() {
       .map(([id]) => document.getElementById(id))
       .filter(Boolean)
     if (!sections.length) return undefined
+
+    const requestedSectionId = window.location.hash.slice(1)
+    const requestedSection = sections.find((section) => section.id === requestedSectionId)
+    let previousRootScrollBehavior
+    let initialHashTimer = 0
+    if (requestedSection && !initialHashHandledRef.current) {
+      initialHashHandledRef.current = true
+      setActiveTab(requestedSectionId)
+      const scrollToRequestedSection = () => {
+        const root = document.documentElement
+        if (previousRootScrollBehavior === undefined) previousRootScrollBehavior = root.style.scrollBehavior
+        const headerHeight = document.querySelector('body > #root header')?.getBoundingClientRect().height ?? 74
+        const tabsHeight = tabsRef.current?.parentElement?.getBoundingClientRect().height ?? 52
+        const top = requestedSection.getBoundingClientRect().top + window.scrollY - headerHeight - tabsHeight - 20
+        root.style.scrollBehavior = 'auto'
+        window.scrollTo({ top: Math.max(0, top), behavior: 'auto' })
+      }
+      window.requestAnimationFrame(scrollToRequestedSection)
+      initialHashTimer = window.setTimeout(scrollToRequestedSection, 160)
+    }
 
     const updateActiveTab = () => {
       scrollFrameRef.current = 0
@@ -384,6 +484,8 @@ function UniversityComparisonPage() {
       window.removeEventListener('resize', handleScroll)
       if (scrollFrameRef.current) window.cancelAnimationFrame(scrollFrameRef.current)
       if (pendingTabTimerRef.current) window.clearTimeout(pendingTabTimerRef.current)
+      if (initialHashTimer) window.clearTimeout(initialHashTimer)
+      if (previousRootScrollBehavior !== undefined) document.documentElement.style.scrollBehavior = previousRootScrollBehavior
     }
   }, [])
 
@@ -523,44 +625,31 @@ function UniversityComparisonPage() {
   }
 
   return (
-<main className="w-full bg-[#F8FAFC] min-h-[calc(100vh-80px)] pb-20 font-['Be_Vietnam_Pro'] text-slate-800"><div className="max-w-[1360px] mx-auto px-4 md:px-6 lg:px-8 pt-5 space-y-6">
+<main className="min-h-[calc(100vh-80px)] w-full pb-20 text-slate-800 [&_a]:cursor-pointer [&_button:not(:disabled)]:cursor-pointer [&_select]:cursor-pointer" style={COMPARISON_BACKGROUND_STYLE}><div className="mx-auto max-w-[1320px] space-y-6 px-4 pt-6 md:px-6 lg:px-8">
 
-<div className="bg-white rounded-2xl border border-slate-200/90 p-5 md:p-6 shadow-sm space-y-4">
-<div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs md:text-sm text-slate-500">
-<div className="flex items-center flex-wrap gap-2">
-<a className="hover:text-[#1D4ED8] transition-colors" href="#">Trang chủ</a>
-<span className="text-slate-300">/</span>
-<a className="hover:text-[#1D4ED8] transition-colors" href="#">Công cụ tuyển sinh</a>
-<span className="text-slate-300">/</span>
-<span className="text-slate-900 font-semibold bg-slate-100 px-2.5 py-0.5 rounded-md">So sánh đa chiều</span>
-</div>
-<div className="flex items-center gap-2 self-start sm:self-auto">
-<span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-50 text-[#1D4ED8] border border-blue-200 font-bold text-xs tracking-wider">
-<span className="w-2 h-2 rounded-full bg-blue-600 animate-pulse" />
-<span>DỰA TRÊN HỒ SƠ CỦA BẠN</span>
-</span>
-<span className="inline-flex items-center gap-1 text-xs text-slate-600 bg-slate-100 px-2.5 py-1 rounded-full border border-slate-200 font-medium">Personalized Compare ({selectedUniversities.length} trường đang chọn)</span>
-</div>
-</div>
-<div className="flex flex-col lg:flex-row lg:items-end justify-between gap-5 pt-1 border-t border-slate-100">
-<div className="space-y-2.5 max-w-3xl">
-<h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight leading-snug">So sánh các lựa chọn của bạn</h1>
-<p className="text-slate-600 text-sm md:text-base leading-relaxed">Đối chiếu các trường đại học dựa trên hồ sơ học tập, ngành học, ngân sách và định hướng tương lai.</p>
-<p className="flex items-center gap-2 pt-1 text-xs text-amber-900 bg-amber-50/90 border border-amber-200/80 rounded-xl px-3.5 py-2 font-medium"><span className="text-base shrink-0">💡</span><span><strong>Nguyên tắc khách quan:</strong> UniView không chọn “trường thắng”. Bạn là người hiểu rõ mục tiêu và đưa ra quyết định cuối cùng.</span></p>
-</div>
-<div className="flex flex-wrap items-center gap-2.5 shrink-0">
-<button className="bg-white hover:bg-slate-50 text-slate-700 font-semibold text-xs md:text-sm border border-slate-200 rounded-xl px-4 py-2.5 transition-colors inline-flex items-center gap-2 shadow-sm" onClick={() => { setProfileDraft(profile); setProfileOpen(true) }} type="button">
-<svg className="w-4 h-4 text-slate-600" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" strokeLinecap="round" strokeLinejoin="round"></path><path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" strokeLinecap="round" strokeLinejoin="round"></path></svg>
-<span>Chỉnh sửa hồ sơ tiêu chí</span>
-</button>
-<button className="bg-white hover:bg-slate-50 text-slate-700 font-medium text-xs md:text-sm border border-slate-200 rounded-xl px-3 py-2.5 transition-all inline-flex items-center gap-1.5 shadow-xs hover:border-slate-300" onClick={shareComparison} type="button"><span className="material-symbols-outlined text-[18px] text-slate-500">share</span><span className="hidden sm:inline">Chia sẻ</span></button>
-<button className="bg-white hover:bg-slate-50 text-slate-700 font-semibold text-xs md:text-sm border border-slate-200 rounded-xl px-4 py-2.5 transition-colors inline-flex items-center gap-2 shadow-sm" onClick={saveComparison} type="button">
-<svg className="w-4 h-4 text-rose-600" fill="currentColor" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"></path></svg>
-<span>Lưu bảng so sánh</span>
-</button>
-</div>
-</div>
-</div>
+<header className="relative -mx-4 overflow-hidden border-y border-blue-100 bg-[#EEF4FF]/70 px-4 py-6 md:-mx-6 md:px-6 lg:-mx-8 lg:px-8">
+  <img alt="Linh vật UniView" className="pointer-events-none absolute bottom-2 right-5 hidden h-32 w-32 object-contain drop-shadow-lg xl:block" src={mascotImage} />
+  <div className="relative flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between xl:pr-36">
+    <div className="max-w-3xl">
+      <Link className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-500 transition-colors hover:text-blue-700" to="/universities"><span className="material-symbols-outlined text-[16px]">arrow_back</span>Danh sách trường</Link>
+      <p className="mt-4 text-xs font-bold uppercase text-blue-700">Công cụ ra quyết định</p>
+      <h1 className="mt-1 text-2xl font-extrabold leading-tight text-slate-950 sm:text-3xl">So sánh trường theo ngành học</h1>
+      <p className="mt-2 text-sm leading-6 text-slate-600 md:text-base">Đặt các lựa chọn cạnh nhau để nhìn nhanh chi phí, ngành đào tạo, khả năng tuyển sinh và những điểm cần xác minh.</p>
+    </div>
+    <div className="flex flex-wrap items-center gap-2">
+      <button aria-label="Chia sẻ bảng so sánh" className="inline-flex size-10 items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-600 transition hover:border-blue-300 hover:text-blue-700" onClick={shareComparison} type="button"><span className="material-symbols-outlined text-[19px]">share</span></button>
+      <button className="inline-flex min-h-10 items-center gap-2 rounded-lg border border-slate-200 bg-white px-3.5 text-xs font-bold text-slate-700 transition hover:border-blue-300 hover:text-blue-700" onClick={saveComparison} type="button"><span className="material-symbols-outlined text-[18px]">bookmark_add</span>Lưu so sánh</button>
+      <button className="inline-flex min-h-10 items-center gap-2 rounded-lg bg-[#1D4ED8] px-4 text-xs font-bold text-white transition hover:bg-blue-700" onClick={() => { setProfileDraft(profile); setProfileOpen(true) }} type="button"><span className="material-symbols-outlined text-[18px]">tune</span>Chỉnh tiêu chí</button>
+    </div>
+  </div>
+  <div className="relative mt-5 grid overflow-hidden rounded-lg border border-blue-100 bg-white/90 shadow-sm sm:grid-cols-2 lg:grid-cols-5 xl:mr-36">
+    <div className="border-b border-blue-100 bg-blue-50/70 px-4 py-3 sm:border-r lg:border-b-0"><p className="text-[10px] font-bold uppercase text-blue-500">Đang so sánh</p><p className="mt-1 text-sm font-bold text-slate-900">{selectedUniversities.length} trường</p></div>
+    <div className="border-b border-rose-100 bg-rose-50/60 px-4 py-3 lg:border-b-0 lg:border-r"><p className="text-[10px] font-bold uppercase text-rose-500">Ngành mục tiêu</p><p className="mt-1 truncate text-sm font-bold text-slate-900">{profile.major || 'Chưa chọn'}</p></div>
+    <div className="border-b border-emerald-100 bg-emerald-50/70 px-4 py-3 sm:border-r lg:border-b-0"><p className="text-[10px] font-bold uppercase text-emerald-600">Ngân sách tối đa</p><p className="mt-1 text-sm font-bold text-slate-900">{profile.budget || '—'} triệu/năm</p></div>
+    <div className="border-b border-amber-100 bg-amber-50/70 px-4 py-3 lg:border-b-0 lg:border-r"><p className="text-[10px] font-bold uppercase text-amber-600">Khu vực ưu tiên</p><p className="mt-1 text-sm font-bold text-slate-900">{regionLabel(profile.regionId)}</p></div>
+    <div className="bg-slate-50 px-4 py-3 sm:col-span-2 lg:col-span-1"><p className="text-[10px] font-bold uppercase text-slate-500">Điểm hồ sơ</p><p className="mt-1 text-sm font-bold text-slate-900">THPT {profile.thptScore || '—'} · ĐGNL {profile.competencyScore || '—'}</p></div>
+  </div>
+</header>
 
 {isRealMode && <section className="rounded-2xl border border-slate-200 bg-white p-6 space-y-4" aria-label="Hồ sơ đối chiếu">
   <h2 className="text-lg font-bold">Nhập hồ sơ và tiêu chí của bạn</h2>
@@ -573,8 +662,11 @@ function UniversityComparisonPage() {
   <DataUnavailable loading={catalog.loading} error={catalog.error} retry={catalog.retry} />
   <label className="block text-sm font-semibold">Ghi chú của bạn<textarea className="mt-2 w-full rounded-xl border p-3" value={notes.general ?? ''} onChange={(event) => setNotes((current) => ({...current, general: event.target.value}))} /></label>
 </section>}
-<div className={`grid grid-cols-1 gap-5 items-stretch ${selectedUniversities.length >= 3 ? 'md:grid-cols-2 lg:grid-cols-4' : 'md:grid-cols-3'}`}>
+<section aria-labelledby="selected-schools-heading">
+<div className="mb-3 flex items-end justify-between gap-3"><div><p className="text-xs font-bold uppercase text-blue-700">Lựa chọn hiện tại</p><h2 className="mt-0.5 text-lg font-bold text-slate-950" id="selected-schools-heading">Các trường đang đối chiếu</h2></div><p className="hidden text-xs text-slate-500 sm:block">Có thể đổi trường hoặc ngành ngay trên từng lựa chọn</p></div>
+<div className={`grid grid-cols-1 items-stretch gap-4 ${selectedUniversities.length >= 3 ? 'md:grid-cols-2 lg:grid-cols-4' : 'md:grid-cols-3'}`}>
 {selectedChoices.map(({ university, major, fitScore }, index) => {
+  const choiceStyle = CHOICE_STYLES[index % CHOICE_STYLES.length]
   const tuitionAverage = university.tuition ? Math.round((university.tuition.minMillionVnd + university.tuition.maxMillionVnd) / 2) : null
   const withinBudget = tuitionAverage !== null && tuitionAverage <= profile.budget
   const initials = university.shortName === 'FPTU' ? 'FPT' : university.shortName ?? university.code
@@ -582,13 +674,12 @@ function UniversityComparisonPage() {
     ? `${university.location.campus}, ${university.location.city}`
     : university.location?.city ?? university.city
   return (
-    <div className={`bg-white rounded-2xl p-5 shadow-sm space-y-4 flex flex-col justify-between relative transition-all ${index === 0 ? 'border-2 border-[#1D4ED8] ring-4 ring-blue-50/70' : index === 2 ? 'border border-amber-200/90' : 'border border-slate-200/90 hover:border-slate-300'}`} key={university.id}>
-      <div className={`absolute -top-3 left-4 text-white text-[11px] font-bold px-2.5 py-0.5 rounded-full shadow-xs uppercase tracking-wide flex items-center gap-1 ${index === 0 ? 'bg-[#1D4ED8]' : index === 2 ? 'bg-amber-600' : 'bg-slate-700'}`}><span className={`w-1.5 h-1.5 rounded-full ${index === 0 ? 'bg-white' : 'bg-emerald-400'}`} />Lựa chọn {index + 1}</div>
-      <div className="space-y-3 pt-1">
+    <article className={`relative flex flex-col justify-between gap-4 rounded-lg border border-slate-200 border-t-4 bg-white p-4 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md ${choiceStyle.border}`} key={university.id}>
+      <div className="space-y-3">
         <div className="flex items-start justify-between gap-2">
           <div className="flex items-center gap-3 min-w-0">
-            <div className={`w-11 h-11 shrink-0 rounded-xl border flex items-center justify-center font-bold text-base shadow-xs ${index === 0 ? 'bg-blue-50 border-blue-200 text-blue-700' : index === 2 ? 'bg-amber-50 border-amber-200 text-orange-600' : 'bg-slate-100 border-slate-200 text-slate-700'}`}>{initials}</div>
-            <div className="min-w-0"><Tooltip label={university.name}><span tabIndex="0" className="block truncate text-base font-bold leading-snug text-slate-900">{university.name}</span></Tooltip><p className="text-xs text-slate-500 font-medium truncate">{university.parentSystem ?? university.ownershipLabel} • Mã: {university.code}</p></div>
+            <div className={`flex size-11 shrink-0 items-center justify-center rounded-lg border text-sm font-black ${choiceStyle.badge}`}>{initials}</div>
+            <div className="min-w-0"><p className="text-[10px] font-bold uppercase text-slate-400">Lựa chọn {index + 1}</p><Tooltip label={university.name}><span tabIndex="0" className="block text-sm font-black leading-snug text-slate-950">{university.shortName ?? university.code}</span></Tooltip><p className="line-clamp-2 text-[11px] font-medium leading-4 text-slate-500">{university.name}</p></div>
           </div>
           <div className="flex items-center gap-1 text-slate-400">
             <Tooltip label="Đổi trường trong lựa chọn này">
@@ -599,46 +690,45 @@ function UniversityComparisonPage() {
             </Tooltip>
           </div>
         </div>
-        <div className={`p-2.5 rounded-xl border flex items-center justify-between ${index === 2 ? 'bg-amber-50/50 border-amber-100' : index === 0 ? 'bg-blue-50/40 border-blue-100' : 'bg-slate-50 border-slate-100'}`}>
-          <div><p className={`text-[10px] uppercase font-bold tracking-wider ${index === 2 ? 'text-amber-700' : index === 0 ? 'text-blue-600' : 'text-slate-500'}`}>Chương trình xét</p><p className="text-xs font-bold text-slate-900">{major?.name ?? profile.major}</p></div>
-          <button className="text-[11px] text-blue-600 font-bold hover:underline" onClick={(event) => { event.stopPropagation(); setMajorPickerUniversityId(university.id) }} type="button">Đổi ngành</button>
+        <div className="flex items-center justify-between gap-3 border-y border-slate-100 py-2.5">
+          <div className="min-w-0"><p className="text-[10px] font-bold uppercase text-slate-400">Ngành đối chiếu</p><p className="truncate text-xs font-bold text-slate-900">{major?.name ?? profile.major}</p></div>
+          <button className="shrink-0 text-[11px] font-bold text-blue-700 hover:underline" onClick={(event) => { event.stopPropagation(); setMajorPickerUniversityId(university.id) }} type="button">Đổi ngành</button>
         </div>
         <div className="text-xs text-slate-600 space-y-1.5 pt-1">
-          <p className="flex items-center gap-2"><span className={`w-2 h-2 rounded-full ${index === 2 ? 'bg-amber-500' : 'bg-blue-500'}`} />{university.ownershipLabel} • {locationLabel}</p>
+          <p className="flex items-start gap-2"><span className="material-symbols-outlined mt-0.5 text-[15px] text-slate-400">location_on</span><span>{university.ownershipLabel} · {locationLabel}</span></p>
           <p className={`flex items-center gap-2 font-medium ${withinBudget ? 'text-slate-700' : 'text-amber-900'}`}><span className={`w-2 h-2 rounded-full ${withinBudget ? 'bg-emerald-500' : 'bg-rose-500'}`} />Học phí: ~{tuitionAverage ?? '—'} triệu / năm <span className={`text-[11px] font-bold px-1.5 py-0.5 rounded border ${withinBudget ? 'text-emerald-700 bg-emerald-50 border-emerald-200' : 'text-rose-700 bg-rose-50 border-rose-200'}`}>{withinBudget ? 'Trong ngân sách' : `Vượt +${Math.max(0, tuitionAverage - profile.budget)}tr`}</span></p>
         </div>
       </div>
       <div className="pt-3 border-t border-slate-100 flex items-center justify-between text-xs gap-2">
-        <Tooltip label="Điểm tổng hợp từ ngành mục tiêu, ngân sách, khu vực và dữ liệu tuyển sinh">
-          <span tabIndex="0" className={`font-bold px-2.5 py-1 rounded-lg border inline-flex items-center gap-1 ${fitScore >= 8 ? 'text-blue-700 bg-blue-50 border-blue-200/80' : fitScore >= 6.5 ? 'text-slate-700 bg-slate-100 border-slate-200' : 'text-amber-900 bg-amber-50 border-amber-200/80'}`}><span className="material-symbols-outlined text-[15px]">{fitScore >= 6.5 ? 'verified' : 'warning'}</span>Phù hợp {fitScore}/10</span>
+        <Tooltip label="Điểm đối chiếu từ ngành mục tiêu, ngân sách, khu vực và dữ liệu tuyển sinh">
+          <span tabIndex="0" className={`font-bold px-2.5 py-1 rounded-lg border inline-flex items-center gap-1 ${fitScore >= 8 ? 'text-blue-700 bg-blue-50 border-blue-200/80' : fitScore >= 6.5 ? 'text-slate-700 bg-slate-100 border-slate-200' : 'text-amber-900 bg-amber-50 border-amber-200/80'}`}><span className="material-symbols-outlined text-[15px]">calculate</span>Đối chiếu {fitScore}/10</span>
         </Tooltip>
         <span className="text-slate-400 text-[11px] text-right">{university.admission?.scoreRange?.label ?? 'Xem đề án tuyển sinh'}</span>
       </div>
-    </div>
+    </article>
   )
 })}
 
-{selectedUniversities.length < 4 && <button className="border-2 border-dashed border-slate-300 rounded-2xl p-5 hover:border-blue-400 hover:bg-blue-50/30 transition-all flex flex-col items-center justify-center text-center cursor-pointer min-h-[220px]" onClick={(event) => { event.stopPropagation(); setPickerSlot(selectedUniversities.length) }} type="button">
-<div className="w-12 h-12 rounded-2xl bg-slate-100 text-slate-500 flex items-center justify-center mb-3 group-hover:text-[#1D4ED8]">
-<svg className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path d="M12 4v16m8-8H4" strokeLinecap="round" strokeLinejoin="round"></path></svg>
-</div>
+{selectedUniversities.length < 4 && <button className="flex min-h-[220px] cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed border-slate-300 p-5 text-center transition-all hover:border-blue-400 hover:bg-blue-50/30" onClick={(event) => { event.stopPropagation(); setPickerSlot(selectedUniversities.length) }} type="button">
+<span className="material-symbols-outlined mb-3 flex size-12 items-center justify-center rounded-lg bg-slate-100 text-[24px] text-slate-500">add</span>
 <p className="text-sm font-bold text-slate-800">+ Thêm trường thứ {selectedUniversities.length + 1}</p>
 <p className="text-xs text-slate-500 mt-1 max-w-[180px]">Tối đa 4 trường để đảm bảo góc nhìn so sánh tập trung nhất</p>
 </button>}
 </div>
+</section>
 
-{!isRealMode && (<section className="bg-gradient-to-r from-blue-50/70 via-indigo-50/40 to-slate-50 rounded-2xl border border-blue-200/70 p-5 md:p-6 shadow-sm space-y-4">
-  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-blue-100 pb-3">
+{!isRealMode && (<section className="space-y-4 border-y border-blue-100 bg-[#EFF6FF]/75 px-4 py-6 sm:px-5">
+  <div className="flex flex-col justify-between gap-3 sm:flex-row sm:items-center">
     <div className="flex items-center gap-2.5">
-      <div className="w-8 h-8 rounded-xl bg-blue-600 text-white flex items-center justify-center"><span className="material-symbols-outlined text-[20px]">psychology</span></div>
-      <div><h2 className="text-base md:text-lg font-bold text-slate-900">Tổng quan mức độ phù hợp với hồ sơ của bạn</h2><p className="text-xs text-slate-500">Đối chiếu tự động giữa mục tiêu học sinh và dữ liệu {selectedUniversities.length} trường</p></div>
+      <div className="flex size-9 items-center justify-center rounded-lg bg-blue-50 text-blue-700"><span className="material-symbols-outlined text-[20px]">donut_large</span></div>
+      <div><h2 className="text-base font-bold text-slate-950 md:text-lg">Điểm đối chiếu tổng hợp</h2><p className="text-xs text-slate-500">Tổng tối đa 100 điểm, quy đổi về thang 10</p></div>
     </div>
-    <button className="text-xs font-semibold text-[#1D4ED8] hover:text-blue-700 flex items-center gap-1 hover:underline" onClick={() => { setProfileDraft(profile); setProfileOpen(true) }} type="button"><span>Cập nhật thông tin hồ sơ</span><span className="material-symbols-outlined text-[16px]">arrow_forward</span></button>
+    <p className="max-w-md text-xs leading-5 text-slate-500">Điểm số dùng để nhận diện điểm mạnh và đánh đổi, không phải thứ hạng trường.</p>
   </div>
-  <div className={`grid overflow-hidden rounded-xl border border-blue-100 bg-white/80 ${selectedChoices.length === 4 ? 'sm:grid-cols-2 lg:grid-cols-4' : 'sm:grid-cols-3'}`}>
+  <div className={`grid overflow-hidden rounded-lg border border-slate-200 bg-white ${selectedChoices.length === 4 ? 'sm:grid-cols-2 lg:grid-cols-4' : 'sm:grid-cols-3'}`}>
     {selectedChoices.map(({ university, major, fitScore }, index) => {
       const colors = ['#1D4ED8', '#0F766E', '#D97706', '#A93349']
-      return <div className="flex items-center gap-3 border-b border-blue-100 p-3.5 last:border-b-0 sm:flex-col sm:justify-center sm:border-b-0 sm:border-r sm:text-center sm:last:border-r-0" key={university.id}>
+      return <div className="flex items-center gap-3 border-b border-slate-200 p-4 last:border-b-0 sm:flex-col sm:justify-center sm:border-b-0 sm:border-r sm:text-center sm:last:border-r-0" key={university.id}>
         <DonutChart value={fitScore} label={`Điểm phù hợp ${university.shortName ?? university.name}`} color={colors[index]} />
         <div className="min-w-0 space-y-1">
           <UniversityLabel university={university}><strong className="block truncate text-sm text-slate-900">{university.shortName ?? university.code}</strong></UniversityLabel>
@@ -649,29 +739,23 @@ function UniversityComparisonPage() {
   </div>
 </section>)}
 
-<div className="sticky top-[74px] z-30 -mx-4 md:-mx-6 lg:-mx-8 px-4 md:px-6 lg:px-8 py-2 bg-white/[0.96] backdrop-blur-md border-y border-slate-200/80 shadow-sm space-y-2">
-<div ref={tabsRef} className="max-w-[1360px] mx-auto flex items-center gap-2 overflow-x-auto hide-scrollbar text-xs font-semibold py-0.5">
-{comparisonTabs.map(([id, icon, label]) => <a className={`px-3 py-1.5 rounded-lg shrink-0 transition-all duration-200 flex items-center gap-1 ${activeTab === id ? 'bg-[#1D4ED8] text-white shadow-sm' : 'bg-slate-100 text-slate-700 hover:bg-blue-50 hover:text-blue-700'}`} data-comparison-tab={id} href={`#${id}`} key={id} onClick={(event) => handleTabClick(event, id)}><span className="material-symbols-outlined text-[15px]">{icon}</span><span>{label}</span></a>)}
-{selectedUniversities.length < 4 && <button className="px-3 py-1.5 rounded-lg border border-dashed border-slate-300 hover:border-blue-400 hover:text-blue-700 shrink-0 transition-colors flex items-center gap-1" onClick={(event) => { event.stopPropagation(); setPickerSlot(selectedUniversities.length) }} type="button"><span className="material-symbols-outlined text-[15px]">add</span>Thêm trường thứ {selectedUniversities.length + 1}</button>}
+<div className="sticky top-[72px] z-30 -mx-4 border-y border-slate-200 bg-white/95 px-4 py-2 backdrop-blur-md md:-mx-6 md:px-6 lg:-mx-8 lg:px-8">
+<div ref={tabsRef} className="mx-auto flex max-w-[1320px] items-center gap-1 overflow-x-auto py-0.5 text-xs font-semibold hide-scrollbar">
+{comparisonTabs.map(([id, icon, label]) => <a className={`flex min-h-9 shrink-0 items-center gap-1.5 rounded-md px-3 transition-colors ${activeTab === id ? 'bg-blue-50 text-blue-800' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-950'}`} data-comparison-tab={id} href={`#${id}`} key={id} onClick={(event) => handleTabClick(event, id)}><span className="material-symbols-outlined text-[16px]">{icon}</span><span>{label}</span></a>)}
+{selectedUniversities.length < 4 && <button aria-label={`Thêm trường thứ ${selectedUniversities.length + 1}`} className="ml-1 flex size-9 shrink-0 items-center justify-center rounded-md border border-dashed border-slate-300 text-slate-500 transition hover:border-blue-400 hover:text-blue-700" onClick={(event) => { event.stopPropagation(); setPickerSlot(selectedUniversities.length) }} type="button"><span className="material-symbols-outlined text-[17px]">add</span></button>}
 </div>
 </div>
 
-<div className="space-y-6">
+<div className="divide-y divide-slate-200 border-b border-slate-200 bg-white/55 px-4 sm:px-6">
 
-<section className="scroll-mt-36 bg-white rounded-2xl border border-slate-200 p-5 md:p-6 shadow-sm space-y-4" id="section-overview">{isRealMode ? <><h2 className="text-base md:text-lg font-bold text-slate-900">Tổng quan nhanh</h2><DataUnavailable loading={catalog.loading} error={catalog.error} retry={catalog.retry} /></> : <>
-<div className="flex items-center justify-between border-b border-slate-100 pb-3">
-<div className="flex items-center gap-2.5">
-<span className="w-7 h-7 rounded-lg bg-blue-100 text-blue-700 flex items-center justify-center font-bold text-xs">1</span>
-<div><h2 className="text-base md:text-lg font-bold text-slate-900">Tổng quan nhanh</h2><p className="text-xs text-slate-500">Đối chiếu danh tính cơ bản và trạng thái đào tạo của từng trường</p></div>
-</div>
-<span className="text-xs text-slate-500 font-medium hidden sm:inline bg-slate-100 px-2.5 py-1 rounded-full">Cập nhật dữ liệu tuyển sinh 2025</span>
-</div>
+<section className="-mx-4 scroll-mt-36 space-y-5 bg-blue-50/35 px-4 py-8 sm:-mx-6 sm:px-6" id="section-overview">{isRealMode ? <><h2 className="text-base md:text-lg font-bold text-slate-900">Tổng quan nhanh</h2><DataUnavailable loading={catalog.loading} error={catalog.error} retry={catalog.retry} /></> : <>
+<SectionHeader number="01" icon="dashboard" title="Tổng quan nhanh" description="Đối chiếu danh tính, mô hình tổ chức và ngành đang chọn tại từng trường." aside={<span className="rounded-full bg-slate-100 px-2.5 py-1 font-semibold">Dữ liệu tuyển sinh 2025</span>} />
 <div className="overflow-x-auto">
 <table className="min-w-[880px] w-full text-left text-xs md:text-sm border-collapse">
 <thead>
 <tr className="border-b border-slate-200 bg-slate-50/80 text-slate-600 text-xs">
 <th className="py-3 px-4 min-w-48 font-semibold uppercase tracking-wider text-[11px]">Thuộc tính đối chiếu</th>
-{selectedChoices.map(({ university }, index) => <th className={`py-3 px-4 min-w-48 font-bold ${index === 0 ? 'text-[#1D4ED8] bg-blue-50/30' : index === 2 ? 'text-amber-950 bg-amber-50/20' : 'text-slate-900'}`} key={university.id}><Tooltip label={university.name}><span tabIndex="0">{university.shortName ?? university.name} (Lựa chọn {index + 1})</span></Tooltip></th>)}
+{selectedChoices.map(({ university }, index) => <th className="min-w-48 px-4 py-3 font-bold text-slate-950" key={university.id}><Tooltip label={university.name}><span tabIndex="0">{university.shortName ?? university.name} · {index + 1}</span></Tooltip></th>)}
 </tr>
 </thead>
 <tbody className="divide-y divide-slate-100">
@@ -692,16 +776,8 @@ function UniversityComparisonPage() {
 </div>
 </>}</section>
 
-<section className="scroll-mt-36 bg-white rounded-2xl border border-slate-200 p-5 md:p-6 shadow-sm space-y-5" id="section-budget">{isRealMode ? <><h2 className="text-base md:text-lg font-bold text-slate-900">Học phí &amp; Ngân sách gia đình</h2><DataUnavailable loading={catalog.loading} error={catalog.error} retry={catalog.retry} /></> : <>
-<div className="flex items-center justify-between border-b border-slate-100 pb-3">
-<div className="flex items-center gap-2.5">
-<span className="w-7 h-7 rounded-lg bg-emerald-100 text-emerald-700 flex items-center justify-center font-bold text-xs">2</span>
-<div><h2 className="text-base md:text-lg font-bold text-slate-900">Học phí &amp; Ngân sách gia đình</h2><p className="text-xs text-slate-500">Đối chiếu định lượng trực tiếp với trần ngân sách thiết lập của bạn</p></div>
-</div>
-<Tooltip label="Ngưỡng tối đa bạn thiết lập trong Hồ sơ tiêu chí">
-  <span tabIndex="0" className="px-3 py-1 rounded-full bg-emerald-50 text-emerald-800 text-xs font-bold border border-emerald-200">Trần ngân sách: ≤ {profile.budget}.000.000 đ / năm</span>
-</Tooltip>
-</div>
+<section className="-mx-4 scroll-mt-36 space-y-5 bg-emerald-50/40 px-4 py-8 sm:-mx-6 sm:px-6" id="section-budget">{isRealMode ? <><h2 className="text-base md:text-lg font-bold text-slate-900">Học phí &amp; Ngân sách gia đình</h2><DataUnavailable loading={catalog.loading} error={catalog.error} retry={catalog.retry} /></> : <>
+<SectionHeader number="02" icon="payments" title="Học phí và ngân sách" description="So sánh mức học phí trung bình với giới hạn gia đình đã thiết lập." aside={<Tooltip label="Ngưỡng tối đa trong hồ sơ tiêu chí"><span tabIndex="0" className="rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 font-bold text-emerald-800">Tối đa {profile.budget} triệu/năm</span></Tooltip>} />
 <TuitionBarChart choices={selectedChoices} budget={profile.budget} />
 <div className={`grid grid-cols-1 gap-2 ${selectedChoices.length === 4 ? 'sm:grid-cols-2 lg:grid-cols-4' : 'sm:grid-cols-3'}`}>
 {selectedChoices.map(({ university }) => {
@@ -712,14 +788,8 @@ function UniversityComparisonPage() {
 </div>
 </>}</section>
 
-<section className="scroll-mt-36 bg-white rounded-2xl border border-slate-200 p-5 md:p-6 shadow-sm space-y-4" id="section-location">{isRealMode ? <><h2 className="text-base md:text-lg font-bold text-slate-900">3. Vị trí và Cơ sở vật chất</h2><DataUnavailable loading={catalog.loading} error={catalog.error} retry={catalog.retry} /></> : <>
-<div className="flex items-center justify-between border-b border-slate-100 pb-3">
-<div className="flex items-center gap-2.5">
-<span className="w-3 h-3 rounded-full bg-blue-500"></span>
-<h2 className="text-base md:text-lg font-bold text-slate-900">3. Vị trí và Cơ sở vật chất</h2>
-</div>
-<span className="text-xs text-slate-500 font-medium">Khu vực mong muốn: {profile.regionId === 'ho-chi-minh-city' ? 'TP.HCM' : profile.regionId === 'ha-noi' ? 'Hà Nội' : profile.regionId === 'central' ? 'Miền Trung' : 'Miền Nam'}</span>
-</div>
+<section className="-mx-4 scroll-mt-36 space-y-5 bg-amber-50/40 px-4 py-8 sm:-mx-6 sm:px-6" id="section-location">{isRealMode ? <><h2 className="text-base md:text-lg font-bold text-slate-900">3. Vị trí và Cơ sở vật chất</h2><DataUnavailable loading={catalog.loading} error={catalog.error} retry={catalog.retry} /></> : <>
+<SectionHeader number="03" icon="location_on" title="Vị trí và cơ sở" description="Kiểm tra mức thuận tiện so với khu vực học tập bạn ưu tiên." aside={<span className="font-semibold">Ưu tiên: {regionLabel(profile.regionId)}</span>} />
 <div className={`grid grid-cols-1 gap-4 text-xs md:text-sm ${selectedChoices.length === 4 ? 'md:grid-cols-2 lg:grid-cols-4' : 'md:grid-cols-3'}`}>
 {selectedChoices.map(({ university }) => {
   const location = university.location?.campus
@@ -731,27 +801,15 @@ function UniversityComparisonPage() {
 </div>
 </>}</section>
 
-<section className="scroll-mt-36 bg-white rounded-2xl border border-slate-200 p-5 md:p-6 shadow-sm space-y-4" id="section-major">{isRealMode ? <><h2 className="text-base md:text-lg font-bold text-slate-900">4. Ngành học và Định hướng đào tạo</h2><DataUnavailable loading={catalog.loading} error={catalog.error} retry={catalog.retry} /></> : <>
-<div className="flex items-center justify-between border-b border-slate-100 pb-3">
-<div className="flex items-center gap-2.5">
-<span className="w-3 h-3 rounded-full bg-[#1D4ED8]"></span>
-<h2 className="text-base md:text-lg font-bold text-slate-900">4. Ngành học và Định hướng đào tạo</h2>
-</div>
-<span className="text-xs text-slate-500 font-medium">So sánh triết lý môn học</span>
-</div>
+<section className="-mx-4 scroll-mt-36 space-y-5 bg-[#F3F6FF] px-4 py-8 sm:-mx-6 sm:px-6" id="section-major">{isRealMode ? <><h2 className="text-base md:text-lg font-bold text-slate-900">4. Ngành học và Định hướng đào tạo</h2><DataUnavailable loading={catalog.loading} error={catalog.error} retry={catalog.retry} /></> : <>
+<SectionHeader number="04" icon="code" title="Ngành học và định hướng đào tạo" description="Xem nội dung ngành, kỹ năng chính và hướng nghề nghiệp tại từng trường." />
 <div className={`grid grid-cols-1 gap-4 ${selectedChoices.length === 4 ? 'md:grid-cols-2 lg:grid-cols-4' : 'md:grid-cols-3'}`}>
 {selectedChoices.map(({ university, major, detail }, index) => <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200/70 space-y-2.5 text-xs md:text-sm" key={university.id}><div className="flex items-center justify-between gap-2"><div className="flex items-center gap-2"><span className={`w-2 h-2 rounded-full ${index === 2 ? 'bg-amber-600' : 'bg-[#1D4ED8]'}`} /><h3 className="font-bold text-slate-900">{university.shortName ?? university.code}: {major?.name}</h3></div><span className="rounded-md bg-white px-2 py-0.5 text-[10px] font-bold text-slate-500 border border-slate-200">{major?.code}</span></div><p className="text-slate-600 leading-relaxed text-xs">{detail?.summary ?? major?.description}</p><div className="flex flex-wrap gap-1.5">{major?.skills?.slice(0, 3).map((skill) => <span className="rounded-md bg-white border border-slate-200 px-2 py-0.5 text-[10px] font-medium text-slate-600" key={skill}>{skill}</span>)}</div><p className="text-[11px] text-blue-700 font-semibold bg-blue-50 p-2 rounded-lg border border-blue-100">Hướng nghề: {major?.careerPaths?.slice(0, 2).join(' · ') || detail?.careers?.items?.slice(0, 2).map((career) => career.title).join(' · ')}</p></div>)}
 </div>
 </>}</section>
 
-<section className="scroll-mt-36 bg-white rounded-2xl border border-slate-200 p-5 md:p-6 shadow-sm space-y-4" id="section-admission">{isRealMode ? <><h2 className="text-base md:text-lg font-bold text-slate-900">5. Tuyển sinh &amp; Điểm chuẩn tham khảo</h2><DataUnavailable loading={catalog.loading} error={catalog.error} retry={catalog.retry} /></> : <>
-<div className="flex items-center justify-between border-b border-slate-100 pb-3">
-<div className="flex items-center gap-2.5">
-<span className="w-3 h-3 rounded-full bg-[#1D4ED8]"></span>
-<h2 className="text-base md:text-lg font-bold text-slate-900">5. Tuyển sinh &amp; Điểm chuẩn tham khảo</h2>
-</div>
-<span className="text-xs text-slate-500 font-medium">Hồ sơ: THPT {profile.thptScore} | ĐGNL {profile.competencyScore}</span>
-</div>
+<section className="-mx-4 scroll-mt-36 space-y-5 bg-rose-50/30 px-4 py-8 sm:-mx-6 sm:px-6" id="section-admission">{isRealMode ? <><h2 className="text-base md:text-lg font-bold text-slate-900">5. Tuyển sinh &amp; Điểm chuẩn tham khảo</h2><DataUnavailable loading={catalog.loading} error={catalog.error} retry={catalog.retry} /></> : <>
+<SectionHeader number="05" icon="how_to_reg" title="Tuyển sinh và điểm tham chiếu" description="Đặt điểm hồ sơ cạnh khoảng điểm gần nhất có cấu trúc của từng trường." aside={<span className="font-semibold">THPT {profile.thptScore} · ĐGNL {profile.competencyScore}</span>} />
 <p className="text-xs text-slate-500 italic">* Dữ liệu tuyển sinh tham khảo 2024–2025. Điểm các năm trước chỉ dùng để tham khảo và không bảo đảm kết quả trúng tuyển năm hiện tại.</p>
 <div className={`grid grid-cols-1 gap-4 text-xs md:text-sm ${selectedChoices.length === 4 ? 'md:grid-cols-2 lg:grid-cols-4' : 'md:grid-cols-3'}`}>
 {selectedChoices.map(({ university, major }) => {
@@ -767,38 +825,34 @@ function UniversityComparisonPage() {
 </div>
 </>}</section>
 
-<section className="scroll-mt-36 bg-white rounded-2xl border border-slate-200 p-5 md:p-6 shadow-sm space-y-4" id="section-scholarships">{isRealMode ? <><h2 className="text-base md:text-lg font-bold text-slate-900">6. Học bổng và Hỗ trợ tài chính</h2><DataUnavailable loading={catalog.loading} error={catalog.error} retry={catalog.retry} /></> : <>
-<div className="flex items-center justify-between border-b border-slate-100 pb-3">
-<div className="flex items-center gap-2.5">
-<span className="w-3 h-3 rounded-full bg-amber-500"></span>
-<h2 className="text-base md:text-lg font-bold text-slate-900">6. Học bổng và Hỗ trợ tài chính</h2>
-</div>
-<span className="text-xs text-slate-500 font-medium">Cơ hội giảm nhẹ học phí</span>
-</div>
+<section className="-mx-4 scroll-mt-36 space-y-5 bg-amber-50/30 px-4 py-8 sm:-mx-6 sm:px-6" id="section-scholarships">{isRealMode ? <><h2 className="text-base md:text-lg font-bold text-slate-900">6. Học bổng và Hỗ trợ tài chính</h2><DataUnavailable loading={catalog.loading} error={catalog.error} retry={catalog.retry} /></> : <>
+<SectionHeader number="06" icon="workspace_premium" title="Học bổng và hỗ trợ tài chính" description="Mở nguồn chính thức của từng trường để kiểm tra điều kiện và thời hạn mới nhất." />
 <div className={`grid grid-cols-1 gap-4 text-xs md:text-sm ${selectedChoices.length === 4 ? 'md:grid-cols-2 lg:grid-cols-4' : 'md:grid-cols-3'}`}>
 {selectedChoices.map(({ university }) => <div className="flex items-center justify-between gap-3 rounded-xl border border-slate-200 bg-slate-50 p-3" key={university.id}><div className="min-w-0"><UniversityLabel university={university}><h3 className="truncate font-bold text-slate-900">{university.shortName ?? university.name}</h3></UniversityLabel><Tooltip label="UniView chưa có dữ liệu học bổng có cấu trúc; hãy kiểm tra nguồn chính thức"><span tabIndex="0" className="mt-1 inline-flex rounded bg-amber-50 px-2 py-0.5 text-[10px] font-bold text-amber-800 border border-amber-200">Cần xác minh</span></Tooltip></div><a aria-label={`Xem học bổng tại ${university.name}`} className="inline-flex size-9 shrink-0 items-center justify-center rounded-lg bg-white text-[#1D4ED8] shadow-xs hover:bg-blue-50" href={university.website} target="_blank" rel="noreferrer"><span className="material-symbols-outlined text-[18px]">open_in_new</span></a></div>)}
 </div>
 </>}</section>
 
-<section className="scroll-mt-36 bg-blue-50/50 rounded-2xl border border-blue-200/80 p-5 md:p-6 shadow-sm space-y-5" id="section-fit">{isRealMode ? <><h2 className="text-base md:text-lg font-bold text-slate-900">7. Cấu trúc điểm phù hợp</h2><DataUnavailable loading={catalog.loading} error={catalog.error} retry={catalog.retry} /></> : <>
-<div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-blue-200/60 pb-3">
-<div className="flex items-center gap-2.5">
-<span className="text-base">🎯</span>
-<h2 className="text-base md:text-lg font-bold text-slate-900">7. Cấu trúc điểm phù hợp</h2>
+<section className="-mx-4 scroll-mt-36 space-y-5 bg-blue-50/45 px-4 py-8 sm:-mx-6 sm:px-6" id="section-fit">{isRealMode ? <><h2 className="text-base md:text-lg font-bold text-slate-900">7. Cách tính điểm đối chiếu</h2><DataUnavailable loading={catalog.loading} error={catalog.error} retry={catalog.retry} /></> : <>
+<SectionHeader number="07" icon="tune" title="Cách tính điểm đối chiếu" description="Điểm này hỗ trợ so sánh theo hồ sơ đã nhập, không phải xác suất trúng tuyển hay kết luận trường phù hợp tuyệt đối." aside={<button className="font-bold text-blue-700 hover:underline" onClick={() => { setProfileDraft(profile); setProfileOpen(true) }} type="button">Chỉnh tiêu chí</button>} />
+<div className="overflow-hidden rounded-lg border border-slate-200 bg-slate-50">
+  <div className="flex flex-col gap-2 border-b border-slate-200 bg-white px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
+    <div><h3 className="text-sm font-bold text-slate-950">Công thức: (Ngành + Ngân sách + Khu vực + Tuyển sinh) / 10</h3><p className="mt-1 text-[11px] leading-4 text-slate-500">Tổng tối đa 100 điểm. Ví dụ 88 điểm được hiển thị thành 8,8/10.</p></div>
+    <span className="shrink-0 text-xs font-bold text-blue-700">25 + 30 + 20 + 25 = 100 điểm</span>
+  </div>
+  <div className="grid gap-px bg-slate-200 text-xs md:grid-cols-2 xl:grid-cols-4">
+    <div className="bg-blue-50 p-4"><div className="flex items-center justify-between"><strong className="inline-flex items-center gap-1.5 text-slate-950"><span className="material-symbols-outlined text-[17px] text-blue-600">school</span>Ngành học</strong><span className="font-black text-blue-700">25 điểm</span></div><ul className="mt-2 space-y-1.5 leading-5 text-slate-600"><li>Đúng ngành mục tiêu: <strong>25</strong></li><li>Cùng nhóm ngành: <strong>16</strong></li><li>Khác nhóm ngành: <strong>7</strong></li></ul></div>
+    <div className="bg-emerald-50 p-4"><div className="flex items-center justify-between"><strong className="inline-flex items-center gap-1.5 text-slate-950"><span className="material-symbols-outlined text-[17px] text-emerald-600">payments</span>Ngân sách</strong><span className="font-black text-emerald-700">30 điểm</span></div><ul className="mt-2 space-y-1.5 leading-5 text-slate-600"><li>Không vượt ngân sách: <strong>30</strong></li><li>Vượt: <strong>30 × (1 - số tiền vượt/ngân sách)</strong>, tối thiểu 0</li><li>Thiếu học phí: tạm tính <strong>22,5</strong></li></ul></div>
+    <div className="bg-amber-50 p-4"><div className="flex items-center justify-between"><strong className="inline-flex items-center gap-1.5 text-slate-950"><span className="material-symbols-outlined text-[17px] text-amber-600">location_on</span>Khu vực</strong><span className="font-black text-amber-700">20 điểm</span></div><ul className="mt-2 space-y-1.5 leading-5 text-slate-600"><li>Đúng khu vực ưu tiên: <strong>20</strong></li><li>Khác khu vực ưu tiên: <strong>6</strong></li></ul></div>
+    <div className="bg-rose-50 p-4"><div className="flex items-center justify-between"><strong className="inline-flex items-center gap-1.5 text-slate-950"><span className="material-symbols-outlined text-[17px] text-rose-600">how_to_reg</span>Tuyển sinh</strong><span className="font-black text-rose-700">25 điểm</span></div><ul className="mt-2 space-y-1.5 leading-5 text-slate-600"><li>Từ mức trên trở lên: <strong>25</strong></li><li>Cách mức trên không quá 2 điểm: <strong>19</strong></li><li>Trong khoảng tham chiếu: <strong>13</strong></li><li>Dưới khoảng: <strong>6</strong> · Thiếu dữ liệu: <strong>12</strong></li></ul></div>
+  </div>
 </div>
-<div className="flex flex-wrap items-center gap-2 text-xs">
-<span className="px-2 py-0.5 rounded-full bg-white text-slate-700 border border-slate-200 font-medium">Ngành: {profile.major}</span>
-<span className="px-2 py-0.5 rounded-full bg-white text-slate-700 border border-slate-200 font-medium">Ngân sách: ≤ {profile.budget}tr/năm</span>
-<span className="px-2 py-0.5 rounded-full bg-white text-slate-700 border border-slate-200 font-medium">Khu vực: {profile.regionId === 'ho-chi-minh-city' ? 'TP.HCM' : profile.regionId === 'ha-noi' ? 'Hà Nội' : profile.regionId === 'central' ? 'Miền Trung' : 'Miền Nam'}</span>
-<span className="px-2 py-0.5 rounded-full bg-white text-blue-700 border border-blue-200 font-bold">ĐGNL: {profile.competencyScore} | THPT: {profile.thptScore}</span>
-</div>
-</div>
+<p className="flex items-start gap-2 text-[11px] leading-5 text-slate-500"><span className="material-symbols-outlined mt-0.5 text-[15px] text-amber-600">info</span><span>Điểm tuyển sinh đang dùng khoảng tham chiếu có cấu trúc của trường. Cần mở đề án chính thức để xác minh điểm riêng của ngành và chương trình đã chọn.</span></p>
 <div className={`grid grid-cols-1 gap-4 ${selectedChoices.length === 4 ? 'md:grid-cols-2 lg:grid-cols-4' : 'md:grid-cols-3'}`}>
 {selectedChoices.map(({ university, major, fitScore, fitBreakdown }) => {
   return <div className={`rounded-2xl bg-white p-4 shadow-sm ${fitScore >= 8 ? 'border border-blue-200' : fitScore >= 6.5 ? 'border border-slate-200' : 'border border-amber-200'}`} key={university.id}>
     <div className="mb-4 flex items-start justify-between gap-2 border-b border-slate-100 pb-3">
       <div className="min-w-0"><UniversityLabel university={university}><h3 className="truncate text-sm font-bold text-slate-900">{university.shortName ?? university.name}</h3></UniversityLabel><p className="mt-0.5 truncate text-[11px] text-slate-500">{major?.name}</p></div>
-      <Tooltip label="Điểm tổng hợp từ bốn tiêu chí bên dưới"><span tabIndex="0" className="shrink-0 rounded-full bg-blue-50 px-2.5 py-1 text-[11px] font-black text-blue-700">{fitScore}/10</span></Tooltip>
+      <Tooltip label="Tổng điểm bốn tiêu chí, chia 10"><span tabIndex="0" className="shrink-0 rounded-full bg-blue-50 px-2.5 py-1 text-[11px] font-black text-blue-700">{fitScore}/10</span></Tooltip>
     </div>
     <div className="space-y-3">
       {fitBreakdown.metrics.map((metric) => <MetricProgress key={metric.label} {...metric} />)}
@@ -808,14 +862,8 @@ function UniversityComparisonPage() {
 </div>
 </>}</section>
 
-<section className="scroll-mt-36 bg-white rounded-2xl border border-slate-200 p-5 md:p-6 shadow-sm space-y-4" id="section-tradeoffs">{isRealMode ? <><h2 className="text-base md:text-lg font-bold text-slate-900">8. Trade-offs cốt lõi bạn cần cân nhắc</h2><DataUnavailable loading={catalog.loading} error={catalog.error} retry={catalog.retry} /></> : <>
-<div className="flex items-center justify-between border-b border-slate-100 pb-3">
-<div className="flex items-center gap-2.5">
-<span className="text-base">⚖️</span>
-<h2 className="text-base md:text-lg font-bold text-slate-900">8. Trade-offs cốt lõi bạn cần cân nhắc</h2>
-</div>
-<span className="text-xs text-slate-500 font-medium">Không có lựa chọn hoàn hảo, chỉ có lựa chọn phù hợp nhất</span>
-</div>
+<section className="-mx-4 scroll-mt-36 space-y-5 bg-orange-50/35 px-4 py-8 sm:-mx-6 sm:px-6" id="section-tradeoffs">{isRealMode ? <><h2 className="text-base md:text-lg font-bold text-slate-900">8. Trade-offs cốt lõi bạn cần cân nhắc</h2><DataUnavailable loading={catalog.loading} error={catalog.error} retry={catalog.retry} /></> : <>
+<SectionHeader number="08" icon="balance" title="Lợi thế và điểm đánh đổi" description="Mỗi lựa chọn đều có điểm được và chi phí cơ hội cần cân nhắc trước khi xếp nguyện vọng." />
 <div className={`grid grid-cols-1 gap-4 text-xs md:text-sm ${selectedChoices.length === 4 ? 'md:grid-cols-2 lg:grid-cols-4' : 'md:grid-cols-3'}`}>
 {selectedChoices.map(({ university, major, fitScore }) => {
   const tuitionAverage = university.tuition ? (university.tuition.minMillionVnd + university.tuition.maxMillionVnd) / 2 : null
@@ -832,61 +880,49 @@ function UniversityComparisonPage() {
 </div>
 </>}</section>
 
-<section className="scroll-mt-36 bg-white rounded-2xl border border-slate-200 p-5 md:p-6 shadow-sm space-y-4" id="section-missing-info">{isRealMode ? <><h2 className="text-base md:text-lg font-bold text-slate-900">9. Nguồn &amp; mức bằng chứng</h2><DataUnavailable loading={catalog.loading} error={catalog.error} retry={catalog.retry} /></> : <>
-<div className="flex items-center justify-between border-b border-slate-100 pb-3">
-<div className="flex items-center gap-2.5">
-<span className="flex size-7 items-center justify-center rounded-lg bg-slate-100 text-slate-600"><span className="material-symbols-outlined text-[17px]">verified_user</span></span>
-<div><h2 className="text-base md:text-lg font-bold text-slate-900">9. Nguồn &amp; mức bằng chứng</h2><p className="text-xs text-slate-500">Phân biệt dữ liệu tham chiếu với thông tin đã có nguồn chi tiết</p></div>
-</div>
-<span className="hidden text-xs text-slate-500 font-medium sm:inline">Danh tính cập nhật {formatVerifiedDate(universitiesData.metadata.verifiedAt)}</span>
-</div>
-<div className="flex flex-col gap-3 rounded-xl border border-amber-200 bg-amber-50/70 p-3.5 text-xs text-amber-950 sm:flex-row sm:items-center sm:justify-between">
-  <p className="leading-relaxed"><strong>Phạm vi:</strong> {universitiesData.metadata.annualDataPolicy}</p>
-  <div className="flex shrink-0 flex-wrap gap-2"><span className="rounded-full bg-white px-2.5 py-1 font-bold">Học phí {universitiesData.metadata.tuitionAcademicYear}</span><span className="rounded-full bg-white px-2.5 py-1 font-bold">Tuyển sinh {universitiesData.metadata.admissionReferenceYear}</span></div>
+<section className="-mx-4 scroll-mt-36 space-y-5 bg-slate-50 px-4 py-8 sm:-mx-6 sm:px-6" id="section-missing-info">{isRealMode ? <><h2 className="text-base md:text-lg font-bold text-slate-900">9. Nguồn &amp; mức bằng chứng</h2><DataUnavailable loading={catalog.loading} error={catalog.error} retry={catalog.retry} /></> : <>
+<SectionHeader number="09" icon="fact_check" title="Nguồn dữ liệu và việc cần kiểm chứng" description="Biết thông tin nào đã có nguồn chi tiết và thông tin nào cần mở đề án chính thức để xác nhận." aside={<span className="font-semibold">Cập nhật {formatVerifiedDate(universitiesData.metadata.verifiedAt)}</span>} />
+<div className="flex flex-col gap-3 border-l-4 border-amber-400 bg-amber-50 px-4 py-3 text-xs text-amber-950 sm:flex-row sm:items-center sm:justify-between">
+  <p className="max-w-4xl leading-5"><strong>Phạm vi dữ liệu:</strong> {universitiesData.metadata.annualDataPolicy}</p>
+  <div className="flex shrink-0 flex-wrap gap-3 font-bold"><span>Học phí {universitiesData.metadata.tuitionAcademicYear}</span><span>Tuyển sinh {universitiesData.metadata.admissionReferenceYear}</span></div>
 </div>
 <div className={`grid grid-cols-1 gap-4 text-xs ${selectedChoices.length === 4 ? 'md:grid-cols-2 lg:grid-cols-4' : 'md:grid-cols-3'}`}>
 {selectedChoices.map(({ university, major }) => {
   const tuitionSpecific = isSpecificSource(university.tuition?.sourceUrl, university.source?.officialWebsite)
   const admissionSpecific = isSpecificSource(university.admission?.sourceUrl, university.source?.officialWebsite)
   const detailedSources = Number(tuitionSpecific) + Number(admissionSpecific)
-  return <article className="rounded-2xl border border-slate-200 bg-slate-50 p-3.5" key={university.id}>
-    <div className="flex items-start justify-between gap-2 border-b border-slate-200 pb-3">
-      <div className="min-w-0"><UniversityLabel university={university}><h3 className="truncate text-sm font-bold text-slate-900">{university.shortName ?? university.code}</h3></UniversityLabel><p className="mt-0.5 text-[10px] text-slate-500">Xác minh danh tính {formatVerifiedDate(university.source?.identityVerifiedAt)}</p></div>
-      <span className={`shrink-0 rounded-full px-2 py-1 text-[9px] font-black ${detailedSources === 2 ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-800'}`}>{detailedSources}/2 nguồn chi tiết</span>
+  return <article className="overflow-hidden rounded-lg border border-slate-200 bg-white" key={university.id}>
+    <div className="flex items-start justify-between gap-2 bg-slate-50 px-4 py-3">
+      <div className="min-w-0"><UniversityLabel university={university}><h3 className="truncate text-sm font-bold text-slate-950">{university.shortName ?? university.code}</h3></UniversityLabel><p className="mt-0.5 text-[10px] text-slate-500">Danh tính xác minh {formatVerifiedDate(university.source?.identityVerifiedAt)}</p></div>
+      <span className={`inline-flex shrink-0 items-center gap-1 rounded-full px-2 py-1 text-[9px] font-black ${detailedSources === 2 ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-900'}`}><span className="material-symbols-outlined text-[13px]">{detailedSources === 2 ? 'verified' : 'pending'}</span>{detailedSources}/2 nguồn chi tiết</span>
     </div>
-    <div className="mt-3 space-y-2.5">
-      <div className="rounded-xl bg-white p-2.5"><div className="flex items-center justify-between gap-2"><span className="font-bold text-slate-700">Học phí {university.tuition?.academicYear}</span><a aria-label={`Mở nguồn học phí ${university.name}`} className="text-blue-700 hover:underline" href={university.tuition?.sourceUrl ?? university.website} target="_blank" rel="noreferrer">Nguồn ↗</a></div><p className="mt-1 font-black text-slate-900">{university.tuition ? `${university.tuition.minMillionVnd}–${university.tuition.maxMillionVnd} triệu/năm` : 'Chưa có dữ liệu'}</p><p className={`mt-1 text-[10px] font-semibold ${tuitionSpecific ? 'text-emerald-700' : 'text-amber-800'}`}>{tuitionSpecific ? 'Có trang nguồn chi tiết' : 'Nguồn hiện là website chính thức tổng quát'}</p></div>
-      <div className="rounded-xl bg-white p-2.5"><div className="flex items-center justify-between gap-2"><span className="font-bold text-slate-700">Tuyển sinh {university.admission?.academicYear}</span><a aria-label={`Mở nguồn tuyển sinh ${university.name}`} className="text-blue-700 hover:underline" href={university.admission?.sourceUrl ?? university.website} target="_blank" rel="noreferrer">Nguồn ↗</a></div><p className="mt-1 font-black text-slate-900">{university.admission?.scoreRange?.label ?? 'Chưa có khoảng điểm'}</p><p className={`mt-1 text-[10px] font-semibold ${admissionSpecific ? 'text-emerald-700' : 'text-amber-800'}`}>{admissionSpecific ? 'Có trang nguồn chi tiết' : 'Nguồn hiện là website chính thức tổng quát'}</p></div>
+    <div className="divide-y divide-slate-100 px-4">
+      <div className="py-3"><div className="flex items-center justify-between gap-2"><span className="inline-flex items-center gap-1.5 font-bold text-slate-700"><span className={`material-symbols-outlined text-[16px] ${tuitionSpecific ? 'text-emerald-600' : 'text-amber-600'}`}>{tuitionSpecific ? 'check_circle' : 'error'}</span>Học phí</span><a aria-label={`Mở nguồn học phí ${university.name}`} className="inline-flex items-center gap-1 font-bold text-blue-700 hover:underline" href={university.tuition?.sourceUrl ?? university.website} target="_blank" rel="noreferrer">Mở nguồn<span className="material-symbols-outlined text-[14px]">open_in_new</span></a></div><p className="mt-1 font-black text-slate-950">{university.tuition ? `${university.tuition.minMillionVnd}–${university.tuition.maxMillionVnd} triệu/năm` : 'Chưa có dữ liệu'}</p><p className="mt-1 text-[10px] text-slate-500">{university.tuition?.academicYear} · {tuitionSpecific ? 'Trang dữ liệu chi tiết' : 'Website chính thức tổng quát'}</p></div>
+      <div className="py-3"><div className="flex items-center justify-between gap-2"><span className="inline-flex items-center gap-1.5 font-bold text-slate-700"><span className={`material-symbols-outlined text-[16px] ${admissionSpecific ? 'text-emerald-600' : 'text-amber-600'}`}>{admissionSpecific ? 'check_circle' : 'error'}</span>Tuyển sinh</span><a aria-label={`Mở nguồn tuyển sinh ${university.name}`} className="inline-flex items-center gap-1 font-bold text-blue-700 hover:underline" href={university.admission?.sourceUrl ?? university.website} target="_blank" rel="noreferrer">Mở nguồn<span className="material-symbols-outlined text-[14px]">open_in_new</span></a></div><p className="mt-1 font-black text-slate-950">{university.admission?.scoreRange?.label ?? 'Chưa có khoảng điểm'}</p><p className="mt-1 text-[10px] text-slate-500">{university.admission?.academicYear} · {admissionSpecific ? 'Trang dữ liệu chi tiết' : 'Website chính thức tổng quát'}</p></div>
     </div>
-    <div className="mt-3 rounded-lg border border-amber-200 bg-amber-50 p-2 text-[10px] font-semibold leading-relaxed text-amber-900">Cần xác minh thêm: chỉ tiêu và điểm riêng ngành {major?.name}; học bổng; học phí đúng chương trình.</div>
+    <div className="border-t border-amber-200 bg-amber-50 px-4 py-3 text-[10px] font-semibold leading-4 text-amber-950"><strong>Còn thiếu:</strong> chỉ tiêu và điểm riêng ngành {major?.name}; học bổng; học phí đúng chương trình.</div>
   </article>
 })}
 </div>
 </>}</section>
 
-<section className="scroll-mt-36 bg-white rounded-2xl border border-slate-200 p-5 md:p-6 shadow-sm space-y-5" id="section-notes">
-<div className="flex items-center justify-between border-b border-slate-100 pb-3">
-<div className="flex items-center gap-2.5">
-<span className="text-base">📝</span>
-<h2 className="text-base md:text-lg font-bold text-slate-900">10. Ghi chú cá nhân cho từng trường</h2>
-</div>
-<span className="text-xs text-slate-500 font-medium">Tự động đồng bộ với Decision Board</span>
-</div>
+<section className="-mx-4 scroll-mt-36 space-y-5 bg-emerald-50/25 px-4 py-8 sm:-mx-6 sm:px-6" id="section-notes">
+<SectionHeader number="10" icon="edit_note" title="Ghi chú cá nhân" description="Ghi lại điều bạn muốn hỏi thêm hoặc lý do giữ từng trường trong danh sách." aside={<span className="font-semibold">Lưu cùng bảng so sánh</span>} />
 <div className={`grid grid-cols-1 gap-4 ${selectedUniversities.length === 4 ? 'md:grid-cols-2 lg:grid-cols-4' : 'md:grid-cols-3'}`}>
 {selectedUniversities.map((university) => (
   <div className="space-y-2 text-xs" key={university.id}>
-    <div className="flex items-center justify-between"><p className="font-bold text-slate-900">Ghi chú về {university.shortName ?? university.code}:</p><span className="text-[11px] text-slate-400">Tự động lưu khi bấm Lưu</span></div>
-    <textarea className="min-h-24 w-full resize-y rounded-xl border border-slate-200 bg-slate-50/50 p-3 leading-relaxed text-slate-700 outline-none transition focus:border-blue-500 focus:ring-1 focus:ring-blue-500" value={notes[university.id] ?? ''} onChange={(event) => setNotes((current) => ({ ...current, [university.id]: event.target.value }))} placeholder={`Nhập ghi chú về ${university.shortName ?? university.name}...`} />
+    <label className="font-bold text-slate-900" htmlFor={`comparison-note-${university.id}`}>{university.shortName ?? university.code}</label>
+    <textarea className="min-h-28 w-full resize-y rounded-lg border border-slate-200 bg-white p-3 leading-relaxed text-slate-700 outline-none transition focus:border-blue-500 focus:ring-1 focus:ring-blue-500" id={`comparison-note-${university.id}`} value={notes[university.id] ?? ''} onChange={(event) => setNotes((current) => ({ ...current, [university.id]: event.target.value }))} placeholder="Điều cần hỏi thêm, cảm nhận hoặc ưu tiên của bạn..." />
   </div>
 ))}
 </div>
 </section>
 
-<div className="bg-white rounded-2xl border border-slate-200 p-5 md:p-6 shadow-sm flex flex-col sm:flex-row items-center justify-between gap-4">
-<div className="space-y-1 text-center sm:text-left"><h3 className="font-bold text-slate-900 text-sm md:text-base">Bạn đã sẵn sàng đưa ra thứ tự nguyện vọng?</h3><p className="text-xs text-slate-500">Chuyển trực tiếp {selectedUniversities.length} trường đối chiếu này vào Decision Board để sắp xếp ưu tiên và lộ trình nộp hồ sơ.</p></div>
-<div className="flex flex-wrap items-center gap-3 w-full sm:w-auto justify-end">
-<button className="px-4 py-2.5 rounded-xl border border-slate-200 text-slate-700 hover:bg-slate-50 font-semibold text-xs md:text-sm transition-colors shadow-sm inline-flex items-center gap-1.5" onClick={() => window.print()} type="button"><span className="material-symbols-outlined text-[18px] text-slate-500">download</span>Lưu kết quả so sánh (PDF)</button>
-<button className="px-5 py-2.5 rounded-xl bg-[#1D4ED8] hover:bg-blue-700 text-white font-semibold text-xs md:text-sm transition-all shadow-sm hover:shadow hover:-translate-y-0.5 inline-flex items-center gap-2" onClick={addToDecisionBoard} type="button">
+<div className="flex flex-col items-center justify-between gap-4 border-t border-slate-200 bg-slate-50 px-5 py-6 sm:flex-row">
+<div className="space-y-1 text-center sm:text-left"><h3 className="text-sm font-bold text-slate-950 md:text-base">Sẵn sàng xếp thứ tự nguyện vọng?</h3><p className="text-xs leading-5 text-slate-500">Đưa {selectedUniversities.length} lựa chọn vào Decision Board để tiếp tục sắp xếp và lập kế hoạch.</p></div>
+<div className="flex w-full flex-wrap items-center justify-end gap-2 sm:w-auto">
+<button className="inline-flex min-h-10 items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-4 text-xs font-semibold text-slate-700 transition-colors hover:border-slate-300" onClick={() => window.print()} type="button"><span className="material-symbols-outlined text-[18px] text-slate-500">download</span>Xuất PDF</button>
+<button className="inline-flex min-h-10 items-center gap-2 rounded-lg bg-[#1D4ED8] px-5 text-xs font-semibold text-white transition hover:bg-blue-700 md:text-sm" onClick={addToDecisionBoard} type="button">
 <span>Đưa {selectedUniversities.length} lựa chọn này vào Decision Board</span>
 <span className="material-symbols-outlined text-[18px]">arrow_forward</span>
 </button>

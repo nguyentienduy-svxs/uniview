@@ -21,6 +21,7 @@ function AppContent() {
     || location.pathname.startsWith('/report/group/')
     || location.pathname.startsWith('/report/major/')
     || isPdfReport
+  const isComparisonWorkspace = location.pathname === '/compare'
 
   useEffect(() => {
     const headers = document.querySelectorAll('#uniview-app-header')
@@ -55,7 +56,7 @@ function AppContent() {
         </Routes>
       </main>
 
-      <FloatingMascot />
+      {!isComparisonWorkspace && <FloatingMascot />}
 
       {!isReportWorkspace && <AppFooter />}
     </div>
