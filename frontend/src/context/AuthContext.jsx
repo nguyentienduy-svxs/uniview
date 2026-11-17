@@ -1,6 +1,7 @@
 import { createContext, useContext, useEffect, useState } from 'react'
 
 import { authApi } from '../api/authApi'
+import { tokenStorage } from '../api/tokenStorage'
 import { useDataMode } from './DataModeContext'
 import {
   cloneSession,
@@ -14,9 +15,6 @@ import { clearUserWorkspaceStorage } from '../utils/userWorkspaceStorage'
 
 const AuthContext = createContext(null)
 
-const AUTH_MODE = import.meta.env.VITE_AUTH_MODE?.toLowerCase() ?? 'local'
-const USE_MOCK_AUTH = AUTH_MODE === 'mock'
-const USE_API_AUTH = AUTH_MODE === 'api'
 const SESSION_KEY = 'uniview-auth-session-v4'
 const ACCOUNT_SESSIONS_KEY = 'uniview-demo-accounts-v4'
 const REGISTERED_ACCOUNTS_KEY = 'uniview-registered-accounts-v1'
@@ -112,14 +110,26 @@ function createSubscription(planId, admissionSeason) {
   }
 }
 
+function serverSession(response) {
+  const user = response?.user ?? response
+  if (!user?.id) throw new Error('Phản hồi tài khoản không hợp lệ.')
+  return {
+    user,
+    entitlements: response?.entitlements ?? [],
+    activePlans: response?.activePlans ?? user?.activePlans ?? [],
+    subscriptions: response?.subscriptions ?? [],
+    admissionSeason: response?.admissionSeason ?? user?.targetAdmissionYear ?? null,
+  }
+}
+
 export function AuthProvider({ children }) {
   const dataModeState = useDataMode()
-  const isRealData = dataModeState?.isRealMode || USE_API_AUTH
+  const isRealData = dataModeState.isRealMode
 
   const [session, setSession] = useState(() => (
-    USE_API_AUTH ? null : readLocalSession()
+    isRealData ? null : readLocalSession()
   ))
-  const [loading, setLoading] = useState(USE_API_AUTH)
+  const [loading, setLoading] = useState(isRealData && Boolean(tokenStorage.get()))
   const [error, setError] = useState(null)
   const user = session?.user ?? null
   const storedEntitlements = session?.entitlements ?? []
@@ -142,23 +152,26 @@ export function AuthProvider({ children }) {
   ))
 
   useEffect(() => {
-    if (!USE_API_AUTH) return
+    if (!isRealData || !tokenStorage.get()) return
+    let active = true
 
     authApi.getMe()
       .then((data) => {
-        setSession(data)
-        setReportHistory(data?.user ? readJson(historyKey(data.user.id), []) : [])
+        if (!active) return
+        setSession(serverSession(data))
+        setReportHistory([])
       })
       .catch((requestError) => {
-        console.error('Failed to load session:', requestError)
+        if (!active) return
         setSession(null)
         setError(requestError)
       })
-      .finally(() => setLoading(false))
-  }, [])
+      .finally(() => { if (active) setLoading(false) })
+    return () => { active = false }
+  }, [isRealData])
 
   async function loadCurrentSession() {
-    if (!USE_API_AUTH) {
+    if (!isRealData) {
       const localSession = readLocalSession()
       setSession(localSession)
       setReportHistory(localSession?.user ? readJson(historyKey(localSession.user.id), []) : [])
@@ -170,8 +183,8 @@ export function AuthProvider({ children }) {
       setLoading(true)
       setError(null)
       const data = await authApi.getMe()
-      setSession(data)
-      setReportHistory(data?.user ? readJson(historyKey(data.user.id), []) : [])
+      setSession(serverSession(data))
+      setReportHistory([])
       return data
     } catch (requestError) {
       setSession(null)
@@ -219,6 +232,7 @@ export function AuthProvider({ children }) {
 
   const persistLocalSession = (nextSession) => {
     setSession(nextSession)
+    if (isRealData) return
     if (typeof window === 'undefined') return
 
     try {
@@ -239,31 +253,13 @@ export function AuthProvider({ children }) {
 
   const login = async (identifier, password) => {
     if (isRealData) {
-      try {
-        const apiResponse = await authApi.login(identifier, password)
-        if (apiResponse?.user) {
-          const userObj = apiResponse.user
-          const activePlans = userObj.activePlans ?? [PLAN_IDS.ANNUAL]
-          const serverSession = {
-            user: userObj,
-            entitlements: [ENTITLEMENTS.PERSONAL_WORKSPACE, ENTITLEMENTS.ADMISSION_PASS],
-            activePlans,
-            subscriptions: [createSubscription(PLAN_IDS.ANNUAL)],
-            admissionSeason: userObj.targetAdmissionYear || '2027',
-          }
-          persistLocalSession(serverSession)
-          setReportHistory(readJson(historyKey(userObj.id), []))
-          setError(null)
-          return serverSession
-        }
-      } catch (apiError) {
-        // Nếu server trả về lỗi nghiệp vụ rõ ràng
-        if (apiError.status === 401 || apiError.status === 400) {
-          throw new Error(apiError.message || 'Sai tài khoản hoặc mật khẩu trên máy chủ.')
-        }
-        console.warn('Real API login thất bại, kiểm tra mock data:', apiError)
-        // Nếu server offline, tiếp tục thử mock data bên dưới
-      }
+      const response = await authApi.login(identifier, password)
+      const nextSession = serverSession(response)
+      if (!nextSession.user?.id) throw new Error('Phản hồi tài khoản không hợp lệ.')
+      setSession(nextSession)
+      setReportHistory([])
+      setError(null)
+      return nextSession
     }
 
     const account = getDemoAccount(identifier, password)
@@ -313,28 +309,13 @@ export function AuthProvider({ children }) {
 
   const register = async ({ email, fullName, password }) => {
     if (isRealData) {
-      try {
-        const apiResponse = await authApi.register({ email, fullName, password })
-        if (apiResponse?.user) {
-          const userObj = apiResponse.user
-          const serverSession = {
-            user: userObj,
-            entitlements: [ENTITLEMENTS.PERSONAL_WORKSPACE, ENTITLEMENTS.ADMISSION_PASS],
-            activePlans: [PLAN_IDS.ANNUAL],
-            subscriptions: [createSubscription(PLAN_IDS.ANNUAL)],
-            admissionSeason: userObj.targetAdmissionYear || '2027',
-          }
-          persistLocalSession(serverSession)
-          setReportHistory([])
-          setError(null)
-          return serverSession
-        }
-      } catch (apiError) {
-        if (apiError.status === 400) {
-          throw new Error(apiError.message || 'Dữ liệu đăng ký không hợp lệ.')
-        }
-        console.warn('Real API register thất bại, chuyển về lưu local:', apiError)
-      }
+      const response = await authApi.register({ email, fullName, password })
+      const nextSession = serverSession(response)
+      if (!nextSession.user?.id) throw new Error('Phản hồi tài khoản không hợp lệ.')
+      setSession(nextSession)
+      setReportHistory([])
+      setError(null)
+      return nextSession
     }
 
     const normalizedEmail = String(email ?? '').trim().toLowerCase()
@@ -366,6 +347,7 @@ export function AuthProvider({ children }) {
   }
 
   const purchaseCorePlan = (planId = PLAN_IDS.MONTHLY) => {
+    if (isRealData) throw new Error('Tính năng này chưa hỗ trợ lưu dữ liệu trên máy chủ.')
     if (!user) throw new Error('Bạn cần đăng nhập trước khi chọn gói.')
     if (![PLAN_IDS.MONTHLY, PLAN_IDS.ANNUAL].includes(planId)) {
       throw new Error('Gói thuê bao không hợp lệ.')
@@ -392,6 +374,7 @@ export function AuthProvider({ children }) {
   }
 
   const purchaseAdmissionPass = (season = '2027') => {
+    if (isRealData) throw new Error('Tính năng này chưa hỗ trợ lưu dữ liệu trên máy chủ.')
     if (!user) throw new Error('Bạn cần đăng nhập trước khi mua Admission Pass.')
     const nextSession = {
       ...session,
@@ -424,11 +407,12 @@ export function AuthProvider({ children }) {
     }
     const nextHistory = [entry, ...reportHistory.filter(({ id }) => id !== reportId)]
     setReportHistory(nextHistory)
-    window.localStorage.setItem(historyKey(user.id), JSON.stringify(nextHistory))
+    window.localStorage.setItem(`${historyKey(user.id)}${isRealData ? ':real' : ''}`, JSON.stringify(nextHistory))
     return entry
   }
 
   const setSubscriptionAutoRenew = (planId, autoRenew) => {
+    if (isRealData) throw new Error('Tính năng này chưa hỗ trợ lưu dữ liệu trên máy chủ.')
     if (!user) return null
     const nextSession = {
       ...session,
@@ -443,6 +427,7 @@ export function AuthProvider({ children }) {
   }
 
   const updateUserProfile = (updates) => {
+    if (isRealData) throw new Error('Tính năng này chưa hỗ trợ lưu dữ liệu trên máy chủ.')
     if (!session?.user) return null
     const nextSession = {
       ...session,
@@ -457,7 +442,7 @@ export function AuthProvider({ children }) {
   }
 
   const logout = async () => {
-    if (USE_API_AUTH) {
+    if (isRealData) {
       try {
         await authApi.logout()
       } catch (requestError) {
@@ -469,7 +454,7 @@ export function AuthProvider({ children }) {
     setReportHistory([])
   }
 
-  const demoAccounts = DEMO_ACCOUNTS.map((account) => ({
+  const demoAccounts = (isRealData ? [] : DEMO_ACCOUNTS).map((account) => ({
     id: account.id,
     username: account.username,
     password: account.password,
@@ -489,7 +474,7 @@ export function AuthProvider({ children }) {
       isAuthenticated,
       loading,
       error,
-      authMode: USE_MOCK_AUTH ? 'mock' : USE_API_AUTH ? 'api' : 'local',
+      authMode: isRealData ? 'api' : 'mock',
       hasEntitlement,
       hasEntitlementHistory,
       isEntitlementReadOnly,

@@ -63,57 +63,6 @@ async function saveOnDevice(entry) {
 
 const API_BASE_URL = import.meta.env.VITE_API_URL ?? 'http://localhost:8080/api/v1'
 
-async function postFeedback(entry) {
-  try {
-    // Thử gửi trực tiếp Spring Boot API trước (lưu vào PostgreSQL)
-    const springResponse = await fetch(`${API_BASE_URL}/feedback`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(entry),
-    }).catch(() => null)
-
-    if (springResponse && springResponse.ok) {
-      return await springResponse.json()
-    }
-
-    // Fallback: endpoint local của Vite dev server
-    const response = await fetch('/api/feedback', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(entry),
-    })
-    if (!response.ok) return null
-    return await response.json()
-  } catch {
-    return null
-  }
-}
-
-async function formSubmitFallback(entry) {
-  try {
-    const response = await fetch('https://formsubmit.co/ajax/lamhuynhhueman.ptht@gmail.com', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
-      body: JSON.stringify({
-        _subject: `[UniView Feedback] ${entry.category} · ${entry.rating}/5`,
-        _template: 'table',
-        _captcha: 'false',
-        'Họ tên': entry.userName,
-        Email: entry.email || 'Không cung cấp',
-        'Đánh giá': `${entry.rating}/5`,
-        'Nhóm góp ý': entry.category,
-        'Nội dung': entry.message,
-        Trang: entry.page,
-        'Thời gian': entry.createdAt,
-      }),
-    })
-    if (!response.ok) return null
-    return await response.json()
-  } catch {
-    return null
-  }
-}
-
 export function generateFeedbacksCsv(entries = getStoredFeedbacks()) {
   const BOM = '\uFEFF'
   const headers = [
@@ -195,30 +144,24 @@ export const feedbackApi = {
   getStored: getStoredFeedbacks,
   downloadExcel: downloadFeedbacksExcel,
   generateCsv: generateFeedbacksCsv,
-  async submit(payload) {
+  async submit(payload, { dataMode = 'mock' } = {}) {
+    if (dataMode === 'real') {
+      const response = await fetch(`${API_BASE_URL}/feedback`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      })
+      if (!response.ok) throw new Error('Không thể gửi góp ý. Vui lòng thử lại.')
+      return { entry: await response.json(), synced: true }
+    }
     const entry = {
       ...payload,
       id: crypto.randomUUID(),
       createdAt: new Date().toISOString(),
-      syncStatus: 'STORED_IN_DATABASE',
+      syncStatus: 'MOCK_LOCAL',
     }
     await saveOnDevice(entry)
+    return { entry, synced: false }
 
-    // Cố gắng gửi qua endpoint hoặc email nếu môi trường hỗ trợ, nhưng không làm crash hay báo lỗi 404 cho user
-    const apiResult = await postFeedback(entry)
-    if (apiResult) {
-      entry.syncStatus = 'SYNCED_API'
-      saveToLocalStorage(entry)
-      return { entry, synced: true }
-    }
-
-    const emailResult = await formSubmitFallback(entry)
-    if (emailResult) {
-      entry.syncStatus = 'SENT_MAIL'
-      saveToLocalStorage(entry)
-    }
-
-    // Luôn trả về thành công vì đã lưu chắc chắn vào cơ sở dữ liệu (localStorage + IndexedDB)
-    return { entry, synced: true }
   },
 }

@@ -393,7 +393,9 @@ async function runSmokeTest() {
   }
 }
 
-runSmokeTest().catch((err) => {
+export { findBrowser, startStaticServer, waitHttp, CdpClient }
+
+if (process.argv[1] && path.resolve(process.argv[1]) === __filename) runSmokeTest().catch((err) => {
   console.error('\n❌ SMOKE TEST THẤT BẠI:', err)
   process.exit(1)
 })

@@ -1,6 +1,9 @@
 import { lazy, Suspense, useEffect } from 'react'
 import { Navigate, useLocation, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
+import { useDataMode } from '../context/DataModeContext'
+import { realPagePolicy } from '../data/realDataPolicy'
+import { RealCatalogPage, UnavailableRealDataPage } from './RealDataPage'
 import { allowsLabelRouteInference } from '../utils/clickNavigation'
 
 const pageModules = import.meta.glob([
@@ -114,6 +117,7 @@ function MissingPage({ title }) {
 }
 
 function PageRenderer({ page }) {
+  const { isRealMode, dataMode } = useDataMode()
   const navigate = useNavigate()
   const location = useLocation()
   const {
@@ -195,7 +199,11 @@ function PageRenderer({ page }) {
     )
   }
 
-  const readOnly = !entitlementActive && historicalAccess
+  const serverReadOnly = isRealMode && ['ProfilePage', 'AccountPlanPage'].includes(page.component)
+  const readOnly = (!entitlementActive && historicalAccess) || serverReadOnly
+  const realPolicy = isRealMode ? realPagePolicy(page.component) : null
+  if (realPolicy?.kind) return <RealCatalogPage key={`${dataMode}:${page.component}`} {...realPolicy} />
+  if (realPolicy?.unavailable) return <UnavailableRealDataPage />
 
   const preventReadOnlyMutation = (event) => {
     if (!readOnly) return
@@ -215,16 +223,16 @@ function PageRenderer({ page }) {
     >
       {readOnly && (
         <div className="sticky top-16 z-40 border-b border-amber-200 bg-amber-50 px-4 py-3 text-center text-sm font-semibold text-amber-900">
-          Gói của bạn đã hết hiệu lực. Dữ liệu cũ vẫn được giữ ở chế độ chỉ xem; hãy kích hoạt gói cho mùa mới để cập nhật.
+          {serverReadOnly ? 'Thông tin đang ở chế độ chỉ xem. Chức năng cập nhật trên máy chủ chưa được hỗ trợ.' : 'Gói của bạn đã hết hiệu lực. Dữ liệu cũ vẫn được giữ ở chế độ chỉ xem; hãy kích hoạt gói cho mùa mới để cập nhật.'}
         </div>
       )}
-      {usesDemoDataset && (
+      {!isRealMode && usesDemoDataset && (
         <div className="border-b border-blue-200 bg-blue-50 px-4 py-2.5 text-center text-xs font-semibold leading-5 text-blue-900">
           Dữ liệu minh họa: khu vực này dùng Roadmap và dữ liệu tuyển sinh mẫu của UniView để bạn trải nghiệm đầy đủ luồng. Kết quả Assessment và PDF của tài khoản vẫn dùng dữ liệu thật bạn cung cấp.
         </div>
       )}
       <Suspense fallback={<LoadingPage />}>
-        <PageComponent readOnly={readOnly} />
+        <PageComponent key={dataMode} readOnly={readOnly} />
       </Suspense>
     </div>
   )

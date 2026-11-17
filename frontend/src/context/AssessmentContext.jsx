@@ -8,7 +8,6 @@ import {
 
 import {
   assessmentApi,
-  isAssessmentApiEnabled,
 } from '../api/assessmentApi'
 import { buildAssessmentPayload } from '../utils/assessmentPayload'
 import { createLocalAssessmentReport } from '../utils/assessmentScoring'
@@ -16,6 +15,7 @@ import { normalizeExperience } from '../utils/experienceAssessment'
 import { normalizeCertificates } from '../utils/certificates'
 import { riasecAssessment } from '../data/assessment'
 import { useAuth } from './AuthContext'
+import { useDataMode } from './DataModeContext'
 
 const STORAGE_PREFIX = 'uniview-assessment-v4'
 
@@ -135,7 +135,7 @@ function createMinhAnhAssessment(defaults) {
   return { ...snapshot, report: createLocalAssessmentReport(snapshot, payload) }
 }
 
-function readStoredAssessment(user, keepStoredReport = false) {
+function readStoredAssessment(user, keepStoredReport = false, mode = 'mock') {
   const academicProfile = user?.academicProfile ?? {}
   const defaults = {
     ...initialAssessment,
@@ -150,9 +150,10 @@ function readStoredAssessment(user, keepStoredReport = false) {
   }
 
   try {
-    const stored = window.localStorage.getItem(assessmentStorageKey(user?.id))
+    const stored = window.localStorage.getItem(`${assessmentStorageKey(user?.id)}:${mode}`)
+      ?? (mode === 'mock' ? window.localStorage.getItem(assessmentStorageKey(user?.id)) : null)
 
-    if (!stored) return user?.isDemo ? createMinhAnhAssessment(defaults) : defaults
+    if (!stored) return mode === 'mock' && user?.isDemo ? createMinhAnhAssessment(defaults) : defaults
 
     const parsed = JSON.parse(stored)
 
@@ -179,8 +180,9 @@ function readStoredAssessment(user, keepStoredReport = false) {
 
 export function AssessmentProvider({ children }) {
   const { user } = useAuth()
+  const { isRealMode } = useDataMode()
   const [assessment, setAssessment] =
-    useState(() => readStoredAssessment(user, Boolean(user)))
+    useState(() => readStoredAssessment(user, Boolean(user), isRealMode ? 'real' : 'mock'))
   const loadedUserIdRef = useRef(user?.id ?? null)
   const [submitState, setSubmitState] = useState({
     loading: false,
@@ -191,7 +193,7 @@ export function AssessmentProvider({ children }) {
     const nextUserId = user?.id ?? null
     if (loadedUserIdRef.current === nextUserId) return
     loadedUserIdRef.current = nextUserId
-    setAssessment(readStoredAssessment(user, Boolean(user)))
+    setAssessment(readStoredAssessment(user, Boolean(user), isRealMode ? 'real' : 'mock'))
     setSubmitState({ loading: false, error: null })
   }, [user])
 
@@ -201,13 +203,13 @@ export function AssessmentProvider({ children }) {
         ? assessment
         : { ...assessment, report: null }
       window.localStorage.setItem(
-        assessmentStorageKey(user?.id),
+        `${assessmentStorageKey(user?.id)}:${isRealMode ? 'real' : 'mock'}`,
         JSON.stringify(assessmentToStore),
       )
     } catch {
       // Assessment vẫn hoạt động trong memory nếu storage bị chặn.
     }
-  }, [assessment, user])
+  }, [assessment, user, isRealMode])
 
   const setRiasecAnswer = (
     questionId,
@@ -264,7 +266,7 @@ export function AssessmentProvider({ children }) {
     )
 
     try {
-      const serverReport = isAssessmentApiEnabled
+      const serverReport = isRealMode
         ? await assessmentApi.evaluate(payload)
         : createLocalAssessmentReport(snapshot, payload)
       const report = {

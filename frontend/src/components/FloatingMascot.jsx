@@ -4,6 +4,7 @@ import { useLocation } from 'react-router-dom'
 import { feedbackApi } from '../api/feedbackApi'
 import mascotImage from '../assets/UniView_DUNG_MEO_TRONG_ANH_chop_mat_cuoi.webp'
 import { useAuth } from '../context/AuthContext'
+import { useDataMode } from '../context/DataModeContext'
 
 const FEEDBACK_SUBMITTED_KEY = 'uniview_feedback_sent_v1'
 
@@ -16,17 +17,19 @@ const PROMPTS = [
 function FloatingMascot() {
   const location = useLocation()
   const { user } = useAuth()
+  const { dataMode } = useDataMode()
+  const submittedKey = `${FEEDBACK_SUBMITTED_KEY}:${dataMode}`
   const [promptIndex, setPromptIndex] = useState(0)
 
   // Kiểm tra người dùng đã từng gửi góp ý chưa (nếu đã gửi thì không spam hỏi lại)
   const [hasSubmitted, setHasSubmitted] = useState(() => {
     if (typeof window === 'undefined') return false
-    return window.localStorage.getItem(FEEDBACK_SUBMITTED_KEY) === 'true'
+    return window.localStorage.getItem(submittedKey) === 'true'
   })
 
   const [bubbleOpen, setBubbleOpen] = useState(() => {
     if (typeof window === 'undefined') return true
-    return window.localStorage.getItem(FEEDBACK_SUBMITTED_KEY) !== 'true'
+    return window.localStorage.getItem(submittedKey) !== 'true'
   })
 
   const [panelOpen, setPanelOpen] = useState(false)
@@ -60,14 +63,14 @@ function FloatingMascot() {
     if (hasSubmitted) return
 
     const secondTimer = window.setTimeout(() => {
-      if (window.localStorage.getItem(FEEDBACK_SUBMITTED_KEY) !== 'true') {
+      if (window.localStorage.getItem(submittedKey) !== 'true') {
         setPromptIndex(1)
         setBubbleOpen(true)
       }
     }, 3 * 60 * 1000)
 
     const finalTimer = window.setTimeout(() => {
-      if (window.localStorage.getItem(FEEDBACK_SUBMITTED_KEY) !== 'true') {
+      if (window.localStorage.getItem(submittedKey) !== 'true') {
         setPromptIndex(2)
         setBubbleOpen(true)
       }
@@ -99,7 +102,8 @@ function FloatingMascot() {
     const displayName = user?.fullName
       || (form.email.trim() ? form.email.trim() : 'Khách vãng lai (Chưa đăng nhập)')
 
-    await feedbackApi.submit({
+    try {
+      await feedbackApi.submit({
       ...form,
       email: form.email.trim(),
       message: form.message.trim(),
@@ -107,12 +111,16 @@ function FloatingMascot() {
       userId: user?.id ?? null,
       userName: displayName,
       isGuest: !user,
-    })
+      }, { dataMode })
+    } catch {
+      setStatus('ERROR')
+      return
+    }
 
     // Đã gửi thành công -> ghi nhớ để không spam bubble nữa
     setHasSubmitted(true)
     try {
-      window.localStorage.setItem(FEEDBACK_SUBMITTED_KEY, 'true')
+      window.localStorage.setItem(submittedKey, 'true')
     } catch {}
 
     timerRefs.current.forEach((timerId) => window.clearTimeout(timerId))
@@ -247,6 +255,7 @@ function FloatingMascot() {
                 />
               </label>
 
+              {status === 'ERROR' && <p role="alert" className="text-sm text-red-700">Chưa gửi được góp ý. Vui lòng thử lại.</p>}
               <button
                 className="flex min-h-10 w-full items-center justify-center rounded-xl bg-[#1d4ed8] text-xs font-bold text-white shadow-md transition hover:bg-[#1e40af] disabled:opacity-50 cursor-pointer"
                 disabled={status === 'SENDING' || form.message.trim().length < 3}

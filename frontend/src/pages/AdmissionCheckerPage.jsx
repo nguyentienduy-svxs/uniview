@@ -1,3 +1,6 @@
+import { useDataMode } from '../context/DataModeContext'
+import { useCatalog } from '../hooks/useCatalog'
+import DataUnavailable from '../components/DataUnavailable'
 import { useState, useMemo } from 'react'
 import { Link } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
@@ -40,29 +43,33 @@ function AdmissionCheckerPage() {
   const { assessment } = useAssessment()
   const hasAdmissionPass = hasEntitlement(ENTITLEMENTS.ADMISSION_PASS)
 
-  const allSchools = universityData.universities || []
+  const { isRealMode } = useDataMode()
+  const catalog = useCatalog('universities')
+  const majorCatalog = useCatalog('majors')
+  const allSchools = isRealMode ? catalog.rows : universityData.universities || []
+  const availableMajors = isRealMode ? majorCatalog.rows.map((major) => ({...major, categoryName: major.category || '', tag: '', combinations: major.popularCombinations || '', defaultScore: NaN})) : ALL_MAJORS
 
   // Dynamic States
-  const [selectedSchool, setSelectedSchool] = useState(() => allSchools[0] || {
+  const [selectedSchool, setSelectedSchool] = useState(() => allSchools[0] || (isRealMode ? { id: '', name: 'Chọn trường', shortName: '', city: '', code: '', admission: {} } : {
     id: 'uit-vnuhcm',
     name: 'Trường Đại học Công nghệ Thông tin (UIT)',
     shortName: 'UIT',
     city: 'TP. Hồ Chí Minh',
     code: 'QST',
     admission: { scoreRange: { min: 26.50, max: 28.50 } },
-  })
+  }))
   const [schoolSearch, setSchoolSearch] = useState('')
   const [schoolRegionFilter, setSchoolRegionFilter] = useState('ALL')
   const [isSelectingSchool, setIsSelectingSchool] = useState(false)
 
-  const [selectedMajor, setSelectedMajor] = useState(ALL_MAJORS[0])
+  const [selectedMajor, setSelectedMajor] = useState(availableMajors[0] || {id: '', name: 'Chọn ngành', code: '', tag: '', combinations: '', defaultScore: NaN})
   const [majorSearch, setMajorSearch] = useState('')
   const [majorCategoryFilter, setMajorCategoryFilter] = useState('ALL')
   const [isSelectingMajor, setIsSelectingMajor] = useState(false)
 
   // Method & Scores
-  const defaultThpt = assessment?.profile?.thptScore || user?.academicProfile?.thptScore?.value || '25.50'
-  const defaultDgnl = assessment?.profile?.dgnlScore || user?.academicProfile?.dgnlScore?.value || '875'
+  const defaultThpt = assessment?.profile?.thptScore || user?.academicProfile?.thptScore?.value || (isRealMode ? '' : '25.50')
+  const defaultDgnl = assessment?.profile?.dgnlScore || user?.academicProfile?.dgnlScore?.value || (isRealMode ? '' : '875')
 
   const [method, setMethod] = useState('thpt') // 'thpt' | 'dgnl_hcm'
   const [userThptScore, setUserThptScore] = useState(defaultThpt)
@@ -95,7 +102,7 @@ function AdmissionCheckerPage() {
 
   // Filtered Majors
   const filteredMajors = useMemo(() => {
-    return ALL_MAJORS.filter((m) => {
+    return availableMajors.filter((m) => {
       const q = majorSearch.trim().toLowerCase()
       const matchQuery = !q || (
         m.name.toLowerCase().includes(q) ||
@@ -105,12 +112,13 @@ function AdmissionCheckerPage() {
       const matchCat = majorCategoryFilter === 'ALL' || m.categoryName.includes(majorCategoryFilter)
       return matchQuery && matchCat
     })
-  }, [majorSearch, majorCategoryFilter])
+  }, [majorSearch, majorCategoryFilter, availableMajors])
 
   // THPT & ĐGNL Benchmarks cho năm gần nhất (Mùa tuyển sinh 2025 - 2026)
-  const thptBenchmark = parseFloat(selectedSchool?.admission?.scoreRange?.min) || selectedMajor.defaultScore
+  const thptBenchmark = isRealMode ? NaN : parseFloat(selectedSchool?.admission?.scoreRange?.min) || selectedMajor.defaultScore
 
   const dgnlBenchmark = useMemo(() => {
+    if (isRealMode) return NaN
     if (selectedSchool.shortName === 'UIT') {
       if (selectedMajor.code === '7480103') return 915 // Kỹ thuật phần mềm UIT
       if (selectedMajor.code === '7480101') return 940 // KHMT UIT
@@ -120,7 +128,7 @@ function AdmissionCheckerPage() {
     if (selectedSchool.name.includes('Kinh tế') || selectedSchool.shortName === 'UEH') return 865
     // Quy đổi tương đương chuẩn hóa (26.5/30 * 1000)
     return Math.round((thptBenchmark / 30) * 1000 / 5) * 5
-  }, [selectedSchool, selectedMajor, thptBenchmark])
+  }, [selectedSchool, selectedMajor, thptBenchmark, isRealMode])
 
   // Dynamic values depending on active method
   const scoreNum = isDgnl ? (parseFloat(userDgnlScore) || 0) : (parseFloat(userThptScore) || 0)
@@ -206,7 +214,7 @@ function AdmissionCheckerPage() {
                     <span className="text-xs font-bold text-[#1D4ED8]">Điểm thi tốt nghiệp THPT</span>
                     {method === 'thpt' && <span className="w-5 h-5 rounded-full bg-[#1D4ED8] text-white flex items-center justify-center text-xs">✓</span>}
                   </div>
-                  <p className="text-xs text-slate-500 mt-2">Thang điểm 30 • Mùa gần nhất: {thptBenchmark.toFixed(2)} đ</p>
+                  <p className="text-xs text-slate-500 mt-2">Thang điểm 30 • Mùa gần nhất: {isRealMode ? 'Hiện tại chưa có dữ liệu' : thptBenchmark.toFixed(2) + ' đ'}</p>
                 </button>
 
                 <button
@@ -220,7 +228,7 @@ function AdmissionCheckerPage() {
                     <span className="text-xs font-bold text-slate-800">ĐGNL ĐHQG TP.HCM</span>
                     {method === 'dgnl_hcm' && <span className="w-5 h-5 rounded-full bg-[#1D4ED8] text-white flex items-center justify-center text-xs">✓</span>}
                   </div>
-                  <p className="text-xs text-slate-500 mt-2">Thang điểm 1200 • Mùa gần nhất: {dgnlBenchmark} đ</p>
+                  <p className="text-xs text-slate-500 mt-2">Thang điểm 1200 • Mùa gần nhất: {isRealMode ? 'Hiện tại chưa có dữ liệu' : dgnlBenchmark + ' đ'}</p>
                 </button>
               </div>
             </div>
@@ -368,7 +376,7 @@ function AdmissionCheckerPage() {
             <div className="space-y-2 relative">
               <div className="flex items-center justify-between">
                 <label className="text-xs font-bold uppercase tracking-wider text-slate-500">
-                  Bước 3 • Chọn ngành &amp; chương trình đào tạo ({ALL_MAJORS.length} ngành)
+                  Bước 3 • Chọn ngành &amp; chương trình đào tạo ({availableMajors.length} ngành)
                 </label>
                 <button
                   type="button"
@@ -616,7 +624,7 @@ function AdmissionCheckerPage() {
         </div>
 
         {/* SECTION RESULT DYNAMIC */}
-        <div className="scroll-mt-24 space-y-6 pt-6" id="section-result">
+{isRealMode ? <section id="section-result" className="space-y-4"><h2 className="text-xl font-bold">Kết quả đối chiếu số học</h2><DataUnavailable loading={catalog.loading || majorCatalog.loading} error={catalog.error || majorCatalog.error} retry={() => {catalog.retry(); majorCatalog.retry()}} /></section> : <>        <div className="scroll-mt-24 space-y-6 pt-6" id="section-result">
           <div className="flex items-center justify-between border-b border-slate-200 pb-3">
             <div className="flex items-center gap-2.5">
               <span className="w-3 h-3 rounded-full bg-[#1D4ED8]" />
@@ -794,6 +802,7 @@ function AdmissionCheckerPage() {
             </div>
           </div>
         </div>
+</>}
       </div>
     </main>
   )

@@ -10,7 +10,7 @@
  * 4. Gõ toggleUniViewDevTools() trong console
  */
 
-import { createContext, useContext, useState, useEffect, useCallback } from 'react'
+import { Fragment, createContext, useContext, useState, useEffect, useCallback } from 'react'
 
 const DATA_MODE_KEY = 'uniview-data-mode-v1'
 const DEVTOOLS_OPEN_KEY = 'uniview-devtools-open-v1'
@@ -99,7 +99,7 @@ export function DataModeProvider({ children }) {
         closeDevTools,
       }}
     >
-      {children}
+      <Fragment key={dataMode}>{children}</Fragment>
     </DataModeContext.Provider>
   )
 }

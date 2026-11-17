@@ -4,6 +4,7 @@ import { findDemoMajor, findDemoTask } from '../data/annualDemo'
 import { PLAN_IDS } from '../data/plans'
 import { canOpenTask, canStartTask, countOpenTasks, getCapabilities, SLOT_TASK_STATUSES, TASK_STATUS } from '../domain/accessPolicy'
 import { useAuth } from './AuthContext'
+import { useDataMode } from './DataModeContext'
 
 const JourneyContext = createContext(null)
 const STORAGE_PREFIX = 'uniview-journey-v1'
@@ -163,8 +164,13 @@ function buildTaskResult(record) {
 }
 
 export function JourneyProvider({ children }) {
+  const { isRealMode } = useDataMode()
+  const initialStateForMode = (id) => isRealMode ? {
+    ...createInitialState(), assessmentComplete: false, reportGeneratedAt: null,
+    selectedMajorIds: [], setupTaskIds: [], taskRecords: {},
+  } : readState(id)
   const { activePlans, user } = useAuth()
-  const [state, setState] = useState(() => readState(user?.id))
+  const [state, setState] = useState(() => initialStateForMode(user?.id))
   const [loadedUserId, setLoadedUserId] = useState(user?.id ?? null)
   const [toast, setToast] = useState(null)
   const capabilities = useMemo(() => getCapabilities(activePlans), [activePlans])
@@ -172,14 +178,14 @@ export function JourneyProvider({ children }) {
   useEffect(() => {
     const nextUserId = user?.id ?? null
     if (nextUserId === loadedUserId) return
-    setState(readState(nextUserId))
+    setState(initialStateForMode(nextUserId))
     setLoadedUserId(nextUserId)
   }, [user?.id, loadedUserId])
 
   useEffect(() => {
-    if (!loadedUserId || typeof window === 'undefined') return
+    if (isRealMode || !loadedUserId || typeof window === 'undefined') return
     window.localStorage.setItem(storageKey(loadedUserId), JSON.stringify(state))
-  }, [state, loadedUserId])
+  }, [state, loadedUserId, isRealMode])
 
   useEffect(() => {
     if (!toast) return undefined

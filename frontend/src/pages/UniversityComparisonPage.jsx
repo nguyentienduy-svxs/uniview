@@ -1,3 +1,6 @@
+import { useDataMode } from '../context/DataModeContext'
+import { useCatalog } from '../hooks/useCatalog'
+import DataUnavailable from '../components/DataUnavailable'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 
@@ -282,16 +285,22 @@ function UniversityLabel({ university, children }) {
 }
 
 function UniversityComparisonPage() {
+  const { isRealMode } = useDataMode()
+  const catalog = useCatalog('universities')
+  const majorCatalog = useCatalog('majors')
+  const allUniversities = isRealMode ? catalog.rows : universitiesData.universities
+  const allMajors = isRealMode ? majorCatalog.rows : majors
+  const storageKey = (key) => key + (isRealMode ? ':real' : '')
   const navigate = useNavigate()
   const { isAuthenticated, loading: authLoading } = useAuth()
   const [selectedIds, setSelectedIds] = useState(() => {
     if (!isAuthenticated) return []
-    const saved = readStoredJson('uniview:comparison:universities', [])
+    const saved = readStoredJson(storageKey('uniview:comparison:universities'), [])
     return Array.isArray(saved) ? saved.slice(0, 4) : []
   })
   const [profile, setProfile] = useState(() => {
-    const saved = isAuthenticated ? readStoredJson('uniview:comparison:profile', {}) : {}
-    return { ...DEFAULT_PROFILE, ...saved }
+    const saved = isAuthenticated ? readStoredJson(storageKey('uniview:comparison:profile'), {}) : {}
+    return { ...(isRealMode ? { budget: '', regionId: '', major: '', thptScore: '', competencyScore: '' } : DEFAULT_PROFILE), ...saved }
   })
   const [profileDraft, setProfileDraft] = useState(profile)
   const [pickerSlot, setPickerSlot] = useState(null)
@@ -304,17 +313,17 @@ function UniversityComparisonPage() {
   const pendingTabTimerRef = useRef(0)
   const scrollFrameRef = useRef(0)
   const [notes, setNotes] = useState(() => {
-    return isAuthenticated ? readStoredJson('uniview:comparison:notes', {}) : {}
+    return isAuthenticated ? readStoredJson(storageKey('uniview:comparison:notes'), {}) : {}
   })
   const [selectedMajorIds, setSelectedMajorIds] = useState(() => {
-    const saved = isAuthenticated ? readStoredJson('uniview:comparison:majors', {}) : {}
-    return { ...DEFAULT_MAJOR_IDS, ...saved }
+    const saved = isAuthenticated ? readStoredJson(storageKey('uniview:comparison:majors'), {}) : {}
+    return { ...(isRealMode ? {} : DEFAULT_MAJOR_IDS), ...saved }
   })
 
   const selectedUniversities = useMemo(() => selectedIds
-    .map((id) => universitiesData.universities.find((university) => university.id === id))
-    .filter(Boolean), [selectedIds])
-  const selectedChoices = useMemo(() => selectedUniversities.map((university) => {
+    .map((id) => allUniversities.find((university) => university.id === id))
+    .filter(Boolean), [selectedIds, allUniversities])
+  const selectedChoices = useMemo(() => isRealMode ? [] : selectedUniversities.map((university) => {
     const availableMajors = findMajorsForUniversity(university)
     const major = availableMajors.find((item) => item.id === selectedMajorIds[university.id])
       ?? availableMajors[0]
@@ -330,7 +339,7 @@ function UniversityComparisonPage() {
       fitScore: fitBreakdown.total,
       fitBreakdown,
     }
-  }), [profile, selectedMajorIds, selectedUniversities])
+  }), [profile, selectedMajorIds, selectedUniversities, isRealMode])
 
   useEffect(() => {
     const sections = comparisonTabs
@@ -415,16 +424,16 @@ function UniversityComparisonPage() {
 
   const saveComparison = () => {
     if (!isAuthenticated) return
-    localStorage.setItem('uniview:comparison:universities', JSON.stringify(selectedIds))
-    localStorage.setItem('uniview:comparison:profile', JSON.stringify(profile))
-    localStorage.setItem('uniview:comparison:majors', JSON.stringify(selectedMajorIds))
-    localStorage.setItem('uniview:comparison:notes', JSON.stringify(notes))
+    localStorage.setItem(storageKey('uniview:comparison:universities'), JSON.stringify(selectedIds))
+    localStorage.setItem(storageKey('uniview:comparison:profile'), JSON.stringify(profile))
+    localStorage.setItem(storageKey('uniview:comparison:majors'), JSON.stringify(selectedMajorIds))
+    localStorage.setItem(storageKey('uniview:comparison:notes'), JSON.stringify(notes))
     showToast('Đã lưu bảng so sánh trên thiết bị này')
   }
 
   const chooseUniversity = (universityId) => {
-    const university = universitiesData.universities.find((item) => item.id === universityId)
-    const firstMajor = university ? findMajorsForUniversity(university)[0] : null
+    const university = allUniversities.find((item) => item.id === universityId)
+    const firstMajor = !isRealMode && university ? findMajorsForUniversity(university)[0] : null
     setSelectedIds((current) => {
       if (pickerSlot === current.length) return [...current, universityId].slice(0, 4)
       return current.map((id, index) => index === pickerSlot ? universityId : id)
@@ -436,17 +445,16 @@ function UniversityComparisonPage() {
   }
 
   const saveProfile = () => {
-    if (!isAuthenticated) return
     setProfile(profileDraft)
-    localStorage.setItem('uniview:comparison:profile', JSON.stringify(profileDraft))
+    if (isAuthenticated) localStorage.setItem(storageKey('uniview:comparison:profile'), JSON.stringify(profileDraft))
     setProfileOpen(false)
     showToast('Đã cập nhật tiêu chí cá nhân')
   }
 
   const addToDecisionBoard = () => {
     if (!isAuthenticated) return
-    localStorage.setItem('uniview:decision-board:universities', JSON.stringify(selectedChoices.map(({ university, major }) => ({ universityId: university.id, majorId: major?.id }))))
-    localStorage.setItem('uniview:comparison:notes', JSON.stringify(notes))
+    localStorage.setItem(storageKey('uniview:decision-board:universities'), JSON.stringify(selectedChoices.map(({ university, major }) => ({ universityId: university.id, majorId: major?.id }))))
+    localStorage.setItem(storageKey('uniview:comparison:notes'), JSON.stringify(notes))
     navigate('/decision-board')
   }
 
@@ -489,7 +497,7 @@ function UniversityComparisonPage() {
     return <main className="flex min-h-[calc(100vh-74px)] items-center justify-center bg-[#F8FAFC] px-4"><p className="text-sm font-semibold text-slate-500">Đang kiểm tra phiên đăng nhập...</p></main>
   }
 
-  if (!isAuthenticated) {
+  if (!isAuthenticated && !isRealMode) {
     return <main className="flex min-h-[calc(100vh-74px)] items-center justify-center bg-[#F8FAFC] px-4 py-12">
       <section className="w-full max-w-lg rounded-2xl border border-slate-200 bg-white p-7 text-center shadow-sm sm:p-9">
         <span className="material-symbols-outlined text-[40px] text-blue-600">lock_person</span>
@@ -503,7 +511,7 @@ function UniversityComparisonPage() {
     </main>
   }
 
-  if (selectedUniversities.length < 2) {
+  if (selectedUniversities.length < 2 && !isRealMode) {
     return <main className="flex min-h-[calc(100vh-74px)] items-center justify-center bg-[#F8FAFC] px-4 py-12">
       <section className="w-full max-w-lg rounded-2xl border border-slate-200 bg-white p-7 text-center shadow-sm sm:p-9">
         <span className="material-symbols-outlined text-[40px] text-blue-600">compare_arrows</span>
@@ -554,6 +562,17 @@ function UniversityComparisonPage() {
 </div>
 </div>
 
+{isRealMode && <section className="rounded-2xl border border-slate-200 bg-white p-6 space-y-4" aria-label="Hồ sơ đối chiếu">
+  <h2 className="text-lg font-bold">Nhập hồ sơ và tiêu chí của bạn</h2>
+  <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+    {[['thptScore', 'Điểm THPT', 30], ['competencyScore', 'Điểm ĐGNL', 1200], ['budget', 'Ngân sách (triệu/năm)', undefined]].map(([field, label, max]) => <label className="text-sm font-semibold" key={field}>{label}<input className="mt-2 w-full rounded-xl border p-3" type="number" min="0" max={max} step="any" value={profile[field]} onChange={(event) => setProfile((current) => ({...current, [field]: event.target.value}))} /></label>)}
+    <label className="text-sm font-semibold">Khu vực mong muốn<select className="mt-2 w-full rounded-xl border p-3" value={profile.regionId} onChange={(event) => setProfile((current) => ({...current, regionId: event.target.value}))}><option value="">Chọn khu vực</option><option value="ho-chi-minh-city">TP. Hồ Chí Minh</option><option value="ha-noi">Hà Nội</option><option value="central">Miền Trung</option><option value="south">Miền Nam</option></select></label>
+    <label className="text-sm font-semibold">Ngành mong muốn<select className="mt-2 w-full rounded-xl border p-3" value={profile.major} onChange={(event) => setProfile((current) => ({...current, major: event.target.value}))}><option value="">{allMajors.length ? 'Chọn ngành' : 'Hiện tại chưa có dữ liệu ngành'}</option>{allMajors.map((major) => <option key={major.id} value={major.name}>{major.name}</option>)}</select></label>
+  </div>
+  <div className="flex flex-wrap gap-2">{selectedUniversities.map((university) => <span className="rounded-xl bg-blue-50 p-3" key={university.id}>{university.name}<button type="button" aria-label={'Bỏ ' + university.name} className="ml-3" onClick={() => removeUniversity(university.id)}>×</button></span>)}</div>
+  <DataUnavailable loading={catalog.loading} error={catalog.error} retry={catalog.retry} />
+  <label className="block text-sm font-semibold">Ghi chú của bạn<textarea className="mt-2 w-full rounded-xl border p-3" value={notes.general ?? ''} onChange={(event) => setNotes((current) => ({...current, general: event.target.value}))} /></label>
+</section>}
 <div className={`grid grid-cols-1 gap-5 items-stretch ${selectedUniversities.length >= 3 ? 'md:grid-cols-2 lg:grid-cols-4' : 'md:grid-cols-3'}`}>
 {selectedChoices.map(({ university, major, fitScore }, index) => {
   const tuitionAverage = university.tuition ? Math.round((university.tuition.minMillionVnd + university.tuition.maxMillionVnd) / 2) : null
@@ -608,7 +627,7 @@ function UniversityComparisonPage() {
 </button>}
 </div>
 
-<section className="bg-gradient-to-r from-blue-50/70 via-indigo-50/40 to-slate-50 rounded-2xl border border-blue-200/70 p-5 md:p-6 shadow-sm space-y-4">
+{!isRealMode && (<section className="bg-gradient-to-r from-blue-50/70 via-indigo-50/40 to-slate-50 rounded-2xl border border-blue-200/70 p-5 md:p-6 shadow-sm space-y-4">
   <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-blue-100 pb-3">
     <div className="flex items-center gap-2.5">
       <div className="w-8 h-8 rounded-xl bg-blue-600 text-white flex items-center justify-center"><span className="material-symbols-outlined text-[20px]">psychology</span></div>
@@ -628,7 +647,7 @@ function UniversityComparisonPage() {
       </div>
     })}
   </div>
-</section>
+</section>)}
 
 <div className="sticky top-[74px] z-30 -mx-4 md:-mx-6 lg:-mx-8 px-4 md:px-6 lg:px-8 py-2 bg-white/[0.96] backdrop-blur-md border-y border-slate-200/80 shadow-sm space-y-2">
 <div ref={tabsRef} className="max-w-[1360px] mx-auto flex items-center gap-2 overflow-x-auto hide-scrollbar text-xs font-semibold py-0.5">
@@ -639,7 +658,7 @@ function UniversityComparisonPage() {
 
 <div className="space-y-6">
 
-<section className="scroll-mt-36 bg-white rounded-2xl border border-slate-200 p-5 md:p-6 shadow-sm space-y-4" id="section-overview">
+<section className="scroll-mt-36 bg-white rounded-2xl border border-slate-200 p-5 md:p-6 shadow-sm space-y-4" id="section-overview">{isRealMode ? <><h2 className="text-base md:text-lg font-bold text-slate-900">Tổng quan nhanh</h2><DataUnavailable loading={catalog.loading} error={catalog.error} retry={catalog.retry} /></> : <>
 <div className="flex items-center justify-between border-b border-slate-100 pb-3">
 <div className="flex items-center gap-2.5">
 <span className="w-7 h-7 rounded-lg bg-blue-100 text-blue-700 flex items-center justify-center font-bold text-xs">1</span>
@@ -671,9 +690,9 @@ function UniversityComparisonPage() {
 </tbody>
 </table>
 </div>
-</section>
+</>}</section>
 
-<section className="scroll-mt-36 bg-white rounded-2xl border border-slate-200 p-5 md:p-6 shadow-sm space-y-5" id="section-budget">
+<section className="scroll-mt-36 bg-white rounded-2xl border border-slate-200 p-5 md:p-6 shadow-sm space-y-5" id="section-budget">{isRealMode ? <><h2 className="text-base md:text-lg font-bold text-slate-900">Học phí &amp; Ngân sách gia đình</h2><DataUnavailable loading={catalog.loading} error={catalog.error} retry={catalog.retry} /></> : <>
 <div className="flex items-center justify-between border-b border-slate-100 pb-3">
 <div className="flex items-center gap-2.5">
 <span className="w-7 h-7 rounded-lg bg-emerald-100 text-emerald-700 flex items-center justify-center font-bold text-xs">2</span>
@@ -691,9 +710,9 @@ function UniversityComparisonPage() {
   return <div className={`flex items-center justify-between gap-3 rounded-xl border px-3 py-2 text-xs ${within ? 'border-emerald-200 bg-emerald-50 text-emerald-800' : 'border-amber-200 bg-amber-50 text-amber-900'}`} key={university.id}><UniversityLabel university={university}><strong>{university.shortName ?? university.code}</strong></UniversityLabel><span className="font-bold">{average === null ? 'Cần xác minh' : within ? `Còn ${Math.round(profile.budget - average)}tr` : `Vượt ${Math.round(average - profile.budget)}tr`}</span></div>
 })}
 </div>
-</section>
+</>}</section>
 
-<section className="scroll-mt-36 bg-white rounded-2xl border border-slate-200 p-5 md:p-6 shadow-sm space-y-4" id="section-location">
+<section className="scroll-mt-36 bg-white rounded-2xl border border-slate-200 p-5 md:p-6 shadow-sm space-y-4" id="section-location">{isRealMode ? <><h2 className="text-base md:text-lg font-bold text-slate-900">3. Vị trí và Cơ sở vật chất</h2><DataUnavailable loading={catalog.loading} error={catalog.error} retry={catalog.retry} /></> : <>
 <div className="flex items-center justify-between border-b border-slate-100 pb-3">
 <div className="flex items-center gap-2.5">
 <span className="w-3 h-3 rounded-full bg-blue-500"></span>
@@ -710,9 +729,9 @@ function UniversityComparisonPage() {
   return <div className="space-y-2 p-4 rounded-2xl bg-slate-50 border border-slate-100" key={university.id}><p className="font-bold text-slate-900">{university.shortName ?? university.name}</p><p className="text-slate-600 leading-relaxed"><strong>Vị trí:</strong> {location}. {university.parentSystem ? `Thuộc ${university.parentSystem}.` : ''}</p><span className={`inline-block text-[11px] font-semibold border rounded px-2 py-0.5 mt-2 ${preferred ? 'text-emerald-700 bg-emerald-50 border-emerald-200' : 'text-amber-800 bg-amber-50 border-amber-200'}`}>{preferred ? '✓ Nằm trong khu vực ưu tiên' : 'Cần cân nhắc khoảng cách di chuyển'}</span></div>
 })}
 </div>
-</section>
+</>}</section>
 
-<section className="scroll-mt-36 bg-white rounded-2xl border border-slate-200 p-5 md:p-6 shadow-sm space-y-4" id="section-major">
+<section className="scroll-mt-36 bg-white rounded-2xl border border-slate-200 p-5 md:p-6 shadow-sm space-y-4" id="section-major">{isRealMode ? <><h2 className="text-base md:text-lg font-bold text-slate-900">4. Ngành học và Định hướng đào tạo</h2><DataUnavailable loading={catalog.loading} error={catalog.error} retry={catalog.retry} /></> : <>
 <div className="flex items-center justify-between border-b border-slate-100 pb-3">
 <div className="flex items-center gap-2.5">
 <span className="w-3 h-3 rounded-full bg-[#1D4ED8]"></span>
@@ -723,9 +742,9 @@ function UniversityComparisonPage() {
 <div className={`grid grid-cols-1 gap-4 ${selectedChoices.length === 4 ? 'md:grid-cols-2 lg:grid-cols-4' : 'md:grid-cols-3'}`}>
 {selectedChoices.map(({ university, major, detail }, index) => <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200/70 space-y-2.5 text-xs md:text-sm" key={university.id}><div className="flex items-center justify-between gap-2"><div className="flex items-center gap-2"><span className={`w-2 h-2 rounded-full ${index === 2 ? 'bg-amber-600' : 'bg-[#1D4ED8]'}`} /><h3 className="font-bold text-slate-900">{university.shortName ?? university.code}: {major?.name}</h3></div><span className="rounded-md bg-white px-2 py-0.5 text-[10px] font-bold text-slate-500 border border-slate-200">{major?.code}</span></div><p className="text-slate-600 leading-relaxed text-xs">{detail?.summary ?? major?.description}</p><div className="flex flex-wrap gap-1.5">{major?.skills?.slice(0, 3).map((skill) => <span className="rounded-md bg-white border border-slate-200 px-2 py-0.5 text-[10px] font-medium text-slate-600" key={skill}>{skill}</span>)}</div><p className="text-[11px] text-blue-700 font-semibold bg-blue-50 p-2 rounded-lg border border-blue-100">Hướng nghề: {major?.careerPaths?.slice(0, 2).join(' · ') || detail?.careers?.items?.slice(0, 2).map((career) => career.title).join(' · ')}</p></div>)}
 </div>
-</section>
+</>}</section>
 
-<section className="scroll-mt-36 bg-white rounded-2xl border border-slate-200 p-5 md:p-6 shadow-sm space-y-4" id="section-admission">
+<section className="scroll-mt-36 bg-white rounded-2xl border border-slate-200 p-5 md:p-6 shadow-sm space-y-4" id="section-admission">{isRealMode ? <><h2 className="text-base md:text-lg font-bold text-slate-900">5. Tuyển sinh &amp; Điểm chuẩn tham khảo</h2><DataUnavailable loading={catalog.loading} error={catalog.error} retry={catalog.retry} /></> : <>
 <div className="flex items-center justify-between border-b border-slate-100 pb-3">
 <div className="flex items-center gap-2.5">
 <span className="w-3 h-3 rounded-full bg-[#1D4ED8]"></span>
@@ -746,9 +765,9 @@ function UniversityComparisonPage() {
   </div>
 })}
 </div>
-</section>
+</>}</section>
 
-<section className="scroll-mt-36 bg-white rounded-2xl border border-slate-200 p-5 md:p-6 shadow-sm space-y-4" id="section-scholarships">
+<section className="scroll-mt-36 bg-white rounded-2xl border border-slate-200 p-5 md:p-6 shadow-sm space-y-4" id="section-scholarships">{isRealMode ? <><h2 className="text-base md:text-lg font-bold text-slate-900">6. Học bổng và Hỗ trợ tài chính</h2><DataUnavailable loading={catalog.loading} error={catalog.error} retry={catalog.retry} /></> : <>
 <div className="flex items-center justify-between border-b border-slate-100 pb-3">
 <div className="flex items-center gap-2.5">
 <span className="w-3 h-3 rounded-full bg-amber-500"></span>
@@ -759,9 +778,9 @@ function UniversityComparisonPage() {
 <div className={`grid grid-cols-1 gap-4 text-xs md:text-sm ${selectedChoices.length === 4 ? 'md:grid-cols-2 lg:grid-cols-4' : 'md:grid-cols-3'}`}>
 {selectedChoices.map(({ university }) => <div className="flex items-center justify-between gap-3 rounded-xl border border-slate-200 bg-slate-50 p-3" key={university.id}><div className="min-w-0"><UniversityLabel university={university}><h3 className="truncate font-bold text-slate-900">{university.shortName ?? university.name}</h3></UniversityLabel><Tooltip label="UniView chưa có dữ liệu học bổng có cấu trúc; hãy kiểm tra nguồn chính thức"><span tabIndex="0" className="mt-1 inline-flex rounded bg-amber-50 px-2 py-0.5 text-[10px] font-bold text-amber-800 border border-amber-200">Cần xác minh</span></Tooltip></div><a aria-label={`Xem học bổng tại ${university.name}`} className="inline-flex size-9 shrink-0 items-center justify-center rounded-lg bg-white text-[#1D4ED8] shadow-xs hover:bg-blue-50" href={university.website} target="_blank" rel="noreferrer"><span className="material-symbols-outlined text-[18px]">open_in_new</span></a></div>)}
 </div>
-</section>
+</>}</section>
 
-<section className="scroll-mt-36 bg-blue-50/50 rounded-2xl border border-blue-200/80 p-5 md:p-6 shadow-sm space-y-5" id="section-fit">
+<section className="scroll-mt-36 bg-blue-50/50 rounded-2xl border border-blue-200/80 p-5 md:p-6 shadow-sm space-y-5" id="section-fit">{isRealMode ? <><h2 className="text-base md:text-lg font-bold text-slate-900">7. Cấu trúc điểm phù hợp</h2><DataUnavailable loading={catalog.loading} error={catalog.error} retry={catalog.retry} /></> : <>
 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-blue-200/60 pb-3">
 <div className="flex items-center gap-2.5">
 <span className="text-base">🎯</span>
@@ -787,9 +806,9 @@ function UniversityComparisonPage() {
   </div>
 })}
 </div>
-</section>
+</>}</section>
 
-<section className="scroll-mt-36 bg-white rounded-2xl border border-slate-200 p-5 md:p-6 shadow-sm space-y-4" id="section-tradeoffs">
+<section className="scroll-mt-36 bg-white rounded-2xl border border-slate-200 p-5 md:p-6 shadow-sm space-y-4" id="section-tradeoffs">{isRealMode ? <><h2 className="text-base md:text-lg font-bold text-slate-900">8. Trade-offs cốt lõi bạn cần cân nhắc</h2><DataUnavailable loading={catalog.loading} error={catalog.error} retry={catalog.retry} /></> : <>
 <div className="flex items-center justify-between border-b border-slate-100 pb-3">
 <div className="flex items-center gap-2.5">
 <span className="text-base">⚖️</span>
@@ -811,9 +830,9 @@ function UniversityComparisonPage() {
   return <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200/80 space-y-3" key={university.id}><div className="flex items-center justify-between gap-2"><h3 className="font-bold text-slate-900">{university.shortName ?? university.name} ({major?.name})</h3><span className="rounded bg-white border border-slate-200 px-2 py-0.5 text-[10px] font-bold text-slate-600">{fitScore}/10</span></div><div className="rounded-xl border-l-4 border-emerald-500 bg-emerald-50 p-2.5 text-xs text-emerald-900"><strong>Điểm được:</strong> {advantage}</div><div className="rounded-xl border-l-4 border-amber-500 bg-amber-50 p-2.5 text-xs text-amber-950"><strong>Đánh đổi:</strong> {tradeoff}</div></div>
 })}
 </div>
-</section>
+</>}</section>
 
-<section className="scroll-mt-36 bg-white rounded-2xl border border-slate-200 p-5 md:p-6 shadow-sm space-y-4" id="section-missing-info">
+<section className="scroll-mt-36 bg-white rounded-2xl border border-slate-200 p-5 md:p-6 shadow-sm space-y-4" id="section-missing-info">{isRealMode ? <><h2 className="text-base md:text-lg font-bold text-slate-900">9. Nguồn &amp; mức bằng chứng</h2><DataUnavailable loading={catalog.loading} error={catalog.error} retry={catalog.retry} /></> : <>
 <div className="flex items-center justify-between border-b border-slate-100 pb-3">
 <div className="flex items-center gap-2.5">
 <span className="flex size-7 items-center justify-center rounded-lg bg-slate-100 text-slate-600"><span className="material-symbols-outlined text-[17px]">verified_user</span></span>
@@ -843,7 +862,7 @@ function UniversityComparisonPage() {
   </article>
 })}
 </div>
-</section>
+</>}</section>
 
 <section className="scroll-mt-36 bg-white rounded-2xl border border-slate-200 p-5 md:p-6 shadow-sm space-y-5" id="section-notes">
 <div className="flex items-center justify-between border-b border-slate-100 pb-3">
@@ -884,13 +903,14 @@ function UniversityComparisonPage() {
         <button className="flex h-9 w-9 items-center justify-center rounded-full bg-slate-100 text-slate-600 hover:bg-slate-200" onClick={() => setPickerSlot(null)} type="button" aria-label="Đóng">×</button>
       </div>
       <div className="grid max-h-[64vh] gap-2 overflow-y-auto p-4 sm:grid-cols-2">
-        {universitiesData.universities
+        {isRealMode && <DataUnavailable loading={catalog.loading} error={catalog.error} retry={catalog.retry} />}
+        {allUniversities
           .filter((university) => !selectedIds.includes(university.id) || selectedIds[pickerSlot] === university.id)
           .map((university) => (
             <button className="rounded-2xl border border-slate-200 p-4 text-left transition hover:border-blue-300 hover:bg-blue-50/50" key={university.id} onClick={(event) => { event.stopPropagation(); chooseUniversity(university.id) }} type="button">
               <div className="flex items-start justify-between gap-3"><Tooltip label={university.name}><span tabIndex="0" className="line-clamp-2 text-sm font-bold text-slate-900">{university.name}</span></Tooltip><span className="rounded-md bg-slate-100 px-2 py-0.5 font-mono text-[10px] text-slate-500">{university.code}</span></div>
               <p className="mt-1 text-xs text-slate-500">{university.city} · {university.ownershipLabel}</p>
-              <p className="mt-2 line-clamp-1 text-xs font-medium text-[#1D4ED8]">{university.featuredMajors.join(' · ')}</p>
+              <p className="mt-2 line-clamp-1 text-xs font-medium text-[#1D4ED8]">{university.featuredMajors?.join(' · ')}</p>
             </button>
           ))}
       </div>
@@ -931,7 +951,7 @@ function UniversityComparisonPage() {
       <div className="grid gap-4 sm:grid-cols-2">
         <label className="space-y-1.5 text-sm font-semibold text-slate-700">Ngân sách tối đa (triệu/năm)<input className="w-full rounded-xl border border-slate-200 px-3 py-2.5 outline-none focus:border-blue-400" min="0" type="number" value={profileDraft.budget} onChange={(event) => setProfileDraft((current) => ({ ...current, budget: Number(event.target.value) }))} /></label>
         <label className="space-y-1.5 text-sm font-semibold text-slate-700">Khu vực<select className="w-full rounded-xl border border-slate-200 px-3 py-2.5 outline-none focus:border-blue-400" value={profileDraft.regionId} onChange={(event) => setProfileDraft((current) => ({ ...current, regionId: event.target.value }))}><option value="ho-chi-minh-city">TP. Hồ Chí Minh</option><option value="ha-noi">Hà Nội</option><option value="central">Miền Trung</option><option value="south">Miền Nam</option></select></label>
-        <label className="space-y-1.5 text-sm font-semibold text-slate-700 sm:col-span-2">Ngành mong muốn<select className="w-full rounded-xl border border-slate-200 px-3 py-2.5 outline-none focus:border-blue-400" value={profileDraft.major} onChange={(event) => setProfileDraft((current) => ({ ...current, major: event.target.value }))}>{majors.map((major) => <option value={major.name} key={major.id}>{major.name} · {major.code}</option>)}</select></label>
+        <label className="space-y-1.5 text-sm font-semibold text-slate-700 sm:col-span-2">Ngành mong muốn<select className="w-full rounded-xl border border-slate-200 px-3 py-2.5 outline-none focus:border-blue-400" value={profileDraft.major} onChange={(event) => setProfileDraft((current) => ({ ...current, major: event.target.value }))}>{allMajors.map((major) => <option value={major.name} key={major.id}>{major.name} · {major.code}</option>)}</select></label>
         <label className="space-y-1.5 text-sm font-semibold text-slate-700">Điểm THPT<input className="w-full rounded-xl border border-slate-200 px-3 py-2.5 outline-none focus:border-blue-400" min="0" max="30" step="0.1" type="number" value={profileDraft.thptScore} onChange={(event) => setProfileDraft((current) => ({ ...current, thptScore: Number(event.target.value) }))} /></label>
         <label className="space-y-1.5 text-sm font-semibold text-slate-700">Điểm ĐGNL<input className="w-full rounded-xl border border-slate-200 px-3 py-2.5 outline-none focus:border-blue-400" min="0" max="1200" type="number" value={profileDraft.competencyScore} onChange={(event) => setProfileDraft((current) => ({ ...current, competencyScore: Number(event.target.value) }))} /></label>
       </div>

@@ -1,3 +1,6 @@
+import { useDataMode } from '../context/DataModeContext'
+import DataUnavailable from '../components/DataUnavailable'
+import ComparisonInputs from '../components/ComparisonInputs'
 import { useAuth } from '../context/AuthContext'
 import { ENTITLEMENTS } from '../components/header/headerConfig'
 import DemoDataBadge from '../components/premium/DemoDataBadge'
@@ -11,6 +14,7 @@ function ScenarioComparisonPage() {
 }
 
 function ScenarioComparisonPreview({ locked = true }) {
+  const { isRealMode } = useDataMode()
   return (
 <>
 <main className="w-full pt-6 bg-[#FFFDFB] min-h-[calc(100vh-80px)] pb-16"><div className="flex flex-col w-full font-['Be_Vietnam_Pro'] text-[#172033]">
@@ -25,7 +29,7 @@ function ScenarioComparisonPreview({ locked = true }) {
 <span className="w-2 h-2 rounded-full bg-[#1D4ED8] animate-pulse"></span>
             ADMISSION PASS • SCENARIO PLANNING
           </div>
-{locked && <DemoDataBadge className="mt-1" />}
+{!isRealMode && locked && <DemoDataBadge className="mt-1" />}
 <h1 className="text-3xl sm:text-4xl lg:text-[42px] font-extrabold text-[#172033] tracking-tight leading-tight">
             Nếu điều kiện thay đổi thì <br className="hidden sm:inline" />
 <span className="text-[#1D4ED8]">lựa chọn sẽ thay đổi ra sao?</span>
@@ -45,7 +49,7 @@ function ScenarioComparisonPreview({ locked = true }) {
 </div>
 </div>
 
-<div className="lg:col-span-5 flex justify-center">
+<div className="lg:col-span-5 flex justify-center">{!isRealMode && <>
 <div className="w-full max-w-md bg-white p-5 rounded-2xl shadow-md space-y-4">
 <div className="flex items-center justify-between text-xs font-semibold uppercase tracking-wider text-[#667085]">
 <span>Mô hình đối chiếu giả định</span>
@@ -71,7 +75,7 @@ function ScenarioComparisonPreview({ locked = true }) {
 <p className="text-[11px] text-center text-[#667085]">
               Mỗi thông số điều chỉnh sẽ mở rộng hoặc thu hẹp tập hợp chương trình đào tạo khả thi.
             </p>
-</div>
+</div></>}
 </div>
 </div>
 
@@ -85,7 +89,7 @@ function ScenarioComparisonPreview({ locked = true }) {
 </div>
 </section>
 
-<section className="space-y-6">
+<section className="space-y-6">{isRealMode ? <><ComparisonInputs scenarios={true} /></> : <>
 <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
 <div>
 <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#1D4ED8]">
@@ -293,7 +297,7 @@ function ScenarioComparisonPreview({ locked = true }) {
 </div>
 </div>
 </div>
-</section>
+</>}</section>
 
 <div className="flex flex-col sm:flex-row items-center justify-between gap-4 p-5 bg-[#172033] rounded-2xl text-white shadow-lg">
 <div className="flex items-center gap-3">
@@ -321,7 +325,9 @@ function ScenarioComparisonPreview({ locked = true }) {
 </div>
 </div>
 
-<section className="space-y-6">
+<section className="space-y-6">{isRealMode ? <><h3 className="text-2xl sm:text-3xl font-extrabold text-[#172033] mt-1">
+              Điều gì thay đổi khi chuyển từ Scenario A → B?
+            </h3><DataUnavailable /></> : <>
 <div className="bg-gradient-to-r from-[#EFF6FF] via-white to-[#FFF1F2] p-6 sm:p-8 rounded-3xl shadow-sm space-y-6">
 <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
 <div>
@@ -399,9 +405,9 @@ function ScenarioComparisonPreview({ locked = true }) {
 </div>
 </div>
 </div>
-</section>
+</>}</section>
 
-<section className="space-y-6">
+<section className="space-y-6">{isRealMode ? <><h3 className="text-2xl font-bold text-[#172033] mt-1">Lựa chọn mới xuất hiện</h3><DataUnavailable /></> : <>
 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
 <div>
 <div className="flex items-center gap-2">
@@ -611,9 +617,9 @@ function ScenarioComparisonPreview({ locked = true }) {
 </div>
 </div>
 </div>
-</section>
+</>}</section>
 
-<section className="space-y-6">
+<section className="space-y-6">{isRealMode ? <><h3 className="text-2xl font-bold text-[#172033] mt-1">Rào cản nào đã được nới lỏng? (Cause &amp; Effect)</h3><DataUnavailable /></> : <>
 <div>
 <div className="flex items-center gap-2">
 <span className="w-2.5 h-2.5 rounded-full bg-[#FB7185]"></span>
@@ -696,9 +702,9 @@ function ScenarioComparisonPreview({ locked = true }) {
 </div>
 </div>
 </div>
-</section>
+</>}</section>
 
-<section className="space-y-6">
+<section className="space-y-6">{isRealMode ? <><h2 className="font-bold">Thông tin đối chiếu</h2><DataUnavailable /></> : <>
 <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
 
 <div className="bg-white rounded-2xl p-6 sm:p-7 shadow-sm space-y-4">
@@ -812,9 +818,9 @@ function ScenarioComparisonPreview({ locked = true }) {
 </div>
 </div>
 </div>
-</section>
+</>}</section>
 
-<section className="bg-white rounded-3xl p-6 sm:p-8 lg:p-10 shadow-sm space-y-6">
+<section className="bg-white rounded-3xl p-6 sm:p-8 lg:p-10 shadow-sm space-y-6">{isRealMode ? <><h3 className="text-2xl font-bold text-[#172033] mt-1">Đưa kết quả so sánh vào lộ trình hành động</h3><DataUnavailable /></> : <>
 <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
 <div>
 <span className="text-xs font-bold uppercase tracking-wider text-[#1D4ED8]">Thao tác lưu trữ &amp; hành động</span>
@@ -869,9 +875,11 @@ function ScenarioComparisonPreview({ locked = true }) {
 </button>
 </div>
 </div>
-</section>
+</>}</section>
 
-<section className="p-8 sm:p-10 rounded-3xl bg-[#F8FAFC] space-y-6">
+<section className="p-8 sm:p-10 rounded-3xl bg-[#F8FAFC] space-y-6">{isRealMode ? <><h3 className="text-xl sm:text-2xl font-bold text-[#172033]">
+          Scenario nên được hiểu và sử dụng như thế nào?
+        </h3><DataUnavailable /></> : <>
 <div className="text-center max-w-2xl mx-auto space-y-2">
 <span className="text-xs font-bold uppercase tracking-wider text-[#667085]">Nguyên tắc thiết kế hệ thống</span>
 <h3 className="text-xl sm:text-2xl font-bold text-[#172033]">
@@ -913,10 +921,10 @@ function ScenarioComparisonPreview({ locked = true }) {
           </p>
 </div>
 </div>
-</section>
+</>}</section>
 </div>
 </div></main>
-      {locked && (
+      {!isRealMode && locked && (
         <div className="max-w-[1360px] mx-auto w-full px-4 sm:px-6 lg:px-8 pb-8">
           <PremiumLockCard />
         </div>

@@ -1,6 +1,8 @@
+import { useDataMode } from '../context/DataModeContext'
 import { Link } from 'react-router-dom'
 
 function LandingPage() {
+  const { isMockMode } = useDataMode()
   return (
     <main className="w-full bg-surface min-h-[calc(100vh-80px)]"><div className="flex flex-col w-full overflow-hidden bg-surface text-on-surface selection:bg-secondary-fixed selection:text-on-secondary-fixed">
 
@@ -119,7 +121,7 @@ function LandingPage() {
         </div>
       </section>
 
-      <section className="w-full max-w-[1440px] mx-auto px-margin md:px-margin-md lg:px-margin-lg py-space-2xl">
+      {isMockMode && (<section className="w-full max-w-[1440px] mx-auto px-margin md:px-margin-md lg:px-margin-lg py-space-2xl">
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-space-xl">
           <div>
             <span className="font-label-md text-label-md uppercase tracking-widest text-secondary font-bold mb-space-xs block">Điểm xuất phát</span>
@@ -236,7 +238,7 @@ function LandingPage() {
             </div>
           </div>
         </div>
-      </section>
+      </section>)}
 
       <section className="w-full bg-surface-container-low py-space-2xl my-space-md">
         <div className="max-w-[1440px] mx-auto px-margin md:px-margin-md lg:px-margin-lg">
@@ -307,7 +309,7 @@ function LandingPage() {
         </div>
       </section>
 
-      <section className="w-full max-w-[1440px] mx-auto px-margin md:px-margin-md lg:px-margin-lg py-space-2xl">
+      {isMockMode && (<section className="w-full max-w-[1440px] mx-auto px-margin md:px-margin-md lg:px-margin-lg py-space-2xl">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-gutter-lg items-center">
 
           <div className="lg:col-span-5 flex flex-col items-start">
@@ -387,9 +389,9 @@ function LandingPage() {
             </div>
           </div>
         </div>
-      </section>
+      </section>)}
 
-      <section className="w-full max-w-[1440px] mx-auto px-margin md:px-margin-md lg:px-margin-lg py-space-2xl" id="kham-pha-truong">
+      {isMockMode && (<section className="w-full max-w-[1440px] mx-auto px-margin md:px-margin-md lg:px-margin-lg py-space-2xl" id="kham-pha-truong">
         <div className="text-left mb-space-xl">
           <span className="font-label-md text-label-md uppercase tracking-wider text-secondary font-bold mb-space-xs block">Khám phá trường học</span>
           <h2 className="font-headline-lg text-headline-lg-mobile md:text-headline-lg text-inverse-surface font-bold tracking-tight">
@@ -499,9 +501,9 @@ function LandingPage() {
             </div>
           </div>
         </div>
-      </section>
+      </section>)}
 
-      <section className="w-full max-w-[1440px] mx-auto px-margin md:px-margin-md lg:px-margin-lg py-space-xl">
+      {isMockMode && (<section className="w-full max-w-[1440px] mx-auto px-margin md:px-margin-md lg:px-margin-lg py-space-xl">
         <div className="bg-[#FFF1F2] rounded-3xl p-space-lg sm:p-space-2xl shadow-sm">
           <div className="text-center max-w-xl mx-auto mb-space-xl">
             <span className="font-label-md text-label-md uppercase tracking-wider text-secondary font-bold block mb-1">Đối chiếu đa chiều</span>
@@ -612,9 +614,9 @@ function LandingPage() {
             </p>
           </div>
         </div>
-      </section>
+      </section>)}
 
-      <section className="w-full max-w-[1440px] mx-auto px-margin md:px-margin-md lg:px-margin-lg py-space-2xl">
+      {isMockMode && (<section className="w-full max-w-[1440px] mx-auto px-margin md:px-margin-md lg:px-margin-lg py-space-2xl">
         <div className="text-center max-w-2xl mx-auto mb-space-2xl">
           <span className="font-label-md text-label-md uppercase tracking-wider text-primary font-bold block mb-1">Góc nhìn cá nhân</span>
           <h2 className="font-headline-lg text-headline-lg-mobile md:text-headline-lg text-inverse-surface font-bold tracking-tight mb-space-xs">
@@ -657,7 +659,7 @@ function LandingPage() {
             <p className="font-body-sm text-body-sm text-on-surface-variant mt-1">Chương trình đào tạo xuất sắc nhưng học phí vượt trên mức ưu tiên hiện tại.</p>
           </div>
         </div>
-      </section>
+      </section>)}
 
       <section className="w-full max-w-[1440px] mx-auto px-margin md:px-margin-md lg:px-margin-lg py-space-lg">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-gutter p-space-lg bg-surface-container-low rounded-3xl">

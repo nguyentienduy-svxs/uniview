@@ -52,7 +52,7 @@ function ProfilePage() {
   const profile = assessment?.profile || {}
 
   // Current synchronized values
-  const currentRegion = user?.preferredRegion || profile.regions?.[0] || 'TP. Hồ Chí Minh'
+  const currentRegion = user?.preferredRegion || profile.regions?.[0] || 'Chưa cập nhật'
   const currentCertificates = normalizeCertificates(
     profile.certificates?.length ? profile.certificates : user?.academicProfile?.certificates,
     'PROFILE'

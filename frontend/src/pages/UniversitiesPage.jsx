@@ -3,6 +3,8 @@ import { Link } from 'react-router-dom'
 
 import { useAuth } from '../context/AuthContext'
 import universitiesData from '../data/universities.json'
+import { useDataMode } from '../context/DataModeContext'
+import { useCatalog } from '../hooks/useCatalog'
 
 const PAGE_SIZE = 6
 const FALLBACK_IMAGES = [
@@ -41,6 +43,10 @@ const TUITION_RANGE_VISUALS = {
 }
 
 function UniversitiesPage() {
+  const { isRealMode } = useDataMode()
+  const catalog = useCatalog('universities')
+  const savedKey = `uniview:saved:universities${isRealMode ? ':real' : ''}`
+  const comparisonKey = `uniview:comparison:universities${isRealMode ? ':real' : ''}`
   const { isAuthenticated } = useAuth()
   const [searchTerm, setSearchTerm] = useState('')
   const [selectedRegions, setSelectedRegions] = useState([])
@@ -54,15 +60,24 @@ function UniversitiesPage() {
   const [sortBy, setSortBy] = useState('relevance')
   const [visibleCount, setVisibleCount] = useState(PAGE_SIZE)
   const [savedUniversityIds, setSavedUniversityIds] = useState(() => (
-    isAuthenticated ? readStoredIds('uniview:saved:universities') : []
+    isAuthenticated ? readStoredIds(savedKey) : []
   ))
   const [comparisonIds, setComparisonIds] = useState(() => (
-    isAuthenticated ? readStoredIds('uniview:comparison:universities', 4) : []
+    isAuthenticated ? readStoredIds(comparisonKey, 4) : []
   ))
   const [comparisonMessage, setComparisonMessage] = useState('')
   const searchInputRef = useRef(null)
 
-  const universities = universitiesData.universities
+  const universities = useMemo(() => isRealMode ? catalog.rows.map((row) => ({
+    ...row,
+    regionId: row.region,
+    ownership: row.type,
+    ownershipLabel: row.type || 'Chưa có dữ liệu',
+    featuredMajors: [],
+    location: { city: row.city || 'Chưa có dữ liệu', campus: '' },
+    tuition: { minMillionVnd: null, maxMillionVnd: null },
+    admission: { methods: [], scoreRange: null },
+  })) : universitiesData.universities, [isRealMode, catalog.rows])
 
   useEffect(() => {
     const handleShortcut = (event) => {
@@ -103,7 +118,7 @@ function UniversitiesPage() {
         || university.ownership === 'international'
         || university.parentSystem?.toLowerCase().includes('international')
       const matchesAffordable = !affordableOnly
-        || university.tuition.minMillionVnd <= 40
+        || (university.tuition.minMillionVnd !== null && university.tuition.minMillionVnd <= 40)
       const matchesTuition = selectedTuitionBands.length === 0
         || selectedTuitionBands.some((bandId) => {
           const min = university.tuition.minMillionVnd
@@ -121,7 +136,7 @@ function UniversitiesPage() {
       const matchesScore = selectedScoreBands.length === 0
         || selectedScoreBands.some((bandId) => {
           const scoreRange = university.admission.scoreRange
-          if (scoreRange?.min === null || scoreRange?.max === null) return false
+          if (!scoreRange || scoreRange.min == null || scoreRange.max == null) return false
           if (bandId === '20-24') return scoreRange.max >= 20 && scoreRange.min <= 24
           if (bandId === '24-27.5') return scoreRange.max >= 24 && scoreRange.min <= 27.5
           return bandId === 'over-27.5' && scoreRange.max > 27.5
@@ -237,7 +252,7 @@ function UniversitiesPage() {
     }
     const next = toggleItem(savedUniversityIds, universityId)
     setSavedUniversityIds(next)
-    localStorage.setItem('uniview:saved:universities', JSON.stringify(next))
+    localStorage.setItem(savedKey, JSON.stringify(next))
   }
 
   const toggleComparison = (event, universityId) => {
@@ -258,17 +273,18 @@ function UniversitiesPage() {
       ? comparisonIds.filter((id) => id !== universityId)
       : [...comparisonIds, universityId]
     setComparisonIds(next)
-    localStorage.setItem('uniview:comparison:universities', JSON.stringify(next))
+    localStorage.setItem(comparisonKey, JSON.stringify(next))
     setComparisonMessage(alreadySelected ? 'Đã bỏ trường khỏi bảng so sánh' : 'Đã thêm trường vào bảng so sánh')
     window.setTimeout(() => setComparisonMessage(''), 1800)
   }
 
   const clearComparison = () => {
     setComparisonIds([])
-    localStorage.removeItem('uniview:comparison:universities')
+    localStorage.removeItem(comparisonKey)
   }
 
   const getUniversityImage = (university) => {
+    if (isRealMode) return university.logoUrl || ''
     if (university.image) return university.image
 
     const imageIndex = [...university.id]
@@ -278,6 +294,7 @@ function UniversitiesPage() {
   }
 
   const formatTuition = (university) => {
+    if (isRealMode) return university.tuitionRange || 'Chưa có dữ liệu'
     const { minMillionVnd, maxMillionVnd } = university.tuition
     if (minMillionVnd === null && maxMillionVnd === null) return 'Đang cập nhật'
     if (minMillionVnd === maxMillionVnd) return `${minMillionVnd}M / năm`
@@ -399,7 +416,7 @@ function UniversitiesPage() {
                           <input className="h-4 w-4 cursor-pointer rounded accent-primary-container" type="checkbox" checked={selectedRegions.includes(region.id)} onChange={() => toggleRegion(region.id)} />
                           <span className="font-body-sm text-body-sm text-on-surface transition-colors group-hover:text-primary">{region.label}</span>
                         </span>
-                        <span className="rounded-full bg-surface-container px-2 py-0.5 font-label-sm text-label-sm text-outline">{region.count}</span>
+                        <span className="rounded-full bg-surface-container px-2 py-0.5 font-label-sm text-label-sm text-outline">{universities.filter((university) => university.regionId === region.id).length}</span>
                       </label>
                     ))}
                   </FilterGroup>
@@ -566,11 +583,13 @@ function UniversitiesPage() {
                   ))}
                 </div>
 
-                {filteredUniversities.length === 0 && (
+                {isRealMode && catalog.loading && <p role="status">Đang tải danh sách trường...</p>}
+                {isRealMode && catalog.error && <div role="alert"><p>Không thể tải danh sách trường.</p><button onClick={catalog.retry} type="button">Thử lại</button></div>}
+                {filteredUniversities.length === 0 && !(isRealMode && (catalog.loading || catalog.error)) && (
                   <div className="rounded-2xl bg-surface-container-lowest p-10 text-center shadow-sm">
                     <span className="material-symbols-outlined text-4xl text-outline">search_off</span>
-                    <h3 className="mt-2 font-headline-sm text-lg font-bold text-on-surface">Không tìm thấy trường phù hợp</h3>
-                    <p className="mt-1 font-body-sm text-body-sm text-on-surface-variant">Thử thay đổi từ khóa hoặc đặt lại bộ lọc.</p>
+                    <h3 className="mt-2 font-headline-sm text-lg font-bold text-on-surface">{isRealMode && universities.length === 0 ? 'Chưa có dữ liệu trường đại học' : 'Không tìm thấy trường phù hợp'}</h3>
+                    <p className="mt-1 font-body-sm text-body-sm text-on-surface-variant">{isRealMode && universities.length === 0 ? 'Danh sách sẽ hiển thị khi có dữ liệu.' : 'Thử thay đổi từ khóa hoặc đặt lại bộ lọc.'}</p>
                     <button className="mt-4 font-label-md text-label-md font-semibold text-primary hover:underline" onClick={handleReset} type="button">Đặt lại tìm kiếm</button>
                   </div>
                 )}
@@ -690,14 +709,14 @@ function UniversityCard({
   return (
     <article className="group flex flex-col overflow-hidden rounded-2xl bg-surface-container-lowest shadow-[0_4px_20px_-2px_rgba(23,32,51,0.05)] transition-all duration-300 hover:shadow-[0_16px_36px_-4px_rgba(29,78,216,0.12)]">
       <div className="relative h-48 w-full overflow-hidden bg-surface-container-high">
-        <img
+        {image && <img
           className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
           src={image}
           alt={isIllustrativeImage ? `Ảnh minh họa khuôn viên cho ${university.name}` : university.name}
           onError={(event) => {
-            event.currentTarget.src = FALLBACK_IMAGES[0]
+            event.currentTarget.style.visibility = 'hidden'
           }}
-        />
+        />}
         <div className="absolute inset-0 bg-gradient-to-t from-inverse-surface/80 via-transparent to-transparent" />
         <div className="absolute left-3 top-3 flex flex-wrap items-center gap-1.5">
           <span className="rounded-full bg-surface-container-lowest/95 px-2.5 py-1 font-label-sm text-label-sm font-bold text-primary shadow-xs backdrop-blur-md">{university.ownershipLabel}</span>

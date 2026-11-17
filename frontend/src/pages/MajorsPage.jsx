@@ -1,3 +1,4 @@
+import { useCatalog } from '../hooks/useCatalog';
 import majors from "../data/majors.json";
 import majorsFilter from "../data/majorsfilter.json";
 import { useEffect, useMemo, useRef, useState } from "react";
@@ -160,11 +161,7 @@ const normalizeText = (value) =>
 
 function MajorsPage() {
   const { isRealMode, isDevToolsOpen } = useDataMode();
-  const [realMajors, setRealMajors] = useState([]);
-  const [loadingReal, setLoadingReal] = useState(false);
-  const [realError, setRealError] = useState(null);
-  const [seededSuccess, setSeededSuccess] = useState(false);
-  const [seeding, setSeeding] = useState(false);
+  const { rows: realMajors, loading: loadingReal, error: realError, retry } = useCatalog('majors');
 
   const [activeSlide, setActiveSlide] = useState(0);
   const [isCarouselPaused, setIsCarouselPaused] = useState(false);
@@ -175,68 +172,6 @@ function MajorsPage() {
   const [firstNewResultIndex, setFirstNewResultIndex] = useState(0);
   const progressBarRef = useRef(null);
   const filterData = majorsFilter;
-
-  useEffect(() => {
-    if (!isRealMode) {
-      setRealError(null);
-      return;
-    }
-    let active = true;
-    setLoadingReal(true);
-    setRealError(null);
-    fetch("http://localhost:8080/api/v1/majors")
-      .then((res) => {
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
-        return res.json();
-      })
-      .then((data) => {
-        if (active) {
-          setRealMajors(Array.isArray(data) ? data : []);
-          setLoadingReal(false);
-        }
-      })
-      .catch((err) => {
-        if (active) {
-          setRealError(err.message);
-          setLoadingReal(false);
-        }
-      });
-    return () => {
-      active = false;
-    };
-  }, [isRealMode]);
-
-  const handleSeedData = async () => {
-    if (seeding) return;
-    setSeeding(true);
-    try {
-      const mapped = majors.map((m) => ({
-        id: m.id,
-        name: m.name,
-        code: m.code,
-        category: m.category?.name || "Công nghệ",
-        description: m.description,
-        universitiesCount: m.universityCount || 0,
-        popularCombinations: m.admissionCombinations?.map((c) => c.code).join(", ") || "",
-        imageUrl: m.imageUrl || "",
-        tuitionRange: m.tuitionRange || "",
-      }));
-      const res = await fetch("http://localhost:8080/api/v1/majors/seed", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(mapped),
-      });
-      if (res.ok) {
-        setSeededSuccess(true);
-        const refetched = await fetch("http://localhost:8080/api/v1/majors").then((r) => r.json());
-        setRealMajors(Array.isArray(refetched) ? refetched : []);
-      }
-    } catch (err) {
-      console.error("Lỗi seed data:", err);
-    } finally {
-      setSeeding(false);
-    }
-  };
 
   useEffect(() => {
     if (isCarouselPaused) return undefined;
@@ -271,16 +206,17 @@ function MajorsPage() {
     if (!isRealMode) return majors;
     if (realMajors.length > 0) {
       return realMajors.map((item) => ({
-        id: item.id || String(Math.random()),
+        id: item.id,
         name: item.name || "",
         code: item.code || "",
-        category: { id: (item.category || "").toLowerCase().replace(/\s+/g, "-"), name: item.category || "Chung" },
+        category: { id: (item.category || "").toLowerCase().replace(/\s+/g, "-"), name: item.category || "Chưa có dữ liệu" },
         description: item.description || "",
+        imageUrl: item.imageUrl,
         universityCount: item.universitiesCount || 0,
         tuitionRange: item.tuitionRange || "",
-        admissionCombinations: (item.popularCombinations || "A00, A01, D01")
+        admissionCombinations: (item.popularCombinations || "")
           .split(",")
-          .map((code) => ({ code: code.trim(), subjects: [] })),
+          .filter((code) => code.trim()).map((code) => ({ code: code.trim(), subjects: [] })),
         interests: [],
         riasec: [],
         skills: [],
@@ -765,6 +701,9 @@ function MajorsPage() {
             </aside>
 
             <section className="lg:col-span-8 xl:col-span-7 space-y-space-md">
+              {isRealMode && loadingReal && <p role="status">Đang tải danh sách ngành...</p>}
+              {isRealMode && realError && <div role="alert"><p>Không thể tải danh sách ngành.</p><button onClick={retry} type="button">Thử lại</button></div>}
+              {isRealMode && !loadingReal && !realError && realMajors.length === 0 && <p role="status">Chưa có dữ liệu ngành học.</p>}
               {/* Data Mode Notification Banner — Chỉ hiện khi DevTools được mở hoặc khi cần báo trạng thái Real API */}
               {isDevToolsOpen && (
                 isRealMode ? (
@@ -779,7 +718,7 @@ function MajorsPage() {
                           "Đang tải danh sách ngành từ PostgreSQL (:8080)..."
                         ) : realError ? (
                           <span className="text-rose-700 font-semibold">
-                            ⚠️ Chưa kết nối được Spring Boot (http://localhost:8080). Hãy chắc chắn bạn đã chạy: <code>cd backend && mvn spring-boot:run</code>
+                            Không thể tải danh sách ngành từ API đã cấu hình.
                           </span>
                         ) : realMajors.length > 0 ? (
                           `Đã kết nối thành công! Đang hiển thị ${realMajors.length} ngành thực tế từ cơ sở dữ liệu.`
@@ -791,21 +730,6 @@ function MajorsPage() {
                       </p>
                     </div>
 
-                    {!realError && realMajors.length === 0 && (
-                      <button
-                        onClick={handleSeedData}
-                        disabled={seeding}
-                        className="shrink-0 px-3.5 py-2 rounded-xl bg-purple-600 hover:bg-purple-700 text-white text-xs font-bold shadow-md transition-all active:scale-95 cursor-pointer disabled:opacity-60 flex items-center gap-1.5"
-                      >
-                        <span>⚡</span>
-                        <span>{seeding ? "Đang lưu vào DB..." : "Đổ 30+ ngành vào PostgreSQL"}</span>
-                      </button>
-                    )}
-                    {seededSuccess && (
-                      <span className="text-xs font-bold text-emerald-800 bg-emerald-100 px-3 py-1.5 rounded-lg border border-emerald-300">
-                        ✓ Đã lưu thành công vào PostgreSQL!
-                      </span>
-                    )}
                   </div>
                 ) : (
                   <div className="rounded-2xl border p-3 bg-amber-50/90 border-amber-200 text-amber-900 flex items-center justify-between text-xs">
@@ -852,7 +776,9 @@ function MajorsPage() {
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-space-md">
                 {visibleMajors.map((major, index) => {
-                  const majorImage = MAJOR_IMAGES[major.id];
+                  const majorImage = isRealMode
+                    ? (major.imageUrl ? { src: major.imageUrl, alt: major.name } : null)
+                    : MAJOR_IMAGES[major.id];
                   const cardImage = majorImage
                     ?? CATEGORY_IMAGES[major.category.id]
                     ?? CATEGORY_IMAGES["computer-it"];
@@ -864,11 +790,11 @@ function MajorsPage() {
                       className="group scroll-mt-4 flex min-h-0 flex-col overflow-hidden rounded-xl bg-surface-container-lowest shadow-sm transition-shadow hover:shadow-md"
                     >
                       <div className="relative aspect-[3/2] w-full overflow-hidden bg-surface-container-high">
-                        <img
+                        {(!isRealMode || majorImage) && <img
                           className="h-full w-full object-cover transition-transform duration-500 ease-out group-hover:scale-[1.04] group-focus-within:scale-[1.04] motion-reduce:transition-none motion-reduce:transform-none"
                           src={cardImage.src}
                           alt={cardImage.alt}
-                        />
+                        />}
                         {!majorImage && (
                           <>
                             <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent"></div>
@@ -930,7 +856,7 @@ function MajorsPage() {
                     </article>
                   );
                 })}
-                {filteredMajors.length === 0 && (
+                {filteredMajors.length === 0 && (!isRealMode || (!loadingReal && !realError && realMajors.length > 0)) && (
                   <div className="md:col-span-2 rounded-xl bg-surface-container-lowest p-space-lg text-center shadow-sm">
                     <span className="material-symbols-outlined text-[32px] text-outline">
                       search_off

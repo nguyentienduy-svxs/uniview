@@ -1,3 +1,6 @@
+import { useDataMode } from '../context/DataModeContext'
+import DataUnavailable from '../components/DataUnavailable'
+import ComparisonInputs from '../components/ComparisonInputs'
 import { useAuth } from '../context/AuthContext'
 import { ENTITLEMENTS } from '../components/header/headerConfig'
 import DemoDataBadge from '../components/premium/DemoDataBadge'
@@ -10,6 +13,7 @@ function AdmissionRoadmapPage() {
 }
 
 function AdmissionRoadmapContent({ locked = true }) {
+  const { isRealMode } = useDataMode()
   return (
     <>
       <main className="w-full pt-6 bg-[#FFFDFB] min-h-[calc(100vh-80px)] pb-16">
@@ -23,7 +27,7 @@ function AdmissionRoadmapContent({ locked = true }) {
                   <span className="w-2 h-2 rounded-full bg-[#1D4ED8] animate-pulse"></span>
                   <span className="text-xs font-bold uppercase tracking-wider">ADMISSION PASS • ROUTE MAPPING</span>
                 </div>
-                {locked && <DemoDataBadge className="mt-1" />}
+                {!isRealMode && locked && <DemoDataBadge className="mt-1" />}
 
                 <h1 className="text-3xl sm:text-4xl lg:text-[42px] font-extrabold text-[#172033] tracking-tight leading-[1.2]">
                   Nhìn toàn bộ con đường <br className="hidden sm:inline" />
@@ -66,7 +70,9 @@ function AdmissionRoadmapContent({ locked = true }) {
             </div>
           </section>
 
-          <section className="w-full">
+          <section className="w-full">{isRealMode ? <><h2 className="text-lg sm:text-xl font-bold text-[#172033]">
+                    Trường và ngành mục tiêu
+                  </h2><DataUnavailable /></> : <>
             <div className="bg-white rounded-2xl p-5 sm:p-6 border border-slate-200 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-5">
               <div className="flex items-start sm:items-center gap-4">
                 <div className="w-14 h-14 rounded-xl bg-[#1D4ED8] text-white flex items-center justify-center text-lg font-extrabold shrink-0 shadow-sm">
@@ -107,9 +113,9 @@ function AdmissionRoadmapContent({ locked = true }) {
                 </button>
               </div>
             </div>
-          </section>
+          </>}</section>
 
-          <section className="w-full">
+          <section className="w-full">{isRealMode ? <><ComparisonInputs scenarios={false} /></> : <>
             <div className="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm space-y-5">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div>
@@ -178,9 +184,9 @@ function AdmissionRoadmapContent({ locked = true }) {
                 <span>Bổ sung dữ liệu có thể giúp UniView kiểm tra thêm các route (UniView cung cấp thông tin đối chiếu khách quan, không đưa ra cam kết hay nâng tỉ lệ đậu tuyển sinh).</span>
               </div>
             </div>
-          </section>
+          </>}</section>
 
-          <section className="w-full space-y-4">
+          <section className="w-full space-y-4">{isRealMode ? <><h3 className="text-lg font-bold text-[#172033]">Các con đường tuyển sinh liên quan</h3><DataUnavailable /></> : <>
             <div>
               <h3 className="text-lg font-bold text-[#172033]">Các con đường tuyển sinh liên quan</h3>
               <p className="text-xs sm:text-sm text-[#667085]">Mỗi phương thức được kiểm tra riêng vì điều kiện và hệ điểm khác nhau.</p>
@@ -323,9 +329,9 @@ function AdmissionRoadmapContent({ locked = true }) {
                 </div>
               </div>
             </div>
-          </section>
+          </>}</section>
 
-          <section className="w-full space-y-5" id="detailed-route-analysis">
+          <section className="w-full space-y-5" id="detailed-route-analysis">{isRealMode ? <><h3 className="text-xl sm:text-2xl font-bold text-[#172033]">Chi tiết từng con đường tuyển sinh</h3><DataUnavailable /></> : <>
             <div className="space-y-1">
               <div className="flex items-center gap-2">
                 <span className="w-2.5 h-2.5 rounded-full bg-[#1D4ED8]"></span>
@@ -536,9 +542,9 @@ function AdmissionRoadmapContent({ locked = true }) {
                 </a>
               </div>
             </div>
-          </section>
+          </>}</section>
 
-          <section className="w-full">
+          <section className="w-full">{isRealMode ? <><h3 className="text-lg font-bold text-[#172033]">Tóm tắt các route hiện tại</h3><DataUnavailable /></> : <>
             <div className="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm space-y-4">
               <div className="flex items-center justify-between pb-2 border-b border-slate-100">
                 <div>
@@ -620,9 +626,9 @@ function AdmissionRoadmapContent({ locked = true }) {
                 * Bảng tóm tắt không xếp hạng hay phân loại "thắng/thua". Mỗi nhánh thể hiện tính độc lập của quy trình xét tuyển đại học.
               </p>
             </div>
-          </section>
+          </>}</section>
 
-          <section className="w-full space-y-4">
+          <section className="w-full space-y-4">{isRealMode ? <><h3 className="text-lg font-bold text-[#172033]">Bạn có thể làm gì tiếp theo?</h3><DataUnavailable /></> : <>
             <h3 className="text-lg font-bold text-[#172033]">Bạn có thể làm gì tiếp theo?</h3>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
 
@@ -671,9 +677,9 @@ function AdmissionRoadmapContent({ locked = true }) {
                 </button>
               </div>
             </div>
-          </section>
+          </>}</section>
 
-          <section className="w-full space-y-4">
+          <section className="w-full space-y-4">{isRealMode ? <><h3 className="text-lg font-bold text-[#172033]">Một route không phải là một lời đảm bảo</h3><DataUnavailable /></> : <>
             <div className="flex items-center gap-2">
               <svg className="w-5 h-5 text-[#FB7185]" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                 <path d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" strokeLinecap="round" strokeLinejoin="round"></path>
@@ -703,9 +709,9 @@ function AdmissionRoadmapContent({ locked = true }) {
                 </p>
               </div>
             </div>
-          </section>
+          </>}</section>
 
-          <section className="w-full pt-2">
+          <section className="w-full pt-2">{isRealMode ? <><h2 className="font-bold">Thông tin đối chiếu</h2><DataUnavailable /></> : <>
             <div className="rounded-3xl p-6 sm:p-8 bg-gradient-to-br from-[#1D4ED8] via-[#1e40af] to-[#172033] text-white shadow-md relative overflow-hidden">
               <div className="relative z-10 max-w-4xl space-y-5">
                 <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 text-white border border-white/20 text-[11px] font-bold uppercase tracking-wider">
@@ -756,10 +762,10 @@ function AdmissionRoadmapContent({ locked = true }) {
                 </div>
               </div>
             </div>
-          </section>
+          </>}</section>
         </div>
       </main>
-      {locked && (
+      {!isRealMode && locked && (
         <div className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 pb-8">
           <PremiumLockCard />
         </div>
