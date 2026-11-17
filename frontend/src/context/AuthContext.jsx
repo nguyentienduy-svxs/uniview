@@ -1,6 +1,7 @@
 import { createContext, useContext, useEffect, useState } from 'react'
 
 import { authApi } from '../api/authApi'
+import { useDataMode } from './DataModeContext'
 import {
   cloneSession,
   DEMO_ACCOUNTS,
@@ -112,6 +113,9 @@ function createSubscription(planId, admissionSeason) {
 }
 
 export function AuthProvider({ children }) {
+  const dataModeState = useDataMode()
+  const isRealData = dataModeState?.isRealMode || USE_API_AUTH
+
   const [session, setSession] = useState(() => (
     USE_API_AUTH ? null : readLocalSession()
   ))
@@ -234,6 +238,34 @@ export function AuthProvider({ children }) {
   }
 
   const login = async (identifier, password) => {
+    if (isRealData) {
+      try {
+        const apiResponse = await authApi.login(identifier, password)
+        if (apiResponse?.user) {
+          const userObj = apiResponse.user
+          const activePlans = userObj.activePlans ?? [PLAN_IDS.ANNUAL]
+          const serverSession = {
+            user: userObj,
+            entitlements: [ENTITLEMENTS.PERSONAL_WORKSPACE, ENTITLEMENTS.ADMISSION_PASS],
+            activePlans,
+            subscriptions: [createSubscription(PLAN_IDS.ANNUAL)],
+            admissionSeason: userObj.targetAdmissionYear || '2027',
+          }
+          persistLocalSession(serverSession)
+          setReportHistory(readJson(historyKey(userObj.id), []))
+          setError(null)
+          return serverSession
+        }
+      } catch (apiError) {
+        // Nếu server trả về lỗi nghiệp vụ rõ ràng
+        if (apiError.status === 401 || apiError.status === 400) {
+          throw new Error(apiError.message || 'Sai tài khoản hoặc mật khẩu trên máy chủ.')
+        }
+        console.warn('Real API login thất bại, kiểm tra mock data:', apiError)
+        // Nếu server offline, tiếp tục thử mock data bên dưới
+      }
+    }
+
     const account = getDemoAccount(identifier, password)
     const normalizedIdentifier = String(identifier ?? '').trim().toLowerCase()
     const registeredAccounts = readJson(REGISTERED_ACCOUNTS_KEY, {})
@@ -280,6 +312,31 @@ export function AuthProvider({ children }) {
   }
 
   const register = async ({ email, fullName, password }) => {
+    if (isRealData) {
+      try {
+        const apiResponse = await authApi.register({ email, fullName, password })
+        if (apiResponse?.user) {
+          const userObj = apiResponse.user
+          const serverSession = {
+            user: userObj,
+            entitlements: [ENTITLEMENTS.PERSONAL_WORKSPACE, ENTITLEMENTS.ADMISSION_PASS],
+            activePlans: [PLAN_IDS.ANNUAL],
+            subscriptions: [createSubscription(PLAN_IDS.ANNUAL)],
+            admissionSeason: userObj.targetAdmissionYear || '2027',
+          }
+          persistLocalSession(serverSession)
+          setReportHistory([])
+          setError(null)
+          return serverSession
+        }
+      } catch (apiError) {
+        if (apiError.status === 400) {
+          throw new Error(apiError.message || 'Dữ liệu đăng ký không hợp lệ.')
+        }
+        console.warn('Real API register thất bại, chuyển về lưu local:', apiError)
+      }
+    }
+
     const normalizedEmail = String(email ?? '').trim().toLowerCase()
     const normalizedName = String(fullName ?? '').trim()
     if (!normalizedName || normalizedName.length < 2) throw new Error('Vui lòng nhập họ và tên.')

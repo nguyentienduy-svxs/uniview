@@ -1,16 +1,18 @@
 import { useEffect } from 'react'
 import { BrowserRouter, Route, Routes, useLocation } from 'react-router-dom'
+import AppHeader from './components/header/AppHeader'
 import AppFooter from './components/AppFooter'
 import FloatingMascot from './components/FloatingMascot'
+import { DataModeToggle } from './components/layout/DataModeToggle'
 import PageRenderer from './components/PageRenderer'
 import ScrollToTop from './components/ScrollToTop'
 import { pages } from './data/pages'
 import AllPagesPage from './pages/AllPagesPage'
 import NotFoundPage from './pages/NotFoundPage'
-import AppHeader from './components/header/AppHeader'
 import { AuthProvider } from './context/AuthContext'
 import { AssessmentProvider } from './context/AssessmentContext'
 import { JourneyProvider } from './context/JourneyContext'
+import { DataModeProvider } from './context/DataModeContext'
 
 function AppContent() {
   const location = useLocation()
@@ -28,29 +30,32 @@ function AppContent() {
   }, [location.pathname])
 
   return (
-    <div className="min-h-screen bg-[#f9f9ff] text-[#121b2e]">
+    <div className="min-h-screen bg-[#F7F8FE] text-[#1B2A4A] flex flex-col justify-between">
       {!isPdfReport && <AppHeader />}
-      <FloatingMascot />
+      
+      <main className="flex-1 w-full">
+        <Routes>
+          {pages.map((page) => (
+            <Route
+              key={page.id}
+              path={page.path}
+              element={<PageRenderer page={page} />}
+            />
+          ))}
 
-      <Routes>
-        {pages.map((page) => (
           <Route
-            key={page.id}
-            path={page.path}
-            element={<PageRenderer page={page} />}
+            path="/screens"
+            element={<AllPagesPage />}
           />
-        ))}
 
-        <Route
-          path="/screens"
-          element={<AllPagesPage />}
-        />
+          <Route
+            path="*"
+            element={<NotFoundPage />}
+          />
+        </Routes>
+      </main>
 
-        <Route
-          path="*"
-          element={<NotFoundPage />}
-        />
-      </Routes>
+      <FloatingMascot />
 
       {!isReportWorkspace && <AppFooter />}
     </div>
@@ -60,14 +65,17 @@ function AppContent() {
 function App() {
   return (
     <BrowserRouter>
-      <AuthProvider>
-        <AssessmentProvider>
-          <JourneyProvider>
-            <ScrollToTop />
-            <AppContent />
-          </JourneyProvider>
-        </AssessmentProvider>
-      </AuthProvider>
+      <DataModeProvider>
+        <AuthProvider>
+          <AssessmentProvider>
+            <JourneyProvider>
+              <ScrollToTop />
+              <AppContent />
+              <DataModeToggle />
+            </JourneyProvider>
+          </AssessmentProvider>
+        </AuthProvider>
+      </DataModeProvider>
     </BrowserRouter>
   )
 }

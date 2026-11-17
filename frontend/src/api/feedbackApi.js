@@ -61,8 +61,22 @@ async function saveOnDevice(entry) {
   }
 }
 
+const API_BASE_URL = import.meta.env.VITE_API_URL ?? 'http://localhost:8080/api/v1'
+
 async function postFeedback(entry) {
   try {
+    // Thử gửi trực tiếp Spring Boot API trước (lưu vào PostgreSQL)
+    const springResponse = await fetch(`${API_BASE_URL}/feedback`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(entry),
+    }).catch(() => null)
+
+    if (springResponse && springResponse.ok) {
+      return await springResponse.json()
+    }
+
+    // Fallback: endpoint local của Vite dev server
     const response = await fetch('/api/feedback', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
