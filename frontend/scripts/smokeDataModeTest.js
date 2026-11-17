@@ -28,7 +28,13 @@ try {
       if (String(url).includes('/api/v1/')) {
         window.__calls.push(String(url));
         if (window.__apiError) throw new TypeError('API offline');
-        if (String(url).endsWith('/auth/me')) return new Response(JSON.stringify({id:'api-student',fullName:'API student',role:'STUDENT',activePlans:['ANNUAL']}), {status:200,headers:{'Content-Type':'application/json'}});
+        const apiUser = {id:'api-student',email:'lamhuynhhueman@gmail.com',fullName:'API student',role:'STUDENT',activePlans:JSON.parse(sessionStorage.getItem('test-api-plans') ?? '["ANNUAL"]')};
+        if (String(url).endsWith('/auth/me')) return new Response(JSON.stringify(apiUser), {status:200,headers:{'Content-Type':'application/json'}});
+        if (String(url).endsWith('/auth/login')) {
+          const credentials = JSON.parse(options.body);
+          const valid = credentials.identifier === apiUser.email && credentials.password === 'test-password';
+          return new Response(JSON.stringify(valid ? {user:apiUser,token:'verified-api-session'} : {message:'Sai tài khoản hoặc mật khẩu'}), {status:valid ? 200 : 401,headers:{'Content-Type':'application/json'}});
+        }
         return new Response(JSON.stringify(String(url).endsWith('/status') ? {counts:{}} : window.__apiRows), {status:200, headers:{'Content-Type':'application/json'}});
       }
       return nativeFetch(url, options);
@@ -134,6 +140,66 @@ try {
   await until('document.body.innerText.includes("Hiểu mình hơn")')
   assert.equal(await evaluate('document.body.innerText.includes("250+ trường đại học")'), false)
   console.log('PASS landing page hides sample catalog records and counts in API mode')
+  await open('/login', 'mock')
+  await until('!!document.querySelector("#emailInput")')
+  const enterCredentials = async (password) => {
+    await evaluate(`(() => {
+      const setInput = (id, value) => {
+        const input = document.getElementById(id);
+        Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value').set.call(input, value);
+        input.dispatchEvent(new Event('input', {bubbles:true}));
+      };
+      setInput('emailInput', 'lamhuynhhueman@gmail.com');
+      setInput('passwordInput', ${JSON.stringify(password)});
+    })()`)
+    await evaluate('document.querySelector("#loginSubmitBtn").click()')
+  }
+  await enterCredentials('wrong-password')
+  await until('document.body.innerText.includes("Sai tài khoản hoặc mật khẩu")')
+  assert.equal(await evaluate('localStorage.getItem("uniview-jwt-token-v1")'), null)
+  await enterCredentials('test-password')
+  await until('localStorage.getItem("uniview-jwt-token-v1") === "verified-api-session" && location.pathname !== "/login"')
+  await open('/profile', 'mock')
+  await until('document.body.innerText.includes("API student")')
+  await evaluate('if (!Array.from(document.querySelectorAll("button")).some(b => b.textContent.includes("Real API"))) window.toggleUniViewDevTools()')
+  await until('!!Array.from(document.querySelectorAll("button")).find(b => b.textContent.includes("Real API"))')
+  await evaluate('Array.from(document.querySelectorAll("button")).find(b => b.textContent.includes("Real API")).click()')
+  await until('localStorage.getItem("uniview-data-mode-v1") === "real" && document.body.innerText.includes("API student")')
+  await evaluate('Array.from(document.querySelectorAll("button")).find(b => b.textContent.includes("Mock")).click()')
+  await until('localStorage.getItem("uniview-data-mode-v1") === "mock" && document.body.innerText.includes("API student")')
+  assert.equal(await evaluate('localStorage.getItem("uniview-auth-session-v4")'), null)
+  await open('/profile', 'mock')
+  await until('document.body.innerText.includes("API student")')
+  console.log('PASS database account logs in from Mock, rejects wrong password, survives Mock/API switches and reload')
+  await evaluate('sessionStorage.setItem("test-api-plans", "[]")')
+  await open('/profile', 'real')
+  await until('!!document.querySelector("#profile-nav") && document.body.innerText.includes("API student")')
+  assert.equal(await evaluate('document.body.innerText.includes("Gói đang hoạt động")'), false)
+  await evaluate(`document.querySelector('#profile-nav a[href="/profile?tab=plans"]').click()`)
+  await until('!!document.querySelector("#profile-plans-title")')
+  assert.equal(await evaluate(`document.querySelectorAll('[aria-label="Các gói UniView"] article').length`), 3)
+  assert.equal(await evaluate('document.querySelector("#section-personal").hidden'), true)
+  assert.equal(await evaluate('document.body.innerText.includes("Bạn chưa kích hoạt gói")'), true)
+  const planLinks = await evaluate(`Array.from(document.querySelectorAll('[aria-label="Các gói UniView"] article a')).map(a=>({href:a.getAttribute('href'),label:a.getAttribute('aria-label')}))`)
+  for (const plan of planLinks) {
+    await evaluate(`Array.from(document.querySelectorAll('a')).find(a=>a.getAttribute('aria-label')===${JSON.stringify(plan.label)}).click()`)
+    await until('!!document.querySelector("#plan-detail-title")')
+    assert.equal(await evaluate('document.body.innerText.includes("Quyền lợi của gói") && document.body.innerText.includes("Phù hợp với ai?") && document.body.innerText.includes("Thời hạn sử dụng")'), true)
+    await evaluate('history.back()')
+    await until('!!document.querySelector("#profile-plans-title")')
+  }
+  await open('/account/plan', 'real')
+  await until('location.pathname === "/profile" && !!document.querySelector("#profile-plans-title")')
+  console.log('PASS profile plan navigation: three plans for an unsubscribed account, working details/back, legacy URL redirects')
+  await evaluate('sessionStorage.setItem("test-api-plans", \'["ANNUAL"]\')')
+  await open('/profile?tab=plans&plan=ADMISSION_PASS', 'real')
+  await until('document.body.innerText.includes("Đã bao gồm trong Gói Năm của bạn")')
+  assert.equal(await evaluate(`document.querySelector('[aria-labelledby="plan-detail-title"] a[href="/admission-pass"]') === null`), true)
+  await client.send('Emulation.setDeviceMetricsOverride', {width:390,height:844,deviceScaleFactor:1,mobile:false})
+  await open('/profile?tab=plans', 'real')
+  await until('!!document.querySelector("#profile-plans-title")')
+  assert.equal(await evaluate('document.documentElement.scrollWidth <= innerWidth'), true)
+  console.log('PASS annual plan includes Admission Pass without a duplicate purchase; plan management fits mobile')
   assert.deepEqual(errors, [])
 } finally {
   client?.close()

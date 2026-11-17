@@ -293,23 +293,6 @@ function UniversitiesPage() {
     return FALLBACK_IMAGES[imageIndex]
   }
 
-  const formatTuition = (university) => {
-    if (isRealMode) return university.tuitionRange || 'Chưa có dữ liệu'
-    const { minMillionVnd, maxMillionVnd } = university.tuition
-    if (minMillionVnd === null && maxMillionVnd === null) return 'Đang cập nhật'
-    if (minMillionVnd === maxMillionVnd) return `${minMillionVnd}M / năm`
-    return `${minMillionVnd ?? 0}M - ${maxMillionVnd ?? '...'}M / năm`
-  }
-
-  const formatAdmissionScore = (university) => {
-    const scoreRange = university.admission.scoreRange
-    if (!scoreRange) return 'Đang cập nhật'
-    if (scoreRange.min === null || scoreRange.max === null) {
-      return scoreRange.label ?? 'Điều kiện riêng'
-    }
-    return `${scoreRange.min} - ${scoreRange.max} điểm`
-  }
-
   return (
     <main className="min-h-[calc(100vh-20rem)] w-full bg-surface ">
       <div className="flex w-full flex-col">
@@ -397,9 +380,9 @@ function UniversitiesPage() {
         </section>
 
         <section className="w-full pb-32">
-          <div className="mx-auto max-w-7xl px-3 sm:px-4 lg:px-5">
-            <div className="grid grid-cols-1 items-start gap-8 lg:grid-cols-12">
-              <aside className="flex flex-col gap-5 lg:sticky lg:top-24 lg:col-span-4">
+          <div className="mx-auto max-w-[1440px] px-4 sm:px-5 lg:px-6">
+            <div className="grid grid-cols-1 items-start gap-6 lg:grid-cols-[300px_minmax(0,1fr)] xl:grid-cols-[320px_minmax(0,1fr)]">
+              <aside className="flex flex-col gap-5 lg:sticky lg:top-24">
                 <div className="flex flex-col gap-6 rounded-2xl bg-surface-container-lowest p-6 shadow-[0_4px_24px_rgba(23,32,51,0.03)]">
                   <div className="flex items-center justify-between border-b border-surface-container-high pb-4">
                     <div className="flex items-center gap-2">
@@ -508,7 +491,7 @@ function UniversitiesPage() {
                 </div>
               </aside>
 
-              <section className="flex flex-col gap-6 lg:col-span-8">
+              <section className="flex min-w-0 flex-col gap-6">
                 <div className="flex flex-col justify-between gap-4 pb-2 sm:flex-row sm:items-center">
                   <div className="flex items-center gap-3">
                     <h2 className="font-headline-md text-headline-md font-bold text-on-surface">Danh sách trường đại học</h2>
@@ -575,8 +558,6 @@ function UniversitiesPage() {
                       canPersonalize={isAuthenticated}
                       isSaved={isAuthenticated && savedUniversityIds.includes(university.id)}
                       isCompared={isAuthenticated && comparisonIds.includes(university.id)}
-                      tuitionLabel={formatTuition(university)}
-                      admissionScoreLabel={formatAdmissionScore(university)}
                       onToggleSaved={(event) => toggleSaved(event, university.id)}
                       onToggleComparison={(event) => toggleComparison(event, university.id)}
                     />
@@ -701,14 +682,12 @@ function UniversityCard({
   canPersonalize,
   isSaved,
   isCompared,
-  tuitionLabel,
-  admissionScoreLabel,
   onToggleSaved,
   onToggleComparison,
 }) {
   return (
     <article className="group flex flex-col overflow-hidden rounded-2xl bg-surface-container-lowest shadow-[0_4px_20px_-2px_rgba(23,32,51,0.05)] transition-all duration-300 hover:shadow-[0_16px_36px_-4px_rgba(29,78,216,0.12)]">
-      <div className="relative h-48 w-full overflow-hidden bg-surface-container-high">
+      <div className="relative h-44 w-full overflow-hidden bg-surface-container-high">
         {image && <img
           className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
           src={image}
@@ -717,55 +696,35 @@ function UniversityCard({
             event.currentTarget.style.visibility = 'hidden'
           }}
         />}
-        <div className="absolute inset-0 bg-gradient-to-t from-inverse-surface/80 via-transparent to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-b from-black/10 via-transparent to-transparent" />
         <div className="absolute left-3 top-3 flex flex-wrap items-center gap-1.5">
           <span className="rounded-full bg-surface-container-lowest/95 px-2.5 py-1 font-label-sm text-label-sm font-bold text-primary shadow-xs backdrop-blur-md">{university.ownershipLabel}</span>
-          {university.parentSystem && <span className="rounded-full bg-surface-container-lowest/95 px-2.5 py-1 font-label-sm text-label-sm font-medium text-on-surface-variant backdrop-blur-md">{university.parentSystem}</span>}
           {isIllustrativeImage && <span className="rounded-full bg-black/55 px-2.5 py-1 text-[10px] font-semibold text-white backdrop-blur-md">Ảnh minh họa</span>}
         </div>
         <button className={`absolute right-3 top-3 flex h-8 w-8 items-center justify-center rounded-full bg-surface-container-lowest/90 text-outline shadow-sm backdrop-blur-md transition-colors ${canPersonalize ? 'hover:bg-surface-container-lowest hover:text-secondary' : 'cursor-not-allowed opacity-70'}`} onClick={onToggleSaved} title={canPersonalize ? (isSaved ? 'Bỏ lưu trường' : 'Lưu trường') : 'Đăng nhập để lưu trường'} type="button">
           <span className="material-symbols-outlined text-lg" style={isSaved ? { fontVariationSettings: "'FILL' 1" } : undefined}>favorite</span>
         </button>
-        <div className="absolute bottom-3 left-4 right-4 flex items-end justify-between gap-3 text-surface-container-lowest">
-          <div className="min-w-0">
-            <span className="block font-label-sm text-label-sm uppercase tracking-wider text-inverse-primary">Mã trường: {university.code ?? 'Không áp dụng'}</span>
-            <h3 className="line-clamp-2 font-headline-sm text-headline-sm font-bold leading-tight text-white">{university.name}</h3>
-          </div>
-          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-surface-container-lowest p-1 text-primary shadow-md">
-            <span className="material-symbols-outlined text-xl">{university.icon}</span>
-          </div>
-        </div>
       </div>
 
       <div className="flex flex-1 flex-col justify-between gap-4 p-5">
-        <div className="flex flex-col gap-3">
-          <div className="flex items-start gap-1 font-body-sm text-body-sm text-on-surface-variant">
+        <div className="flex flex-col gap-3.5">
+          <div className="min-w-0">
+            <span className="block font-label-sm text-label-sm uppercase tracking-wider text-primary">Mã trường: {university.code ?? 'Không áp dụng'}</span>
+            <h3 className="mt-0.5 line-clamp-2 font-headline-sm text-headline-sm font-bold leading-tight text-on-surface">{university.name}</h3>
+          </div>
+
+          <div className="flex items-center gap-1 font-body-sm text-body-sm text-on-surface-variant">
             <span className="material-symbols-outlined mt-0.5 text-base text-outline">location_on</span>
-            <span>{university.location.campus ? `${university.location.campus}, ${university.location.city}` : university.location.city}</span>
+            <span className="line-clamp-1">{university.location.city}</span>
           </div>
 
-          <div className="grid grid-cols-2 gap-2 rounded-xl bg-surface-container-low p-3">
-            <div className="flex min-w-0 flex-col">
-              <span className="font-label-sm text-label-sm text-outline">Học phí tham khảo</span>
-              <span className="break-words font-label-lg text-label-lg font-bold text-primary">{tuitionLabel}</span>
+          {university.featuredMajors.length > 0 && <div className="flex items-center gap-2.5 overflow-hidden rounded-xl bg-surface-container-low px-3 py-2.5">
+            <span className="shrink-0 font-label-sm text-label-sm text-outline">Thế mạnh</span>
+            <div className="flex min-w-0 items-center gap-1.5 overflow-hidden">
+              <span className="truncate font-label-md text-label-md font-semibold text-on-surface">{university.featuredMajors[0]}</span>
+              {university.featuredMajors.length > 1 && <span className="shrink-0 font-label-sm text-label-sm font-semibold text-primary">+{university.featuredMajors.length - 1}</span>}
             </div>
-            <div className="flex min-w-0 flex-col">
-              <span className="font-label-sm text-label-sm text-outline">Điểm tham chiếu 2025</span>
-              <span className="break-words font-label-lg text-label-lg font-bold text-secondary">{admissionScoreLabel}</span>
-            </div>
-          </div>
-
-          <div className="flex flex-col gap-1.5">
-            <span className="font-label-sm text-label-sm uppercase tracking-wider text-outline">Ngành đào tạo thế mạnh:</span>
-            <div className="flex flex-wrap gap-1.5">
-              {university.featuredMajors.map((major) => <span className="rounded-md bg-surface-container px-2 py-0.5 font-label-sm text-label-sm text-on-surface" key={major}>{major}</span>)}
-            </div>
-          </div>
-
-          <div className="flex items-start gap-2 pt-1 font-body-sm text-body-sm text-on-surface-variant">
-            <span className="material-symbols-outlined mt-0.5 text-base text-outline">verified</span>
-            <span className="line-clamp-2">{university.admission.methods.length > 0 ? university.admission.methods.map((method) => method.label).join(' • ') : 'Xem đề án tuyển sinh chính thức trên website trường'}</span>
-          </div>
+          </div>}
         </div>
 
         <div className="flex items-center justify-between gap-2 border-t border-surface-container pt-3">
@@ -785,7 +744,7 @@ function UniversityCard({
               <span className="material-symbols-outlined text-sm">arrow_forward</span>
             </Link>
             <a className="inline-flex min-w-0 items-center justify-center gap-1 whitespace-nowrap rounded-xl bg-surface-container-low px-2.5 py-2 font-label-sm text-label-sm font-semibold text-primary transition-all hover:bg-primary-fixed hover:text-on-primary-fixed" href={university.website} target="_blank" rel="noreferrer">
-              <span>Website trường</span>
+              <span>Website</span>
               <span className="material-symbols-outlined text-sm">open_in_new</span>
             </a>
           </div>

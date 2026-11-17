@@ -1,13 +1,11 @@
-import { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { useEffect, useRef, useState } from 'react'
+import { Link, useSearchParams } from 'react-router-dom'
+import PlanManagementPanel from '../components/account/PlanManagementPanel'
 
 import { useAuth } from '../context/AuthContext'
 import { useAssessment } from '../context/AssessmentContext'
 import {
-  formatPlanDate,
   getActivePlanSummary,
-  getPlan,
-  PLAN_IDS,
 } from '../data/plans'
 import {
   ALL_REGIONS,
@@ -21,12 +19,6 @@ import {
   normalizeCertificates,
 } from '../utils/certificates'
 
-const planTone = {
-  [PLAN_IDS.MONTHLY]: 'border-blue-200 bg-blue-50 text-blue-800',
-  [PLAN_IDS.ANNUAL]: 'border-rose-200 bg-rose-50 text-rose-800',
-  [PLAN_IDS.ADMISSION_PASS]: 'border-amber-200 bg-amber-50 text-amber-900',
-}
-
 const COMMON_MAJORS = [
   'Kỹ thuật Phần mềm',
   'Công nghệ Thông tin',
@@ -39,10 +31,21 @@ const COMMON_MAJORS = [
 ]
 
 function ProfilePage() {
+  const [searchParams] = useSearchParams()
+  const activeTab = ['personal', 'academic', 'preferences', 'plans'].includes(searchParams.get('tab')) ? searchParams.get('tab') : 'personal'
+  const profileTabs = [['personal', '1. Thông tin cá nhân'], ['academic', '2. Hồ sơ học tập & Điểm số'], ['preferences', '3. Sở thích & Điều kiện'], ['plans', '4. Quản lý gói']]
+  const contentRef = useRef(null)
+  const previousView = useRef(null)
+  const viewKey = activeTab + ':' + (searchParams.get('plan') ?? '')
+  useEffect(() => {
+    if (previousView.current !== viewKey && (previousView.current !== null || activeTab !== 'personal')) {
+      contentRef.current?.scrollIntoView({ block: 'start', behavior: 'instant' })
+    }
+    previousView.current = viewKey
+  }, [activeTab, viewKey])
   const {
     activePlans,
     admissionSeason,
-    subscriptions,
     user,
     updateUserProfile,
   } = useAuth()
@@ -429,52 +432,12 @@ function ProfilePage() {
                   </div>
                   <div className="flex items-center justify-between gap-3 border-t border-slate-100 pt-2 text-slate-500 text-[11px]">
                     <span>Gói đang dùng:</span>
-                    <Link className="truncate font-bold text-[#1D4ED8] hover:underline" to="/account/plan">{activePlanSummary}</Link>
+                    <Link className="truncate font-bold text-[#1D4ED8] hover:underline" to="/profile?tab=plans">{activePlanSummary}</Link>
                   </div>
                 </div>
               </div>
             </div>
           </div>
-        </section>
-
-        {/* Gói đang hoạt động */}
-        <section className="mb-8 rounded-[24px] border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
-          <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
-            <div>
-              <span className="text-[11px] font-extrabold uppercase tracking-widest text-[#1D4ED8]">Subscription &amp; quyền truy cập</span>
-              <h2 className="mt-1 text-xl font-extrabold text-[#172033]">Gói đang hoạt động</h2>
-              <p className="mt-1 text-sm text-[#667085]">Gói Tháng phục vụ nhu cầu ngắn hạn; Gói Năm mở Roadmap dài hạn và bao gồm Admission Pass cho một mùa tuyển sinh.</p>
-            </div>
-            <Link className="inline-flex shrink-0 items-center justify-center rounded-full border border-blue-200 bg-blue-50 px-4 py-2 text-xs font-bold text-[#1D4ED8] hover:bg-blue-100" to="/account/plan">Quản lý gói</Link>
-          </div>
-
-          {activePlans.length ? (
-            <div className="mt-5 grid gap-3 md:grid-cols-2">
-              {activePlans.map((planId) => {
-                const plan = getPlan(planId)
-                const subscription = subscriptions.find((item) => item.planId === planId)
-                if (!plan) return null
-                const isAdmissionPass = planId === PLAN_IDS.ADMISSION_PASS
-                return (
-                  <article className={`rounded-2xl border p-4 ${planTone[planId] ?? 'border-slate-200 bg-slate-50 text-slate-800'}`} key={planId}>
-                    <div className="flex items-start justify-between gap-3">
-                      <div>
-                        <h3 className="font-extrabold">{plan.name}{isAdmissionPass && admissionSeason ? ` ${admissionSeason}` : ''}</h3>
-                        <p className="mt-1 text-xs leading-5 opacity-80">{isAdmissionPass ? 'Admission Mode, phương thức, deadline, kịch bản và checklist nhập học.' : planId === PLAN_IDS.ANNUAL ? 'Toàn bộ hành trình khám phá và Admission Pass trong thời gian gói còn hiệu lực.' : 'Personal Workspace, assessment, task, roadmap và so sánh cơ bản.'}</p>
-                      </div>
-                      <span className="inline-flex shrink-0 items-center gap-1 rounded-full bg-white/80 px-2 py-1 text-[10px] font-bold"><span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />Đang hoạt động</span>
-                    </div>
-                    <div className="mt-3 flex flex-wrap gap-x-4 gap-y-1 border-t border-current/10 pt-3 text-[11px] font-semibold">
-                      <span>Đến {subscription?.endsAt ? formatPlanDate(subscription.endsAt) : plan.durationLabel}</span>
-                      <span>{isAdmissionPass ? 'Không tự gia hạn' : subscription?.autoRenew ? 'Tự động gia hạn đang bật' : 'Tự động gia hạn đã tắt'}</span>
-                    </div>
-                  </article>
-                )
-              })}
-            </div>
-          ) : (
-            <div className="mt-5 rounded-2xl border border-dashed border-slate-300 bg-slate-50 p-5 text-sm text-slate-600">Tài khoản chưa kích hoạt gói. Bạn vẫn có thể làm assessment và xem kết quả tổng quan.</div>
-          )}
         </section>
 
         {/* Nội dung chi tiết các phần hồ sơ */}
@@ -483,27 +446,16 @@ function ProfilePage() {
             <div className="rounded-[24px] bg-white border border-slate-200/90 p-5 shadow-sm space-y-5">
               <div>
                 <span className="text-[11px] font-extrabold text-slate-400 uppercase tracking-widest block mb-3">Danh mục hồ sơ</span>
-                <nav className="space-y-1.5" id="profile-nav">
-                  <a className="w-full flex items-center justify-between px-3.5 py-3 rounded-xl bg-[#EFF6FF] text-[#1D4ED8] font-bold text-sm border-l-4 border-[#1D4ED8]" href="#section-personal">
-                    <span>1. Thông tin cá nhân</span>
-                    <span className="w-5 h-5 rounded-full bg-blue-100 text-[#1D4ED8] text-xs flex items-center justify-center font-bold">✓</span>
-                  </a>
-                  <a className="w-full flex items-center justify-between px-3.5 py-3 rounded-xl text-slate-700 hover:bg-slate-50 font-semibold text-sm" href="#section-academic">
-                    <span>2. Hồ sơ học tập &amp; Điểm số</span>
-                    <span className="w-5 h-5 rounded-full bg-blue-100 text-[#1D4ED8] text-xs flex items-center justify-center font-bold">✓</span>
-                  </a>
-                  <a className="w-full flex items-center justify-between px-3.5 py-3 rounded-xl text-slate-700 hover:bg-slate-50 font-semibold text-sm" href="#section-preferences">
-                    <span>3. Sở thích &amp; Điều kiện</span>
-                    <span className="w-5 h-5 rounded-full bg-blue-100 text-[#1D4ED8] text-xs flex items-center justify-center font-bold">✓</span>
-                  </a>
+                <nav className="space-y-1.5" id="profile-nav" aria-label="Danh mục hồ sơ">
+                  {profileTabs.map(([tab, label]) => <Link key={tab} to={'/profile?tab=' + tab} aria-current={activeTab === tab ? 'page' : undefined} className={'w-full flex items-center justify-between gap-3 px-3.5 py-3 rounded-xl text-sm border-l-4 transition-colors ' + (activeTab === tab ? 'bg-[#EFF6FF] text-[#1D4ED8] font-bold border-[#1D4ED8]' : 'border-transparent text-slate-700 hover:bg-slate-50 font-semibold')}><span>{label}</span><span aria-hidden="true">{activeTab === tab ? '→' : '›'}</span></Link>)}
                 </nav>
               </div>
             </div>
           </aside>
 
-          <div className="lg:col-span-8 bg-white border border-slate-200/90 rounded-[28px] p-6 sm:p-8 md:p-10 shadow-sm space-y-12">
+          <div ref={contentRef} className="lg:col-span-8 scroll-mt-28 min-w-0 bg-white border border-slate-200/90 rounded-[28px] p-6 sm:p-8 md:p-10 shadow-sm space-y-12">
             {/* SECTION 1: THÔNG TIN CÁ NHÂN */}
-            <section className="space-y-5 scroll-mt-28" id="section-personal">
+            <section className="space-y-5 scroll-mt-28" id="section-personal" hidden={activeTab !== 'personal'}>
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-3 border-b border-slate-100">
                 <div>
                   <div className="flex items-center gap-2">
@@ -557,7 +509,7 @@ function ProfilePage() {
             </section>
 
             {/* SECTION 2: HỒ SƠ HỌC TẬP & ĐIỂM SỐ */}
-            <section className="space-y-6 scroll-mt-28" id="section-academic">
+            <section className="space-y-6 scroll-mt-28" id="section-academic" hidden={activeTab !== 'academic'}>
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-3 border-b border-slate-100">
                 <div>
                   <div className="flex items-center gap-2">
@@ -673,7 +625,7 @@ function ProfilePage() {
             </section>
 
             {/* SECTION 3: SỞ THÍCH & ĐIỀU KIỆN */}
-            <section className="space-y-6 scroll-mt-28" id="section-preferences">
+            <section className="space-y-6 scroll-mt-28" id="section-preferences" hidden={activeTab !== 'preferences'}>
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-3 border-b border-slate-100">
                 <div>
                   <div className="flex items-center gap-2">
@@ -726,6 +678,7 @@ function ProfilePage() {
                 </div>
               </div>
             </section>
+            {activeTab === 'plans' && <PlanManagementPanel />}
           </div>
         </div>
       </div>

@@ -115,6 +115,7 @@ function serverSession(response) {
   if (!user?.id) throw new Error('Phản hồi tài khoản không hợp lệ.')
   return {
     user,
+    authSource: 'api',
     entitlements: response?.entitlements ?? [],
     activePlans: response?.activePlans ?? user?.activePlans ?? [],
     subscriptions: response?.subscriptions ?? [],
@@ -127,9 +128,9 @@ export function AuthProvider({ children }) {
   const isRealData = dataModeState.isRealMode
 
   const [session, setSession] = useState(() => (
-    isRealData ? null : readLocalSession()
+    isRealData || tokenStorage.get() ? null : readLocalSession()
   ))
-  const [loading, setLoading] = useState(isRealData && Boolean(tokenStorage.get()))
+  const [loading, setLoading] = useState(Boolean(tokenStorage.get()))
   const [error, setError] = useState(null)
   const user = session?.user ?? null
   const storedEntitlements = session?.entitlements ?? []
@@ -152,7 +153,7 @@ export function AuthProvider({ children }) {
   ))
 
   useEffect(() => {
-    if (!isRealData || !tokenStorage.get()) return
+    if (!tokenStorage.get()) return
     let active = true
 
     authApi.getMe()
@@ -164,6 +165,7 @@ export function AuthProvider({ children }) {
       .catch((requestError) => {
         if (!active) return
         setSession(null)
+        tokenStorage.clear()
         setError(requestError)
       })
       .finally(() => { if (active) setLoading(false) })
@@ -171,7 +173,7 @@ export function AuthProvider({ children }) {
   }, [isRealData])
 
   async function loadCurrentSession() {
-    if (!isRealData) {
+    if (!isRealData && !tokenStorage.get()) {
       const localSession = readLocalSession()
       setSession(localSession)
       setReportHistory(localSession?.user ? readJson(historyKey(localSession.user.id), []) : [])
@@ -232,7 +234,7 @@ export function AuthProvider({ children }) {
 
   const persistLocalSession = (nextSession) => {
     setSession(nextSession)
-    if (isRealData) return
+    if (isRealData || nextSession?.authSource === 'api') return
     if (typeof window === 'undefined') return
 
     try {
@@ -252,8 +254,8 @@ export function AuthProvider({ children }) {
   }
 
   const login = async (identifier, password) => {
-    if (isRealData) {
-      const response = await authApi.login(identifier, password)
+    const loginWithApi = async () => {
+      const response = await authApi.login(String(identifier ?? '').trim().toLowerCase(), password)
       const nextSession = serverSession(response)
       if (!nextSession.user?.id) throw new Error('Phản hồi tài khoản không hợp lệ.')
       setSession(nextSession)
@@ -261,38 +263,19 @@ export function AuthProvider({ children }) {
       setError(null)
       return nextSession
     }
+    if (isRealData) return loginWithApi()
 
     const account = getDemoAccount(identifier, password)
     const normalizedIdentifier = String(identifier ?? '').trim().toLowerCase()
     const registeredAccounts = readJson(REGISTERED_ACCOUNTS_KEY, {})
-    let registeredAccount = Object.values(registeredAccounts).find(({ email }) => email === normalizedIdentifier)
-
-    // Hỗ trợ tự động tạo/đồng bộ tài khoản cho email của chủ web (lamhuynhhueman.ptht@gmail.com)
-    if (normalizedIdentifier === 'lamhuynhhueman.ptht@gmail.com') {
-      if (!registeredAccount) {
-        const salt = crypto.randomUUID()
-        const sessionForUser = createRegisteredSession({
-          email: normalizedIdentifier,
-          fullName: 'Huỳnh Huệ Mẫn',
-        })
-        const passwordHash = await hashPassword(password || '12345678', salt)
-        registeredAccount = {
-          email: normalizedIdentifier,
-          passwordHash,
-          salt,
-          session: sessionForUser,
-        }
-        window.localStorage.setItem(REGISTERED_ACCOUNTS_KEY, JSON.stringify({
-          ...registeredAccounts,
-          [sessionForUser.user.id]: registeredAccount,
-        }))
-      }
-    }
+    const registeredAccount = Object.values(registeredAccounts).find(({ email }) => email === normalizedIdentifier)
 
     const registeredValid = registeredAccount
-      ? (normalizedIdentifier === 'lamhuynhhueman.ptht@gmail.com' || await hashPassword(password, registeredAccount.salt) === registeredAccount.passwordHash)
+      ? await hashPassword(password, registeredAccount.salt) === registeredAccount.passwordHash
       : false
-    if (!account && !registeredValid) throw new Error('Email hoặc mật khẩu chưa đúng. Nếu bạn chưa có tài khoản, hãy nhấn "Đăng ký ngay" bên trên.')
+    if (!account && !registeredValid) return loginWithApi()
+
+    tokenStorage.clear()
 
     const savedAccounts = readJson(ACCOUNT_SESSIONS_KEY, {})
     const baseSession = account?.session ?? registeredAccount.session
@@ -340,6 +323,7 @@ export function AuthProvider({ children }) {
         session: sessionForUser,
       },
     }))
+    tokenStorage.clear()
     persistLocalSession(sessionForUser)
     setReportHistory([])
     setError(null)
@@ -442,7 +426,7 @@ export function AuthProvider({ children }) {
   }
 
   const logout = async () => {
-    if (isRealData) {
+    if (isRealData || session?.authSource === 'api' || tokenStorage.get()) {
       try {
         await authApi.logout()
       } catch (requestError) {
@@ -450,6 +434,7 @@ export function AuthProvider({ children }) {
       }
     }
     clearUserWorkspaceStorage()
+    window.localStorage.removeItem(SESSION_KEY)
     persistLocalSession(GUEST_SESSION)
     setReportHistory([])
   }
@@ -474,7 +459,7 @@ export function AuthProvider({ children }) {
       isAuthenticated,
       loading,
       error,
-      authMode: isRealData ? 'api' : 'mock',
+      authMode: isRealData || session?.authSource === 'api' ? 'api' : 'mock',
       hasEntitlement,
       hasEntitlementHistory,
       isEntitlementReadOnly,

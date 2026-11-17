@@ -1,0 +1,219 @@
+{
+  "schemaVersion": "1.0",
+  "dataset": "majors",
+  "generatedAt": null,
+  "lookups": {
+    "categories": [
+      {
+        "id": "computer-it",
+        "name": "Máy tính và Công nghệ thông tin",
+        "description": null
+      }
+    ],
+    "interests": [
+      {
+        "id": "coding",
+        "name": "Code và phần mềm"
+      }
+    ],
+    "admissionCombinations": [
+      {
+        "id": "A00",
+        "name": "A00",
+        "subjects": ["Toán", "Vật lý", "Hóa học"]
+      }
+    ]
+  },
+  "majors": [
+    {
+      "id": "MAJOR_ID_CHUAN",
+      "code": "MA_NGANH_CHUAN",
+      "slug": "ten-nganh-khong-dau",
+      "name": "Tên ngành",
+      "englishName": "English major name",
+      "categoryId": "computer-it",
+      "status": "ACTIVE",
+      "summary": "Mô tả 1–2 câu dùng trên thẻ ngành.",
+      "description": "Mô tả đầy đủ nhưng ngắn gọn về ngành.",
+      "iconKey": null,
+      "coverImage": {
+        "url": null,
+        "alt": "Ảnh minh họa ngành",
+        "credit": null,
+        "license": null
+      },
+      "filterRefs": {
+        "interestIds": ["coding"],
+        "riasecCodes": ["I", "R"],
+        "admissionCombinationIds": ["A00"]
+      },
+      "skills": [
+        {
+          "id": "skill-id",
+          "name": "Tên kỹ năng",
+          "description": null,
+          "importance": "CORE"
+        }
+      ],
+      "education": {
+        "trainingDuration": {
+          "minYears": 4,
+          "maxYears": 4.5,
+          "note": null
+        },
+        "degreeNames": ["Cử nhân", "Kỹ sư"],
+        "overview": {
+          "title": "Ngành này là gì?",
+          "description": "Nội dung tổng quan đã được biên tập.",
+          "steps": [
+            {
+              "id": "overview-step-1",
+              "order": 1,
+              "title": "Tên bước hoặc khía cạnh",
+              "description": "Mô tả."
+            }
+          ]
+        },
+        "curriculum": {
+          "title": "Bạn sẽ học gì?",
+          "description": "Mô tả khung kiến thức chung, không thay cho chương trình của từng trường.",
+          "topics": [
+            {
+              "id": "topic-id",
+              "order": 1,
+              "title": "Nhóm kiến thức",
+              "description": "Mô tả.",
+              "tags": ["Từ khóa môn học"]
+            }
+          ]
+        }
+      },
+      "practicalActivities": {
+        "title": "Hoạt động thực tế",
+        "description": null,
+        "items": [
+          {
+            "id": "activity-id",
+            "title": "Tên hoạt động",
+            "description": "Mô tả trải nghiệm thực tế.",
+            "evidenceSuggestion": "Sản phẩm hoặc bằng chứng người học có thể tạo ra."
+          }
+        ]
+      },
+      "selfObservation": {
+        "title": "Tự quan sát",
+        "description": null,
+        "signals": [
+          {
+            "id": "signal-id",
+            "text": "Dấu hiệu để người học tự đối chiếu.",
+            "type": "POSITIVE"
+          }
+        ]
+      },
+      "careerMap": {
+        "title": "Bản đồ nghề nghiệp",
+        "description": null,
+        "items": [
+          {
+            "id": "career-id",
+            "title": "Tên nghề",
+            "description": "Công việc chính.",
+            "level": "ENTRY",
+            "workEnvironments": ["Doanh nghiệp"],
+            "requiredSkills": ["Tên kỹ năng"],
+            "sourceIds": ["source-career-1"]
+          }
+        ]
+      },
+      "challenges": {
+        "title": "Thách thức thực tế",
+        "description": null,
+        "items": [
+          {
+            "id": "challenge-id",
+            "title": "Tên thách thức",
+            "description": "Mô tả trung thực khó khăn của ngành."
+          }
+        ]
+      },
+      "quickSelfCheck": {
+        "version": 1,
+        "estimatedMinutes": 3,
+        "disclaimer": "Chỉ dùng để tự quan sát, không phải kết luận hướng nghiệp.",
+        "questions": [
+          {
+            "id": "question-id",
+            "order": 1,
+            "prompt": "Câu hỏi tự đánh giá",
+            "options": [
+              {
+                "id": "option-1",
+                "label": "Không giống mình",
+                "score": 0
+              },
+              {
+                "id": "option-2",
+                "label": "Khá giống mình",
+                "score": 2
+              }
+            ]
+          }
+        ],
+        "resultBands": [
+          {
+            "minPercent": 0,
+            "maxPercent": 49,
+            "title": "Cần khám phá thêm",
+            "description": "Gợi ý bước tiếp theo."
+          }
+        ]
+      },
+      "relatedMajors": [
+        {
+          "majorId": "RELATED_MAJOR_ID",
+          "relationType": "NEARBY",
+          "difference": "Khác nhau chính ở trọng tâm học tập hoặc hướng nghề nghiệp."
+        }
+      ],
+      "market": {
+        "demandSummary": null,
+        "demandGrowthPercent": null,
+        "periodStart": null,
+        "periodEnd": null,
+        "sourceIds": []
+      },
+      "sources": [
+        {
+          "id": "source-major-1",
+          "sourceType": "OFFICIAL",
+          "title": "Tên tài liệu hoặc trang nguồn",
+          "publisher": "Đơn vị phát hành",
+          "url": "https://example.edu.vn/nguon",
+          "publishedAt": null,
+          "accessedAt": "2026-11-18",
+          "appliesTo": ["identity", "education"]
+        },
+        {
+          "id": "source-editorial-1",
+          "sourceType": "EDITORIAL",
+          "title": "Nội dung do UniView biên soạn",
+          "publisher": "UniView",
+          "url": null,
+          "publishedAt": null,
+          "accessedAt": null,
+          "appliesTo": ["practicalActivities", "selfObservation", "quickSelfCheck"]
+        }
+      ],
+      "verification": {
+        "status": "DRAFT",
+        "verifiedBy": null,
+        "verifiedAt": null,
+        "nextReviewAt": null,
+        "notes": null
+      },
+      "createdAt": null,
+      "updatedAt": null
+    }
+  ]
+}

@@ -1,0 +1,339 @@
+{
+  "schemaVersion": "1.0",
+  "dataset": "universities",
+  "generatedAt": null,
+  "universities": [
+    {
+      "id": "UNIVERSITY_ID",
+      "code": "MA_TRUONG",
+      "slug": "ten-truong-khong-dau",
+      "name": "Tên đầy đủ của trường",
+      "shortName": "TÊN VIẾT TẮT",
+      "englishName": "Official English name",
+      "ownership": "PUBLIC",
+      "universityType": "UNIVERSITY",
+      "parentSystem": {
+        "id": null,
+        "name": null
+      },
+      "establishedYear": null,
+      "status": "ACTIVE",
+      "description": "Mô tả tổng quan đã được biên tập.",
+      "contact": {
+        "officialWebsite": "https://example.edu.vn",
+        "admissionWebsite": null,
+        "email": null,
+        "phone": null,
+        "facebook": null,
+        "youtube": null
+      },
+      "branding": {
+        "logoUrl": null,
+        "coverImageUrl": null,
+        "logoAlt": "Logo trường",
+        "coverImageAlt": "Khuôn viên trường"
+      },
+      "campuses": [
+        {
+          "id": "CAMPUS_ID",
+          "name": "Cơ sở chính",
+          "campusType": "MAIN",
+          "addressLine": "Số nhà, đường, phường/xã",
+          "ward": null,
+          "district": null,
+          "provinceCode": "PROVINCE_CODE",
+          "provinceName": "Tỉnh/Thành phố",
+          "regionCode": "SOUTH",
+          "latitude": null,
+          "longitude": null,
+          "mapUrl": null,
+          "phone": null,
+          "isActive": true
+        }
+      ],
+      "overview": {
+        "summary": "Tóm tắt vị thế và đặc trưng đào tạo.",
+        "highlights": [
+          {
+            "id": "highlight-id",
+            "title": "Điểm nổi bật",
+            "description": "Mô tả có nguồn nếu chứa số liệu.",
+            "sourceIds": []
+          }
+        ],
+        "accreditations": [
+          {
+            "name": "Tên kiểm định",
+            "organization": "Tổ chức kiểm định",
+            "scope": "Trường hoặc chương trình",
+            "validFrom": null,
+            "validTo": null,
+            "sourceIds": []
+          }
+        ],
+        "facilities": [
+          {
+            "id": "facility-id",
+            "name": "Phòng lab, thư viện hoặc cơ sở vật chất",
+            "description": null,
+            "campusId": "CAMPUS_ID",
+            "imageUrls": [],
+            "sourceIds": []
+          }
+        ]
+      },
+      "studentLife": {
+        "summary": null,
+        "dormitories": [
+          {
+            "campusId": "CAMPUS_ID",
+            "name": "Tên ký túc xá",
+            "description": null,
+            "monthlyFeeMinVnd": null,
+            "monthlyFeeMaxVnd": null,
+            "sourceIds": []
+          }
+        ],
+        "clubs": [
+          {
+            "name": "Tên câu lạc bộ",
+            "category": null,
+            "description": null,
+            "officialUrl": null
+          }
+        ],
+        "activities": [
+          {
+            "title": "Hoạt động sinh viên",
+            "description": null,
+            "sourceIds": []
+          }
+        ],
+        "employment": {
+          "employmentRatePercent": null,
+          "measurementPeriod": null,
+          "definition": null,
+          "sourceIds": []
+        }
+      },
+      "media": [
+        {
+          "id": "media-id",
+          "type": "IMAGE",
+          "url": null,
+          "alt": "Mô tả ảnh",
+          "caption": null,
+          "campusId": "CAMPUS_ID",
+          "credit": null,
+          "license": null,
+          "isPrimary": true
+        }
+      ],
+      "sources": [
+        {
+          "id": "source-university-1",
+          "sourceType": "OFFICIAL",
+          "title": "Website chính thức của trường",
+          "publisher": "Tên trường",
+          "url": "https://example.edu.vn",
+          "publishedAt": null,
+          "accessedAt": "2026-11-18",
+          "appliesTo": ["identity", "contact", "campuses", "overview"]
+        }
+      ],
+      "verification": {
+        "status": "DRAFT",
+        "verifiedBy": null,
+        "verifiedAt": null,
+        "nextReviewAt": null,
+        "notes": null
+      },
+      "createdAt": null,
+      "updatedAt": null
+    }
+  ],
+  "programs": [
+    {
+      "id": "PROGRAM_ID",
+      "universityId": "UNIVERSITY_ID",
+      "majorId": "MAJOR_ID_CHUAN",
+      "campusIds": ["CAMPUS_ID"],
+      "programCode": "MA_CHUONG_TRINH_HOAC_MA_NGANH_TAI_TRUONG",
+      "name": "Tên chương trình tại trường",
+      "englishName": null,
+      "programType": "STANDARD",
+      "degreeName": "Cử nhân hoặc Kỹ sư",
+      "trainingDurationYears": 4,
+      "teachingLanguages": ["vi"],
+      "description": null,
+      "accreditations": [],
+      "isActive": true,
+      "sourceIds": ["source-program-1"]
+    }
+  ],
+  "admissionCycles": [
+    {
+      "id": "UNIVERSITY_ID-2027",
+      "universityId": "UNIVERSITY_ID",
+      "admissionYear": 2027,
+      "officialStatus": "ANNOUNCED",
+      "totalQuota": null,
+      "announcementUrl": null,
+      "applicationPortalUrl": null,
+      "notes": null,
+      "methods": [
+        {
+          "id": "UNIVERSITY_ID-2027-THPT",
+          "methodCode": "THPT",
+          "name": "Xét kết quả thi tốt nghiệp THPT",
+          "description": null,
+          "scoreScale": {
+            "min": 0,
+            "max": 30
+          },
+          "eligibilityRules": ["Điều kiện dự tuyển"],
+          "calculationFormula": "Công thức tính điểm chính thức",
+          "priorityRules": null,
+          "minimumApplicationScore": null,
+          "quota": null,
+          "timeline": {
+            "applicationStart": null,
+            "applicationEnd": null,
+            "examDate": null,
+            "resultDate": null,
+            "enrollmentDeadline": null
+          },
+          "sourceIds": ["source-admission-2027"]
+        }
+      ],
+      "sourceIds": ["source-admission-2027"],
+      "verification": {
+        "status": "DRAFT",
+        "verifiedBy": null,
+        "verifiedAt": null,
+        "nextReviewAt": null,
+        "notes": null
+      }
+    }
+  ],
+  "programAdmissionOptions": [
+    {
+      "id": "PROGRAM_ID-2027-THPT",
+      "programId": "PROGRAM_ID",
+      "admissionCycleId": "UNIVERSITY_ID-2027",
+      "admissionMethodId": "UNIVERSITY_ID-2027-THPT",
+      "quota": null,
+      "combinationIds": ["A00", "A01"],
+      "requirements": ["Điều kiện riêng của chương trình nếu có"],
+      "minimumApplicationScore": null,
+      "sourceIds": ["source-admission-2027"]
+    }
+  ],
+  "cutoffScores": [
+    {
+      "id": "PROGRAM_ID-2026-THPT-A00",
+      "programId": "PROGRAM_ID",
+      "admissionYear": 2026,
+      "admissionMethodCode": "THPT",
+      "combinationId": "A00",
+      "score": 25.5,
+      "scoreScaleMax": 30,
+      "scoreStatus": "OFFICIAL",
+      "isApplicationFloor": false,
+      "subjectMultipliers": [],
+      "priorityIncluded": true,
+      "tieBreakCriteria": null,
+      "notes": null,
+      "sourceIds": ["source-cutoff-2026"]
+    }
+  ],
+  "programTuitions": [
+    {
+      "id": "PROGRAM_ID-2026-2027",
+      "programId": "PROGRAM_ID",
+      "academicYear": "2026-2027",
+      "amountMinVnd": 30000000,
+      "amountMaxVnd": 35000000,
+      "billingUnit": "ACADEMIC_YEAR",
+      "creditFeeVnd": null,
+      "estimatedCreditsPerYear": null,
+      "currency": "VND",
+      "increasePolicy": null,
+      "isEstimate": false,
+      "notes": null,
+      "sourceIds": ["source-tuition-2026"]
+    }
+  ],
+  "scholarships": [
+    {
+      "id": "SCHOLARSHIP_ID",
+      "universityId": "UNIVERSITY_ID",
+      "programIds": [],
+      "academicYear": "2026-2027",
+      "name": "Tên học bổng",
+      "description": null,
+      "valueType": "PERCENT_TUITION",
+      "valueMin": 50,
+      "valueMax": 100,
+      "currency": null,
+      "quantity": null,
+      "eligibilityRules": ["Điều kiện nhận học bổng"],
+      "applicationStart": null,
+      "applicationEnd": null,
+      "renewalConditions": null,
+      "sourceIds": ["source-scholarship-2026"]
+    }
+  ],
+  "sources": [
+    {
+      "id": "source-program-1",
+      "sourceType": "OFFICIAL",
+      "title": "Danh mục chương trình đào tạo",
+      "publisher": "Tên trường",
+      "url": "https://example.edu.vn/programs",
+      "publishedAt": null,
+      "accessedAt": "2026-11-18",
+      "appliesTo": ["programs"]
+    },
+    {
+      "id": "source-admission-2027",
+      "sourceType": "OFFICIAL",
+      "title": "Đề án tuyển sinh 2027",
+      "publisher": "Tên trường",
+      "url": "https://example.edu.vn/admission-2027",
+      "publishedAt": null,
+      "accessedAt": "2026-11-18",
+      "appliesTo": ["admissionCycles", "programAdmissionOptions"]
+    },
+    {
+      "id": "source-cutoff-2026",
+      "sourceType": "OFFICIAL",
+      "title": "Thông báo điểm chuẩn 2026",
+      "publisher": "Tên trường",
+      "url": "https://example.edu.vn/cutoff-2026",
+      "publishedAt": null,
+      "accessedAt": "2026-11-18",
+      "appliesTo": ["cutoffScores"]
+    },
+    {
+      "id": "source-tuition-2026",
+      "sourceType": "OFFICIAL",
+      "title": "Thông báo học phí năm học 2026-2027",
+      "publisher": "Tên trường",
+      "url": "https://example.edu.vn/tuition-2026",
+      "publishedAt": null,
+      "accessedAt": "2026-11-18",
+      "appliesTo": ["programTuitions"]
+    },
+    {
+      "id": "source-scholarship-2026",
+      "sourceType": "OFFICIAL",
+      "title": "Chính sách học bổng 2026-2027",
+      "publisher": "Tên trường",
+      "url": "https://example.edu.vn/scholarships-2026",
+      "publishedAt": null,
+      "accessedAt": "2026-11-18",
+      "appliesTo": ["scholarships"]
+    }
+  ]
+}
