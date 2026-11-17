@@ -1,0 +1,30 @@
+{
+  "name": "uniview",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "test": "node --test src/utils/experienceAssessment.test.js src/utils/certificates.test.js src/utils/assessmentPayload.test.js src/utils/clickNavigation.test.js src/domain/accessPolicy.test.js src/data/taskWorkspaces.test.js src/data/careerReport.test.js src/data/user.test.js api/feedback.test.js scripts/verifyMascotAndTools.test.js",
+    "test:smoke": "node scripts/smokeBrowserTest.js",
+    "lint": "oxlint",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@tailwindcss/vite": "^4.3.3",
+    "daisyui": "^5.7.47",
+    "dotenv": "^18.0.5",
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8",
+    "react-router-dom": "^7.18.4",
+    "tailwindcss": "^4.3.3"
+  },
+  "devDependencies": {
+    "@types/react": "^19.2.18",
+    "@types/react-dom": "^19.2.7",
+    "@vitejs/plugin-react": "^6.1.1",
+    "oxlint": "^1.81.0",
+    "vite": "^8.3.0"
+  }
+}

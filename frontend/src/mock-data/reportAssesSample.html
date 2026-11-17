@@ -1,0 +1,1733 @@
+<!DOCTYPE html>
+
+<html lang="vi"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/><meta content="web_dashboard" name="shell-type"/><link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=Epilogue:wght@600;700;800&amp;family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Epilogue:wght@100..900&amp;family=Plus+Jakarta+Sans:wght@100..900&amp;display=swap" rel="stylesheet"/><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}.material-symbols-outlined{font-variation-settings:'FILL' 0,'wght' 400,'GRAD' 0,'opsz' 20;display:inline-block;vertical-align:middle;line-height:1;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config={darkMode:"class",theme:{extend:{"colors":{"secondary-fixed":"#ffdadc","secondary-container":"#fe7488","surface-container":"#e9edff","tertiary-fixed":"#ffdf9f","primary-container":"#1d4ed8","error-container":"#ffdad6","on-secondary-fixed-variant":"#891933","on-background":"#121b2e","on-primary-fixed":"#001551","tertiary":"#594100","primary-fixed":"#dce1ff","surface-container-lowest":"#ffffff","secondary-fixed-dim":"#ffb2b9","on-secondary-container":"#730425","on-secondary-fixed":"#400010","background":"#f9f9ff","surface-container-highest":"#d9e2fc","on-error":"#ffffff","on-primary-container":"#cad3ff","outline-variant":"#c4c5d7","on-secondary":"#ffffff","error":"#ba1a1a","on-tertiary-container":"#ffce63","inverse-on-surface":"#edf0ff","outline":"#747686","on-primary":"#ffffff","on-surface":"#121b2e","tertiary-container":"#765700","primary":"#0037b0","on-primary-fixed-variant":"#0039b5","on-surface-variant":"#434655","tile-amber":"#FFFBEB","secondary":"#a93349","surface":"#f9f9ff","tile-blue":"#EFF6FF","surface-dim":"#d1daf4","primary-fixed-dim":"#b7c4ff","tile-rose":"#FFF1F2","surface-container-low":"#f1f3ff","on-tertiary":"#ffffff","surface-bright":"#f9f9ff","surface-tint":"#2151da","inverse-primary":"#b7c4ff","tertiary-fixed-dim":"#f9bd22","on-tertiary-fixed-variant":"#5c4300","on-tertiary-fixed":"#261a00","surface-container-high":"#e1e8ff","surface-variant":"#d9e2fc","inverse-surface":"#172033","on-error-container":"#93000a"},"borderRadius":{"DEFAULT":"0.25rem","lg":"0.5rem","xl":"0.75rem","full":"9999px"},"spacing":{"gutter-lg":"2rem","margin-md":"3rem","margin":"1.5rem","gutter":"1.5rem","space-xs":"0.25rem","margin-lg":"5rem","space-lg":"1.5rem","space-sm":"0.5rem","space-md":"1rem","space-xl":"2.5rem","gutter-sm":"1rem","space-2xl":"4rem"},"fontFamily":{"headline-lg-mobile":["Epilogue"],"body-md":["Plus Jakarta Sans"],"display-mobile":["Epilogue"],"label-md":["Plus Jakarta Sans"],"headline-lg":["Epilogue"],"headline-sm":["Epilogue"],"display":["Epilogue"],"body-sm":["Plus Jakarta Sans"],"body-lg":["Plus Jakarta Sans"],"headline-md":["Epilogue"],"label-sm":["Plus Jakarta Sans"],"label-lg":["Plus Jakarta Sans"]},"fontSize":{"headline-lg-mobile":["28px",{"lineHeight":"36px","letterSpacing":"-0.015em","fontWeight":"700"}],"body-md":["16px",{"lineHeight":"24px","fontWeight":"400"}],"display-mobile":["38px",{"lineHeight":"46px","letterSpacing":"-0.02em","fontWeight":"800"}],"label-md":["12px",{"lineHeight":"16px","letterSpacing":"0.03em","fontWeight":"600"}],"headline-lg":["40px",{"lineHeight":"48px","letterSpacing":"-0.02em","fontWeight":"700"}],"headline-sm":["22px",{"lineHeight":"30px","letterSpacing":"0em","fontWeight":"600"}],"display":["56px",{"lineHeight":"64px","letterSpacing":"-0.03em","fontWeight":"800"}],"body-sm":["14px",{"lineHeight":"20px","fontWeight":"400"}],"body-lg":["18px",{"lineHeight":"28px","fontWeight":"400"}],"headline-md":["28px",{"lineHeight":"36px","letterSpacing":"-0.01em","fontWeight":"600"}],"label-sm":["11px",{"lineHeight":"14px","letterSpacing":"0.05em","fontWeight":"700"}],"label-lg":["14px",{"lineHeight":"20px","letterSpacing":"0.01em","fontWeight":"600"}]}}}}</script></head><body class="bg-surface font-body-md text-body-md text-on-surface antialiased"><aside class="fixed left-0 top-0 h-full w-72 bg-surface-container-low z-50 flex flex-col justify-between py-6 px-4 shadow-[0_1px_8px_rgba(0,0,0,0.04)]"><div class="flex flex-col gap-6"><div class="flex items-center gap-3 px-3"><div class="w-10 h-10 rounded-xl bg-primary-container flex items-center justify-center text-on-primary shadow-sm"><span class="material-symbols-outlined text-xl">explore</span></div><div class="flex flex-col"><span class="font-headline-sm text-headline-sm text-primary tracking-tight leading-none">UniView</span><span class="font-label-sm text-label-sm text-on-surface-variant">Career Guidance Suite</span></div></div><div class="px-3 py-2.5 rounded-xl bg-surface-container-lowest shadow-sm flex items-center gap-3"><div class="w-2 h-2 rounded-full bg-primary animate-pulse"></div><div class="flex flex-col"><span class="font-label-sm text-label-sm text-on-surface-variant uppercase">Mã hồ sơ học sinh</span><span class="font-label-lg text-label-lg text-on-surface font-semibold">UV-2026-12A1-094</span></div></div><div class="px-3"><span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Phân Vùng Báo Cáo</span></div><nav class="flex flex-col gap-1.5" data-active-classes="bg-primary-container text-on-primary shadow-sm font-semibold"><a aria-current="page" class="flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all group bg-primary-container text-on-primary shadow-sm font-semibold" data-path="overview" href="#"><span class="material-symbols-outlined text-lg transition-transform group-hover:scale-110">space_dashboard</span><span class="font-label-lg text-label-lg">1. Tổng quan báo cáo</span></a><a class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all group" data-path="personality-profile" href="#"><span class="material-symbols-outlined text-lg transition-transform group-hover:scale-110">psychology</span><span class="font-label-lg text-label-lg">2. Chân dung cá nhân</span></a><a class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all group" data-path="academic-performance" href="#"><span class="material-symbols-outlined text-lg transition-transform group-hover:scale-110">query_stats</span><span class="font-label-lg text-label-lg">3. Phân tích học tập</span></a><a class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all group" data-path="top-3-categories" href="#"><span class="material-symbols-outlined text-lg transition-transform group-hover:scale-110">verified</span><span class="font-label-lg text-label-lg">4. Top 3 Nhóm ngành</span></a><a class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all group" data-path="explore-18-majors" href="#"><span class="material-symbols-outlined text-lg transition-transform group-hover:scale-110">menu_book</span><span class="font-label-lg text-label-lg">5. Khám phá 18 Ngành</span></a><a class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all group" data-path="conclusion-action" href="#"><span class="material-symbols-outlined text-lg transition-transform group-hover:scale-110">flag</span><span class="font-label-lg text-label-lg">6. Lời khuyên định hướng</span></a></nav></div><div class="flex flex-col gap-3 px-2 pt-4 bg-surface-container-lowest/60 rounded-2xl p-3"><div class="flex items-center justify-between text-on-surface-variant"><span class="font-label-sm text-label-sm">Độ hoàn thiện hồ sơ</span><span class="font-label-sm text-label-sm font-semibold text-primary">94%</span></div><div class="w-full bg-surface-container-high h-1.5 rounded-full overflow-hidden"><div class="bg-primary h-full w-[94%] rounded-full"></div></div><div class="flex items-center justify-between pt-1"><a class="font-label-sm text-label-sm text-on-surface-variant hover:text-primary transition-colors flex items-center gap-1" data-path="help-center" href="#"><span class="material-symbols-outlined text-sm">help</span>Trợ giúp</a><a class="font-label-sm text-label-sm text-primary hover:underline font-semibold flex items-center gap-1" data-path="mentor-chat" href="#"><span class="material-symbols-outlined text-sm">support_agent</span>Hỏi Mentor</a></div></div></aside><div class="pl-72 flex flex-col min-h-screen"><header class="fixed top-0 left-72 right-0 h-16 bg-surface/85 backdrop-blur-xl z-40 shadow-[0_1px_8px_rgba(0,0,0,0.04)]"><div class="h-16 w-full px-8 flex items-center justify-between"><div class="flex items-center gap-4 min-w-0"><div class="flex items-center gap-2 text-on-surface-variant min-w-0"><span class="font-label-md text-label-md uppercase tracking-wide text-on-surface-variant">Assessment</span><span class="material-symbols-outlined text-sm text-outline-variant">chevron_right</span><span class="font-label-lg text-label-lg text-on-surface truncate font-semibold">Báo cáo định hướng chuyên sâu của tôi</span></div><div class="hidden xl:flex items-center gap-1.5 px-3 py-1 rounded-full bg-surface-container-high text-on-surface"><span class="material-symbols-outlined text-sm text-primary">history</span><span class="font-label-sm text-label-sm font-medium">Cập nhật: 15/10/2026</span></div></div><div class="flex items-center gap-4"><button class="group flex items-center gap-2 px-4 py-2 rounded-full bg-surface-container-lowest hover:bg-surface-container-high text-on-surface shadow-sm transition-all" type="button"><span class="material-symbols-outlined text-lg text-primary transition-transform group-hover:translate-y-0.5">file_download</span><span class="font-label-lg text-label-lg font-semibold">Xuất báo cáo PDF</span></button><div class="flex items-center gap-3 pl-2"><div class="flex flex-col text-right hidden sm:flex"><span class="font-label-lg text-label-lg font-bold text-on-surface leading-tight">Minh Anh</span><span class="font-label-sm text-label-sm text-on-surface-variant">Lớp 12A1</span></div><img alt="Profile" class="w-8 h-8 rounded-full object-cover ring-2 ring-primary-container/20" src="https://lh3.googleusercontent.com/aida/AEtjO1U_WzVXhuWkT11V6rw9QeM6oRNmFLJwUxLg36Gpq_azj3HOA93Ds52ilbZpGRBQ5hf2Ef1znqgBfZzsIRZR34oDEgRbTzuktRDpvq03ZTw1WZ7Ga7p7aWPIH01Rd-DibT5RuFR5W32QyLA4hZFFojSAmAyVj2QG9k2WKY4_eVWXIq7csFd7fBt6RGRmbd7Tlw8qkdP3XJ85xH09KexboftQKEeeuDgoXsL8kCzW0Cr1N7JeiX0VenSOka6CHM2e5em4b1bOHghjnw"/></div></div></div></header><main class="w-full pt-16 bg-surface flex-1"><div class="flex flex-col w-full text-on-surface">
+<div class="w-full max-w-[1440px] mx-auto px-6 lg:px-12 py-8 flex flex-col gap-16">
+<!-- SECTION 1: HERO & PERSONAL OVERVIEW -->
+<section class="relative overflow-hidden rounded-3xl bg-surface-container-lowest shadow-sm p-8 lg:p-12">
+<div class="absolute -top-32 -right-32 w-96 h-96 rounded-full bg-primary-container/10 blur-[100px] pointer-events-none"></div>
+<div class="absolute -bottom-32 -left-32 w-80 h-80 rounded-full bg-secondary-container/15 blur-[90px] pointer-events-none"></div>
+<div class="relative z-10 flex flex-col gap-8">
+<!-- Eyebrow & Status Pills -->
+<div class="flex flex-wrap items-center justify-between gap-4">
+<div class="flex flex-wrap items-center gap-2">
+<span class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-tile-blue text-primary font-label-md text-label-md">
+<span class="w-2 h-2 rounded-full bg-primary"></span>
+              BÁO CÁO ĐỊNH HƯỚNG CÁ NHÂN HÓA 2026 - 2027
+            </span>
+<span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-surface-container-high text-on-surface-variant font-label-md text-label-md">
+<span class="material-symbols-outlined text-sm">verified_user</span>
+              Độ tin cậy dữ liệu: 98%
+            </span>
+</div>
+<span class="font-label-md text-label-md text-on-surface-variant">
+            Khóa tuyển sinh mục tiêu: <span class="font-bold text-on-surface">2027</span>
+</span>
+</div>
+<!-- Greeting & Subtitle -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-end">
+<div class="lg:col-span-8 flex flex-col gap-4">
+<h1 class="font-headline-lg text-headline-lg text-on-surface tracking-tight">
+              Minh Anh, đây là <span class="text-primary underline decoration-primary-container/30 underline-offset-8">bản đồ định hướng tương lai</span> của bạn
+            </h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant max-w-3xl">
+              Khám phá những xu hướng nổi bật của bản thân và các lựa chọn ngành học, trường đại học đáng cân nhắc dựa trên bằng chứng khoa học và nguyện vọng thực tế.
+            </p>
+</div>
+<div class="lg:col-span-4 flex flex-col gap-3 p-4 rounded-2xl bg-surface-container-low">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-xl bg-primary text-on-primary flex items-center justify-center font-headline-sm text-headline-sm">
+                A
+              </div>
+<div class="flex flex-col min-w-0">
+<span class="font-label-lg text-label-lg font-bold text-on-surface truncate">Nguyễn Minh Anh</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant truncate">THPT Chuyên Lê Hồng Phong (TP.HCM)</span>
+</div>
+</div>
+<div class="flex items-center justify-between pt-2 text-on-surface-variant font-label-sm text-label-sm">
+<span>Đánh giá hoàn thành:</span>
+<span class="font-semibold text-on-surface">15/10/2026</span>
+</div>
+</div>
+</div>
+<!-- Personalized Insight Banner -->
+<div class="p-5 rounded-2xl bg-tile-blue flex flex-col sm:flex-row items-start sm:items-center gap-4">
+<div class="p-2.5 rounded-xl bg-primary-container text-on-primary shrink-0 shadow-sm">
+<span class="material-symbols-outlined text-2xl">insights</span>
+</div>
+<p class="font-body-md text-body-md text-on-surface leading-relaxed">
+<strong class="text-primary font-semibold">Tóm tắt phân tích:</strong> Hồ sơ của bạn nổi trội ở sự giao thoa giữa tư duy chiến lược, khả năng phân tích hệ thống và trực giác thẩm mỹ sáng tạo, mở ra tiềm năng lớn trong các nhóm ngành kinh doanh hiện đại và truyền thông công nghệ.
+          </p>
+</div>
+<!-- 3 Summary Bento Cards -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6 pt-2">
+<div class="p-6 rounded-2xl bg-surface-container-low flex flex-col justify-between gap-6 transition-all hover:-translate-y-0.5 hover:shadow-md">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm uppercase tracking-wider text-primary font-bold">Phân hệ 01</span>
+<span class="material-symbols-outlined text-primary text-2xl">domain</span>
+</div>
+<div class="flex flex-col gap-1">
+<span class="font-display text-display text-on-surface tracking-tight leading-none">03</span>
+<span class="font-headline-sm text-headline-sm text-on-surface font-semibold">Nhóm ngành phù hợp hàng đầu</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Phân loại khách quan từ 10 lĩnh vực đào tạo trọng điểm</span>
+</div>
+<div class="h-1.5 w-full bg-surface-container-high rounded-full overflow-hidden">
+<div class="h-full bg-primary rounded-full w-full"></div>
+</div>
+</div>
+<div class="p-6 rounded-2xl bg-surface-container-low flex flex-col justify-between gap-6 transition-all hover:-translate-y-0.5 hover:shadow-md">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm uppercase tracking-wider text-primary font-bold">Phân hệ 02</span>
+<span class="material-symbols-outlined text-primary text-2xl">alt_route</span>
+</div>
+<div class="flex flex-col gap-1">
+<span class="font-display text-display text-on-surface tracking-tight leading-none">18</span>
+<span class="font-headline-sm text-headline-sm text-on-surface font-semibold">Ngành học được đo lường</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Được xếp hạng chi tiết theo chỉ số tương thích tâm trắc</span>
+</div>
+<div class="h-1.5 w-full bg-surface-container-high rounded-full overflow-hidden">
+<div class="h-full bg-primary-container rounded-full w-4/5"></div>
+</div>
+</div>
+<div class="p-6 rounded-2xl bg-surface-container-low flex flex-col justify-between gap-6 transition-all hover:-translate-y-0.5 hover:shadow-md">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm uppercase tracking-wider text-primary font-bold">Phân hệ 03</span>
+<span class="material-symbols-outlined text-primary text-2xl">account_balance</span>
+</div>
+<div class="flex flex-col gap-1">
+<span class="font-display text-display text-on-surface tracking-tight leading-none">54</span>
+<span class="font-headline-sm text-headline-sm text-on-surface font-semibold">Lựa chọn ngành – trường</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Khuyến nghị có cơ sở minh bạch và phân tích điểm chuẩn</span>
+</div>
+<div class="h-1.5 w-full bg-surface-container-high rounded-full overflow-hidden">
+<div class="h-full bg-secondary rounded-full w-3/4"></div>
+</div>
+</div>
+</div>
+<!-- Scientific Commitment Note -->
+<div class="flex items-center gap-2 pt-2 text-on-surface-variant font-label-md text-label-md">
+<span class="material-symbols-outlined text-base text-primary">auto_awesome</span>
+<span>Báo cáo được xây dựng nhằm cung cấp góc nhìn đa chiều, không dán nhãn cố định và không dự đoán tuyệt đối điểm trúng tuyển.</span>
+</div>
+</div>
+</section>
+<!-- SECTION 2: CHÂN DUNG CÁ NHÂN & INSIGHT ĐÁNH GIÁ -->
+<section class="flex flex-col gap-8">
+<div class="flex flex-col gap-2">
+<div class="flex items-center gap-2 text-primary font-label-lg text-label-lg font-bold">
+<span class="material-symbols-outlined text-xl">psychology</span>
+<span>PHÂN HỆ 02</span>
+</div>
+<h2 class="font-headline-lg text-headline-lg text-on-surface tracking-tight">Chân Dung Cá Nhân &amp; Insight Đánh Giá</h2>
+<p class="font-body-md text-body-md text-on-surface-variant">
+          Tổng hợp kết quả từ 6 chiều sở thích nghề nghiệp RIASEC kết hợp cùng phong cách hành vi thực tế và bối cảnh cá nhân.
+        </p>
+</div>
+<!-- Grid 2 Cột Lớn: RIASEC vs Bipolar Sliders -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
+<!-- Left: RIASEC Radar Chart & Insights -->
+<div class="lg:col-span-6 rounded-3xl bg-surface-container-lowest p-8 flex flex-col justify-between gap-6 shadow-sm">
+<div class="flex flex-col gap-2">
+<div class="flex items-center justify-between">
+<span class="font-headline-sm text-headline-sm text-on-surface font-semibold">Mô hình RIASEC (Holland Code)</span>
+<span class="px-3 py-1 rounded-full bg-tile-blue text-primary font-label-md text-label-md font-bold">Mã cốt lõi: E - I - A</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant">
+              Tổ hợp <strong class="text-on-surface">Enterprising (88%) · Investigative (86%) · Artistic (82%)</strong> định hình bạn là một "Nhà kiến tạo chiến lược sáng tạo".
+            </p>
+</div>
+<!-- Radar Chart SVG Visual -->
+<div class="relative w-full aspect-square max-w-[380px] mx-auto flex items-center justify-center py-2">
+<svg class="w-full h-full overflow-visible" viewbox="0 0 400 400">
+<!-- Concentric Polygons (Web) -->
+<polygon class="stroke-surface-container-high" fill="none" points="200,40 338,120 338,280 200,360 62,280 62,120" stroke-width="1.5"></polygon>
+<polygon class="stroke-surface-container-high" fill="none" points="200,80 304,140 304,260 200,320 96,260 96,140" stroke-width="1.5"></polygon>
+<polygon class="stroke-surface-container-high" fill="none" points="200,120 269,160 269,240 200,280 131,240 131,160" stroke-width="1"></polygon>
+<polygon class="stroke-surface-container-high" fill="none" points="200,160 235,180 235,220 200,240 165,220 165,180" stroke-width="1"></polygon>
+<!-- Axes lines -->
+<line class="stroke-surface-container-high" stroke-width="1" x1="200" x2="200" y1="200" y2="40"></line>
+<line class="stroke-surface-container-high" stroke-width="1" x1="200" x2="338" y1="200" y2="120"></line>
+<line class="stroke-surface-container-high" stroke-width="1" x1="200" x2="338" y1="200" y2="280"></line>
+<line class="stroke-surface-container-high" stroke-width="1" x1="200" x2="200" y1="200" y2="360"></line>
+<line class="stroke-surface-container-high" stroke-width="1" x1="200" x2="62" y1="200" y2="280"></line>
+<line class="stroke-surface-container-high" stroke-width="1" x1="200" x2="62" y1="200" y2="120"></line>
+<!-- Student RIASEC Data Polygon:
+                   Values: R=48%, I=86%, A=82%, S=65%, E=88%, C=54%
+                   Center: (200, 200), Max Radius: 160
+                   Angles:
+                   R (top 270° -> -90°): 200, 200 - 160*0.48 = (200, 123)
+                   I (30°): 200 + 160*0.86*cos(30°), 200 + 160*0.86*sin(30°) = (319, 269)
+                   A (90°): 200 + 160*0.82*cos(90°), 200 + 160*0.82*sin(90°) = (200, 331) - wait let's use standard hexagon axes:
+                   0: R (0, -1) -> (200, 200 - 160*0.48) = (200, 123)
+                   1: I (cos 30, sin -30) -> 200 + 160*0.86*0.866, 200 - 160*0.86*0.5 = (319, 131)
+                   2: A (cos 30, sin 30) -> 200 + 160*0.82*0.866, 200 + 160*0.82*0.5 = (314, 266)
+                   3: S (0, 1) -> 200, 200 + 160*0.65 = (200, 304)
+                   4: E (-cos 30, sin 30) -> 200 - 160*0.88*0.866, 200 + 160*0.88*0.5 = (78, 270)
+                   5: C (-cos 30, -sin 30) -> 200 - 160*0.54*0.866, 200 - 160*0.54*0.5 = (125, 157)
+              -->
+<polygon class="stroke-primary" fill="#1d4ed8" fill-opacity="0.22" points="200,123 319,131 314,266 200,304 78,270 125,157" stroke-width="2.5"></polygon>
+<!-- Vertex Dots -->
+<circle class="fill-primary" cx="200" cy="123" r="4.5"></circle>
+<circle class="fill-primary" cx="319" cy="131" r="5.5"></circle>
+<circle class="fill-primary" cx="314" cy="266" r="5.5"></circle>
+<circle class="fill-primary" cx="200" cy="304" r="4.5"></circle>
+<circle class="fill-primary" cx="78" cy="270" r="6"></circle>
+<circle class="fill-primary" cx="125" cy="157" r="4.5"></circle>
+<!-- Axis Labels -->
+<text class="fill-on-surface font-label-md text-label-md font-bold" text-anchor="middle" x="200" y="24">R - Thực tế (48%)</text>
+<text class="fill-primary font-label-md text-label-md font-bold" text-anchor="start" x="350" y="115">I - Nghiên cứu (86%) ★</text>
+<text class="fill-primary font-label-md text-label-md font-bold" text-anchor="start" x="350" y="290">A - Nghệ thuật (82%) ★</text>
+<text class="fill-on-surface font-label-md text-label-md font-bold" text-anchor="middle" x="200" y="388">S - Xã hội (65%)</text>
+<text class="fill-primary font-label-md text-label-md font-bold" text-anchor="end" x="50" y="290">E - Quản lý (88%) ★</text>
+<text class="fill-on-surface font-label-md text-label-md font-bold" text-anchor="end" x="50" y="115">C - Nghiệp vụ (54%)</text>
+</svg>
+</div>
+<!-- Explanatory Highlights -->
+<div class="grid grid-cols-3 gap-3 pt-2">
+<div class="p-3.5 rounded-xl bg-tile-blue flex flex-col gap-1">
+<span class="font-label-sm text-label-sm font-bold text-primary">E · Quản lý (88%)</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Khả năng thuyết phục, dẫn dắt đội ngũ và khởi tạo ý tưởng kinh doanh.</span>
+</div>
+<div class="p-3.5 rounded-xl bg-tile-blue flex flex-col gap-1">
+<span class="font-label-sm text-label-sm font-bold text-primary">I · Nghiên cứu (86%)</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Sở thích đào sâu dữ liệu, tư duy logic phản biện và giải mã vấn đề phức hợp.</span>
+</div>
+<div class="p-3.5 rounded-xl bg-tile-rose flex flex-col gap-1">
+<span class="font-label-sm text-label-sm font-bold text-secondary">A · Nghệ thuật (82%)</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Trực giác thẩm mỹ, tư duy tự do, tìm kiếm giải pháp truyền thông độc đáo.</span>
+</div>
+</div>
+</div>
+<!-- Right: Bipolar Preference Sliders & Behavioral Style -->
+<div class="lg:col-span-6 rounded-3xl bg-surface-container-lowest p-8 flex flex-col justify-between gap-6 shadow-sm">
+<div class="flex flex-col gap-2">
+<div class="flex items-center justify-between">
+<span class="font-headline-sm text-headline-sm text-on-surface font-semibold">Xu Hướng Tâm Lý &amp; Phong Cách Làm Việc</span>
+<span class="px-3 py-1 rounded-full bg-surface-container-high text-on-surface-variant font-label-sm text-label-sm">Đo lường linh hoạt</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant">
+              Khảo sát các phổ hành vi để làm rõ môi trường học tập và làm việc giúp bạn phát huy tối đa tiềm năng cá nhân.
+            </p>
+</div>
+<!-- 4 Bipolar Preference Sliders -->
+<div class="flex flex-col gap-6 py-2">
+<!-- Slider 1 -->
+<div class="flex flex-col gap-2">
+<div class="flex justify-between items-center text-on-surface font-label-md text-label-md">
+<span class="font-bold text-primary">Hướng ngoại linh hoạt (68%)</span>
+<span class="text-on-surface-variant">Hướng nội tập trung (32%)</span>
+</div>
+<div class="relative w-full h-3 rounded-full bg-surface-container-high overflow-hidden">
+<div class="absolute left-0 top-0 h-full bg-primary rounded-full" style="width: 68%;"></div>
+</div>
+</div>
+<!-- Slider 2 -->
+<div class="flex flex-col gap-2">
+<div class="flex justify-between items-center text-on-surface font-label-md text-label-md">
+<span class="font-bold text-primary">Tư duy trực giác &amp; Ý tưởng (74%)</span>
+<span class="text-on-surface-variant">Chi tiết thực tế &amp; Cụ thể (26%)</span>
+</div>
+<div class="relative w-full h-3 rounded-full bg-surface-container-high overflow-hidden">
+<div class="absolute left-0 top-0 h-full bg-primary-container rounded-full" style="width: 74%;"></div>
+</div>
+</div>
+<!-- Slider 3 -->
+<div class="flex flex-col gap-2">
+<div class="flex justify-between items-center text-on-surface font-label-md text-label-md">
+<span class="font-bold text-primary">Ra quyết định logic &amp; Mục tiêu (62%)</span>
+<span class="text-on-surface-variant">Thấu cảm &amp; Giá trị con người (38%)</span>
+</div>
+<div class="relative w-full h-3 rounded-full bg-surface-container-high overflow-hidden">
+<div class="absolute left-0 top-0 h-full bg-surface-tint rounded-full" style="width: 62%;"></div>
+</div>
+</div>
+<!-- Slider 4 -->
+<div class="flex flex-col gap-2">
+<div class="flex justify-between items-center text-on-surface font-label-md text-label-md">
+<span class="font-bold text-secondary">Linh hoạt thích ứng (70%)</span>
+<span class="text-on-surface-variant">Kế hoạch quy chuẩn (30%)</span>
+</div>
+<div class="relative w-full h-3 rounded-full bg-surface-container-high overflow-hidden">
+<div class="absolute left-0 top-0 h-full bg-secondary rounded-full" style="width: 70%;"></div>
+</div>
+</div>
+</div>
+<!-- Insight summary container -->
+<div class="p-5 rounded-2xl bg-surface-container-low flex items-start gap-4">
+<span class="material-symbols-outlined text-primary text-2xl shrink-0 mt-0.5">tips_and_updates</span>
+<div class="flex flex-col gap-1">
+<span class="font-label-lg text-label-lg font-bold text-on-surface">Môi trường làm việc tối ưu</span>
+<p class="font-body-sm text-body-sm text-on-surface-variant">
+                Bạn phù hợp nhất với các dự án có tính đa nhiệm cao, cần giải quyết các bài toán hóc búa mang tính chiến lược trong không gian mở, ít rào cản hành chính và cho phép thử nghiệm nhanh các giải pháp sáng tạo.
+              </p>
+</div>
+</div>
+</div>
+</div>
+<!-- Real-Life Activities & Evidence Cards -->
+<div class="flex flex-col gap-4">
+<div class="flex items-center justify-between">
+<span class="font-headline-sm text-headline-sm text-on-surface font-semibold">Hoạt Động Thực Tế &amp; Bằng Chứng Trải Nghiệm</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Dữ liệu tự khai báo có kiểm chứng qua hồ sơ học tập</span>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+<!-- Card 1 -->
+<div class="p-6 rounded-2xl bg-surface-container-lowest shadow-sm flex flex-col justify-between gap-4">
+<div class="flex items-start justify-between">
+<div class="w-12 h-12 rounded-xl bg-tile-blue flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-2xl">campaign</span>
+</div>
+<span class="px-2.5 py-1 rounded-full bg-surface-container-high text-on-surface-variant font-label-sm text-label-sm">2024 - Hiện tại</span>
+</div>
+<div class="flex flex-col gap-2">
+<h3 class="font-headline-sm text-headline-sm text-on-surface font-semibold">Trưởng ban Truyền thông CLB Báo chí - Phát thanh</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant">
+                Lên ý tưởng chiến dịch nội dung, điều phối đội ngũ 15 thành viên, tối ưu tương tác fanpage và xây dựng chuỗi phóng sự trường học.
+              </p>
+</div>
+<div class="pt-2 text-primary font-label-md text-label-md font-semibold flex items-center gap-1">
+<span class="material-symbols-outlined text-base">check_circle</span>
+              Thực chứng: Tư duy visual &amp; Khả năng điều phối
+            </div>
+</div>
+<!-- Card 2 -->
+<div class="p-6 rounded-2xl bg-surface-container-lowest shadow-sm flex flex-col justify-between gap-4">
+<div class="flex items-start justify-between">
+<div class="w-12 h-12 rounded-xl bg-tile-amber flex items-center justify-center text-tertiary">
+<span class="material-symbols-outlined text-2xl">eco</span>
+</div>
+<span class="px-2.5 py-1 rounded-full bg-surface-container-high text-on-surface-variant font-label-sm text-label-sm">Học kỳ II - 2025</span>
+</div>
+<div class="flex flex-col gap-2">
+<h3 class="font-headline-sm text-headline-sm text-on-surface font-semibold">Dự án Nghiên Cứu Thị Trường Tiêu Dùng Xanh</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant">
+                Khảo sát mẫu 450 học sinh TP.HCM về hành vi mua sắm bao bì tái chế; tổng hợp báo cáo phân tích định lượng bằng biểu đồ trực quan.
+              </p>
+</div>
+<div class="pt-2 text-tertiary font-label-md text-label-md font-semibold flex items-center gap-1">
+<span class="material-symbols-outlined text-base">check_circle</span>
+              Thực chứng: Phân tích số liệu &amp; Khảo sát insight
+            </div>
+</div>
+<!-- Card 3 -->
+<div class="p-6 rounded-2xl bg-surface-container-lowest shadow-sm flex flex-col justify-between gap-4">
+<div class="flex items-start justify-between">
+<div class="w-12 h-12 rounded-xl bg-tile-rose flex items-center justify-center text-secondary">
+<span class="material-symbols-outlined text-2xl">draw</span>
+</div>
+<span class="px-2.5 py-1 rounded-full bg-surface-container-high text-on-surface-variant font-label-sm text-label-sm">Chứng chỉ 2026</span>
+</div>
+<div class="flex flex-col gap-2">
+<h3 class="font-headline-sm text-headline-sm text-on-surface font-semibold">Tự học Thiết kế Giao diện Figma &amp; UI Cơ bản</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant">
+                Hoàn thành 3 bộ prototype ứng dụng di động cho dự án học tập, nắm vững nguyên lý phân cấp thị giác và hệ thống màu sắc số.
+              </p>
+</div>
+<div class="pt-2 text-secondary font-label-md text-label-md font-semibold flex items-center gap-1">
+<span class="material-symbols-outlined text-base">check_circle</span>
+              Thực chứng: Thẩm mỹ số &amp; Tự học công nghệ
+            </div>
+</div>
+</div>
+</div>
+<!-- Hồ sơ điều kiện thực tế (Constraints) -->
+<div class="p-6 rounded-2xl bg-surface-container-high flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+<div class="flex items-center gap-3">
+<div class="p-3 rounded-xl bg-surface-container-lowest text-primary shadow-sm">
+<span class="material-symbols-outlined text-2xl">tune</span>
+</div>
+<div class="flex flex-col">
+<span class="font-label-lg text-label-lg font-bold text-on-surface">Bộ lọc bối cảnh &amp; Nguyện vọng gia đình</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Dữ liệu đầu vào để khớp nối trường đại học phù hợp</span>
+</div>
+</div>
+<div class="flex flex-wrap items-center gap-4">
+<div class="flex items-center gap-2 px-4 py-2 rounded-xl bg-surface-container-lowest shadow-sm">
+<span class="material-symbols-outlined text-sm text-primary">location_on</span>
+<span class="font-label-md text-label-md text-on-surface">Khu vực: <strong>TP. Hồ Chí Minh &amp; lân cận</strong></span>
+</div>
+<div class="flex items-center gap-2 px-4 py-2 rounded-xl bg-surface-container-lowest shadow-sm">
+<span class="material-symbols-outlined text-sm text-primary">payments</span>
+<span class="font-label-md text-label-md text-on-surface">Học phí: <strong>40 – 80 triệu VNĐ/năm</strong></span>
+</div>
+<div class="flex items-center gap-2 px-4 py-2 rounded-xl bg-surface-container-lowest shadow-sm">
+<span class="material-symbols-outlined text-sm text-primary">public</span>
+<span class="font-label-md text-label-md text-on-surface">Môi trường: <strong>Quốc tế hóa / Năng động</strong></span>
+</div>
+</div>
+</div>
+</section>
+<!-- SECTION 3: PHÂN TÍCH HỌC TẬP & ĐIỂM SỐ TUYỂN SINH -->
+<section class="flex flex-col gap-8">
+<div class="flex flex-col gap-2">
+<div class="flex items-center gap-2 text-primary font-label-lg text-label-lg font-bold">
+<span class="material-symbols-outlined text-xl">query_stats</span>
+<span>PHÂN HỆ 03</span>
+</div>
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+<div>
+<h2 class="font-headline-lg text-headline-lg text-on-surface tracking-tight">Phân Tích Học Tập &amp; Điểm Tuyển Sinh</h2>
+<p class="font-body-md text-body-md text-on-surface-variant">
+              Đối chiếu năng lực học tập thực tế với dữ liệu điểm chuẩn tham chiếu các kỳ tuyển sinh gần nhất.
+            </p>
+</div>
+<!-- Switch Simulator (Tab A vs B) -->
+<div class="inline-flex p-1 rounded-full bg-surface-container-high self-start sm:self-auto" id="academic-state-switch">
+<button class="px-4 py-2 rounded-full font-label-md text-label-md font-semibold transition-all bg-primary-container text-on-primary shadow-sm" id="btn-state-b" onclick="switchAcademicMode('B')" type="button">
+              Đã có điểm thực tế
+            </button>
+<button class="px-4 py-2 rounded-full font-label-md text-label-md font-semibold transition-all text-on-surface-variant hover:text-on-surface" id="btn-state-a" onclick="switchAcademicMode('A')" type="button">
+              Chưa cung cấp điểm thi
+            </button>
+</div>
+</div>
+</div>
+<!-- State A: Banner thông báo khi chưa có điểm (Ẩn mặc định) -->
+<div class="hidden p-8 rounded-3xl bg-tile-amber flex flex-col md:flex-row items-center gap-6 shadow-sm" id="panel-state-a">
+<div class="w-16 h-16 rounded-2xl bg-tertiary-fixed text-tertiary flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-3xl">pending_actions</span>
+</div>
+<div class="flex flex-col gap-2">
+<span class="font-headline-sm text-headline-sm text-tertiary font-bold">Bạn chưa cung cấp điểm thi chính thức?</span>
+<p class="font-body-md text-body-md text-on-surface">
+            Đừng lo lắng! Toàn bộ danh sách gợi ý ngành học và chiến lược định hướng vẫn được hệ thống UniView xác lập chuẩn xác dựa trên hồ sơ sở thích nghề nghiệp RIASEC, xu hướng năng lực hành vi và các điều kiện cá nhân thực tế của bạn.
+          </p>
+<div class="pt-2">
+<button class="px-5 py-2.5 rounded-full bg-primary-container text-on-primary font-label-lg text-label-lg font-semibold inline-flex items-center gap-2 shadow-sm" onclick="switchAcademicMode('B')" type="button">
+<span class="material-symbols-outlined text-lg">add_circle</span>
+              Cập nhật điểm thi dự kiến để đối chiếu trường
+            </button>
+</div>
+</div>
+</div>
+<!-- State B: MẶC ĐỊNH - HIỂN THỊ CHI TIẾT ĐIỂM SỐ & SO SÁNH -->
+<div class="flex flex-col gap-6" id="panel-state-b">
+<!-- Score Overview Cards -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+<div class="p-6 rounded-2xl bg-surface-container-lowest shadow-sm flex flex-col justify-between gap-4">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm uppercase font-bold text-primary">Kỳ thi ĐGNL ĐHQG-HCM</span>
+<span class="px-2.5 py-0.5 rounded-full bg-tile-blue text-primary font-label-sm text-label-sm font-bold">Top 6% toàn quốc</span>
+</div>
+<div class="flex items-baseline gap-2">
+<span class="font-display text-display text-on-surface font-extrabold leading-none">865</span>
+<span class="font-body-lg text-body-lg text-on-surface-variant font-medium">/ 1200 điểm</span>
+</div>
+<div class="p-3 rounded-xl bg-surface-container-low flex flex-col gap-1 text-on-surface-variant font-body-sm text-body-sm">
+<span>Biên độ điểm chuẩn ngành mục tiêu:</span>
+<strong class="text-on-surface">810 – 870 điểm</strong>
+</div>
+</div>
+<div class="p-6 rounded-2xl bg-surface-container-lowest shadow-sm flex flex-col justify-between gap-4">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm uppercase font-bold text-on-surface-variant">Tổ hợp THPT A01 (Toán, Lý, Anh)</span>
+<span class="px-2.5 py-0.5 rounded-full bg-surface-container-high text-on-surface-variant font-label-sm text-label-sm">Dự kiến thực tế</span>
+</div>
+<div class="flex items-baseline gap-2">
+<span class="font-display text-display text-on-surface font-extrabold leading-none">26.25</span>
+<span class="font-body-lg text-body-lg text-on-surface-variant font-medium">/ 30 điểm</span>
+</div>
+<div class="p-3 rounded-xl bg-surface-container-low flex flex-col gap-1 text-on-surface-variant font-body-sm text-body-sm">
+<span>Độ chênh với ngưỡng chuẩn UEH 2025:</span>
+<strong class="text-primary">+0.15 điểm (An toàn)</strong>
+</div>
+</div>
+<div class="p-6 rounded-2xl bg-surface-container-lowest shadow-sm flex flex-col justify-between gap-4">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm uppercase font-bold text-on-surface-variant">Tổ hợp THPT D01 (Toán, Văn, Anh)</span>
+<span class="px-2.5 py-0.5 rounded-full bg-surface-container-high text-on-surface-variant font-label-sm text-label-sm">Dự kiến thực tế</span>
+</div>
+<div class="flex items-baseline gap-2">
+<span class="font-display text-display text-on-surface font-extrabold leading-none">26.00</span>
+<span class="font-body-lg text-body-lg text-on-surface-variant font-medium">/ 30 điểm</span>
+</div>
+<div class="p-3 rounded-xl bg-surface-container-low flex flex-col gap-1 text-on-surface-variant font-body-sm text-body-sm">
+<span>Điểm môn tiếng Anh nổi trội:</span>
+<strong class="text-on-surface">9.20 điểm (Hỗ trợ xét tuyển)</strong>
+</div>
+</div>
+</div>
+<!-- Comparative Visual Chart Card -->
+<div class="p-8 rounded-3xl bg-surface-container-lowest shadow-sm flex flex-col gap-6">
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+<div class="flex flex-col gap-1">
+<h3 class="font-headline-sm text-headline-sm text-on-surface font-bold">Biểu Đồ Đối Chiếu Điểm ĐGNL Với Điểm Chuẩn Tham Chiếu 2025</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant">So sánh điểm của Minh Anh (865) với các mốc điểm chuẩn của 4 trường trọng điểm</p>
+</div>
+<div class="flex items-center gap-4 text-label-sm font-label-sm">
+<div class="flex items-center gap-2">
+<span class="w-3 h-3 rounded-full bg-primary"></span>
+<span>Điểm của Minh Anh (865)</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="w-3 h-3 rounded-full bg-surface-container-high"></span>
+<span>Điểm chuẩn tham chiếu</span>
+</div>
+</div>
+</div>
+<!-- Bar Comparison Graph -->
+<div class="flex flex-col gap-5 pt-2">
+<!-- School 1: UEH -->
+<div class="flex flex-col gap-2">
+<div class="flex justify-between items-center text-label-md font-label-md">
+<span class="font-bold text-on-surface">Đại học Kinh tế TP.HCM (UEH) — Digital Marketing</span>
+<span class="font-semibold text-primary">Điểm của bạn: 865 | Chuẩn 2025: 835 (+30)</span>
+</div>
+<div class="relative w-full h-7 rounded-xl bg-surface-container-high overflow-hidden">
+<!-- Reference Bar -->
+<div class="absolute left-0 top-0 h-full bg-outline-variant/50 rounded-xl" style="width: 69.5%;"></div>
+<!-- Student Bar -->
+<div class="absolute left-0 top-0 h-full bg-primary rounded-xl flex items-center justify-end pr-3 text-on-primary font-label-sm text-label-sm font-bold" style="width: 72%;">
+                  865
+                </div>
+</div>
+</div>
+<!-- School 2: HCMIU -->
+<div class="flex flex-col gap-2">
+<div class="flex justify-between items-center text-label-md font-label-md">
+<span class="font-bold text-on-surface">Đại học Quốc tế (HCMIU) — Marketing &amp; Quản trị</span>
+<span class="font-semibold text-primary">Điểm của bạn: 865 | Chuẩn 2025: 810 (+55)</span>
+</div>
+<div class="relative w-full h-7 rounded-xl bg-surface-container-high overflow-hidden">
+<div class="absolute left-0 top-0 h-full bg-outline-variant/50 rounded-xl" style="width: 67.5%;"></div>
+<div class="absolute left-0 top-0 h-full bg-primary rounded-xl flex items-center justify-end pr-3 text-on-primary font-label-sm text-label-sm font-bold" style="width: 72%;">
+                  865
+                </div>
+</div>
+</div>
+<!-- School 3: UEL -->
+<div class="flex flex-col gap-2">
+<div class="flex justify-between items-center text-label-md font-label-md">
+<span class="font-bold text-on-surface">Trường ĐH Kinh tế – Luật (UEL) — Thương mại điện tử</span>
+<span class="font-semibold text-primary">Điểm của bạn: 865 | Chuẩn 2025: 855 (+10)</span>
+</div>
+<div class="relative w-full h-7 rounded-xl bg-surface-container-high overflow-hidden">
+<div class="absolute left-0 top-0 h-full bg-outline-variant/50 rounded-xl" style="width: 71.2%;"></div>
+<div class="absolute left-0 top-0 h-full bg-primary rounded-xl flex items-center justify-end pr-3 text-on-primary font-label-sm text-label-sm font-bold" style="width: 72%;">
+                  865
+                </div>
+</div>
+</div>
+<!-- School 4: USSH -->
+<div class="flex flex-col gap-2">
+<div class="flex justify-between items-center text-label-md font-label-md">
+<span class="font-bold text-on-surface">ĐH KHXH&amp;NV TP.HCM (USSH) — Báo chí &amp; Truyền thông</span>
+<span class="font-semibold text-primary">Điểm của bạn: 865 | Chuẩn 2025: 825 (+40)</span>
+</div>
+<div class="relative w-full h-7 rounded-xl bg-surface-container-high overflow-hidden">
+<div class="absolute left-0 top-0 h-full bg-outline-variant/50 rounded-xl" style="width: 68.7%;"></div>
+<div class="absolute left-0 top-0 h-full bg-primary rounded-xl flex items-center justify-end pr-3 text-on-primary font-label-sm text-label-sm font-bold" style="width: 72%;">
+                  865
+                </div>
+</div>
+</div>
+</div>
+<!-- Academic Disclaimer -->
+<div class="p-4 rounded-xl bg-surface-container-low flex items-start gap-3">
+<span class="material-symbols-outlined text-outline text-xl shrink-0 mt-0.5">info</span>
+<p class="font-body-sm text-body-sm text-on-surface-variant">
+<strong>Lưu ý khoa học:</strong> Điểm chuẩn các năm trước được trích dẫn làm tham chiếu dữ liệu lịch sử từ cổng tuyển sinh chính thức của trường và Bộ GD&amp;ĐT, không bảo đảm ngưỡng trúng tuyển cho kỳ thi sắp tới do chỉ tiêu và độ khó đề thi có thể thay đổi.
+            </p>
+</div>
+</div>
+</div>
+</section>
+<!-- SECTION 4: TOP 3 NHÓM NGÀNH PHÙ HỢP NHẤT -->
+<section class="flex flex-col gap-8">
+<div class="flex flex-col gap-2">
+<div class="flex items-center gap-2 text-primary font-label-lg text-label-lg font-bold">
+<span class="material-symbols-outlined text-xl">verified</span>
+<span>PHÂN HỆ 04</span>
+</div>
+<h2 class="font-headline-lg text-headline-lg text-on-surface tracking-tight">Top 3 Nhóm Ngành Phù Hợp Hàng Đầu</h2>
+<p class="font-body-md text-body-md text-on-surface-variant">
+          Được phân loại và đánh giá tương thích thông qua thuật toán đối chiếu đa biến (Sở thích RIASEC, Năng lực tư duy &amp; Xu hướng hoạt động).
+        </p>
+</div>
+<!-- 3 Featured Major Category Cards -->
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+<!-- TOP 1 CARD -->
+<div class="relative rounded-3xl bg-surface-container-lowest p-8 flex flex-col justify-between gap-8 shadow-md transition-all hover:-translate-y-1">
+<div class="flex flex-col gap-6">
+<div class="flex items-center justify-between">
+<span class="px-3 py-1.5 rounded-full bg-tile-blue text-primary font-label-md text-label-md font-bold uppercase tracking-wider">
+                Hạng 1 · Khuyến nghị cao nhất
+              </span>
+<div class="flex items-baseline gap-1">
+<span class="font-display text-display text-primary font-extrabold leading-none">94</span>
+<span class="font-label-lg text-label-lg text-primary font-bold">%</span>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<div class="w-14 h-14 rounded-2xl bg-primary text-on-primary flex items-center justify-center shrink-0 shadow-sm">
+<span class="material-symbols-outlined text-3xl">corporate_fare</span>
+</div>
+<div class="flex flex-col">
+<h3 class="font-headline-md text-headline-md text-on-surface font-bold leading-tight">Kinh Doanh &amp; Quản Trị</h3>
+<span class="font-label-sm text-label-sm text-on-surface-variant">6 ngành học chuyên sâu đo lường</span>
+</div>
+</div>
+<div class="flex flex-col gap-3">
+<span class="font-label-md text-label-md font-bold text-on-surface uppercase tracking-wider">Vì sao phù hợp?</span>
+<p class="font-body-sm text-body-sm text-on-surface-variant leading-relaxed">
+                Khớp nối hoàn hảo với chiều E (88%) và I (86%). Cho phép bạn vận dụng tư duy logic phân tích thị trường kết hợp năng lực lãnh đạo và khởi xướng chiến lược đổi mới.
+              </p>
+</div>
+<div class="p-4 rounded-xl bg-surface-container-low flex flex-col gap-1.5">
+<span class="font-label-sm text-label-sm font-bold text-on-surface">Bằng chứng hỗ trợ:</span>
+<p class="font-body-sm text-body-sm text-on-surface-variant">
+                Kinh nghiệm điều phối dự án truyền thông và dự án nghiên cứu insight người tiêu dùng xanh tại trường cấp 3.
+              </p>
+</div>
+</div>
+<button class="w-full py-3 rounded-full bg-primary-container text-on-primary font-label-lg text-label-lg font-semibold flex items-center justify-center gap-2 transition-all hover:bg-primary shadow-sm" onclick="scrollToAndSelectTab('tab-btn-business')" type="button">
+<span>Khám phá 6 ngành học này</span>
+<span class="material-symbols-outlined text-lg">arrow_downward</span>
+</button>
+</div>
+<!-- TOP 2 CARD -->
+<div class="relative rounded-3xl bg-surface-container-lowest p-8 flex flex-col justify-between gap-8 shadow-sm transition-all hover:-translate-y-1">
+<div class="flex flex-col gap-6">
+<div class="flex items-center justify-between">
+<span class="px-3 py-1.5 rounded-full bg-tile-rose text-secondary font-label-md text-label-md font-bold uppercase tracking-wider">
+                Hạng 2 · Tiềm năng phát triển
+              </span>
+<div class="flex items-baseline gap-1">
+<span class="font-display text-display text-secondary font-extrabold leading-none">89</span>
+<span class="font-label-lg text-label-lg text-secondary font-bold">%</span>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<div class="w-14 h-14 rounded-2xl bg-secondary text-on-secondary flex items-center justify-center shrink-0 shadow-sm">
+<span class="material-symbols-outlined text-3xl">cast_for_education</span>
+</div>
+<div class="flex flex-col">
+<h3 class="font-headline-md text-headline-md text-on-surface font-bold leading-tight">Báo Chí &amp; Truyền Thông</h3>
+<span class="font-label-sm text-label-sm text-on-surface-variant">6 ngành học chuyên sâu đo lường</span>
+</div>
+</div>
+<div class="flex flex-col gap-3">
+<span class="font-label-md text-label-md font-bold text-on-surface uppercase tracking-wider">Vì sao phù hợp?</span>
+<p class="font-body-sm text-body-sm text-on-surface-variant leading-relaxed">
+                Phát huy chiều A (82%) kết hợp khả năng giao tiếp biểu đạt cao (E). Bạn rất nhạy bén với luồng thông tin xã hội và thích sáng tạo cách thức kể chuyện trên nền tảng số.
+              </p>
+</div>
+<div class="p-4 rounded-xl bg-surface-container-low flex flex-col gap-1.5">
+<span class="font-label-sm text-label-sm font-bold text-on-surface">Bằng chứng hỗ trợ:</span>
+<p class="font-body-sm text-body-sm text-on-surface-variant">
+                Vị trí Trưởng ban truyền thông CLB Báo chí và các bài viết tin tức nhận tương tác cao từ cộng đồng học sinh.
+              </p>
+</div>
+</div>
+<button class="w-full py-3 rounded-full bg-surface-container-high text-on-surface font-label-lg text-label-lg font-semibold flex items-center justify-center gap-2 transition-all hover:bg-surface-container-highest" onclick="scrollToAndSelectTab('tab-btn-media')" type="button">
+<span>Khám phá 6 ngành học này</span>
+<span class="material-symbols-outlined text-lg">arrow_downward</span>
+</button>
+</div>
+<!-- TOP 3 CARD -->
+<div class="relative rounded-3xl bg-surface-container-lowest p-8 flex flex-col justify-between gap-8 shadow-sm transition-all hover:-translate-y-1">
+<div class="flex flex-col gap-6">
+<div class="flex items-center justify-between">
+<span class="px-3 py-1.5 rounded-full bg-tile-amber text-tertiary font-label-md text-label-md font-bold uppercase tracking-wider">
+                Hạng 3 · Khám phá thêm cơ hội
+              </span>
+<div class="flex items-baseline gap-1">
+<span class="font-display text-display text-tertiary font-extrabold leading-none">84</span>
+<span class="font-label-lg text-label-lg text-tertiary font-bold">%</span>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<div class="w-14 h-14 rounded-2xl bg-tertiary text-on-tertiary flex items-center justify-center shrink-0 shadow-sm">
+<span class="material-symbols-outlined text-3xl">brush</span>
+</div>
+<div class="flex flex-col">
+<h3 class="font-headline-md text-headline-md text-on-surface font-bold leading-tight">Nghệ Thuật &amp; Đồ Họa Số</h3>
+<span class="font-label-sm text-label-sm text-on-surface-variant">6 ngành học chuyên sâu đo lường</span>
+</div>
+</div>
+<div class="flex flex-col gap-3">
+<span class="font-label-md text-label-md font-bold text-on-surface uppercase tracking-wider">Vì sao phù hợp?</span>
+<p class="font-body-sm text-body-sm text-on-surface-variant leading-relaxed">
+                Tận dụng triệt để sở thích thẩm mỹ số và trực giác sáng tạo. Nhóm ngành này mở ra các hướng đi về thiết kế tương tác người dùng (UI/UX) và sáng tạo thị giác thương hiệu.
+              </p>
+</div>
+<div class="p-4 rounded-xl bg-surface-container-low flex flex-col gap-1.5">
+<span class="font-label-sm text-label-sm font-bold text-on-surface">Bằng chứng hỗ trợ:</span>
+<p class="font-body-sm text-body-sm text-on-surface-variant">
+                Tự hoàn thành các sản phẩm thực hành Figma cơ bản và các ấn phẩm đồ họa cho sự kiện trường.
+              </p>
+</div>
+</div>
+<button class="w-full py-3 rounded-full bg-surface-container-high text-on-surface font-label-lg text-label-lg font-semibold flex items-center justify-center gap-2 transition-all hover:bg-surface-container-highest" onclick="scrollToAndSelectTab('tab-btn-art')" type="button">
+<span>Khám phá 6 ngành học này</span>
+<span class="material-symbols-outlined text-lg">arrow_downward</span>
+</button>
+</div>
+</div>
+</section>
+<!-- SECTION 5: KHÁM PHÁ 18 NGÀNH HỌC (3 TABS × 6 MAJORS) -->
+<section class="flex flex-col gap-8" id="explore-18-section">
+<div class="flex flex-col gap-2">
+<div class="flex items-center gap-2 text-primary font-label-lg text-label-lg font-bold">
+<span class="material-symbols-outlined text-xl">menu_book</span>
+<span>PHÂN HỆ 05</span>
+</div>
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-4">
+<div>
+<h2 class="font-headline-lg text-headline-lg text-on-surface tracking-tight">Khám Phá 18 Ngành Học Chi Tiết</h2>
+<p class="font-body-md text-body-md text-on-surface-variant">
+              Chọn nhóm ngành bên dưới để xem 6 chuyên ngành được xếp hạng tương thích theo thuật toán đối chiếu.
+            </p>
+</div>
+<!-- Category Filter Tabs -->
+<div class="inline-flex p-1.5 rounded-full bg-surface-container-high self-start md:self-auto gap-1">
+<button class="px-5 py-2.5 rounded-full font-label-lg text-label-lg font-bold transition-all bg-primary-container text-on-primary shadow-sm flex items-center gap-2" id="tab-btn-business" onclick="switchCategoryTab('business')" type="button">
+<span class="material-symbols-outlined text-base">corporate_fare</span>
+<span>Kinh Doanh &amp; Quản Trị</span>
+</button>
+<button class="px-5 py-2.5 rounded-full font-label-lg text-label-lg font-semibold transition-all text-on-surface-variant hover:text-on-surface flex items-center gap-2" id="tab-btn-media" onclick="switchCategoryTab('media')" type="button">
+<span class="material-symbols-outlined text-base">cast_for_education</span>
+<span>Báo Chí &amp; Truyền Thông</span>
+</button>
+<button class="px-5 py-2.5 rounded-full font-label-lg text-label-lg font-semibold transition-all text-on-surface-variant hover:text-on-surface flex items-center gap-2" id="tab-btn-art" onclick="switchCategoryTab('art')" type="button">
+<span class="material-symbols-outlined text-base">brush</span>
+<span>Nghệ Thuật &amp; Đồ Họa</span>
+</button>
+</div>
+</div>
+</div>
+<!-- TAB 1 CONTENT: KINH DOANH VÀ QUẢN TRỊ (6 NGÀNH) -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="tab-content-business">
+<!-- Major 1 -->
+<div class="p-6 rounded-2xl bg-surface-container-lowest shadow-sm flex flex-col justify-between gap-6 transition-all hover:shadow-md">
+<div class="flex flex-col gap-4">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm font-bold text-on-surface-variant">Mã ngành: 7340101</span>
+<span class="px-2.5 py-1 rounded-full bg-tile-blue text-primary font-label-sm text-label-sm font-bold">Khớp 95%</span>
+</div>
+<div class="flex flex-col gap-1">
+<h3 class="font-headline-sm text-headline-sm text-on-surface font-bold">Quản Trị Kinh Doanh</h3>
+<span class="font-label-md text-label-md text-on-surface-variant">General Business Administration</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant">
+              Trang bị kiến thức bao quát về chuỗi giá trị vận hành doanh nghiệp, hoạch định chiến lược và quản trị nhân sự.
+            </p>
+</div>
+<div class="flex items-center justify-between pt-4">
+<span class="font-label-sm text-label-sm text-on-surface-variant">Thu nhập khởi điểm: <strong>14 - 18 tr/tháng</strong></span>
+<button class="font-label-md text-label-md font-bold text-primary hover:underline flex items-center gap-1" onclick="selectMajor('7340101')" type="button">
+              Chi tiết <span class="material-symbols-outlined text-sm">arrow_forward</span>
+</button>
+</div>
+</div>
+<!-- Major 2 (SELECTED MẶC ĐỊNH CHO PANEL PHÍA DƯỚI) -->
+<div class="p-6 rounded-2xl bg-surface-container-lowest shadow-md flex flex-col justify-between gap-6 relative" style="box-shadow: 0 0 0 2px #1d4ed8;">
+<div class="absolute -top-3 right-6 px-3 py-1 rounded-full bg-primary-container text-on-primary font-label-sm text-label-sm font-bold">
+            Đang hiển thị phân tích chuyên sâu ↓
+          </div>
+<div class="flex flex-col gap-4">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm font-bold text-primary">Mã ngành: 7340115</span>
+<span class="px-2.5 py-1 rounded-full bg-tile-blue text-primary font-label-sm text-label-sm font-bold">Khớp 93%</span>
+</div>
+<div class="flex flex-col gap-1">
+<h3 class="font-headline-sm text-headline-sm text-on-surface font-bold">Marketing &amp; Truyền Thông Số</h3>
+<span class="font-label-md text-label-md text-primary font-semibold">Digital Marketing &amp; Growth</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant">
+              Tích hợp phân tích dữ liệu hành vi người dùng số, chiến lược nội dung đa kênh và quảng cáo chuyển đổi.
+            </p>
+</div>
+<div class="flex items-center justify-between pt-4">
+<span class="font-label-sm text-label-sm text-on-surface-variant">Thu nhập khởi điểm: <strong>15 - 22 tr/tháng</strong></span>
+<span class="inline-flex items-center gap-1 text-primary font-label-md text-label-md font-bold">
+<span class="material-symbols-outlined text-base">check_circle</span> Đang xem
+            </span>
+</div>
+</div>
+<!-- Major 3 -->
+<div class="p-6 rounded-2xl bg-surface-container-lowest shadow-sm flex flex-col justify-between gap-6 transition-all hover:shadow-md">
+<div class="flex flex-col gap-4">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm font-bold text-on-surface-variant">Mã ngành: 7340120</span>
+<span class="px-2.5 py-1 rounded-full bg-tile-blue text-primary font-label-sm text-label-sm font-bold">Khớp 91%</span>
+</div>
+<div class="flex flex-col gap-1">
+<h3 class="font-headline-sm text-headline-sm text-on-surface font-bold">Kinh Doanh Quốc Tế</h3>
+<span class="font-label-md text-label-md text-on-surface-variant">International Business</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant">
+              Nghiên cứu chuỗi thương mại toàn cầu, xuất nhập khẩu, thanh toán quốc tế và đàm phán xuyên văn hóa.
+            </p>
+</div>
+<div class="flex items-center justify-between pt-4">
+<span class="font-label-sm text-label-sm text-on-surface-variant">Thu nhập khởi điểm: <strong>15 - 20 tr/tháng</strong></span>
+<button class="font-label-md text-label-md font-bold text-primary hover:underline flex items-center gap-1" onclick="selectMajor('7340120')" type="button">
+              Chi tiết <span class="material-symbols-outlined text-sm">arrow_forward</span>
+</button>
+</div>
+</div>
+<!-- Major 4 -->
+<div class="p-6 rounded-2xl bg-surface-container-lowest shadow-sm flex flex-col justify-between gap-6 transition-all hover:shadow-md">
+<div class="flex flex-col gap-4">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm font-bold text-on-surface-variant">Mã ngành: 7340122</span>
+<span class="px-2.5 py-1 rounded-full bg-tile-blue text-primary font-label-sm text-label-sm font-bold">Khớp 88%</span>
+</div>
+<div class="flex flex-col gap-1">
+<h3 class="font-headline-sm text-headline-sm text-on-surface font-bold">Thương Mại Điện Tử</h3>
+<span class="font-label-md text-label-md text-on-surface-variant">E-Commerce Platforms &amp; Analytics</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant">
+              Tập trung vào quản trị sàn số, tối ưu chuỗi trải nghiệm khách hàng số và công nghệ bán hàng đa kênh.
+            </p>
+</div>
+<div class="flex items-center justify-between pt-4">
+<span class="font-label-sm text-label-sm text-on-surface-variant">Thu nhập khởi điểm: <strong>14 - 19 tr/tháng</strong></span>
+<button class="font-label-md text-label-md font-bold text-primary hover:underline flex items-center gap-1" onclick="selectMajor('7340122')" type="button">
+              Chi tiết <span class="material-symbols-outlined text-sm">arrow_forward</span>
+</button>
+</div>
+</div>
+<!-- Major 5 -->
+<div class="p-6 rounded-2xl bg-surface-container-lowest shadow-sm flex flex-col justify-between gap-6 transition-all hover:shadow-md">
+<div class="flex flex-col gap-4">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm font-bold text-on-surface-variant">Mã ngành: 7340125</span>
+<span class="px-2.5 py-1 rounded-full bg-tile-blue text-primary font-label-sm text-label-sm font-bold">Khớp 86%</span>
+</div>
+<div class="flex flex-col gap-1">
+<h3 class="font-headline-sm text-headline-sm text-on-surface font-bold">Quản Trị Khởi Nghiệp &amp; Đổi Mới</h3>
+<span class="font-label-md text-label-md text-on-surface-variant">Entrepreneurship &amp; Innovation</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant">
+              Thiết kế mô hình kinh doanh tinh gọn, thử nghiệm MVP, gọi vốn đầu tư mạo hiểm và xây dựng tăng trưởng.
+            </p>
+</div>
+<div class="flex items-center justify-between pt-4">
+<span class="font-label-sm text-label-sm text-on-surface-variant">Thu nhập khởi điểm: <strong>16 - 25 tr/tháng</strong></span>
+<button class="font-label-md text-label-md font-bold text-primary hover:underline flex items-center gap-1" onclick="selectMajor('7340125')" type="button">
+              Chi tiết <span class="material-symbols-outlined text-sm">arrow_forward</span>
+</button>
+</div>
+</div>
+<!-- Major 6 -->
+<div class="p-6 rounded-2xl bg-surface-container-lowest shadow-sm flex flex-col justify-between gap-6 transition-all hover:shadow-md">
+<div class="flex flex-col gap-4">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm font-bold text-on-surface-variant">Mã ngành: 7510605</span>
+<span class="px-2.5 py-1 rounded-full bg-tile-blue text-primary font-label-sm text-label-sm font-bold">Khớp 83%</span>
+</div>
+<div class="flex flex-col gap-1">
+<h3 class="font-headline-sm text-headline-sm text-on-surface font-bold">Logistics &amp; Quản Lý Chuỗi Cung Ứng</h3>
+<span class="font-label-md text-label-md text-on-surface-variant">Logistics &amp; Supply Chain Management</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant">
+              Tối ưu mạng lưới luân chuyển hàng hóa, kho vận tự động hóa và phân tích dự báo nhu cầu thị trường.
+            </p>
+</div>
+<div class="flex items-center justify-between pt-4">
+<span class="font-label-sm text-label-sm text-on-surface-variant">Thu nhập khởi điểm: <strong>14 - 18 tr/tháng</strong></span>
+<button class="font-label-md text-label-md font-bold text-primary hover:underline flex items-center gap-1" onclick="selectMajor('7510605')" type="button">
+              Chi tiết <span class="material-symbols-outlined text-sm">arrow_forward</span>
+</button>
+</div>
+</div>
+</div>
+<!-- TAB 2 CONTENT: BÁO CHÍ & TRUYỀN THÔNG (Ẩn mặc định) -->
+<div class="hidden grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="tab-content-media">
+<div class="p-6 rounded-2xl bg-surface-container-lowest shadow-sm flex flex-col justify-between gap-6">
+<div class="flex flex-col gap-4">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm font-bold text-on-surface-variant">Mã ngành: 7320104</span>
+<span class="px-2.5 py-1 rounded-full bg-tile-rose text-secondary font-label-sm text-label-sm font-bold">Khớp 90%</span>
+</div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface font-bold">Truyền Thông Đa Phương Tiện</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Sản xuất video số, quản trị nội dung mạng xã hội và truyền thông thị giác.</p>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Thu nhập khởi điểm: <strong>14 - 20 tr/tháng</strong></span>
+</div>
+<div class="p-6 rounded-2xl bg-surface-container-lowest shadow-sm flex flex-col justify-between gap-6">
+<div class="flex flex-col gap-4">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm font-bold text-on-surface-variant">Mã ngành: 7320108</span>
+<span class="px-2.5 py-1 rounded-full bg-tile-rose text-secondary font-label-sm text-label-sm font-bold">Khớp 89%</span>
+</div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface font-bold">Quan Hệ Công Chúng (PR)</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Quản trị danh tiếng tổ chức, tổ chức sự kiện và xây dựng mối quan hệ truyền thông.</p>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Thu nhập khởi điểm: <strong>13 - 18 tr/tháng</strong></span>
+</div>
+<div class="p-6 rounded-2xl bg-surface-container-lowest shadow-sm flex flex-col justify-between gap-6">
+<div class="flex flex-col gap-4">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm font-bold text-on-surface-variant">Mã ngành: 7320101</span>
+<span class="px-2.5 py-1 rounded-full bg-tile-rose text-secondary font-label-sm text-label-sm font-bold">Khớp 87%</span>
+</div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface font-bold">Báo Chí Hiện Đại &amp; Dữ Liệu</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Khai thác tin tức số, phóng sự chuyên sâu và báo chí trực quan hóa dữ liệu.</p>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Thu nhập khởi điểm: <strong>12 - 16 tr/tháng</strong></span>
+</div>
+<div class="p-6 rounded-2xl bg-surface-container-lowest shadow-sm flex flex-col justify-between gap-6">
+<div class="flex flex-col gap-4">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm font-bold text-on-surface-variant">Mã ngành: 7320106</span>
+<span class="px-2.5 py-1 rounded-full bg-tile-rose text-secondary font-label-sm text-label-sm font-bold">Khớp 86%</span>
+</div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface font-bold">Quản Trị Truyền Thông Doanh Nghiệp</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Điều phối truyền thông nội bộ, xử lý khủng hoảng truyền thông thương hiệu.</p>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Thu nhập khởi điểm: <strong>14 - 18 tr/tháng</strong></span>
+</div>
+<div class="p-6 rounded-2xl bg-surface-container-lowest shadow-sm flex flex-col justify-between gap-6">
+<div class="flex flex-col gap-4">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm font-bold text-on-surface-variant">Mã ngành: 7320110</span>
+<span class="px-2.5 py-1 rounded-full bg-tile-rose text-secondary font-label-sm text-label-sm font-bold">Khớp 84%</span>
+</div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface font-bold">Sản Xuất Nội Dung Số &amp; Podcast</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Kịch bản phát thanh hiện đại, sáng tạo âm thanh và định dạng thông tin mới.</p>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Thu nhập khởi điểm: <strong>13 - 17 tr/tháng</strong></span>
+</div>
+<div class="p-6 rounded-2xl bg-surface-container-lowest shadow-sm flex flex-col justify-between gap-6">
+<div class="flex flex-col gap-4">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm font-bold text-on-surface-variant">Mã ngành: 7310301</span>
+<span class="px-2.5 py-1 rounded-full bg-tile-rose text-secondary font-label-sm text-label-sm font-bold">Khớp 82%</span>
+</div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface font-bold">Xã Hội Học &amp; Nghiên Cứu Truyền Thông</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Phân tích hành vi số của công chúng và tác động của mạng xã hội.</p>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Thu nhập khởi điểm: <strong>12 - 15 tr/tháng</strong></span>
+</div>
+</div>
+<!-- TAB 3 CONTENT: NGHỆ THUẬT & ĐỒ HỌA (Ẩn mặc định) -->
+<div class="hidden grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="tab-content-art">
+<div class="p-6 rounded-2xl bg-surface-container-lowest shadow-sm flex flex-col justify-between gap-6">
+<div class="flex flex-col gap-4">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm font-bold text-on-surface-variant">Mã ngành: 7210403</span>
+<span class="px-2.5 py-1 rounded-full bg-tile-amber text-tertiary font-label-sm text-label-sm font-bold">Khớp 88%</span>
+</div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface font-bold">Thiết Kế Đồ Họa Ứng Dụng</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Xây dựng bộ nhận diện thương hiệu, thiết kế ấn phẩm và bao bì thị giác.</p>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Thu nhập khởi điểm: <strong>13 - 19 tr/tháng</strong></span>
+</div>
+<div class="p-6 rounded-2xl bg-surface-container-lowest shadow-sm flex flex-col justify-between gap-6">
+<div class="flex flex-col gap-4">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm font-bold text-on-surface-variant">Mã ngành: 7480104</span>
+<span class="px-2.5 py-1 rounded-full bg-tile-amber text-tertiary font-label-sm text-label-sm font-bold">Khớp 86%</span>
+</div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface font-bold">Thiết Kế Trải Nghiệm Người Dùng (UI/UX)</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Nghiên cứu hành vi thao tác, luồng ứng dụng và thiết kế giao diện sản phẩm số.</p>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Thu nhập khởi điểm: <strong>16 - 22 tr/tháng</strong></span>
+</div>
+<div class="p-6 rounded-2xl bg-surface-container-lowest shadow-sm flex flex-col justify-between gap-6">
+<div class="flex flex-col gap-4">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm font-bold text-on-surface-variant">Mã ngành: 7210404</span>
+<span class="px-2.5 py-1 rounded-full bg-tile-amber text-tertiary font-label-sm text-label-sm font-bold">Khớp 84%</span>
+</div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface font-bold">Thiết Kế Mỹ Thuật Đa Phương Tiện</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Đồ họa chuyển động (Motion Graphics), kỹ xảo hình ảnh và biên tập video nghệ thuật.</p>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Thu nhập khởi điểm: <strong>14 - 18 tr/tháng</strong></span>
+</div>
+<div class="p-6 rounded-2xl bg-surface-container-lowest shadow-sm flex flex-col justify-between gap-6">
+<div class="flex flex-col gap-4">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm font-bold text-on-surface-variant">Mã ngành: 7210405</span>
+<span class="px-2.5 py-1 rounded-full bg-tile-amber text-tertiary font-label-sm text-label-sm font-bold">Khớp 82%</span>
+</div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface font-bold">Nghệ Thuật Số (Digital Arts)</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Minh họa kỹ thuật số, concept art cho sản phẩm giải trí và sách truyện tương tác.</p>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Thu nhập khởi điểm: <strong>13 - 17 tr/tháng</strong></span>
+</div>
+<div class="p-6 rounded-2xl bg-surface-container-lowest shadow-sm flex flex-col justify-between gap-6">
+<div class="flex flex-col gap-4">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm font-bold text-on-surface-variant">Mã ngành: 7210406</span>
+<span class="px-2.5 py-1 rounded-full bg-tile-amber text-tertiary font-label-sm text-label-sm font-bold">Khớp 80%</span>
+</div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface font-bold">Nhiếp Ảnh &amp; Thị Giác Thương Mại</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Chụp ảnh quảng cáo thời trang, bố cục ánh sáng trường quay và biên tập ảnh nghệ thuật.</p>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Thu nhập khởi điểm: <strong>12 - 16 tr/tháng</strong></span>
+</div>
+<div class="p-6 rounded-2xl bg-surface-container-lowest shadow-sm flex flex-col justify-between gap-6">
+<div class="flex flex-col gap-4">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm font-bold text-on-surface-variant">Mã ngành: 7210407</span>
+<span class="px-2.5 py-1 rounded-full bg-tile-amber text-tertiary font-label-sm text-label-sm font-bold">Khớp 79%</span>
+</div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface font-bold">Thiết Kế Không Gian Triển Lãm Số</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Trải nghiệm tương tác không gian sự kiện, ứng dụng công nghệ thực tế ảo AR/VR.</p>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Thu nhập khởi điểm: <strong>15 - 20 tr/tháng</strong></span>
+</div>
+</div>
+</section>
+<!-- SECTION 6: PANEL CHI TIẾT NGÀNH & TOP 3 TRƯỜNG ĐẠI HỌC -->
+<section class="flex flex-col gap-8 rounded-3xl bg-surface-container-lowest p-8 lg:p-12 shadow-sm">
+<div class="flex flex-col gap-3">
+<div class="flex items-center gap-2 text-primary font-label-lg text-label-lg font-bold">
+<span class="material-symbols-outlined text-xl">account_balance</span>
+<span>PHÂN HỆ 06</span>
+</div>
+<div class="flex flex-wrap items-center justify-between gap-4">
+<div class="flex flex-col gap-1">
+<div class="flex items-center gap-3">
+<h2 class="font-headline-lg text-headline-lg text-on-surface tracking-tight">Marketing &amp; Truyền Thông Số (Digital Marketing)</h2>
+<span class="px-3 py-1 rounded-full bg-tile-blue text-primary font-label-sm text-label-sm font-bold">Mã ngành: 7340115</span>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant">
+              Tổ hợp xét tuyển phổ biến: A00, A01, D01, D07 · Điểm tương thích hồ sơ: <strong>93%</strong> (Hạng 2/6 khối Kinh Doanh)
+            </p>
+</div>
+<span class="px-4 py-2 rounded-full bg-surface-container-high text-on-surface font-label-md text-label-md font-semibold">
+            Đang phân tích chuyên sâu
+          </span>
+</div>
+</div>
+<!-- Detail Sub-cards: Vì sao hợp + Bạn sẽ học gì + Hướng đi -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+<div class="p-6 rounded-2xl bg-surface-container-low flex flex-col gap-3">
+<div class="flex items-center gap-2 text-primary font-label-lg text-label-lg font-bold">
+<span class="material-symbols-outlined">psychology</span>
+<span>Vì sao ngành này hợp với bạn?</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface leading-relaxed">
+            Ngành này nằm đúng điểm giao thoa giữa <strong>tư duy phân tích số liệu (I)</strong> và <strong>trực giác thẩm mỹ truyền thông (A)</strong>. Bạn vừa có thể sáng tạo nội dung độc đáo, vừa có khả năng đo lường chỉ số ROI và tối ưu hiệu quả chiến dịch.
+          </p>
+</div>
+<div class="p-6 rounded-2xl bg-surface-container-low flex flex-col gap-3">
+<div class="flex items-center gap-2 text-primary font-label-lg text-label-lg font-bold">
+<span class="material-symbols-outlined">menu_book</span>
+<span>Bạn sẽ học những gì?</span>
+</div>
+<ul class="flex flex-col gap-2 font-body-sm text-body-sm text-on-surface">
+<li class="flex items-center gap-2">
+<span class="w-1.5 h-1.5 rounded-full bg-primary shrink-0"></span>
+              Chiến lược thương hiệu số &amp; Quản trị Omnichannel
+            </li>
+<li class="flex items-center gap-2">
+<span class="w-1.5 h-1.5 rounded-full bg-primary shrink-0"></span>
+              Phân tích dữ liệu người dùng (MarTech &amp; Data Analytics)
+            </li>
+<li class="flex items-center gap-2">
+<span class="w-1.5 h-1.5 rounded-full bg-primary shrink-0"></span>
+              Sáng tạo nội dung đa kênh &amp; Tối ưu phễu chuyển đổi
+            </li>
+</ul>
+</div>
+<div class="p-6 rounded-2xl bg-surface-container-low flex flex-col gap-3">
+<div class="flex items-center gap-2 text-primary font-label-lg text-label-lg font-bold">
+<span class="material-symbols-outlined">work</span>
+<span>Hướng đi nghề nghiệp</span>
+</div>
+<ul class="flex flex-col gap-2 font-body-sm text-body-sm text-on-surface">
+<li class="flex items-center gap-2">
+<span class="w-1.5 h-1.5 rounded-full bg-primary shrink-0"></span>
+              Chuyên viên Chiến lược Thương hiệu số (Digital Brand Strategist)
+            </li>
+<li class="flex items-center gap-2">
+<span class="w-1.5 h-1.5 rounded-full bg-primary shrink-0"></span>
+              Hoạch định Truyền thông số (Digital Media Planner)
+            </li>
+<li class="flex items-center gap-2">
+<span class="w-1.5 h-1.5 rounded-full bg-primary shrink-0"></span>
+              Giám đốc Nội dung số / Quản lý Tăng trưởng (Growth Marketer)
+            </li>
+</ul>
+</div>
+</div>
+<!-- TOP 3 TRƯỜNG ĐÀO TẠO PHÙ HỢP NHẤT -->
+<div class="flex flex-col gap-10 pt-4" id="university-comparison-dashboard">
+<!-- SUB-HEADER & QUICK CONTROLS -->
+<div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 p-6 rounded-2xl bg-surface-container-low border border-outline-variant/30">
+<div class="flex flex-col gap-1.5">
+<div class="flex items-center gap-2">
+<span class="px-2.5 py-0.5 rounded-full bg-primary-container text-on-primary font-label-sm text-label-sm font-bold uppercase tracking-wider">Phân Hệ So Sánh Chuyên Sâu</span>
+<span class="text-outline-variant font-label-md">•</span>
+<span class="font-label-md text-label-md font-bold text-primary">Marketing &amp; Truyền thông Số (Mã ngành: 7340114)</span>
+</div>
+<h3 class="font-headline-md text-headline-md text-on-surface font-bold tracking-tight">So sánh 3 lựa chọn ngành – trường phù hợp với bạn</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant max-w-3xl">
+        Cùng một ngành học, nhưng mỗi trường có môi trường, chương trình và điều kiện khác nhau. Hãy xem lựa chọn nào gần với mong muốn và bối cảnh thực tế của bạn hơn.
+      </p>
+</div>
+<div class="flex items-center gap-3 self-start lg:self-center shrink-0">
+<div class="inline-flex p-1 rounded-full bg-surface-container-high border border-outline-variant/30">
+<button class="px-3.5 py-1.5 rounded-full bg-primary-container text-on-primary font-label-sm text-label-sm font-semibold shadow-sm flex items-center gap-1.5" type="button">
+<span class="material-symbols-outlined text-sm">table_chart</span>
+<span>Ma trận đối chiếu</span>
+</button>
+</div>
+<button class="px-3.5 py-1.5 rounded-full bg-surface-container-lowest hover:bg-surface-container-high border border-outline-variant text-on-surface font-label-sm text-label-sm font-semibold transition-all flex items-center gap-1" onclick="alert('Chức năng đổi ngành đối chiếu: Đang mở danh sách 18 ngành đã được khảo sát.')" type="button">
+<span>Đổi ngành đối chiếu</span>
+<span class="material-symbols-outlined text-sm">arrow_drop_down</span>
+</button>
+</div>
+</div>
+<!-- 3 COMPACT COMPARISON CARDS (HORIZONTAL GRID) -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+<!-- School A: UEH -->
+<div class="p-6 rounded-2xl bg-surface-container-lowest border-2 border-primary-container/30 hover:border-primary-container shadow-sm flex flex-col justify-between gap-5 transition-all hover:-translate-y-1 relative group">
+<div class="flex flex-col gap-4">
+<div class="flex items-center justify-between">
+<span class="px-2.5 py-1 rounded-lg bg-tile-blue text-primary font-label-sm text-label-sm font-extrabold">
+            #01 · Khớp tổng thể 94%
+          </span>
+<span class="px-2.5 py-0.5 rounded-full bg-surface-container-high text-primary font-label-sm text-label-sm font-semibold">
+            Rất cao (95%)
+          </span>
+</div>
+<div class="flex flex-col gap-1">
+<h4 class="font-headline-sm text-headline-sm text-on-surface font-bold">ĐH Kinh tế TP.HCM (UEH)</h4>
+<span class="font-label-md text-label-md font-semibold text-primary">Marketing Định lượng &amp; MarTech</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant flex items-center gap-1 pt-0.5">
+<span class="material-symbols-outlined text-xs text-primary">location_on</span>
+            Cơ sở B, Q.3 &amp; Cơ sở A, Q.1, TP.HCM
+          </span>
+</div>
+<div class="p-3.5 rounded-xl bg-surface-container-low flex flex-col gap-1.5 text-body-sm text-body-sm">
+<span class="font-label-sm text-label-sm font-bold text-primary flex items-center gap-1">
+<span class="material-symbols-outlined text-sm">thumb_up</span> Vì sao hợp nhất:
+          </span>
+<p class="text-on-surface text-xs leading-relaxed">
+            Chương trình tiên phong về Digital Strategy &amp; MarTech gắn liền với óc phân tích Investigative (I).
+          </p>
+</div>
+<div class="p-3 rounded-xl bg-surface-container-high/40 flex flex-col gap-1 text-xs text-on-surface-variant">
+<span class="font-label-sm text-label-sm font-semibold text-outline flex items-center gap-1">
+<span class="material-symbols-outlined text-xs">balance</span> Điểm cân nhắc:
+          </span>
+<p>Áp lực học thuật và tính tự chủ học tập cao; học phí bán tự chủ 35-45 tr/năm.</p>
+</div>
+</div>
+<button class="w-full py-2.5 rounded-xl bg-surface-container-high hover:bg-primary hover:text-on-primary text-on-surface font-label-md text-label-md font-semibold flex items-center justify-center gap-1.5 transition-all" onclick="openSchoolDrawer('ueh')" type="button">
+<span>Xem chi tiết trường</span>
+<span class="material-symbols-outlined text-sm">arrow_forward</span>
+</button>
+</div>
+<!-- School B: HCMIU -->
+<div class="p-6 rounded-2xl bg-surface-container-lowest border border-outline-variant/40 hover:border-primary-container shadow-sm flex flex-col justify-between gap-5 transition-all hover:-translate-y-1 relative group">
+<div class="flex flex-col gap-4">
+<div class="flex items-center justify-between">
+<span class="px-2.5 py-1 rounded-lg bg-surface-container-high text-on-surface font-label-sm text-label-sm font-extrabold">
+            #02 · Khớp tổng thể 91%
+          </span>
+<span class="px-2.5 py-0.5 rounded-full bg-surface-container-high text-on-surface-variant font-label-sm text-label-sm font-semibold">
+            Cao (89%)
+          </span>
+</div>
+<div class="flex flex-col gap-1">
+<h4 class="font-headline-sm text-headline-sm text-on-surface font-bold">ĐH Quốc tế – ĐHQG-HCM</h4>
+<span class="font-label-md text-label-md font-semibold text-primary">Quản trị Marketing Quốc tế</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant flex items-center gap-1 pt-0.5">
+<span class="material-symbols-outlined text-xs text-primary">location_on</span>
+            Khu đô thị ĐHQG, TP. Thủ Đức
+          </span>
+</div>
+<div class="p-3.5 rounded-xl bg-surface-container-low flex flex-col gap-1.5 text-body-sm text-body-sm">
+<span class="font-label-sm text-label-sm font-bold text-primary flex items-center gap-1">
+<span class="material-symbols-outlined text-sm">thumb_up</span> Vì sao hợp nhất:
+          </span>
+<p class="text-on-surface text-xs leading-relaxed">
+            Môi trường học 100% tiếng Anh, rèn luyện tư duy thuyết phục toàn cầu cho nhóm Enterprising (E).
+          </p>
+</div>
+<div class="p-3 rounded-xl bg-surface-container-high/40 flex flex-col gap-1 text-xs text-on-surface-variant">
+<span class="font-label-sm text-label-sm font-semibold text-outline flex items-center gap-1">
+<span class="material-symbols-outlined text-xs">balance</span> Điểm cân nhắc:
+          </span>
+<p>Khoảng cách xa trung tâm TP (~18km); học phí chương trình quốc tế ~65-80 tr/năm.</p>
+</div>
+</div>
+<button class="w-full py-2.5 rounded-xl bg-surface-container-high hover:bg-primary hover:text-on-primary text-on-surface font-label-md text-label-md font-semibold flex items-center justify-center gap-1.5 transition-all" onclick="openSchoolDrawer('hcmiu')" type="button">
+<span>Xem chi tiết trường</span>
+<span class="material-symbols-outlined text-sm">arrow_forward</span>
+</button>
+</div>
+<!-- School C: FPT -->
+<div class="p-6 rounded-2xl bg-surface-container-lowest border border-outline-variant/40 hover:border-primary-container shadow-sm flex flex-col justify-between gap-5 transition-all hover:-translate-y-1 relative group">
+<div class="flex flex-col gap-4">
+<div class="flex items-center justify-between">
+<span class="px-2.5 py-1 rounded-lg bg-tile-amber text-tertiary font-label-sm text-label-sm font-extrabold">
+            #03 · Khớp tổng thể 86%
+          </span>
+<span class="px-2.5 py-0.5 rounded-full bg-surface-container-high text-on-surface-variant font-label-sm text-label-sm font-semibold">
+            Tương thích (85%)
+          </span>
+</div>
+<div class="flex flex-col gap-1">
+<h4 class="font-headline-sm text-headline-sm text-on-surface font-bold">Đại học FPT TP.HCM</h4>
+<span class="font-label-md text-label-md font-semibold text-primary">Digital Marketing &amp; AI Media</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant flex items-center gap-1 pt-0.5">
+<span class="material-symbols-outlined text-xs text-primary">location_on</span>
+            Khu Công nghệ cao, TP. Thủ Đức
+          </span>
+</div>
+<div class="p-3.5 rounded-xl bg-surface-container-low flex flex-col gap-1.5 text-body-sm text-body-sm">
+<span class="font-label-sm text-label-sm font-bold text-primary flex items-center gap-1">
+<span class="material-symbols-outlined text-sm">thumb_up</span> Vì sao hợp nhất:
+          </span>
+<p class="text-on-surface text-xs leading-relaxed">
+            Đào tạo thực chiến On-the-Job Training, giải phóng khả năng sáng tạo thị giác của nhóm Artistic (A).
+          </p>
+</div>
+<div class="p-3 rounded-xl bg-surface-container-high/40 flex flex-col gap-1 text-xs text-on-surface-variant">
+<span class="font-label-sm text-label-sm font-semibold text-outline flex items-center gap-1">
+<span class="material-symbols-outlined text-xs">balance</span> Điểm cân nhắc:
+          </span>
+<p>Học phí cao (~85-98 tr/năm) cần cân nhắc bài toán tài chính nếu không săn học bổng.</p>
+</div>
+</div>
+<button class="w-full py-2.5 rounded-xl bg-surface-container-high hover:bg-primary hover:text-on-primary text-on-surface font-label-md text-label-md font-semibold flex items-center justify-center gap-1.5 transition-all" onclick="openSchoolDrawer('fpt')" type="button">
+<span>Xem chi tiết trường</span>
+<span class="material-symbols-outlined text-sm">arrow_forward</span>
+</button>
+</div>
+</div>
+<!-- VISUAL PERSONALIZED COMPARISON MATRIX -->
+<div class="flex flex-col gap-4">
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-xl">view_column</span>
+<h4 class="font-headline-sm text-headline-sm text-on-surface font-bold">Ma Trận Đối Chiếu Đa Chiều</h4>
+</div>
+<span class="text-xs text-on-surface-variant">Dữ liệu được đối chiếu với hồ sơ cá nhân và khảo sát học tập của Minh Anh</span>
+</div>
+<div class="overflow-x-auto rounded-2xl border border-outline-variant/40 bg-surface-container-lowest shadow-sm">
+<table class="w-full text-left border-collapse min-w-[760px]">
+<thead>
+<tr class="bg-surface-container-low border-b border-outline-variant/30 text-on-surface font-label-md text-label-md">
+<th class="p-4 w-1/4 font-bold text-on-surface-variant uppercase tracking-wider text-xs">Tiêu chí đánh giá</th>
+<th class="p-4 w-1/4 border-l border-outline-variant/30 font-bold text-primary">
+<div class="flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-primary"></span>
+                UEH (ĐH Kinh tế TP.HCM)
+              </div>
+</th>
+<th class="p-4 w-1/4 border-l border-outline-variant/30 font-bold text-on-surface">
+<div class="flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-outline"></span>
+                HCMIU (ĐH Quốc Tế)
+              </div>
+</th>
+<th class="p-4 w-1/4 border-l border-outline-variant/30 font-bold text-on-surface">
+<div class="flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-outline"></span>
+                FPT University
+              </div>
+</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant/20 text-body-sm text-body-sm text-on-surface">
+<!-- Row 1: RIASEC match -->
+<tr class="hover:bg-surface-container-low/40 transition-colors">
+<td class="p-4 font-semibold text-on-surface flex flex-col gap-0.5">
+<span>Mức độ phù hợp sở thích</span>
+<span class="text-xs text-on-surface-variant font-normal">Đối chiếu RIASEC (E-I-A)</span>
+</td>
+<td class="p-4 border-l border-outline-variant/30 align-top">
+<div class="flex flex-col gap-1.5">
+<span class="self-start px-2.5 py-0.5 rounded-full bg-tile-blue text-primary font-label-sm text-xs font-bold">Rất phù hợp</span>
+<span class="text-xs text-on-surface leading-snug">Khớp trực diện nhóm E (Thuyết phục 88%) và I (Tư duy phân tích 86%).</span>
+</div>
+</td>
+<td class="p-4 border-l border-outline-variant/30 align-top">
+<div class="flex flex-col gap-1.5">
+<span class="self-start px-2.5 py-0.5 rounded-full bg-surface-container-high text-on-surface font-label-sm text-xs font-semibold">Phù hợp</span>
+<span class="text-xs text-on-surface leading-snug">Phát huy tối đa E (Quản lý 88%) kết hợp giao tiếp đa văn hóa.</span>
+</div>
+</td>
+<td class="p-4 border-l border-outline-variant/30 align-top">
+<div class="flex flex-col gap-1.5">
+<span class="self-start px-2.5 py-0.5 rounded-full bg-surface-container-high text-on-surface font-label-sm text-xs font-semibold">Phù hợp</span>
+<span class="text-xs text-on-surface leading-snug">Khớp mạnh với A (Thẩm mỹ &amp; Sáng tạo 82%) qua sản phẩm số.</span>
+</div>
+</td>
+</tr>
+<!-- Row 2: Program specialty -->
+<tr class="hover:bg-surface-container-low/40 transition-colors">
+<td class="p-4 font-semibold text-on-surface flex flex-col gap-0.5">
+<span>Chương trình ngành</span>
+<span class="text-xs text-on-surface-variant font-normal">Khung kiến thức đào tạo</span>
+</td>
+<td class="p-4 border-l border-outline-variant/30 align-top">
+<div class="flex flex-col gap-1.5">
+<span class="self-start px-2 py-0.5 rounded-md bg-surface-container-high text-primary font-label-sm text-xs font-bold">Chuyên sâu số hóa</span>
+<span class="text-xs text-on-surface">MarTech, Data Analytics, Chiến lược Omni-channel và đo lường ROI.</span>
+</div>
+</td>
+<td class="p-4 border-l border-outline-variant/30 align-top">
+<div class="flex flex-col gap-1.5">
+<span class="self-start px-2 py-0.5 rounded-md bg-surface-container-high text-on-surface font-label-sm text-xs font-bold">Chuẩn quốc tế</span>
+<span class="text-xs text-on-surface">Brand Management, Global Marketing, Chiến lược thâm nhập thị trường quốc tế.</span>
+</div>
+</td>
+<td class="p-4 border-l border-outline-variant/30 align-top">
+<div class="flex flex-col gap-1.5">
+<span class="self-start px-2 py-0.5 rounded-md bg-surface-container-high text-on-surface font-label-sm text-xs font-bold">Thực hành đồ án</span>
+<span class="text-xs text-on-surface">Content Creation, Social Commerce, AI Marketing và triển khai chiến dịch số.</span>
+</div>
+</td>
+</tr>
+<!-- Row 3: Tuition fee vs Budget -->
+<tr class="hover:bg-surface-container-low/40 transition-colors">
+<td class="p-4 font-semibold text-on-surface flex flex-col gap-0.5">
+<span>Học phí vs Ngân sách</span>
+<span class="text-xs text-on-surface-variant font-normal">Mục tiêu gia đình: 40–80 tr/năm</span>
+</td>
+<td class="p-4 border-l border-outline-variant/30 align-top">
+<div class="flex flex-col gap-1">
+<span class="self-start px-2.5 py-0.5 rounded-full bg-tile-blue text-primary font-label-sm text-xs font-bold">Hoàn toàn trong ngân sách</span>
+<span class="font-bold text-sm text-on-surface">~35 – 45 triệu/năm</span>
+<span class="text-xs text-on-surface-variant">Bán tự chủ công lập, học phí ổn định.</span>
+</div>
+</td>
+<td class="p-4 border-l border-outline-variant/30 align-top">
+<div class="flex flex-col gap-1">
+<span class="self-start px-2.5 py-0.5 rounded-full bg-tile-amber text-tertiary font-label-sm text-xs font-bold">Sát trần ngân sách</span>
+<span class="font-bold text-sm text-on-surface">~65 – 80 triệu/năm</span>
+<span class="text-xs text-on-surface-variant">Chương trình 100% tiếng Anh thuộc ĐHQG.</span>
+</div>
+</td>
+<td class="p-4 border-l border-outline-variant/30 align-top">
+<div class="flex flex-col gap-1">
+<span class="self-start px-2.5 py-0.5 rounded-full bg-tile-rose text-secondary font-label-sm text-xs font-bold">Vượt ngân sách đề xuất</span>
+<span class="font-bold text-sm text-secondary">~85 – 98 triệu/năm</span>
+<span class="text-xs text-on-surface-variant">Khuyến nghị nộp học bổng tài năng 30-50%.</span>
+</div>
+</td>
+</tr>
+<!-- Row 4: Location & Distance -->
+<tr class="hover:bg-surface-container-low/40 transition-colors">
+<td class="p-4 font-semibold text-on-surface flex flex-col gap-0.5">
+<span>Địa điểm &amp; Khoảng cách</span>
+<span class="text-xs text-on-surface-variant font-normal">Từ trung tâm TP.HCM</span>
+</td>
+<td class="p-4 border-l border-outline-variant/30 align-top">
+<div class="flex flex-col gap-1">
+<span class="self-start px-2 py-0.5 rounded-md bg-tile-blue text-primary font-label-sm text-xs font-semibold">Rất thuận tiện (&lt;5km)</span>
+<span class="text-xs text-on-surface">Cơ sở B (Quận 3) &amp; Cơ sở A (Quận 1).</span>
+</div>
+</td>
+<td class="p-4 border-l border-outline-variant/30 align-top">
+<div class="flex flex-col gap-1">
+<span class="self-start px-2 py-0.5 rounded-md bg-surface-container-high text-on-surface font-label-sm text-xs font-semibold">Xa trung tâm (~18km)</span>
+<span class="text-xs text-on-surface">Đô thị ĐHQG Thủ Đức, có tuyến xe buýt &amp; Metro số 1.</span>
+</div>
+</td>
+<td class="p-4 border-l border-outline-variant/30 align-top">
+<div class="flex flex-col gap-1">
+<span class="self-start px-2 py-0.5 rounded-md bg-surface-container-high text-on-surface font-label-sm text-xs font-semibold">Khu công nghệ (~16km)</span>
+<span class="text-xs text-on-surface">Khu Công nghệ cao, TP. Thủ Đức, kết nối Metro.</span>
+</div>
+</td>
+</tr>
+<!-- Row 5: Learning Environment -->
+<tr class="hover:bg-surface-container-low/40 transition-colors">
+<td class="p-4 font-semibold text-on-surface flex flex-col gap-0.5">
+<span>Môi trường học tập</span>
+<span class="text-xs text-on-surface-variant font-normal">Không khí &amp; Văn hóa</span>
+</td>
+<td class="p-4 border-l border-outline-variant/30 align-top text-xs leading-relaxed">
+              Công lập trọng điểm, tính cạnh tranh học thuật cao, mạng lưới cựu sinh viên rộng lớn trong ngành kinh tế.
+            </td>
+<td class="p-4 border-l border-outline-variant/30 align-top text-xs leading-relaxed">
+              Công lập quốc tế, 100% tiếng Anh, giao lưu văn hóa quốc tế năng động và tự do học thuật.
+            </td>
+<td class="p-4 border-l border-outline-variant/30 align-top text-xs leading-relaxed">
+              Đại học tư thục ứng dụng, văn hóa cởi mở, gắn kết trực tiếp hệ sinh thái doanh nghiệp công nghệ.
+            </td>
+</tr>
+<!-- Row 6: Practice & Internship -->
+<tr class="hover:bg-surface-container-low/40 transition-colors">
+<td class="p-4 font-semibold text-on-surface flex flex-col gap-0.5">
+<span>Thực hành &amp; Doanh nghiệp</span>
+<span class="text-xs text-on-surface-variant font-normal">Cơ hội nghề nghiệp</span>
+</td>
+<td class="p-4 border-l border-outline-variant/30 align-top text-xs leading-relaxed">
+              Kỳ thực tập năm cuối tại các tập đoàn đa quốc gia &amp; cơ quan nhà nước; ngày hội việc làm lớn.
+            </td>
+<td class="p-4 border-l border-outline-variant/30 align-top text-xs leading-relaxed">
+              Cơ hội trao đổi học kỳ tại đối tác (Úc, Mỹ) + Thực tập doanh nghiệp FDI toàn cầu.
+            </td>
+<td class="p-4 border-l border-outline-variant/30 align-top text-xs leading-relaxed">
+              Học kỳ OJT (On-the-Job Training) bắt buộc từ năm thứ 3 trực tiếp tại các công ty công nghệ đối tác.
+            </td>
+</tr>
+<!-- Row 7: Academic Admission State -->
+<tr class="bg-surface-container-low/30 hover:bg-surface-container-low transition-colors">
+<td class="p-4 font-semibold text-on-surface flex flex-col gap-0.5">
+<span>Điều kiện tuyển sinh</span>
+<span class="text-xs text-on-surface-variant font-normal">Đối chiếu điểm số của Minh Anh</span>
+</td>
+<td class="p-4 border-l border-outline-variant/30 align-top">
+<div class="flex flex-col gap-2">
+<span class="self-start px-2.5 py-0.5 rounded-full bg-primary-container text-on-primary font-label-sm text-xs font-bold">Biên độ khả quan (+25đ ĐGNL)</span>
+<div class="text-xs text-on-surface space-y-1">
+<p>• Điểm của bạn: <strong>ĐGNL 865đ</strong> / <strong>A01: 26.25đ</strong></p>
+<p>• Chuẩn tham chiếu 2025: ĐGNL 840đ (Dư +25đ) | A01: 26.10đ (Dư +0.15đ)</p>
+</div>
+</div>
+</td>
+<td class="p-4 border-l border-outline-variant/30 align-top">
+<div class="flex flex-col gap-2">
+<span class="self-start px-2.5 py-0.5 rounded-full bg-tile-amber text-tertiary font-label-sm text-xs font-bold">Điểm tham khảo 2024 · Ưu tiên</span>
+<div class="text-xs text-on-surface space-y-1">
+<p>• Phương thức kết hợp: ĐGNL hoặc Học bạ + <strong>IELTS 7.0</strong></p>
+<p>• Chuẩn 2024: ĐGNL 810đ (Bạn có lợi thế +55đ)</p>
+</div>
+</div>
+</td>
+<td class="p-4 border-l border-outline-variant/30 align-top">
+<div class="flex flex-col gap-2">
+<span class="self-start px-2.5 py-0.5 rounded-full bg-surface-container-high text-on-surface font-label-sm text-xs font-bold">Đủ điều kiện hồ sơ ban đầu</span>
+<div class="text-xs text-on-surface space-y-1">
+<p>• Xét tuyển học bạ &amp; Top 40 SchoolRank</p>
+<p>• Minh Anh thuộc Top 6% THPT: Đủ điều kiện đăng ký thi học bổng tài năng</p>
+</div>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<!-- SECTION: VÌ SAO UNIVIEW CHỌN 3 TRƯỜNG NÀY CHO BẠN -->
+<div class="flex flex-col gap-5 p-8 rounded-2xl bg-surface-container-low border border-outline-variant/30">
+<div class="flex flex-col gap-1">
+<div class="flex items-center gap-2 text-primary font-label-md text-label-md font-bold">
+<span class="material-symbols-outlined text-lg">recommend</span>
+<span>GÓC NHÌN ĐỊNH HƯỚNG UNIVIEW</span>
+</div>
+<h4 class="font-headline-sm text-headline-sm text-on-surface font-bold">Vì sao UniView chọn 3 trường này cho bạn?</h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant">
+        Mỗi gợi ý trường đều giải quyết một tiêu chí ưu tiên riêng biệt trong hành trình học tập và nghề nghiệp của Minh Anh:
+      </p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6 pt-1">
+<div class="p-5 rounded-xl bg-surface-container-lowest border border-outline-variant/30 flex flex-col gap-2.5 shadow-sm">
+<span class="font-label-md text-label-md font-bold text-primary">ĐH Kinh tế TP.HCM (UEH)</span>
+<p class="text-xs leading-relaxed text-on-surface">
+          Phù hợp với ưu tiên học tập thực hành, tối ưu chi phí học phí và phát huy điểm mạnh tư duy logic – nghiên cứu dữ liệu của bạn.
+        </p>
+</div>
+<div class="p-5 rounded-xl bg-surface-container-lowest border border-outline-variant/30 flex flex-col gap-2.5 shadow-sm">
+<span class="font-label-md text-label-md font-bold text-on-surface">ĐH Quốc tế (HCMIU)</span>
+<p class="text-xs leading-relaxed text-on-surface">
+          Đáng cân nhắc nếu bạn muốn phát triển khả năng ngôn ngữ, môi trường quốc tế và hướng tới các tập đoàn đa quốc gia sau tốt nghiệp.
+        </p>
+</div>
+<div class="p-5 rounded-xl bg-surface-container-lowest border border-outline-variant/30 flex flex-col gap-2.5 shadow-sm">
+<span class="font-label-md text-label-md font-bold text-on-surface">Đại học FPT TP.HCM</span>
+<p class="text-xs leading-relaxed text-on-surface">
+          Phù hợp với thiên hướng Digital Marketing và học tập qua dự án thực tế, tuy nhiên cần có kế hoạch săn học bổng để cân đối tài chính.
+        </p>
+</div>
+</div>
+<div class="flex items-center gap-2 pt-2 text-xs text-on-surface-variant border-t border-outline-variant/20">
+<span class="material-symbols-outlined text-sm text-primary">verified_user</span>
+<span><strong>Lời nhắc minh bạch:</strong> Dữ liệu mang tính chất đối chiếu tham khảo và cá nhân hóa theo hồ sơ khảo sát, không phải cam kết tuyển sinh tuyệt đối.</span>
+</div>
+</div>
+<!-- PROGRAM DETAIL SLIDE-OVER DRAWER (HIDDEN BY DEFAULT) -->
+<div class="fixed inset-0 bg-inverse-surface/40 backdrop-blur-sm z-50 hidden transition-opacity" id="school-detail-drawer-overlay" onclick="closeSchoolDrawer()">
+<div class="fixed right-0 top-0 h-full w-full max-w-2xl bg-surface-container-lowest shadow-2xl flex flex-col justify-between overflow-y-auto p-8 border-l border-outline-variant/30" id="school-detail-drawer" onclick="event.stopPropagation()">
+<div class="flex flex-col gap-6">
+<div class="flex items-center justify-between pb-4 border-b border-outline-variant/30">
+<div class="flex flex-col gap-1">
+<span class="px-2.5 py-0.5 rounded-full bg-primary-container text-on-primary font-label-sm text-xs font-bold self-start" id="drawer-badge">CHI TIẾT TRƯỜNG &amp; CHƯƠNG TRÌNH</span>
+<h3 class="font-headline-md text-headline-md font-bold text-on-surface" id="drawer-title">Đại Học Kinh Tế TP.HCM (UEH)</h3>
+<span class="font-label-sm text-label-sm text-primary font-semibold" id="drawer-subtitle">Ngành: Digital Marketing &amp; Data-driven Growth</span>
+</div>
+<button class="w-10 h-10 rounded-full bg-surface-container-high hover:bg-surface-container-highest flex items-center justify-center text-on-surface-variant hover:text-on-surface transition-colors" onclick="closeSchoolDrawer()" type="button">
+<span class="material-symbols-outlined text-xl">close</span>
+</button>
+</div>
+<!-- DRAWER TABS -->
+<div class="flex flex-wrap gap-2 border-b border-outline-variant/20 pb-3 text-label-sm font-semibold">
+<button class="px-3 py-1.5 rounded-lg bg-primary-container text-on-primary" type="button">Tổng quan &amp; Kiểm định</button>
+<button class="px-3 py-1.5 rounded-lg text-on-surface-variant hover:bg-surface-container-high" type="button">Chương trình đào tạo</button>
+<button class="px-3 py-1.5 rounded-lg text-on-surface-variant hover:bg-surface-container-high" type="button">Độ tương thích Minh Anh</button>
+<button class="px-3 py-1.5 rounded-lg text-on-surface-variant hover:bg-surface-container-high" type="button">Đề án tuyển sinh</button>
+</div>
+<!-- TAB CONTENT (OVERVIEW) -->
+<div class="flex flex-col gap-4 text-body-sm" id="drawer-body">
+<div class="grid grid-cols-2 gap-4">
+<div class="p-3.5 rounded-xl bg-surface-container-low flex flex-col gap-1">
+<span class="text-xs text-on-surface-variant">Kiểm định quốc tế:</span>
+<span class="font-bold text-on-surface">FIBAA, ACBSP &amp; AUN-QA</span>
+</div>
+<div class="p-3.5 rounded-xl bg-surface-container-low flex flex-col gap-1">
+<span class="text-xs text-on-surface-variant">Học phí tham chiếu:</span>
+<span class="font-bold text-primary">35 - 45 triệu VNĐ / năm</span>
+</div>
+</div>
+<div class="flex flex-col gap-2 pt-2">
+<span class="font-bold text-on-surface text-sm">Điểm nổi bật chương trình:</span>
+<p class="text-xs text-on-surface-variant leading-relaxed">
+              Chương trình Digital Marketing tại UEH tập trung mạnh vào tư duy định lượng, phân tích số liệu MarTech, ứng dụng máy học trong dự báo hành vi người tiêu dùng và quản trị kênh tiếp thị hợp nhất. Sinh viên hoàn thành đồ án tốt nghiệp với doanh nghiệp đối tác.
+            </p>
+</div>
+<div class="p-4 rounded-xl bg-tile-blue flex flex-col gap-1.5">
+<span class="font-bold text-primary text-xs flex items-center gap-1.5">
+<span class="material-symbols-outlined text-base">verified</span> Đánh giá tương thích với Minh Anh:
+            </span>
+<p class="text-xs text-on-surface leading-relaxed">
+              Hồ sơ của Minh Anh có điểm ĐGNL (865) và tổ hợp A01 (26.25) hoàn toàn vững vàng trong dải an toàn tham chiếu. Năng khiếu phân tích logic (Investigative 86%) là chìa khóa để đạt kết quả xuất sắc trong chương trình này.
+            </p>
+</div>
+</div>
+</div>
+<!-- DRAWER FOOTER ACTIONS -->
+<div class="pt-6 mt-6 border-t border-outline-variant/30 flex items-center justify-between gap-4">
+<button class="flex-1 py-3 rounded-full bg-primary-container text-on-primary font-label-md text-label-md font-bold flex items-center justify-center gap-2 hover:bg-primary transition-colors shadow-sm" onclick="alert('Đã lưu trường này vào Danh sách Ưu tiên (Wishlist) của Minh Anh!')" type="button">
+<span class="material-symbols-outlined text-base">bookmark_add</span>
+<span>Thêm vào Wishlist đối chiếu</span>
+</button>
+<button class="px-6 py-3 rounded-full bg-surface-container-high text-on-surface font-label-md text-label-md font-semibold hover:bg-surface-container-highest transition-colors" onclick="closeSchoolDrawer()" type="button">
+          Đóng
+        </button>
+</div>
+</div>
+</div>
+</div>
+<script>
+  function openSchoolDrawer(schoolKey) {
+    const overlay = document.getElementById('school-detail-drawer-overlay');
+    const title = document.getElementById('drawer-title');
+    const sub = document.getElementById('drawer-subtitle');
+    const badge = document.getElementById('drawer-badge');
+    
+    if (schoolKey === 'ueh') {
+      title.innerText = 'Đại Học Kinh Tế TP.HCM (UEH)';
+      sub.innerText = 'Ngành: Marketing Định lượng & MarTech · Mã trường: KSA';
+      badge.innerText = 'LỰA CHỌN #01 · PHÙ HỢP 94%';
+    } else if (schoolKey === 'hcmiu') {
+      title.innerText = 'ĐH Quốc Tế – ĐHQG-HCM (HCMIU)';
+      sub.innerText = 'Ngành: Quản trị Marketing Quốc tế (100% Tiếng Anh) · Mã trường: QSQ';
+      badge.innerText = 'LỰA CHỌN #02 · PHÙ HỢP 91%';
+    } else if (schoolKey === 'fpt') {
+      title.innerText = 'Trường Đại Học FPT TP.HCM';
+      sub.innerText = 'Ngành: Digital Marketing & AI Media · Mã trường: FPT';
+      badge.innerText = 'LỰA CHỌN #03 · PHÙ HỢP 86%';
+    }
+    
+    overlay?.classList.remove('hidden');
+  }
+
+  function closeSchoolDrawer() {
+    const overlay = document.getElementById('school-detail-drawer-overlay');
+    overlay?.classList.add('hidden');
+  }
+</script>
+</section>
+<!-- SECTION 7: KẾT LUẬN & ĐỊNH HƯỚNG HÀNH ĐỘNG (WARM & REASSURING) -->
+<section class="relative overflow-hidden rounded-3xl bg-surface-container-low border border-outline-variant/40 p-8 lg:p-14 flex flex-col gap-10 shadow-sm">
+<!-- Background Ambient Glows -->
+<div class="absolute -top-32 -right-32 w-96 h-96 rounded-full bg-primary-container/10 blur-[100px] pointer-events-none"></div>
+<div class="absolute -bottom-32 -left-32 w-80 h-80 rounded-full bg-surface-tint/10 blur-[90px] pointer-events-none"></div>
+<!-- Section Header -->
+<div class="relative z-10 flex flex-col gap-4 max-w-4xl">
+<div class="flex flex-wrap items-center gap-2.5">
+<span class="px-3 py-1 rounded-full bg-tile-blue text-primary font-label-sm text-label-sm font-bold uppercase tracking-wider flex items-center gap-1.5">
+<span class="material-symbols-outlined text-base">alt_route</span>
+        PHÂN HỆ 07 • BƯỚC TIẾP THEO TRONG HÀNH TRÌNH
+      </span>
+<span class="text-outline-variant font-label-md hidden sm:inline">•</span>
+<span class="font-label-md text-label-md font-semibold text-on-surface-variant">Chặng tiếp theo: Kiểm chứng ngành học của bạn</span>
+</div>
+<h2 class="font-headline-lg text-headline-lg text-on-surface tracking-tight leading-tight">
+      Bạn đã khám phá những ngành phù hợp. Giờ là lúc <span class="text-primary underline decoration-primary-container/30 underline-offset-8">tự mình kiểm chứng</span>.
+    </h2>
+<p class="font-body-lg text-body-lg text-on-surface-variant leading-relaxed">
+      Bài assessment giúp bạn nhận diện các hướng đi đáng cân nhắc. Roadmap kiểm chứng sẽ giúp bạn từng bước khám phá những ngành học ấy qua trải nghiệm thực tế, từ đó hiểu rõ hơn sở thích và lựa chọn của chính mình.
+    </p>
+</div>
+<!-- VISUAL CONNECTED 3-STEP JOURNEY -->
+<div class="relative z-10 flex flex-col gap-6">
+<!-- Step Cards Container with Timeline Line -->
+<div class="relative grid grid-cols-1 md:grid-cols-3 gap-6">
+<!-- Desktop Progress Connector Line (behind milestone dots) -->
+<div class="hidden md:block absolute top-1/2 left-[16%] right-[16%] -translate-y-8 h-1 bg-surface-container-high z-0 rounded-full">
+<!-- Completed portion line (from Step 1 to Step 2) -->
+<div class="h-full w-1/2 bg-primary-container rounded-full"></div>
+</div>
+<!-- STEP 01: Khám phá bản thân (Completed) -->
+<div class="relative z-10 rounded-2xl bg-surface-container-lowest p-6 border border-outline-variant/30 flex flex-col justify-between gap-5 transition-all shadow-sm">
+<div class="flex flex-col gap-4">
+<div class="flex items-center justify-between">
+<span class="w-10 h-10 rounded-xl bg-surface-container-high text-on-surface-variant flex items-center justify-center font-label-lg font-bold text-base">
+              01
+            </span>
+<span class="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-tile-blue text-primary font-label-sm text-xs font-bold">
+<span class="material-symbols-outlined text-sm">check_circle</span>
+              Đã hoàn thành
+            </span>
+</div>
+<div class="flex flex-col gap-1.5">
+<h3 class="font-headline-sm text-headline-sm text-on-surface font-bold">Khám phá bản thân</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant leading-relaxed">
+              Hoàn thành assessment và nhận report cá nhân hóa đa chiều.
+            </p>
+</div>
+</div>
+<div class="pt-3 border-t border-outline-variant/20 flex items-center gap-2 text-xs text-on-surface-variant font-medium">
+<span class="material-symbols-outlined text-base text-primary">task_alt</span>
+<span>Hồ sơ RIASEC &amp; Năng lực 2026</span>
+</div>
+</div>
+<!-- STEP 02: Roadmap kiểm chứng (Active / Current Milestone) -->
+<div class="relative z-10 rounded-2xl bg-surface-container-lowest p-6 border-2 border-primary shadow-md flex flex-col justify-between gap-5 transition-all ring-2 ring-primary-container/20 hover:-translate-y-0.5">
+<div class="flex flex-col gap-4">
+<div class="flex items-center justify-between">
+<span class="w-10 h-10 rounded-xl bg-primary text-on-primary flex items-center justify-center font-label-lg font-bold text-base shadow-sm">
+              02
+            </span>
+<span class="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-primary-container text-on-primary font-label-sm text-xs font-bold shadow-sm">
+<span class="w-2 h-2 rounded-full bg-surface-container-lowest animate-pulse"></span>
+              Bước tiếp theo
+            </span>
+</div>
+<div class="flex flex-col gap-1.5">
+<div class="flex items-center gap-2">
+<h3 class="font-headline-sm text-headline-sm text-primary font-bold">Roadmap kiểm chứng</h3>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface leading-relaxed">
+              Khám phá và trải nghiệm các ngành học được đề xuất qua các hoạt động mô phỏng thực tế.
+            </p> enjoy
+          </div>
+</div>
+<div class="pt-3 border-t border-outline-variant/20 flex items-center gap-2 text-xs text-primary font-semibold">
+<span class="material-symbols-outlined text-base">directions_run</span>
+<span>Sẵn sàng bắt đầu ngay bây giờ</span>
+</div>
+</div>
+<!-- STEP 03: Hiểu rõ lựa chọn (Future State) -->
+<div class="relative z-10 rounded-2xl bg-surface-container-lowest p-6 border border-outline-variant/30 flex flex-col justify-between gap-5 transition-all opacity-85 shadow-sm">
+<div class="flex flex-col gap-4">
+<div class="flex items-center justify-between">
+<span class="w-10 h-10 rounded-xl bg-surface-container-high text-on-surface-variant flex items-center justify-center font-label-lg font-bold text-base">
+              03
+            </span>
+<span class="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-surface-container-high text-on-surface-variant font-label-sm text-xs font-semibold">
+<span class="material-symbols-outlined text-sm">hourglass_empty</span>
+              Sau khi trải nghiệm
+            </span>
+</div>
+<div class="flex flex-col gap-1.5">
+<h3 class="font-headline-sm text-headline-sm text-on-surface font-bold">Hiểu rõ lựa chọn</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant leading-relaxed">
+              Ghi nhận những điều phù hợp với sở thích, năng lực và mục tiêu tương lai của bạn.
+            </p>
+</div>
+</div>
+<div class="pt-3 border-t border-outline-variant/20 flex items-center gap-2 text-xs text-on-surface-variant font-medium">
+<span class="material-symbols-outlined text-base text-outline">decision_maker</span>
+<span>Xác lập quyết định tự tin</span>
+</div>
+</div>
+</div>
+</div>
+<!-- PRIMARY CALL TO ACTION BLOCK -->
+<div class="relative z-10 p-8 rounded-2xl bg-surface-container-lowest border border-outline-variant/40 flex flex-col md:flex-row items-center justify-between gap-6 shadow-sm">
+<div class="flex flex-col gap-2 text-left">
+<span class="font-headline-sm text-headline-sm text-on-surface font-bold">
+        Sẵn sàng bước vào hành trình trải nghiệm?
+      </span>
+<p class="font-body-sm text-body-sm text-on-surface-variant max-w-xl">
+        Lộ trình cá nhân hóa được thiết kế linh hoạt theo nhịp học tập của bạn, không giới hạn thời gian và toàn bộ kết quả luôn được lưu trữ an toàn trong hồ sơ.
+      </p>
+</div>
+<div class="flex flex-col sm:flex-row items-center gap-4 shrink-0 w-full md:w-auto">
+<button class="w-full sm:w-auto px-5 py-3 rounded-full text-on-surface-variant hover:text-primary font-label-lg text-label-lg font-semibold transition-colors flex items-center justify-center gap-1.5" onclick="window.scrollTo({ top: 0, behavior: 'smooth' })" type="button">
+<span class="material-symbols-outlined text-lg">north</span>
+<span>Xem lại kết quả assessment</span>
+</button>
+<button class="w-full sm:w-auto group px-8 py-3.5 rounded-full bg-primary-container hover:bg-primary text-on-primary font-label-lg text-label-lg font-bold shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2.5" type="button">
+<span>Bắt đầu Roadmap kiểm chứng</span>
+<span class="material-symbols-outlined text-xl transition-transform group-hover:translate-x-1">arrow_forward</span>
+</button>
+</div>
+</div>
+<!-- Reassurance & Data Retention Note -->
+<div class="relative z-10 flex flex-wrap items-center justify-between gap-4 pt-2 text-on-surface-variant font-label-sm text-label-sm border-t border-outline-variant/20">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-base text-primary">lock</span>
+<span>Dữ liệu đánh giá của Minh Anh được bảo mật và tự động đồng bộ xuyên suốt toàn bộ lộ trình trải nghiệm.</span>
+</div>
+<span class="font-medium text-outline">UniView Career Guidance Suite • Mã hồ sơ UV-2026-12A1-094</span>
+</div>
+</section>
+</div>
+</div>
+<script>
+  // Tab Switching Logic for Category Majors
+  function switchCategoryTab(category) {
+    const categories = ['business', 'media', 'art'];
+    categories.forEach(cat => {
+      const content = document.getElementById(`tab-content-${cat}`);
+      const btn = document.getElementById(`tab-btn-${cat}`);
+      if (cat === category) {
+        content?.classList.remove('hidden');
+        btn?.classList.remove('text-on-surface-variant');
+        btn?.classList.add('bg-primary-container', 'text-on-primary', 'shadow-sm', 'font-bold');
+      } else {
+        content?.classList.add('hidden');
+        btn?.classList.remove('bg-primary-container', 'text-on-primary', 'shadow-sm', 'font-bold');
+        btn?.classList.add('text-on-surface-variant');
+      }
+    });
+  }
+
+  // Quick jump helper from Category card buttons
+  function scrollToAndSelectTab(tabBtnId) {
+    const el = document.getElementById('explore-18-section');
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth' });
+    }
+    if (tabBtnId === 'tab-btn-business') switchCategoryTab('business');
+    if (tabBtnId === 'tab-btn-media') switchCategoryTab('media');
+    if (tabBtnId === 'tab-btn-art') switchCategoryTab('art');
+  }
+
+  // Switch between Academic States (A: No score vs B: Verified scores)
+  function switchAcademicMode(mode) {
+    const panelA = document.getElementById('panel-state-a');
+    const panelB = document.getElementById('panel-state-b');
+    const btnA = document.getElementById('btn-state-a');
+    const btnB = document.getElementById('btn-state-b');
+
+    if (mode === 'A') {
+      panelA?.classList.remove('hidden');
+      panelB?.classList.add('hidden');
+      btnA?.classList.add('bg-primary-container', 'text-on-primary', 'shadow-sm');
+      btnA?.classList.remove('text-on-surface-variant');
+      btnB?.classList.remove('bg-primary-container', 'text-on-primary', 'shadow-sm');
+      btnB?.classList.add('text-on-surface-variant');
+    } else {
+      panelA?.classList.add('hidden');
+      panelB?.classList.remove('hidden');
+      btnB?.classList.add('bg-primary-container', 'text-on-primary', 'shadow-sm');
+      btnB?.classList.remove('text-on-surface-variant');
+      btnA?.classList.remove('bg-primary-container', 'text-on-primary', 'shadow-sm');
+      btnA?.classList.add('text-on-surface-variant');
+    }
+  }
+
+  // Interactive selection micro-action for majors
+  function selectMajor(majorCode) {
+    alert(`Bạn đang chọn xem phân tích đối chiếu chuyên sâu cho ngành có mã số ${majorCode}.`);
+  }
+</script></main></div></body></html>
