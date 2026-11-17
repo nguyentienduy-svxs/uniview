@@ -27,6 +27,7 @@ import {
 } from './HeaderMenus'
 
 import { useAuth } from '../../context/AuthContext'
+import { useDataMode } from '../../context/DataModeContext'
 import { getActivePlanSummary } from '../../data/plans'
 
 // ======================================================
@@ -99,6 +100,25 @@ export default function AppHeader() {
     hasEntitlementHistory,
     logout,
   } = useAuth()
+
+  const dataModeCtx = useDataMode()
+  const [logoClicks, setLogoClicks] = useState({ count: 0, lastTime: 0 })
+
+  const handleLogoClick = () => {
+    setMobileOpen(false)
+    const now = Date.now()
+    if (now - logoClicks.lastTime < 2500) {
+      const nextCount = logoClicks.count + 1
+      if (nextCount >= 5) {
+        setLogoClicks({ count: 0, lastTime: 0 })
+        dataModeCtx?.toggleDevTools?.()
+      } else {
+        setLogoClicks({ count: nextCount, lastTime: now })
+      }
+    } else {
+      setLogoClicks({ count: 1, lastTime: now })
+    }
+  }
 
   const isLoggedIn =
     isAuthenticated
@@ -221,9 +241,7 @@ export default function AppHeader() {
             gap-3
             py-1
           "
-          onClick={() =>
-            setMobileOpen(false)
-          }
+          onClick={handleLogoClick}
         >
           <img
             src="/stitch-assets/uniview-logo.png"

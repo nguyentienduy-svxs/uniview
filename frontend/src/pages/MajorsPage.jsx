@@ -2,6 +2,7 @@ import majors from "../data/majors.json";
 import majorsFilter from "../data/majorsfilter.json";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "react-router-dom";
+import { useDataMode } from "../context/DataModeContext";
 
 const PAGE_SIZE = 6;
 const CAROUSEL_INTERVAL = 5000;
@@ -158,6 +159,13 @@ const normalizeText = (value) =>
     .toLowerCase();
 
 function MajorsPage() {
+  const { isRealMode, isDevToolsOpen } = useDataMode();
+  const [realMajors, setRealMajors] = useState([]);
+  const [loadingReal, setLoadingReal] = useState(false);
+  const [realError, setRealError] = useState(null);
+  const [seededSuccess, setSeededSuccess] = useState(false);
+  const [seeding, setSeeding] = useState(false);
+
   const [activeSlide, setActiveSlide] = useState(0);
   const [isCarouselPaused, setIsCarouselPaused] = useState(false);
   const [filterSelected, setFilterSelected] = useState([]);
@@ -167,6 +175,68 @@ function MajorsPage() {
   const [firstNewResultIndex, setFirstNewResultIndex] = useState(0);
   const progressBarRef = useRef(null);
   const filterData = majorsFilter;
+
+  useEffect(() => {
+    if (!isRealMode) {
+      setRealError(null);
+      return;
+    }
+    let active = true;
+    setLoadingReal(true);
+    setRealError(null);
+    fetch("http://localhost:8080/api/v1/majors")
+      .then((res) => {
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        return res.json();
+      })
+      .then((data) => {
+        if (active) {
+          setRealMajors(Array.isArray(data) ? data : []);
+          setLoadingReal(false);
+        }
+      })
+      .catch((err) => {
+        if (active) {
+          setRealError(err.message);
+          setLoadingReal(false);
+        }
+      });
+    return () => {
+      active = false;
+    };
+  }, [isRealMode]);
+
+  const handleSeedData = async () => {
+    if (seeding) return;
+    setSeeding(true);
+    try {
+      const mapped = majors.map((m) => ({
+        id: m.id,
+        name: m.name,
+        code: m.code,
+        category: m.category?.name || "Công nghệ",
+        description: m.description,
+        universitiesCount: m.universityCount || 0,
+        popularCombinations: m.admissionCombinations?.map((c) => c.code).join(", ") || "",
+        imageUrl: m.imageUrl || "",
+        tuitionRange: m.tuitionRange || "",
+      }));
+      const res = await fetch("http://localhost:8080/api/v1/majors/seed", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(mapped),
+      });
+      if (res.ok) {
+        setSeededSuccess(true);
+        const refetched = await fetch("http://localhost:8080/api/v1/majors").then((r) => r.json());
+        setRealMajors(Array.isArray(refetched) ? refetched : []);
+      }
+    } catch (err) {
+      console.error("Lỗi seed data:", err);
+    } finally {
+      setSeeding(false);
+    }
+  };
 
   useEffect(() => {
     if (isCarouselPaused) return undefined;
@@ -197,6 +267,29 @@ function MajorsPage() {
     [filterData.interests],
   );
 
+  const sourceMajors = useMemo(() => {
+    if (!isRealMode) return majors;
+    if (realMajors.length > 0) {
+      return realMajors.map((item) => ({
+        id: item.id || String(Math.random()),
+        name: item.name || "",
+        code: item.code || "",
+        category: { id: (item.category || "").toLowerCase().replace(/\s+/g, "-"), name: item.category || "Chung" },
+        description: item.description || "",
+        universityCount: item.universitiesCount || 0,
+        tuitionRange: item.tuitionRange || "",
+        admissionCombinations: (item.popularCombinations || "A00, A01, D01")
+          .split(",")
+          .map((code) => ({ code: code.trim(), subjects: [] })),
+        interests: [],
+        riasec: [],
+        skills: [],
+        careerPaths: [],
+      }));
+    }
+    return [];
+  }, [isRealMode, realMajors]);
+
   const filteredMajors = useMemo(() => {
     const selectedCategories = filterSelected.filter((id) => categoryIds.has(id));
     const selectedInterests = filterSelected
@@ -210,7 +303,7 @@ function MajorsPage() {
     );
     const searchTokens = normalizeText(searchTerm).trim().split(/\s+/).filter(Boolean);
 
-    const results = majors.filter((major) => {
+    const results = sourceMajors.filter((major) => {
       const matchesCategory =
         selectedCategories.length === 0 || selectedCategories.includes(major.category.id);
       const matchesInterest =
@@ -252,9 +345,9 @@ function MajorsPage() {
         return first.name.localeCompare(second.name, "vi");
       }
 
-      return majors.indexOf(first) - majors.indexOf(second);
+      return sourceMajors.indexOf(first) - sourceMajors.indexOf(second);
     });
-  }, [categoryIds, filterData, filterSelected, interestLabelsById, searchTerm, sortBy]);
+  }, [categoryIds, filterData, filterSelected, interestLabelsById, searchTerm, sortBy, sourceMajors]);
 
   const visibleMajors = filteredMajors.slice(0, visibleCount);
   const progress = filteredMajors.length === 0
@@ -672,6 +765,61 @@ function MajorsPage() {
             </aside>
 
             <section className="lg:col-span-8 xl:col-span-7 space-y-space-md">
+              {/* Data Mode Notification Banner — Chỉ hiện khi DevTools được mở hoặc khi cần báo trạng thái Real API */}
+              {isDevToolsOpen && (
+                isRealMode ? (
+                  <div className="rounded-2xl border p-4 bg-purple-50/90 border-purple-200 text-purple-950 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-xs">
+                    <div className="space-y-1">
+                      <div className="flex items-center gap-2">
+                        <span className="w-2.5 h-2.5 rounded-full bg-purple-600 inline-block animate-pulse"></span>
+                        <strong className="text-sm font-bold">Chế độ Real API: Kết nối PostgreSQL Render</strong>
+                      </div>
+                      <p className="text-xs text-purple-800">
+                        {loadingReal ? (
+                          "Đang tải danh sách ngành từ PostgreSQL (:8080)..."
+                        ) : realError ? (
+                          <span className="text-rose-700 font-semibold">
+                            ⚠️ Chưa kết nối được Spring Boot (http://localhost:8080). Hãy chắc chắn bạn đã chạy: <code>cd backend && mvn spring-boot:run</code>
+                          </span>
+                        ) : realMajors.length > 0 ? (
+                          `Đã kết nối thành công! Đang hiển thị ${realMajors.length} ngành thực tế từ cơ sở dữ liệu.`
+                        ) : (
+                          <span>
+                            Database PostgreSQL hiện có <strong>0 ngành</strong> (chưa có dữ liệu). Bạn có thể bấm nút bên phải để đổ 30+ ngành mẫu vào DB thật ngay, hoặc gạt sang <strong>'Mock'</strong> ở bảng DevTools.
+                          </span>
+                        )}
+                      </p>
+                    </div>
+
+                    {!realError && realMajors.length === 0 && (
+                      <button
+                        onClick={handleSeedData}
+                        disabled={seeding}
+                        className="shrink-0 px-3.5 py-2 rounded-xl bg-purple-600 hover:bg-purple-700 text-white text-xs font-bold shadow-md transition-all active:scale-95 cursor-pointer disabled:opacity-60 flex items-center gap-1.5"
+                      >
+                        <span>⚡</span>
+                        <span>{seeding ? "Đang lưu vào DB..." : "Đổ 30+ ngành vào PostgreSQL"}</span>
+                      </button>
+                    )}
+                    {seededSuccess && (
+                      <span className="text-xs font-bold text-emerald-800 bg-emerald-100 px-3 py-1.5 rounded-lg border border-emerald-300">
+                        ✓ Đã lưu thành công vào PostgreSQL!
+                      </span>
+                    )}
+                  </div>
+                ) : (
+                  <div className="rounded-2xl border p-3 bg-amber-50/90 border-amber-200 text-amber-900 flex items-center justify-between text-xs">
+                    <div className="flex items-center gap-2">
+                      <span className="w-2 h-2 rounded-full bg-amber-500 inline-block"></span>
+                      <span>Đang ở <strong>Chế độ Mock Data</strong>: hiển thị 30+ ngành mẫu từ <code>src/mock-data/majors.json</code>.</span>
+                    </div>
+                    <span className="text-[11px] text-amber-700 hidden sm:inline">
+                      Bấm Ctrl + Shift + D để đóng DevTools
+                    </span>
+                  </div>
+                )
+              )}
+
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-space-sm pb-space-sm">
                 <div className="space-y-1">
                   <div className="font-body-sm text-body-sm text-outline">
