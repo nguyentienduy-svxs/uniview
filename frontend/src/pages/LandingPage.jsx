@@ -1,3 +1,4 @@
+import LandingHero from '../components/LandingHero'
 import { useDataMode } from '../context/DataModeContext'
 import { Link } from 'react-router-dom'
 
@@ -6,120 +7,7 @@ function LandingPage() {
   return (
     <main className="w-full bg-surface min-h-[calc(100vh-80px)]"><div className="flex flex-col w-full overflow-hidden bg-surface text-on-surface selection:bg-secondary-fixed selection:text-on-secondary-fixed">
 
-      <section className="relative w-full max-w-[1440px] mx-auto px-margin md:px-margin-md lg:px-margin-lg pt-[20px] pb-space-2xl">
-
-        <div className="absolute top-10 left-1/4 w-[480px] h-[480px] bg-secondary-container/10 rounded-full blur-[100px] pointer-events-none -z-10"></div>
-        <div className="absolute top-28 right-10 w-[540px] h-[540px] bg-primary-fixed/30 rounded-full blur-[120px] pointer-events-none -z-10"></div>
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-gutter-lg items-center">
-
-          <div className="lg:col-span-6 xl:col-span-5 flex flex-col items-start z-10">
-
-            <div className="inline-flex items-center gap-space-xs px-space-md py-space-xs rounded-full bg-secondary-fixed text-on-secondary-container shadow-sm mb-space-lg">
-              <span className="w-2 h-2 rounded-full bg-secondary"></span>
-              <span className="font-label-md text-label-md tracking-wider uppercase font-semibold">TƯƠNG LAI KHÔNG CHỈ CÓ MỘT LỰA CHỌN</span>
-            </div>
-
-            <h1 className="font-display text-[42px] sm:text-display leading-[1.08] tracking-tight mb-space-md font-extrabold">
-              <span className="block text-inverse-surface">Hiểu mình hơn.</span>
-              <span className="block text-secondary">Khám phá nhiều hơn.</span>
-              <span className="block text-primary-container">Chọn có cơ sở hơn.</span>
-            </h1>
-
-            <p className="font-body-lg text-body-lg text-on-surface-variant max-w-lg mb-space-xl">
-              Từ ngành học đến trường đại học, Uniview giúp bạn nhìn rõ các lựa chọn trước khi tự đưa ra quyết định của chính mình.
-            </p>
-
-            <div className="flex flex-wrap items-center gap-space-md mb-space-md w-full sm:w-auto">
-              <Link className="landing-cta-float-neon inline-flex items-center justify-center px-space-xl py-space-md rounded-full bg-primary-container text-on-primary font-label-lg text-label-lg shadow-lg hover:shadow-xl hover:bg-primary transition-all duration-200 group" to="/assessment">
-                Bắt đầu khám phá
-                <span className="material-symbols-outlined ml-space-xs text-[18px] group-hover:translate-x-1 transition-transform">arrow_forward</span>
-              </Link>
-              <a className="inline-flex items-center justify-center px-space-lg py-space-md rounded-full bg-surface-container-lowest text-on-surface font-label-lg text-label-lg shadow-sm hover:shadow-md transition-all duration-200" href="#kham-pha-truong">
-                Xem các trường
-              </a>
-            </div>
-
-            <div className="flex items-center gap-space-xs text-on-surface-variant font-body-sm text-body-sm">
-              <span className="text-tertiary-fixed-dim text-base">✨</span>
-              <span className="font-medium text-tertiary">Hãy tạo tài khoản ngây để trải nghiệm tính năng</span>
-
-
-            </div>
-          </div>
-
-          <div className="lg:col-span-6 xl:col-span-7 relative w-full flex items-center justify-center min-h-[520px] lg:min-h-[580px]">
-
-            <div className="absolute inset-4 sm:inset-8 bg-secondary-fixed/50 rounded-[48px] rotate-[-2deg] transition-transform duration-700 hover:rotate-0"></div>
-            <div className="absolute inset-8 sm:inset-12 bg-surface-container-low rounded-[40px] rotate-[3deg]"></div>
-
-            <div className="relative z-10 flex flex-col items-center">
-              <svg className="w-72 sm:w-88 h-auto drop-shadow-md" fill="none" viewBox="0 0 340 380" xmlns="http://www.w3.org/2000/svg">
-                <ellipse className="text-surface-container-highest/60" cx="170" cy="350" fill="currentColor" rx="140" ry="20"></ellipse>
-
-                <path d="M120 180 C110 240, 95 320, 85 360 L255 360 C245 320, 230 240, 220 180 Z" fill="#172033"></path>
-
-                <path d="M98 220 C105 170, 130 145, 170 145 C210 145, 235 170, 242 220 C245 250, 235 290, 230 330 L110 330 C105 290, 95 250, 98 220 Z" fill="#1D4ED8"></path>
-                <path d="M135 145 C150 170, 190 170, 205 145 Z" fill="#EFF6FF"></path>
-
-                <circle cx="170" cy="105" fill="#FBD4B4" r="42"></circle>
-
-                <path d="M128 100 C125 60, 160 50, 185 52 C210 54, 218 75, 215 95 C208 85, 190 80, 170 85 C145 90, 138 98, 128 100 Z" fill="#121B2E"></path>
-
-                <circle cx="156" cy="108" fill="none" r="10" stroke="#121B2E" strokeWidth="2.5"></circle>
-                <circle cx="184" cy="108" fill="none" r="10" stroke="#121B2E" strokeWidth="2.5"></circle>
-                <line stroke="#121B2E" strokeWidth="2.5" x1="166" x2="174" y1="108" y2="108"></line>
-
-                <path d="M162 126 Q170 134 178 126" fill="none" stroke="#A93349" strokeLinecap="round" strokeWidth="2.5"></path>
-
-                <rect fill="#FFFDFB" filter="drop-shadow(0 4px 6px rgba(0,0,0,0.1))" height="55" rx="6" transform="rotate(-6 130 240)" width="80" x="130" y="240"></rect>
-                <rect fill="#FB7185" height="6" rx="3" transform="rotate(-6 138 248)" width="64" x="138" y="248"></rect>
-                <rect fill="#CAD3FF" height="4" rx="2" transform="rotate(-6 140 260)" width="46" x="140" y="260"></rect>
-
-                <path d="M70 130 L74 140 L84 144 L74 148 L70 158 L66 148 L56 144 L66 140 Z" fill="#FBBF24"></path>
-                <path d="M270 90 L273 98 L281 101 L273 104 L270 112 L267 104 L259 101 L267 98 Z" fill="#FB7185"></path>
-              </svg>
-            </div>
-
-
-            <div className="absolute top-8 left-4 sm:left-10 z-20 bg-surface-container-lowest px-space-md py-space-xs rounded-full shadow-lg flex items-center gap-space-xs animate-bounce" style={{ "animationDuration": "3s" }}>
-              <span className="w-2.5 h-2.5 rounded-full bg-primary-container"></span>
-              <span className="font-label-lg text-label-lg text-primary-container font-bold">CNTT hay AI?</span>
-              <span className="text-xs px-1.5 py-0.5 rounded bg-primary-fixed text-primary font-bold">Hot</span>
-            </div>
-
-            <div className="absolute bottom-16 left-2 sm:left-8 z-20 bg-surface-container-lowest px-space-md py-space-sm rounded-xl shadow-md flex items-center gap-space-sm">
-              <span className="material-symbols-outlined text-secondary text-[20px]">palette</span>
-              <div className="flex flex-col">
-                <span className="font-label-md text-label-md text-on-surface font-bold">Thiết kế Đồ họa</span>
-                <span className="font-label-sm text-label-sm text-on-surface-variant">Sáng tạo &amp; Truyền thông</span>
-              </div>
-            </div>
-
-            <div className="absolute top-12 right-2 sm:right-6 z-20 bg-surface-container-lowest px-space-md py-space-sm rounded-xl shadow-lg flex items-center gap-space-xs">
-              <span className="material-symbols-outlined text-tertiary-fixed-dim text-[18px]">payments</span>
-              <span className="font-label-md text-label-md text-on-surface font-semibold">TP.HCM • ≤ 35M/năm</span>
-            </div>
-
-            <div className="absolute -bottom-4 right-6 sm:right-12 z-20 w-44 sm:w-52 p-space-xs bg-surface-container-lowest rounded-2xl shadow-xl transform rotate-2 hover:rotate-0 transition-transform">
-              <div className="relative w-full h-24 rounded-xl overflow-hidden mb-space-xs">
-                <img className="w-full h-full object-cover" data-alt="Vibrant modern university campus courtyard in Vietnam with lush tropical greenery, students walking together, modern concrete and glass architecture inspired by Fulbright University library commons, natural cinematic daylight." src="/stitch-assets/modern-university-campus.jpg" />
-                <span className="absolute top-2 right-2 p-1 rounded-full bg-surface-container-lowest/90 text-secondary">
-                  <span className="material-symbols-outlined text-[14px]">favorite</span>
-                </span>
-              </div>
-              <div className="px-space-xs pb-space-xs">
-                <p className="font-label-md text-label-md text-on-surface font-bold truncate">Đại học Fulbright VN</p>
-                <p className="font-label-sm text-label-sm text-on-surface-variant">Khu công nghệ cao TP.HCM</p>
-              </div>
-            </div>
-
-            <svg className="absolute inset-0 w-full h-full pointer-events-none z-15" fill="none" viewBox="0 0 500 500">
-              <path d="M 80 80 Q 150 120 180 180" stroke="#CAD3FF" strokeDasharray="4 4" strokeWidth="2"></path>
-              <path d="M 400 90 Q 340 180 250 200" stroke="#FE7488" strokeDasharray="4 4" strokeWidth="2"></path>
-            </svg>
-          </div>
-        </div>
-      </section>
+      <LandingHero />
 
       {isMockMode && (<section className="w-full max-w-[1440px] mx-auto px-margin md:px-margin-md lg:px-margin-lg py-space-2xl">
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-space-xl">
